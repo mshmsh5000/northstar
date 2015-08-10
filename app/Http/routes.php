@@ -38,6 +38,7 @@ Route::group(['prefix' => 'v1', 'middleware' => 'auth.api'], function () {
     Route::group(['middleware' => 'user'], function () {
         Route::resource('users', 'UserController');
         Route::get('users/{term}/{id}', 'UserController@show');
+        Route::get('users-source/{source}/', 'UserController@usersBySource');
         Route::post('users/{id}/avatar', 'AvatarController@store');
     });
 
@@ -54,4 +55,3 @@ Route::group(['prefix' => 'v1', 'middleware' => 'auth.api'], function () {
     Route::resource('keys', 'KeyController');
 
 });
-

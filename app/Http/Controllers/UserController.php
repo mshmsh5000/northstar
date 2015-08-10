@@ -184,4 +184,24 @@ class UserController extends Controller
         }
     }
 
+    /**
+     * Display a listing of the  resources by source.
+     *
+     * @param $source - string
+     *   source to search by (eg. cgg, drupal, agg, services)
+     *
+     * @return Response
+     * @throws NotFoundHttpException
+     */
+    public function usersBySource($source)
+    {
+        // Find the user.
+        $users = User::where('source', '=', $source)->get();
+        if (!$users->isEmpty()) {
+            return $this->respond($users);
+        }
+
+        throw new NotFoundHttpException('The resource does not exist.');
+    }
+
 }
