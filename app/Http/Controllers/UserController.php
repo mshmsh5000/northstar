@@ -20,6 +20,19 @@ class UserController extends Controller
     public function index()
     {
         $query = User::query();
+        if (Input::has('source')) {
+          $inputs = explode(",", Input::get('source'));
+          $users = [];
+          foreach ($inputs as $input){
+            foreach(User::where('source', '=', $input)->get() as $user){
+              $users[] = $user;
+            }
+          }
+          if (!empty($users)) {
+              return $this->respond($users);
+          }
+          throw new NotFoundHttpException('The resource does not exist.');
+        }
         return $this->respondPaginated($query);
     }
 
@@ -182,26 +195,6 @@ class UserController extends Controller
         } else {
             throw new NotFoundHttpException('The resource does not exist.');
         }
-    }
-
-    /**
-     * Display a listing of the  resources by source.
-     *
-     * @param $source - string
-     *   source to search by (eg. cgg, drupal, agg, services)
-     *
-     * @return Response
-     * @throws NotFoundHttpException
-     */
-    public function usersBySource($source)
-    {
-        // Find the user.
-        $users = User::where('source', '=', $source)->get();
-        if (!$users->isEmpty()) {
-            return $this->respond($users);
-        }
-
-        throw new NotFoundHttpException('The resource does not exist.');
     }
 
 }
