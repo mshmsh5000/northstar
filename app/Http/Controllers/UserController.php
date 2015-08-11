@@ -24,9 +24,9 @@ class UserController extends Controller
             return $this->respondPaginated($query);
         }else{
             $inputs = Input::all();
-            $users = User::where($inputs)->get();
+            $users = User::where($inputs)->paginate(5);
             if (!empty($users)) {
-              return $this->respond($users);
+                return response()->json($users);
             }
         throw new NotFoundHttpException('The resource does not exist.');
         }
