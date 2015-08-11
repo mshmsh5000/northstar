@@ -21,16 +21,12 @@ class UserController extends Controller
     public function index()
     {
         $inputs = Input::all();
-        if(empty($inputs)){
-            $query = User::query();
-            return $this->respondPaginated($query);
-        }else{
-            $users = User::where($inputs)->paginate(20);
-            if (!empty($users)) {
-                return response()->json($users);
-            }
-        throw new NotFoundHttpException('The resource does not exist.');
+        $users = User::where($inputs)->paginate(20);
+        $response = response()->json($users);
+        if (!empty($response->getData()->data)) {
+            return $response;
         }
+        throw new NotFoundHttpException('The resource does not exist.');
     }
 
 
