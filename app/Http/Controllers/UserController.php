@@ -25,12 +25,11 @@ class UserController extends Controller
         }else{
             $inputs = Input::all();
             $users = User::where($inputs)->get();
-            return $this->respond($users);
-        }
-          if (!empty($users)) {
+            if (!empty($users)) {
               return $this->respond($users);
-          }
-          throw new NotFoundHttpException('The resource does not exist.');
+            }
+        throw new NotFoundHttpException('The resource does not exist.');
+        }
     }
 
 
