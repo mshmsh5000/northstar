@@ -24,7 +24,7 @@ class UserController extends Controller
             return $this->respondPaginated($query);
         }else{
             $inputs = Input::all();
-            $users = User::where($inputs)->paginate(5);
+            $users = User::where($inputs)->paginate(20);
             if (!empty($users)) {
                 return response()->json($users);
             }
