@@ -19,21 +19,18 @@ class UserController extends Controller
      */
     public function index()
     {
-        $query = User::query();
-        if (Input::has('source')) {
-          $inputs = explode(",", Input::get('source'));
-          $users = [];
-          foreach ($inputs as $input){
-            foreach(User::where('source', '=', $input)->get() as $user){
-              $users[] = $user;
-            }
-          }
+        if(empty(Input::all())){
+            $query = User::query();
+            return $this->respondPaginated($query);
+        }else{
+            $inputs = Input::all();
+            $users = User::where($inputs)->get();
+            return $this->respond($users);
+        }
           if (!empty($users)) {
               return $this->respond($users);
           }
           throw new NotFoundHttpException('The resource does not exist.');
-        }
-        return $this->respondPaginated($query);
     }
 
 

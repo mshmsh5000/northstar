@@ -171,7 +171,7 @@ class UserTableSeeder extends Seeder
 
         if (App::environment('local')) {
             $faker = Faker\Factory::create();
-            foreach (range(1, 50) as $index) {
+            foreach (range(1, 1000) as $index) {
                 User::create([
                     'first_name' => $faker->firstName,
                     'last_name' => $faker->lastName,
