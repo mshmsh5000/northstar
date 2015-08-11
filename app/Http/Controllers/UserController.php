@@ -20,11 +20,11 @@ class UserController extends Controller
      */
     public function index()
     {
-        if(empty(Input::all())){
+        $inputs = Input::all();
+        if(empty($inputs)){
             $query = User::query();
             return $this->respondPaginated($query);
         }else{
-            $inputs = Input::all();
             $users = User::where($inputs)->paginate(20);
             if (!empty($users)) {
                 return response()->json($users);
