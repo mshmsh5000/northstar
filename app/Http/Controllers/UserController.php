@@ -14,6 +14,7 @@ class UserController extends Controller
     /**
      * Display a listing of the resource.
      * GET /users
+     * Get /users?attr1=value1&attr2=value2&...
      *
      * @return Response
      */
