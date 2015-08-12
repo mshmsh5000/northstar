@@ -6,7 +6,7 @@ use Northstar\Models\User;
 use Input;
 use Response;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
-
+// use Illuminate\Database\Eloquent;
 
 class UserController extends Controller
 {
@@ -16,19 +16,20 @@ class UserController extends Controller
      * GET /users
      * Get /users?attr1=value1&attr2=value2&...
      *
+     * @TODO ?page= in next_page_url and last_page_url has to be changed to
+     *       &page= in the end.
      * @return Response
      */
     public function index()
     {
-        $inputs = Input::all();
-        $users = User::where($inputs)->paginate(20);
-        $response = response()->json($users);
-        if (!empty($response->getData()->data)) {
-            return $response;
-        }
-        throw new NotFoundHttpException('The resource does not exist.');
-    }
-
+         $inputs = Input::except('page');
+         $users = User::where($inputs);
+         $response = $this->respondPaginated($users);
+         if (!empty($response->getData()->data)) {
+           return $response;
+         }
+         throw new NotFoundHttpException('The resource does not exist.');
+  }
 
     /**
      * Store a newly created resource in storage.
