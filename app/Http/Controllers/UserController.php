@@ -7,6 +7,7 @@ use Input;
 use Response;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
+
 class UserController extends Controller
 {
 
