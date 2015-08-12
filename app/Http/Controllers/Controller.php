@@ -39,10 +39,11 @@ abstract class Controller extends BaseController
      * @param $query - Eloquent query
      * @return \Symfony\Component\HttpFoundation\Response
      */
-    protected function respondPaginated($query) {
+    protected function respondPaginated($query, $inputs) {
         if (is_a($query, 'Illuminate\Database\Eloquent\Builder')) {
             $limit = Input::get('limit') ?: 20;
             $response = $query->paginate((int)$limit);
+            $response->appends($inputs);
             return response()->json($response);
         }
     }
