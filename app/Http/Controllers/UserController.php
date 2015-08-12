@@ -20,14 +20,14 @@ class UserController extends Controller
      */
     public function index()
     {
-         $inputs = Input::except('page');
-         $users = User::where($inputs);
-         $response = $this->respondPaginated($users, $inputs);
-         if (!empty($response->getData()->data)) {
-           return $response;
-         }
-         throw new NotFoundHttpException('The resource does not exist.');
-  }
+        $inputs = Input::except('page');
+        $users = User::where($inputs);
+        $response = $this->respondPaginated($users, $inputs);
+        if (!empty($response->getData()->data)) {
+            return $response;
+        }
+        throw new NotFoundHttpException('The resource does not exist.');
+    }
 
     /**
      * Store a newly created resource in storage.
