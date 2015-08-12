@@ -6,7 +6,6 @@ use Northstar\Models\User;
 use Input;
 use Response;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
-// use Illuminate\Database\Eloquent;
 
 class UserController extends Controller
 {
