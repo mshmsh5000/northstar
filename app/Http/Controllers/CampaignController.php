@@ -1,6 +1,7 @@
 <?php namespace Northstar\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Input;
 use Northstar\Events\UserSignedUp;
 use Northstar\Events\UserReportedBack;
 use Northstar\Models\Campaign;
@@ -191,7 +192,7 @@ class CampaignController extends Controller
         // Fire reportback event.
         event(new UserReportedBack($user, $campaign));
 
-        return $this->respond(['reportback_id' => $reportback_id, 'created_at' => $campaign->updated_at], $statusCode);
+        return $this->respond($campaign, $statusCode);
     }
 
 }
