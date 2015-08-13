@@ -6,6 +6,7 @@ use Northstar\Models\User;
 use Input;
 use Response;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
+use Symfony\Component\HttpKernel\Exception\UnauthorizedHttpException;
 
 
 class UserController extends Controller
@@ -32,6 +33,7 @@ class UserController extends Controller
      *
      * @param Request $request
      * @return Response
+     * @throws UnauthorizedHttpException
      */
     public function store(Request $request)
     {
@@ -39,24 +41,23 @@ class UserController extends Controller
         $input = $request->all();
 
         $user = false;
+        $login_type = 'username';
 
         // Does this user exist already?
         if (Input::has('email')) {
-            $password_check = password_verify($input['password'], User::where('email', '=', $check['email'])->first()->password);
-
-            if ($password_check) {
-                $user = User::where('email', '=', $check['email'])->first();
-            }
+            $user = User::where('email', '=', $check['email'])->first();
+            $login_type = 'email';
         } elseif (Input::has('mobile')) {
-            $password_check = password_verify($input['password'], User::where('mobile', '=', $check['mobile'])->first()->password);
-
-            if ($password_check) {
-                $user = User::where('mobile', '=', $check['mobile'])->first();
-            }
+            $user = User::where('mobile', '=', $check['mobile'])->first();
+            $login_type = 'mobile number';
         }
 
-        // If there is no user found, create a new one.
-        if (!$user) {
+        if ($user) {
+            // If password does not match, deny access.
+            if (!password_verify($input['password'], $user->password)) {
+                throw new UnauthorizedHttpException(null, 'Invalid ' . $login_type . ' or password.');
+            }
+        } else {
             $user = new User;
 
             // This validation might not be needed, the only validation happening right now
@@ -67,6 +68,7 @@ class UserController extends Controller
                 'mobile' => 'unique:users|required_without:email'
             ]);
         }
+
         // Update or create the user from all the input.
         try {
             $user->fill($input);

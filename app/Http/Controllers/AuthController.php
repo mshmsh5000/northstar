@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use Hash;
 use Symfony\Component\HttpKernel\Exception\HttpException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
+use Symfony\Component\HttpKernel\Exception\UnauthorizedHttpException;
 
 class AuthController extends Controller
 {
@@ -15,7 +16,7 @@ class AuthController extends Controller
      *
      * @param Request $request
      * @return Response
-     * @throws HttpException
+     * @throws UnauthorizedHttpException
      */
     public function login(Request $request)
     {
@@ -26,16 +27,17 @@ class AuthController extends Controller
             'password' => 'required'
         ]);
 
+        $login_type = 'username';
         if ($request->has('email')) {
             $email = strtolower($request->email);
             $user = User::where('email', '=', $email)->first();
+            $login_type = 'email';
         } elseif ($request->has('mobile')) {
             $user = User::where('mobile', '=', $input['mobile'])->first();
+            $login_type = 'mobile';
         }
 
-        if (!($user instanceof User)) {
-            throw new HttpException(400, 'Invalid username or password.');
-        } elseif (Hash::check($input['password'], $user->password)) {
+        if (($user instanceof User) && Hash::check($input['password'], $user->password)) {
             $token = $user->login();
             $token->user = $user->toArray();
 
@@ -44,9 +46,8 @@ class AuthController extends Controller
             $data = $user;
             return $this->respond($user);
         } else {
-            throw new HttpException(400, 'Invalid username or password.');
+            throw new UnauthorizedHttpException(null, 'Invalid ' . $login_type . ' or password.');
         }
-
     }
 
     /**
