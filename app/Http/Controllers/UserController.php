@@ -14,15 +14,17 @@ class UserController extends Controller
     /**
      * Display a listing of the resource.
      * GET /users
+     * Get /users?attr1=value1&attr2=value2&...
      *
      * @return Response
      */
     public function index()
     {
-        $query = User::query();
-        return $this->respondPaginated($query);
+        $inputs = Input::except('page');
+        $users = User::where($inputs);
+        $response = $this->respondPaginated($users, $inputs);
+        return $response;
     }
-
 
     /**
      * Store a newly created resource in storage.
