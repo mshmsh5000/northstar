@@ -5,6 +5,7 @@ use Northstar\Services\DrupalAPI;
 use Northstar\Models\User;
 use Input;
 use Response;
+use Symfony\Component\HttpKernel\Exception\HttpException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\HttpKernel\Exception\UnauthorizedHttpException;
 
@@ -41,23 +42,21 @@ class UserController extends Controller
         $input = $request->all();
 
         $user = false;
-        $login_type = 'username';
+        $found_user = false;
 
         // Does this user exist already?
         if (Input::has('email')) {
-            $user = User::where('email', '=', $check['email'])->first();
-            $login_type = 'email';
+            $found_user = User::where('email', '=', $check['email'])->first();
         } elseif (Input::has('mobile')) {
-            $user = User::where('mobile', '=', $check['mobile'])->first();
-            $login_type = 'mobile number';
+            $found_user = User::where('mobile', '=', $check['mobile'])->first();
         }
 
-        if ($user) {
-            // If password does not match, deny access.
-            if (!password_verify($input['password'], $user->password)) {
-                throw new UnauthorizedHttpException(null, 'Invalid ' . $login_type . ' or password.');
-            }
-        } else {
+        if ($found_user && password_verify($input['password'], $found_user->password)) {
+            $user = $found_user;
+        }
+
+        // If there is no user found, create a new one.
+        if (!$user) {
             $user = new User;
 
             // This validation might not be needed, the only validation happening right now
@@ -68,7 +67,6 @@ class UserController extends Controller
                 'mobile' => 'unique:users|required_without:email'
             ]);
         }
-
         // Update or create the user from all the input.
         try {
             $user->fill($input);
@@ -185,6 +183,31 @@ class UserController extends Controller
             return $this->respond('No Content.');
         } else {
             throw new NotFoundHttpException('The resource does not exist.');
+        }
+    }
+
+    /**
+     * Create the response for when a request fails validation. Overrides the ValidatesRequests trait.
+     *
+     * @param Request $request
+     * @param array $errors
+     * @return \Illuminate\Http\Response
+     * @throws UnauthorizedHttpException
+     */
+    protected function buildFailedValidationResponse(Request $request, array $errors)
+    {
+        $error_message = '';
+        if (count($errors) > 0) {
+            foreach ($errors as $e) {
+                foreach ($e as $message) {
+                    $error_message .= $message . ' ';
+                }
+            }
+
+            throw new UnauthorizedHttpException(null, trim($error_message));
+        }
+        else {
+            return parent::buildFailedValidationResponse($request, $errors);
         }
     }
 

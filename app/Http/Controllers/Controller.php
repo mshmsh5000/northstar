@@ -4,12 +4,17 @@ use Illuminate\Foundation\Bus\DispatchesCommands;
 use Illuminate\Routing\Controller as BaseController;
 use Illuminate\Foundation\Validation\ValidatesRequests;
 use Illuminate\Database\Eloquent;
+use Illuminate\Http\Request;
 use Input;
 
 abstract class Controller extends BaseController
 {
 
-    use DispatchesCommands, ValidatesRequests;
+    use DispatchesCommands;
+
+    use ValidatesRequests {
+        buildFailedValidationResponse as traitBuildFailedValidationResponse;
+    }
 
     /**
      * Method to standardize responses sent from child controllers.
@@ -39,7 +44,8 @@ abstract class Controller extends BaseController
      * @param $query - Eloquent query
      * @return \Symfony\Component\HttpFoundation\Response
      */
-    protected function respondPaginated($query, $inputs) {
+    protected function respondPaginated($query, $inputs)
+    {
         if (is_a($query, 'Illuminate\Database\Eloquent\Builder')) {
             $limit = Input::get('limit') ?: 20;
             $response = $query->paginate((int)$limit);
@@ -48,4 +54,15 @@ abstract class Controller extends BaseController
         }
     }
 
+    /**
+     * Create the response for when a request fails validation. Overrides the ValidatesRequests trait.
+     *
+     * @param Request $request
+     * @param array $errors
+     * @return \Illuminate\Http\Response
+     */
+    protected function buildFailedValidationResponse(Request $request, array $errors)
+    {
+        return $this->traitBuildFailedValidationResponse($request, $errors);
+    }
 }
