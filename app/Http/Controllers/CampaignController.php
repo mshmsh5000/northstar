@@ -152,7 +152,8 @@ class CampaignController extends Controller
             'quantity' => ['required', 'integer'],
             'why_participated' => ['required'],
             'file' => ['required', 'string'], // Data URL!
-            'caption' => ['string']
+            'caption' => ['string'],
+            'source' => ['string'],
         ]);
 
         // Get the currently authenticated Northstar user.
@@ -180,6 +181,11 @@ class CampaignController extends Controller
         }
 
         $campaign->reportback_id = $reportback_id;
+
+        if (Input::has('source')) {
+            $campaign->reportback_source = Input::get('source');
+        }
+
         $campaign->save();
 
         // Fire reportback event.
