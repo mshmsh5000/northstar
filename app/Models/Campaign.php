@@ -43,6 +43,7 @@ class Campaign extends Eloquent
     protected $attributes = [
         'drupal_id' => null,
         'reportback_id' => null,
+        'reportback_source' => null,
         'signup_group' => null,
         'signup_id' => null,
         'signup_source' => null,

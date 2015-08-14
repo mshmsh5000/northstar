@@ -155,7 +155,6 @@ class CampaignTest extends TestCase
 
         // Response should return created at and rbid columns
         $this->assertArrayHasKey('reportback_id', $data['data']);
-        $this->assertArrayHasKey('created_at', $data['data']);
         $this->assertEquals(100, $data['data']['reportback_id']);
     }
 
@@ -189,7 +188,6 @@ class CampaignTest extends TestCase
 
         // Response should return created at and rbid columns
         $this->assertArrayHasKey('reportback_id', $data['data']);
-        $this->assertArrayHasKey('created_at', $data['data']);
         $this->assertEquals(100, $data['data']['reportback_id']);
     }
 

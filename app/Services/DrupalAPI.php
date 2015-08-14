@@ -210,7 +210,8 @@ class DrupalAPI
             'why_participated' => $contents['why_participated'],
             'file' => $contents['file'],
             'filename' => 'test123456.jpg',
-            'caption' => $contents['caption']
+            'caption' => $contents['caption'],
+            'source' => $contents['source'],
         ];
 
         $response = $this->client->post('campaigns/' . $campaign_id . '/reportback', [

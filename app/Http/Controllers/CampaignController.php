@@ -152,7 +152,8 @@ class CampaignController extends Controller
             'quantity' => ['required', 'integer'],
             'why_participated' => ['required'],
             'file' => ['required', 'string'], // Data URL!
-            'caption' => ['string']
+            'caption' => ['string'],
+            'source' => ['string'],
         ]);
 
         // Get the currently authenticated Northstar user.
@@ -180,12 +181,17 @@ class CampaignController extends Controller
         }
 
         $campaign->reportback_id = $reportback_id;
+
+        if ($request->has('source')) {
+            $campaign->reportback_source = $request->input('source');
+        }
+
         $campaign->save();
 
         // Fire reportback event.
         event(new UserReportedBack($user, $campaign));
 
-        return $this->respond(['reportback_id' => $reportback_id, 'created_at' => $campaign->updated_at], $statusCode);
+        return $this->respond($campaign, $statusCode);
     }
 
 }
