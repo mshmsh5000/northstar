@@ -1,7 +1,6 @@
 <?php namespace Northstar\Http\Controllers;
 
 use Illuminate\Http\Request;
-use Input;
 use Northstar\Events\UserSignedUp;
 use Northstar\Events\UserReportedBack;
 use Northstar\Models\Campaign;
@@ -183,8 +182,8 @@ class CampaignController extends Controller
 
         $campaign->reportback_id = $reportback_id;
 
-        if (Input::has('source')) {
-            $campaign->reportback_source = Input::get('source');
+        if ($request->has('source')) {
+            $campaign->reportback_source = $request->input('source');
         }
 
         $campaign->save();
