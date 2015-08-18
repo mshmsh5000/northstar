@@ -35,8 +35,8 @@ class AvatarController extends Controller
         $filename = $this->aws->storeImage('avatars', $id, $file);
 
         // Save filename to User model
-        $user = User::where($id)->first();
-        $user->avatar = $filename;
+        $user = User::where("_id", $id)->first();
+        $user->photo = $filename;
         $user->save();
 
         // Respond to user with success and photo URL
