@@ -47,7 +47,11 @@ class CampaignController extends Controller
         foreach ($campaigns as $campaign) {
             if ($campaign->reportback_id) {
                 $response = $this->drupal->reportbackContent($campaign->reportback_id);
-                $campaign['reportback_data'] = $response['data'];
+
+                // Possible for reportback data to be missing if it's been deleted on Drupal
+                if (isset($response['data'])) {
+                    $campaign['reportback_data'] = $response['data'];
+                }
             }
         }
 
@@ -75,7 +79,10 @@ class CampaignController extends Controller
 
         if ($campaign->reportback_id) {
             $response = $this->drupal->reportbackContent($campaign->reportback_id);
-            $campaign['reportback_data'] = $response['data'];
+
+            if (isset($response['data'])) {
+                $campaign['reportback_data'] = $response['data'];
+            }
         }
 
         return $this->respond($campaign);
