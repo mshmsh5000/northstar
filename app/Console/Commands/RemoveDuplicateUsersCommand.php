@@ -33,38 +33,59 @@ class RemoveDuplicateUsersCommand extends Command {
      */
     public function fire()
     {
-        // Find all duplicate users by email.
-        $duplicates = User::raw(function($collection) {
-            return $collection->aggregate(
-                [
-                    '$group' => [
-                        '_id' => ['email' => '$email'
-                        ],
-                        'uniqueIds' => [
-                            '$addToSet' => '$_id'
-                        ],
-                        'count' => [
-                            '$sum' => 1
-                        ]
-                    ]
-                ],
-                [
-                    '$match' => [
-                        'count' => [
-                            '$gt' => 1
-                        ]
-                    ]
-                ]
-            );
-        });
-        // For each duplicate user, delete all records except first created record.
-        foreach ($duplicates['result'] as $user) {
-                if (count($user['uniqueIds']) > 1) {
-                    $duplicate_id = $user['uniqueIds'][0]->{'$id'};
-                    User::destroy($duplicate_id);
-                }
-        }
 
+        // Get all users and sort alphabetically.
+        // if (null !== Config::get($last_checked)) {
+            // $users_alphabetical_order = User::where('email', 'ASC') > Config::get($last_checked);
+        // } else {
+            $users_alphabetical_order = User::orderBy('email', 'ASC')->get();
+            // dd($users_alphabetical_order[21]->email);
+        // }
+
+        // Go through alphabetized array and compare each record to look for duplicates.
+        $length = count($users_alphabetical_order);
+
+        for ($i = 0; $i < $length-1; $i++) {
+            echo $i . ' : ';
+            echo $users_alphabetical_order[$i]->email . $users_alphabetical_order[$i]->id . ' compared to ';
+            echo $users_alphabetical_order[$i + 1]->email . $users_alphabetical_order[$i + 1]->id . "\n";
+            if ($users_alphabetical_order[$i]->email == $users_alphabetical_order[$i + 1]->email) {
+                // echo "samsiessss" . "\n";
+                $this->combine($users_alphabetical_order[$i], $users_alphabetical_order[$i + 1]);
+                // dd($users_alphabetical_order[$i]->email);
+                echo("Processed email: " . $users_alphabetical_order[$i]->email) . "\n";
+                // Config::set($last_checked, $users_alphabetical_order[$i]);
+                // $i = prev($users_alphabetical_order[$i]);
+                // $i = $users_alphabetical_order->rewind();
+                // $i = reset($users_alphabetical_order);
+
+            }
+            // echo($users_alphabetical_order[$i]->email) . "\n";
+
+        }
         $this->info('Deduplication complete.');
+        // $this->info(User::orderBy('email', 'ASC')->pluck('email')->toArray());
+    }
+
+    /**
+     * Combine fields with information from first created user and delete duplicate records.
+     */
+    public function combine($first_user, $second_user)
+    {
+        // Always make sure $first_user is the "original" user that we're going merge.
+        // if ($first_user->created_at > $second_user->created_at) {
+        //     $tmp = $second_user;
+        //     $second_user = $first_user;
+        //     $first_user = $tmp;
+        // }
+
+        // // Merge their data and save to the first user
+        // $updated_user = array_merge(array_filter($second_user->toArray()), array_filter($first_user->toArray()));
+        // $first_user->fill($updated_user);
+        // // dd($first_user);
+        // $first_user->save();
+
+        $second_user->delete();
+        // echo "user deleted: " . $second_user . $second_user->email . "\n";
     }
 }
