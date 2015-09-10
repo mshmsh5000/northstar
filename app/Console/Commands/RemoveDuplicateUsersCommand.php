@@ -89,7 +89,7 @@ class RemoveDuplicateUsersCommand extends Command {
         if (isset($second_user->email)) {
             echo "user deleted: " . $second_user->email . $second_user->_id . "\n";
         } else {
-            echo "user delete: " . $second_user->mobile . $second_user->id . "\n";
+            echo "user deleted: " . $second_user->mobile . $second_user->id . "\n";
         }
     }
 }
