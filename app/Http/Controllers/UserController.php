@@ -120,6 +120,10 @@ class UserController extends Controller
      */
     public function show($term, $id)
     {
+        if ($term === 'drupal_id') {
+            $id = (int) $id;
+        }
+
         // Find the user.
         $user = User::where($term, $id)->get();
         if (!$user->isEmpty()) {
