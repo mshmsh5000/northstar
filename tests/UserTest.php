@@ -112,8 +112,9 @@ class UserTest extends TestCase
         // Response should be valid JSON
         $this->assertJson($content);
 
-        // Response should return updated at and id columns
+        // Response should return updated_at and unchanged user values should remain unchanged
         $this->assertArrayHasKey('updated_at', $data['data']);
+        $this->assertEquals('5555550101', $data['data']['mobile']);
 
         // Verify user data got updated
         $getResponse = $this->call('GET', 'v1/users/_id/5480c950bffebc651c8b456f', [], [], [], $this->server);

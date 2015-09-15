@@ -161,9 +161,7 @@ class UserController extends Controller
 
             $user->save();
 
-            $response = array('updated_at' => $user->updated_at);
-
-            return $this->respond($response, 202);
+            return $this->respond($user, 202);
         }
 
         throw new NotFoundHttpException('The resource does not exist.');
