@@ -105,11 +105,16 @@ class RemoveDuplicateUsersCommand extends Command {
     // For each duplicate user, delete all records except first created record.
         public function deduplicate($duplicates) {
             foreach ($duplicates['result'] as $user) {
-                    if (count($user['uniqueIds']) > 1) {
-                        $duplicate_id = $user['uniqueIds'][0]->{'$id'};
-                        User::destroy($duplicate_id);
-                        dd($user['uniqueIds']);
+                if (count($user['uniqueIds']) > 1) {
+                    $duplicate_id = $user['uniqueIds'][0]->{'$id'};
+                    User::destroy($duplicate_id);
+
+                    if (isset($user['_id']['email'])) {
+                        echo "user deleted: " . $user['_id']['email'] . $duplicate_id . "\n";
+                    } else {
+                        echo "user deleted: " . $user['_id']['mobile'] . $duplicate_id . "\n";
                     }
+                }
             }
         }
 }
