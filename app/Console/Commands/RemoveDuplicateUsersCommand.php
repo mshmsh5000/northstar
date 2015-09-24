@@ -33,7 +33,7 @@ class RemoveDuplicateUsersCommand extends Command {
     public function fire()
     {
         // Find all duplicate users by email.
-        $duplicates = User::raw(function($collection) {
+        $email_duplicates = User::raw(function($collection) {
             return $collection->aggregate(
                 [
                     [
@@ -61,15 +61,57 @@ class RemoveDuplicateUsersCommand extends Command {
                 ]
             );
         });
-        // For each duplicate user, delete all records except first created record.
-        foreach ($duplicates['result'] as $user) {
-                if (count($user['uniqueIds']) > 1) {
-                    $duplicate_id = $user['uniqueIds'][0]->{'$id'};
-                    User::destroy($duplicate_id);
-                }
-        }
+
+        // Delete email duplicates.
+        $this->deduplicate($email_duplicates);
+
+        // Find all duplicate users by mobile.
+        $mobile_duplicates = User::raw(function($collection) {
+            return $collection->aggregate(
+                [
+                    [
+                        '$group' => [
+                            '_id' => ['mobile' => '$mobile'
+                            ],
+                            'uniqueIds' => [
+                                '$addToSet' => '$_id'
+                            ],
+                            'count' => [
+                                '$sum' => 1
+                            ]
+                        ]
+                    ],
+                    [
+                        '$match' => [
+                            'count' => [
+                                '$gt' => 1
+                            ]
+                        ]
+                    ]
+                ],
+                [
+                    'allowDiskUse' => true
+                ]
+            );
+        });
+
+        // Delete mobile duplicates.
+
+        $this->deduplicate($mobile_duplicates);
+
         $this->info('Deduplication complete.');
     }
+
+    // For each duplicate user, delete all records except first created record.
+        public function deduplicate($duplicates) {
+            foreach ($duplicates['result'] as $user) {
+                    if (count($user['uniqueIds']) > 1) {
+                        $duplicate_id = $user['uniqueIds'][0]->{'$id'};
+                        User::destroy($duplicate_id);
+                        dd($user['uniqueIds']);
+                    }
+            }
+        }
 }
     /**
      * Combine fields with information from first created user and delete duplicate records.
@@ -94,4 +136,4 @@ class RemoveDuplicateUsersCommand extends Command {
     //         echo "user deleted: " . $second_user->mobile . $second_user->id . "\n";
     //     }
     // }
-}
+// }

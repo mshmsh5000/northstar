@@ -13,7 +13,8 @@ class Kernel extends ConsoleKernel
      * @var array
      */
     protected $commands = [
-        // Add commands here.
+        'Northstar\Console\Commands\RemoveDuplicateUsersCommand'
+
     ];
 
     /**
