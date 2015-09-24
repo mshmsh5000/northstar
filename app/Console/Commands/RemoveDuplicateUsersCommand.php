@@ -110,10 +110,10 @@ class RemoveDuplicateUsersCommand extends Command {
                     for ($i = 0; $i < $length-1; $i++) {
                         if (count($user['uniqueIds']) > 1) {
                             $duplicate_id = $user['uniqueIds'][$i]->{'$id'};
-                            $first_user = User::where('_id', '=', $duplicate_id)->first();
-                            dd($first_user['dates']->created_at);
-                            $second_user = User::where('_id', '=', $user['uniqueIds'][$i+1]->{'$id'})->first();
-                            $updated_user = array_merge(array_filter($first_user->toArray()), array_filter($second_user->toArray()));
+                            $second_user = User::where('_id', '=', $duplicate_id)->first();
+                            $first_user = User::where('_id', '=', $user['uniqueIds'][$i+1]->{'$id'})->first();
+                            dd($second_user->created_at);
+                            $updated_user = array_merge(array_filter($second_user->toArray()), array_filter($first_user->toArray()));
                             // $user = User::where('email', '=', $email)->first();
                             //     $updated_user = array_merge(array_filter($second_user->toArray()), array_filter($first_user->toArray()));
 
