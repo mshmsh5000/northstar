@@ -90,15 +90,6 @@ class User extends Model implements AuthenticatableContract, CanResetPasswordCon
     }
 
     /**
-     * Mobile number mutator that converts number value to only numbers
-     *
-     */
-    public function setMobileAttribute($value)
-    {
-        $this->attributes['mobile'] = preg_replace('/\D/', '', $value);
-    }
-
-    /**
      * Mutator saves Parse installation ids as an array
      */
     public function setParseInstallationIdsAttribute($value)
