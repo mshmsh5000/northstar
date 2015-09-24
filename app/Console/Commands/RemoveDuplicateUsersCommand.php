@@ -63,7 +63,7 @@ class RemoveDuplicateUsersCommand extends Command {
         });
 
         // Delete email duplicates.
-        $this->deduplicate($email_duplicates);
+           $this->deduplicate($email_duplicates);
 
         // Find all duplicate users by mobile.
         $mobile_duplicates = User::raw(function($collection) {
@@ -96,25 +96,41 @@ class RemoveDuplicateUsersCommand extends Command {
         });
 
         // Delete mobile duplicates.
-
-        $this->deduplicate($mobile_duplicates);
+            $this->deduplicate($mobile_duplicates);
 
         $this->info('Deduplication complete.');
     }
 
-    // For each duplicate user, delete all records except first created record.
+    // Combine all user info. into one record and delete all duplicates.
         public function deduplicate($duplicates) {
             foreach ($duplicates['result'] as $user) {
-                if (count($user['uniqueIds']) > 1) {
-                    $duplicate_id = $user['uniqueIds'][0]->{'$id'};
-                    User::destroy($duplicate_id);
+                $length = $user['count'];
 
-                    if (isset($user['_id']['email'])) {
-                        echo "user deleted: " . $user['_id']['email'] . $duplicate_id . "\n";
-                    } else {
-                        echo "user deleted: " . $user['_id']['mobile'] . $duplicate_id . "\n";
+                if (isset($user['_id']['email'])) {
+                    for ($i = 0; $i < $length-1; $i++) {
+                        if (count($user['uniqueIds']) > 1) {
+                            $duplicate_id = $user['uniqueIds'][$i]->{'$id'};
+                            $first_user = User::where('_id', '=', $duplicate_id)->first();
+                            dd($first_user['dates']->created_at);
+                            $second_user = User::where('_id', '=', $user['uniqueIds'][$i+1]->{'$id'})->first();
+                            $updated_user = array_merge(array_filter($first_user->toArray()), array_filter($second_user->toArray()));
+                            // $user = User::where('email', '=', $email)->first();
+                            //     $updated_user = array_merge(array_filter($second_user->toArray()), array_filter($first_user->toArray()));
+
+                            User::destroy($duplicate_id);
+                            echo "user deleted: " . $user['_id']['email'] . " " . $duplicate_id . "\n";
+                        }
+                    }
+                } elseif (isset($user['_id']['mobile'])) {
+                    for ($i = 0; $i < $length-1; $i++) {
+                        if (count($user['uniqueIds']) > 1) {
+                            $duplicate_id = $user['uniqueIds'][$i]->{'$id'};
+                            User::destroy($duplicate_id);
+                            echo "user deleted: " . $user['_id']['mobile'] . " " . $duplicate_id . "\n";
+                        }
                     }
                 }
+
             }
         }
 }
