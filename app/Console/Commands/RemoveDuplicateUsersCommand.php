@@ -112,10 +112,9 @@ class RemoveDuplicateUsersCommand extends Command {
                             $duplicate_id = $user['uniqueIds'][$i]->{'$id'};
                             $second_user = User::where('_id', '=', $duplicate_id)->first();
                             $first_user = User::where('_id', '=', $user['uniqueIds'][$i+1]->{'$id'})->first();
-                            dd($second_user->created_at);
+
                             $updated_user = array_merge(array_filter($second_user->toArray()), array_filter($first_user->toArray()));
-                            // $user = User::where('email', '=', $email)->first();
-                            //     $updated_user = array_merge(array_filter($second_user->toArray()), array_filter($first_user->toArray()));
+                            $first_user->fill($updated_user)->save();
 
                             User::destroy($duplicate_id);
                             echo "user deleted: " . $user['_id']['email'] . " " . $duplicate_id . "\n";
