@@ -3,6 +3,7 @@
 use GuzzleHttp\Client;
 use Config;
 use Cache;
+use Symfony\Component\HttpKernel\Exception\UnprocessableEntityHttpException;
 
 class DrupalAPI
 {
@@ -176,15 +177,21 @@ class DrupalAPI
             ]
         ]);
 
-        $body = $response->json();
-        $signup_id = $body[0];
+        if ($response->getStatusCode() == 200) {
+            $body = $response->json();
+            $signup_id = $body[0];
 
-        if (!$signup_id) {
-            // @TODO: Drupal API returns false if signup already exists. What is a graceful way of handling this?
+            if ($signup_id) {
+                return $signup_id;
+            } else {
+                // Response code can be a 200 OK, but not include an id in the
+                // return. This indicates that a signup already exists.
+                // @TODO Find a way to actually get this signup id
+                throw new UnprocessableEntityHttpException('Signup already exists, but unable to get the signup id.');
+            }
+        } else {
             throw new \Exception('Could not create signup.');
         }
-
-        return $signup_id;
     }
 
 
