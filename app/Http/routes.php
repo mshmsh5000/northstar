@@ -39,6 +39,7 @@ Route::group(['prefix' => 'v1', 'middleware' => 'auth.api'], function () {
         Route::resource('users', 'UserController');
         Route::get('users/{term}/{id}', 'UserController@show');
         Route::post('users/{id}/avatar', 'AvatarController@store');
+        Route::put('users/{term}/{id}', 'UserController@update');
     });
 
     // User campaign activity.
