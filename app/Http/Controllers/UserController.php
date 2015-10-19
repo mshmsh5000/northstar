@@ -132,17 +132,21 @@ class UserController extends Controller
 
     /**
      * Update the specified resource in storage.
-     * PUT /users
+     * PUT /users/term/$id
      *
-     * @param $id - User ID
+     * @param $term - string
+     *   term to search by (eg. durpal_id, _id)
+     * @param $id - string
+     *   the actual value to search for
+     *
      * @return Response
      * @throws NotFoundHttpException
      */
-    public function update($id)
+    public function update($term, $id)
     {
         $input = Input::all();
 
-        $user = User::where('_id', $id)->first();
+        $user = User::where($term, $id)->first();
 
         if ($user instanceof User) {
             foreach ($input as $key => $value) {
