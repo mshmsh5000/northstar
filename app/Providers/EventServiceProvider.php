@@ -13,13 +13,13 @@ class EventServiceProvider extends ServiceProvider
      */
     protected $listen = [
         'Northstar\Events\UserSignedUp' => [
-            'Northstar\Handlers\Events\SendSignupPushNotification',
+            'Northstar\Listeners\SendSignupPushNotification',
         ],
         'Northstar\Events\UserGotKudo' => [
-            'Northstar\Handlers\Events\SendKudoPushNotification',
+            'Northstar\Listeners\SendKudoPushNotification',
         ],
         'Northstar\Events\UserReportedBack' => [
-            'Northstar\Handlers\Events\SendReportbackPushNotification',
+            'Northstar\Listeners\SendReportbackPushNotification',
         ],
     ];
     /**

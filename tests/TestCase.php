@@ -3,6 +3,8 @@
 class TestCase extends Illuminate\Foundation\Testing\TestCase
 {
 
+    protected $baseUrl = 'http://northstar.dev';
+
     /**
      * Creates the application.
      *

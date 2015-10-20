@@ -1,4 +1,6 @@
-<?php namespace Northstar\Handlers\Events;
+<?php
+
+namespace Northstar\Listeners;
 
 use Northstar\Events\UserSignedUp;
 use Northstar\Models\User;
@@ -14,9 +16,8 @@ class SendSignupPushNotification {
     protected $parse;
 
     /**
-     * Create the event handler.
-     *
-     * @return void
+     * Create the event listener.
+     * @param Parse $parse - Injected Parse API wrapper
      */
     public function __construct(Parse $parse)
     {

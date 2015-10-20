@@ -1,4 +1,6 @@
-<?php namespace Northstar\Handlers\Events;
+<?php
+
+namespace Northstar\Listeners;
 
 use Northstar\Events\UserGotKudo;
 use Northstar\Models\User;
@@ -21,10 +23,10 @@ class SendKudoPushNotification {
     protected $drupal;
 
     /**
-    * Create the event handler.
-    *
-    * @return void
-    */
+     * Create the event listener.
+     * @param Parse $parse - Injected Parse API wrapper
+     * @param DrupalAPI $drupal - Injected Drupal API wrapper
+     */
     public function __construct(Parse $parse, DrupalAPI $drupal)
     {
         $this->parse = $parse;
@@ -55,7 +57,7 @@ class SendKudoPushNotification {
      */
     public function createPushData(UserGotKudo $event)
     {
-        // Get reportback item content that recieved the kudo.
+        // Get reportback item content that received the kudo.
         $reportback_response = $this->drupal->reportbackItemContent($event->reportback_item_id);
 
         // Get the user who owns that reportback item.
