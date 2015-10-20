@@ -36,7 +36,7 @@ Route::group(['prefix' => 'v1', 'middleware' => 'auth.api'], function () {
 
     // Users.
     Route::group(['middleware' => 'user'], function () {
-        Route::resource('users', 'UserController');
+        Route::resource('users', 'UserController', ['except' => ['show', 'update']]);
         Route::get('users/{term}/{id}', 'UserController@show');
         Route::put('users/{term}/{id}', 'UserController@update');
         Route::post('users/{id}/avatar', 'AvatarController@store');
