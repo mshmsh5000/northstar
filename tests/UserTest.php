@@ -90,7 +90,7 @@ class UserTest extends TestCase
 
     /**
      * Test for updating an existing user
-     * PUT /users
+     * PUT /users/_id/:id
      *
      * @return void
      */
@@ -102,7 +102,7 @@ class UserTest extends TestCase
             'parse_installation_ids' => 'parse-abc123',
         );
 
-        $response = $this->call('PUT', 'v1/users/5480c950bffebc651c8b456f', [], [], [], $this->server, json_encode($user));
+        $response = $this->call('PUT', 'v1/users/_id/5480c950bffebc651c8b456f', [], [], [], $this->server, json_encode($user));
         $content = $response->getContent();
         $data = json_decode($content, true);
 
