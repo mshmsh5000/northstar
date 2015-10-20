@@ -109,6 +109,7 @@ class UserController extends Controller
 
     /**
      * Display the specified resource.
+     * GET /users/:term/:id
      *
      * @param $term - string
      *   term to search by (eg. mobile, drupal_id, id, email, etc)
@@ -132,10 +133,10 @@ class UserController extends Controller
 
     /**
      * Update the specified resource in storage.
-     * PUT /users/term/$id
+     * PUT /users/:term/:id
      *
      * @param $term - string
-     *   term to search by (eg. durpal_id, _id)
+     *   term to search by (eg. drupal_id, _id)
      * @param $id - string
      *   the actual value to search for
      *
