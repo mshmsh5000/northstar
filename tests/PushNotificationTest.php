@@ -3,9 +3,9 @@
 use Northstar\Events\UserReportedBack;
 use Northstar\Events\UserSignedUp;
 use Northstar\Events\UserGotKudo;
-use Northstar\Handlers\Events\SendReportbackPushNotification;
-use Northstar\Handlers\Events\SendSignupPushNotification;
-use Northstar\Handlers\Events\SendKudoPushNotification;
+use Northstar\Listeners\SendReportbackPushNotification;
+use Northstar\Listeners\SendSignupPushNotification;
+use Northstar\Listeners\SendKudoPushNotification;
 use Northstar\Models\User;
 use Northstar\Models\Campaign;
 

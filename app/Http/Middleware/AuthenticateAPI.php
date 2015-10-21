@@ -2,7 +2,6 @@
 
 use Northstar\Models\ApiKey;
 use Closure;
-use Response;
 
 class AuthenticateAPI
 {
@@ -20,7 +19,7 @@ class AuthenticateAPI
         $api_key = $request->header('X-DS-REST-API-Key');
 
         if (!ApiKey::where("app_id", '=', $app_id)->where("api_key", '=', $api_key)->exists()) {
-            return Response::json("Unauthorized access.", 404);
+            return response()->json("Unauthorized access.", 404);
         }
 
         return $next($request);

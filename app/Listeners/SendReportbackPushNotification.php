@@ -1,4 +1,6 @@
-<?php namespace Northstar\Handlers\Events;
+<?php
+
+namespace Northstar\Listeners;
 
 use Northstar\Events\UserReportedBack;
 use Northstar\Models\User;
@@ -21,9 +23,9 @@ class SendReportbackPushNotification {
     protected $drupal;
 
     /**
-     * Create the event handler.
-     *
-     * @return void
+     * Create the event listener.
+     * @param Parse $parse - Injected Parse API wrapper
+     * @param DrupalAPI $drupal - Injected Drupal API wrapper
      */
     public function __construct(Parse $parse, DrupalAPI $drupal)
     {
