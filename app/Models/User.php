@@ -30,6 +30,18 @@ class User extends Model implements AuthenticatableContract, CanResetPasswordCon
     ];
 
     /**
+     * Attributes that can be queried as unique identifiers.
+     *
+     * This array is manually maintained. It does not necessarily mean that
+     * they are actual indexes on the database.
+     *
+     * @var array
+     */
+    public static $indexes = [
+        '_id', 'drupal_id',
+    ];
+
+    /**
      * The database collection used by the model.
      *
      * @var string

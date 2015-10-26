@@ -21,13 +21,14 @@ class UserController extends Controller
      */
     public function index()
     {
-        $inputs = Input::except(['page', '_id', 'drupal_id']);
+        $except_list = User::$indexes;
+        array_push($except_list, 'page');
+        $inputs = Input::except($except_list);
         $users = User::where($inputs);
 
         // Query for multiple ids
         $query_ids = [];
-        $id_keys = ['_id', 'drupal_id'];
-        foreach ($id_keys as $id_key) {
+        foreach (User::$indexes as $id_key) {
             if (Input::has($id_key)) {
                 $str_ids = Input::get($id_key);
                 $arr_ids = explode(',', $str_ids);
