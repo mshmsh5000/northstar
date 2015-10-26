@@ -44,18 +44,73 @@ class UserTest extends TestCase
     }
 
     /**
-     * Test for retrieving a nonexistant User
+     * Test retrieving multiple users.
      * GET /users
      *
      * @return void
      */
     public function testIndex()
     {
-        $response = $this->call('GET', 'v1/users');
-        $content = $response->getContent();
+        $response = $this->call('GET', 'v1/users', [], [], [], $this->server);
+        $this->assertEquals(200, $response->getStatusCode());
 
-        // The response should return 404
+        $data = json_decode($response->getContent());
+        $this->assertObjectHasAttribute('total', $data);
+        $this->assertObjectHasAttribute('per_page', $data);
+        $this->assertObjectHasAttribute('current_page', $data);
+        $this->assertObjectHasAttribute('last_page', $data);
+        $this->assertObjectHasAttribute('next_page_url', $data);
+        $this->assertObjectHasAttribute('prev_page_url', $data);
+        $this->assertObjectHasAttribute('from', $data);
+        $this->assertObjectHasAttribute('to', $data);
+        $this->assertObjectHasAttribute('data', $data);
+    }
+
+    /**
+     * Test for retrieving a nonexistent User
+     * GET /users/_id/FAKE
+     *
+     * @return void
+     */
+    public function testNonexistentUser()
+    {
+        $response = $this->call('GET', 'v1/users/_id/FAKE', [], [], [], $this->server);
         $this->assertEquals(404, $response->getStatusCode());
+    }
+
+    /**
+     * Tests retrieving multiple users by their id
+     * GET /users?_id=:id_1,...,:id_N
+     * GET /users?drupal_id=:id_1,...,:id_N
+     */
+    public function testGetMultipleUsersById()
+    {
+        // Retrieve multiple users by _id
+        $response1= $this->call(
+            'GET',
+            'v1/users?_id=5430e850dt8hbc541c37tt3d,5480c950bffebc651c8b456f,FAKE_ID',
+            [], [], [], $this->server
+        );
+        $data1 = json_decode($response1->getContent());
+        $this->assertCount(2, $data1->data);
+
+        // Retrieve multiple users by drupal_id
+        $response2 = $this->call(
+            'GET',
+            'v1/users?drupal_id=FAKE_ID,100001,100002,100003',
+            [], [], [], $this->server
+        );
+        $data2 = json_decode($response2->getContent());
+        $this->assertCount(3, $data2->data);
+
+        // Test compound queries
+        $response3 = $this->call(
+            'GET',
+            'v1/users?drupal_id=FAKE_ID,100001,100002,100003&mobile=5555550100',
+            [], [], [], $this->server
+        );
+        $data3 = json_decode($response3->getContent());
+        $this->assertCount(1, $data3->data);
     }
 
     /**
