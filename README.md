@@ -1,4 +1,4 @@
-# Northstar
+# Northstar [![wercker status](https://app.wercker.com/status/109bce734be9a06703562876265f5bd9/s "wercker status")](https://app.wercker.com/project/bykey/109bce734be9a06703562876265f5bd9)
 This is __Northstar__, the DoSomething.org user & activity API.
 
 ### Getting Started
