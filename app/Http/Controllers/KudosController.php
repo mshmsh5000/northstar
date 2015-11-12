@@ -38,3 +38,4 @@ class KudosController extends Controller
     }
 
 }
+

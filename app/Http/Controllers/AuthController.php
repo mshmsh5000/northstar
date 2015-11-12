@@ -14,9 +14,8 @@ use Northstar\Services\Registrar;
 class AuthController extends Controller
 {
 
-    public function __construct(DrupalAPI $drupal, Registrar $registrar)
+    public function __construct(Registrar $registrar)
     {
-        $this->drupal = $drupal;
         $this->registrar = $registrar;
     }
 
@@ -36,17 +35,7 @@ class AuthController extends Controller
             'password' => 'required'
         ]);
 
-        $login_type = 'username';
-        if ($request->has('email')) {
-            $email = strtolower($request->email);
-            $user = User::where('email', '=', $email)->first();
-            $login_type = 'email';
-        } elseif ($request->has('mobile')) {
-            $user = User::where('mobile', '=', $input['mobile'])->first();
-            $login_type = 'mobile';
-        }
-
-        $user = $this->registrar->login($user, $input, $login_type);
+        $user = $this->registrar->login($input);
         return $this->respond($user);
     }
 
