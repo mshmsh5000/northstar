@@ -3,13 +3,22 @@
 use Northstar\Models\User;
 use Northstar\Models\Token;
 use Illuminate\Http\Request;
+use Northstar\Services\DrupalAPI;
 use Hash;
 use Symfony\Component\HttpKernel\Exception\HttpException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\HttpKernel\Exception\UnauthorizedHttpException;
+use Northstar\Services\Registrar;
+
 
 class AuthController extends Controller
 {
+
+    public function __construct(DrupalAPI $drupal, Registrar $registrar)
+    {
+        $this->drupal = $drupal;
+        $this->registrar = $registrar;
+    }
 
     /**
      * Authenticate a registered user
@@ -37,17 +46,8 @@ class AuthController extends Controller
             $login_type = 'mobile';
         }
 
-        if (($user instanceof User) && Hash::check($input['password'], $user->password)) {
-            $token = $user->login();
-            $token->user = $user->toArray();
-
-            // Return the session token with the user.
-            $user->session_token = $token->key;
-            $data = $user;
-            return $this->respond($user);
-        } else {
-            throw new UnauthorizedHttpException(null, 'Invalid ' . $login_type . ' or password.');
-        }
+        $user = $this->registrar->login($user, $input, $login_type);
+        return $this->respond($user);
     }
 
     /**
