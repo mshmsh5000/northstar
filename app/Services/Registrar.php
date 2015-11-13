@@ -39,7 +39,7 @@ class Registrar
 
                 // if they're the same, make $input['password'] into a hash and save it to the user.
                 $user->password = $input['password'];
-                $user->drupal_password = null; // @TODO
+                $user->unset('drupal_password');
                 $user->save();
 
                 $token = $user->login();

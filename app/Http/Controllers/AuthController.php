@@ -3,7 +3,6 @@
 use Northstar\Models\User;
 use Northstar\Models\Token;
 use Illuminate\Http\Request;
-use Northstar\Services\DrupalAPI;
 use Hash;
 use Symfony\Component\HttpKernel\Exception\HttpException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
