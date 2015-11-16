@@ -12,14 +12,14 @@ class AvatarController extends Controller
         $this->aws = $aws;
     }
 
-   /**
-   * Store a new avatar for a user.
-   * POST /users/{id}/avatar
-   *
-   * @param Request $request
-   * @param $id - User ID
-   * @return Response
-   */
+    /**
+     * Store a new avatar for a user.
+     * POST /users/{id}/avatar
+     *
+     * @param Request $request
+     * @param $id - User ID
+     * @return \Illuminate\Http\Response
+     */
     public function store(Request $request, $id)
     {
         if ($request->file('photo')) {
