@@ -1,9 +1,7 @@
 <?php namespace Northstar\Services;
 
 use Northstar\Models\User;
-use Northstar\Models\Token;
 use Hash;
-use Northstar\Services\DrupalPasswordChecker;
 use Symfony\Component\HttpKernel\Exception\UnauthorizedHttpException;
 
 class Registrar
