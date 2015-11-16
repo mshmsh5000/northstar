@@ -1,7 +1,7 @@
 <?php namespace Northstar\Services;
 
-use Northstar\Models\User;
 use Hash;
+use Northstar\Models\User;
 use Symfony\Component\HttpKernel\Exception\UnauthorizedHttpException;
 
 class Registrar
