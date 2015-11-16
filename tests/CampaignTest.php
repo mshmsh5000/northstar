@@ -6,7 +6,7 @@ use Northstar\Models\Campaign;
 class CampaignTest extends TestCase
 {
 
-    protected $drupalMock;
+    protected $phoenixMock;
 
     protected $server;
     protected $signedUpServer;
@@ -50,8 +50,8 @@ class CampaignTest extends TestCase
             'HTTP_Session' => User::find('bf1039b0271bcc636aa5477a')->login()->key
         );
 
-        // Mock Drupal API class
-        $this->drupalMock = $this->mock('Northstar\Services\DrupalAPI');
+        // Mock Phoenix Drupal API class
+        $this->phoenixMock = $this->mock('Northstar\Services\Phoenix');
     }
 
 
@@ -87,7 +87,7 @@ class CampaignTest extends TestCase
         ];
 
         // Mock successful response from Drupal API
-        $this->drupalMock->shouldReceive('campaignSignup')->once()->andReturn(100);
+        $this->phoenixMock->shouldReceive('campaignSignup')->once()->andReturn(100);
 
         $response = $this->call('POST', 'v1/user/campaigns/123/signup', [], [], [], $this->server, json_encode($payload));
         $content = $response->getContent();
@@ -141,7 +141,7 @@ class CampaignTest extends TestCase
         ];
 
         // Mock successful response from Drupal API
-        $this->drupalMock->shouldReceive('campaignReportback')->once()->andReturn(100);
+        $this->phoenixMock->shouldReceive('campaignReportback')->once()->andReturn(100);
 
         $response = $this->call('POST', 'v1/user/campaigns/123/reportback', [], [], [], $this->signedUpServer, json_encode($payload));
         $content = $response->getContent();
@@ -174,7 +174,7 @@ class CampaignTest extends TestCase
         ];
 
         // Mock successful response from Drupal API
-        $this->drupalMock->shouldReceive('campaignReportback')->once()->andReturn(100);
+        $this->phoenixMock->shouldReceive('campaignReportback')->once()->andReturn(100);
 
         $response = $this->call('PUT', 'v1/user/campaigns/123/reportback', [], [], [], $this->reportedBackServer, json_encode($payload));
         $content = $response->getContent();

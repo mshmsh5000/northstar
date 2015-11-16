@@ -1,7 +1,7 @@
 <?php namespace Northstar\Http\Controllers;
 
 use Illuminate\Http\Request;
-use Northstar\Services\DrupalAPI;
+use Northstar\Services\Phoenix;
 use Northstar\Models\User;
 use Input;
 use Response;
@@ -11,6 +11,17 @@ use Symfony\Component\HttpKernel\Exception\UnauthorizedHttpException;
 
 class UserController extends Controller
 {
+
+    /**
+     * Phoenix Drupal API wrapper.
+     * @var Phoenix
+     */
+    protected $phoenix;
+
+    public function __construct(Phoenix $phoenix)
+    {
+        $this->phoenix = $phoenix;
+    }
 
     /**
      * Display a listing of the resource.
@@ -92,8 +103,7 @@ class UserController extends Controller
             // @TODO: we can't create a Drupal user without an email. Do we just create an @mobile one like we had done previously?
             if (Input::has('create_drupal_user') && Input::has('password') && !$user->drupal_id) {
                 try {
-                    $drupal = new DrupalAPI;
-                    $drupal_id = $drupal->register($user, Input::get('password'));
+                    $drupal_id = $this->phoenix->register($user, Input::get('password'));
                     $user->drupal_id = $drupal_id;
                 } catch (\Exception $e) {
                     // If user already exists, find the user to get the uid.

@@ -1,19 +1,18 @@
 <?php namespace Northstar\Services;
 
 use GuzzleHttp\Client;
-use Config;
 use Cache;
 use Symfony\Component\HttpKernel\Exception\UnprocessableEntityHttpException;
 
-class DrupalAPI
+class Phoenix
 {
 
     protected $client;
 
     public function __construct()
     {
-        $base_url = Config::get('services.drupal.url');
-        $version = Config::get('services.drupal.version');
+        $base_url = config('services.drupal.url');
+        $version = config('services.drupal.version');
 
         $this->client = new Client([
             'base_url' => [$base_url . '/api/{version}/', ['version' => $version]],
@@ -29,7 +28,7 @@ class DrupalAPI
     /**
      * Returns a token for making authenticated requests to the Drupal API.
      *
-     * @return Array - Cookie & token for authenticated requests
+     * @return array - Cookie & token for authenticated requests
      */
     private function authenticate()
     {
@@ -60,7 +59,7 @@ class DrupalAPI
     /**
      * Get the CSRF token for the authenticated API session.
      *
-     * @return String - token
+     * @return string - token
      */
     private function getAuthenticationToken()
     {
@@ -70,7 +69,7 @@ class DrupalAPI
     /**
      * Get the cookie for the authenticated API session.
      *
-     * @return Array - cookie key/value
+     * @return array - cookie key/value
      */
     private function getAuthenticationCookie()
     {
@@ -82,6 +81,7 @@ class DrupalAPI
      * @see https://github.com/DoSomething/dosomething/wiki/API#campaigns
      *
      * @param int $id - Optional campaign ID to get information on.
+     *
      * @return mixed
      */
     public function campaigns($id = NULL)
@@ -100,7 +100,7 @@ class DrupalAPI
      * Forward registration to Drupal.
      * @see: https://github.com/DoSomething/dosomething/wiki/API#create-a-user
      *
-     * @param \User $user - User to be registered on Drupal site
+     * @param \Northstar\Models\User $user - User to be registered on Drupal site
      * @param String $password - Password to register with
      *
      * @return int - Created Drupal user UID
@@ -127,6 +127,7 @@ class DrupalAPI
      * @see: https://github.com/DoSomething/dosomething/wiki/API#find-a-user
      *
      * @param String $email - Email of user to search for
+     *
      * @return String - Drupal User ID
      * @throws \Exception
      */
@@ -143,7 +144,7 @@ class DrupalAPI
         ]);
 
         $json = $response->json();
-        if (sizeof($json) > 0) {
+        if (count($json) > 0) {
             return $json[0]['uid'];
         }
         else {
@@ -201,10 +202,11 @@ class DrupalAPI
      *
      * @param String $user_id - UID of user on the Drupal site
      * @param String $campaign_id - NID of campaign on the Drupal site
-     * @param Array $contents - Contents of reportback
-     * @option String quantity - Quantity of reportback
-     * @option String why_participated - Why the user participated in this campaign
-     * @option String file - Reportback image as a Data URL
+     * @param array $contents - Contents of reportback
+     *   @option string $quantity - Quantity of reportback
+     *   @option string $why_participated - Why the user participated in this campaign
+     *   @option string $file - Reportback image as a Data URL
+     *
      * @return String - Reportback ID
      * @throws \Exception
      *
@@ -263,11 +265,9 @@ class DrupalAPI
     /**
      * Get a user's full reportback content if reportback exists.
      *
-     * @param String $term - email or mobile
-     * @param String $id - email or mobile
-     * @param String $campaign_id - NID of campaign on the Drupal site
-     * @return Array - Contents of reportback
+     * @param string $reportback_id - NID of campaign on the Drupal site
      *
+     * @return array - Contents of reportback
      */
     public function reportbackContent($reportback_id)
     {
@@ -279,10 +279,9 @@ class DrupalAPI
     /**
      * Get a specific reportback item.
      *
-     * @param String $reportback_item_id
+     * @param String $reportback_item_id - NID of the reportback item on the Drupal site
      *
-     * @return Array - Contents of the reportback item.
-     *
+     * @return array - Contents of the reportback item.
      */
     public function reportbackItemContent($reportback_item_id)
     {

@@ -1,7 +1,7 @@
 <?php namespace Northstar\Http\Controllers;
 
 use Illuminate\Http\Request;
-use Northstar\Services\DrupalAPI;
+use Northstar\Services\Phoenix;
 use Northstar\Models\User;
 use Northstar\Events\UserGotKudo;
 
@@ -9,9 +9,15 @@ use Northstar\Events\UserGotKudo;
 class KudosController extends Controller
 {
 
-    public function __construct(DrupalAPI $drupal)
+    /**
+     * Phoenix Drupal API wrapper.
+     * @var Phoenix
+     */
+    protected $phoenix;
+
+    public function __construct(Phoenix $phoenix)
     {
-        $this->drupal = $drupal;
+        $this->phoenix = $phoenix;
     }
 
    /**
@@ -29,7 +35,7 @@ class KudosController extends Controller
 
         $drupal_id = $user->drupal_id;
 
-        $response = $this->drupal->storeKudos($drupal_id, $request);
+        $response = $this->phoenix->storeKudos($drupal_id, $request);
 
         // Fire kudo event.
         event(new UserGotKudo($request->reportback_item_id));
