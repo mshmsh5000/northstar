@@ -3,8 +3,6 @@
 use Illuminate\Http\Request;
 use Northstar\Services\Phoenix;
 use Northstar\Models\User;
-use Input;
-use Response;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\HttpKernel\Exception\UnauthorizedHttpException;
 
@@ -28,20 +26,21 @@ class UserController extends Controller
      * GET /users
      * Get /users?attr1=value1&attr2=value2&...
      *
-     * @return Response
+     * @param Request $request
+     * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
         $except_list = User::$indexes;
         array_push($except_list, 'page');
-        $inputs = Input::except($except_list);
+        $inputs = $request->except($except_list);
         $users = User::where($inputs);
 
         // Query for multiple ids
         $query_ids = [];
         foreach (User::$indexes as $id_key) {
-            if (Input::has($id_key)) {
-                $str_ids = Input::get($id_key);
+            if ($request->has($id_key)) {
+                $str_ids = $request->get($id_key);
                 $arr_ids = explode(',', $str_ids);
                 $query_ids[$id_key] = $arr_ids;
             }
@@ -60,7 +59,7 @@ class UserController extends Controller
      * POST /users
      *
      * @param Request $request
-     * @return Response
+     * @return \Illuminate\Http\Response
      * @throws UnauthorizedHttpException
      */
     public function store(Request $request)
@@ -72,9 +71,9 @@ class UserController extends Controller
         $found_user = false;
 
         // Does this user exist already?
-        if (Input::has('email')) {
+        if ($request->has('email')) {
             $found_user = User::where('email', '=', $check['email'])->first();
-        } elseif (Input::has('mobile')) {
+        } elseif ($request->has('mobile')) {
             $found_user = User::where('mobile', '=', $check['mobile'])->first();
         }
 
@@ -101,9 +100,9 @@ class UserController extends Controller
             // Do we need to forward this user to drupal?
             // If query string exists, make a drupal user.
             // @TODO: we can't create a Drupal user without an email. Do we just create an @mobile one like we had done previously?
-            if (Input::has('create_drupal_user') && Input::has('password') && !$user->drupal_id) {
+            if ($request->has('create_drupal_user') && $request->has('password') && !$user->drupal_id) {
                 try {
-                    $drupal_id = $this->phoenix->register($user, Input::get('password'));
+                    $drupal_id = $this->phoenix->register($user, $request->get('password'));
                     $user->drupal_id = $drupal_id;
                 } catch (\Exception $e) {
                     // If user already exists, find the user to get the uid.
@@ -117,8 +116,8 @@ class UserController extends Controller
                     }
                 }
             }
-            if (Input::has('created_at')) {
-                $user->created_at = Input::get('created_at');
+            if ($request->has('created_at')) {
+                $user->created_at = $request->get('created_at');
             }
 
             $user->save();
@@ -142,7 +141,7 @@ class UserController extends Controller
      * @param $id - string
      *  the actual value to search for
      *
-     * @return Response
+     * @return \Illuminate\Http\Response
      * @throws NotFoundHttpException
      */
     public function show($term, $id)
@@ -165,13 +164,13 @@ class UserController extends Controller
      *   term to search by (eg. drupal_id, _id)
      * @param $id - string
      *   the actual value to search for
+     * @param Request $request
      *
-     * @return Response
-     * @throws NotFoundHttpException
+     * @return \Illuminate\Http\Response
      */
-    public function update($term, $id)
+    public function update($term, $id, Request $request)
     {
-        $input = Input::all();
+        $input = $request->all();
 
         $user = User::where($term, $id)->first();
 
@@ -199,7 +198,7 @@ class UserController extends Controller
      * DELETE /users/:id
      *
      * @param $id - User ID
-     * @return Response
+     * @return \Illuminate\Http\Response
      * @throws NotFoundHttpException
      */
     public function destroy($id)
