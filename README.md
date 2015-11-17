@@ -1,4 +1,4 @@
-# Northstar [![wercker status](https://app.wercker.com/status/109bce734be9a06703562876265f5bd9/s "wercker status")](https://app.wercker.com/project/bykey/109bce734be9a06703562876265f5bd9)
+# Northstar [![Wercker](https://img.shields.io/wercker/ci/548f17b907fa3ea41500a0ec.svg?style=flat-square)](https://app.wercker.com/#applications/548f17b907fa3ea41500a0ec) [![StyleCI](https://styleci.io/repos/26884886/shield)](https://styleci.io/repos/26884886)
 This is __Northstar__, the DoSomething.org user & activity API.
 
 ### Getting Started
