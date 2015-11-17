@@ -106,7 +106,7 @@ class RemoveDuplicateUsersCommand extends Command {
         foreach ($duplicates['result'] as $user) {
             $length = $user['count'];
 
-            if (isset($user['_id']['email'])) {
+            // if (isset($user['_id']['email'])) {
                 for ($i = 0; $i < $length-1; $i++) {
                     if (count($user['uniqueIds']) > 1) {
                         $duplicate_id = $user['uniqueIds'][$i]->{'$id'};
@@ -125,21 +125,21 @@ class RemoveDuplicateUsersCommand extends Command {
                         }
                     }
                 }
-            } else if (isset($user['_id']['mobile'])) {
-                for ($i = 0; $i < $length-1; $i++) {
-                    if (count($user['uniqueIds']) > 1) {
-                        $duplicate_id = $user['uniqueIds'][$i]->{'$id'};
-                        $second_user = User::where('_id', '=', $duplicate_id)->first();
-                        $first_user = User::where('_id', '=', $user['uniqueIds'][$i+1]->{'$id'})->first();
+            // } else if (isset($user['_id']['mobile'])) {
+                // for ($i = 0; $i < $length-1; $i++) {
+                //     if (count($user['uniqueIds']) > 1) {
+                //         $duplicate_id = $user['uniqueIds'][$i]->{'$id'};
+                //         $second_user = User::where('_id', '=', $duplicate_id)->first();
+                //         $first_user = User::where('_id', '=', $user['uniqueIds'][$i+1]->{'$id'})->first();
 
-                        $updated_user = array_merge(array_filter($second_user->toArray()), array_filter($first_user->toArray()));
-                        $first_user->fill($updated_user)->save();
+                //         $updated_user = array_merge(array_filter($second_user->toArray()), array_filter($first_user->toArray()));
+                //         $first_user->fill($updated_user)->save();
 
-                        User::destroy($duplicate_id);
-                        echo "user deleted: " . $user['_id']['mobile'] . " " . $duplicate_id . "\n";
-                    }
-                }
-            }
+                //         User::destroy($duplicate_id);
+                //         echo "user deleted: " . $user['_id']['mobile'] . " " . $duplicate_id . "\n";
+                //     }
+                // }
+            // }
         }
     }
 }

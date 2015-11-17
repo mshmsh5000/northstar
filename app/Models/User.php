@@ -103,6 +103,11 @@ class User extends Model implements AuthenticatableContract, CanResetPasswordCon
      */
     public function setParseInstallationIdsAttribute($value)
     {
+        if (is_array($value))
+        {
+            $value = implode(' ', $value);
+        }
+
         $ids = array_map('trim', explode(',', $value));
         $this->push('parse_installation_ids', $ids, true);
     }
