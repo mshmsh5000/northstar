@@ -4,7 +4,7 @@ namespace Northstar\Listeners;
 
 use Northstar\Events\UserReportedBack;
 use Northstar\Models\User;
-use Northstar\Services\DrupalAPI;
+use Northstar\Services\Phoenix;
 use Northstar\Services\Parse;
 
 
@@ -17,20 +17,20 @@ class SendReportbackPushNotification {
     protected $parse;
 
     /**
-     * Drupal API wrapper
-     * @var DrupalAPI
+     * Phoenix Drupal API wrapper
+     * @var Phoenix
      */
-    protected $drupal;
+    protected $phoenix;
 
     /**
      * Create the event listener.
      * @param Parse $parse - Injected Parse API wrapper
-     * @param DrupalAPI $drupal - Injected Drupal API wrapper
+     * @param Phoenix $phoenix - Injected Drupal API wrapper
      */
-    public function __construct(Parse $parse, DrupalAPI $drupal)
+    public function __construct(Parse $parse, Phoenix $phoenix)
     {
         $this->parse = $parse;
-        $this->drupal = $drupal;
+        $this->phoenix = $phoenix;
     }
 
     /**
@@ -68,7 +68,7 @@ class SendReportbackPushNotification {
         }
 
         // Get reportback content
-        $reportback_response = $this->drupal->reportbackContent($event->campaign->reportback_id);
+        $reportback_response = $this->phoenix->reportbackContent($event->campaign->reportback_id);
 
         // Assuming the last item in this array is the latest reportback submitted
         $reportback_items = $reportback_response['data']['reportback_items']['total'];

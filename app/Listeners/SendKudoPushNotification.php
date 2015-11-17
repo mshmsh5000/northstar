@@ -4,7 +4,7 @@ namespace Northstar\Listeners;
 
 use Northstar\Events\UserGotKudo;
 use Northstar\Models\User;
-use Northstar\Services\DrupalAPI;
+use Northstar\Services\Phoenix;
 use Northstar\Services\Parse;
 
 
@@ -17,20 +17,20 @@ class SendKudoPushNotification {
     protected $parse;
 
     /**
-     * Drupal API wrapper
-     * @var DrupalAPI
+     * Phoenix Drupal API wrapper
+     * @var Phoenix
      */
-    protected $drupal;
+    protected $phoenix;
 
     /**
      * Create the event listener.
      * @param Parse $parse - Injected Parse API wrapper
-     * @param DrupalAPI $drupal - Injected Drupal API wrapper
+     * @param Phoenix $phoneix - Injected Drupal API wrapper
      */
-    public function __construct(Parse $parse, DrupalAPI $drupal)
+    public function __construct(Parse $parse, Phoenix $phoenix)
     {
         $this->parse = $parse;
-        $this->drupal = $drupal;
+        $this->drupal = $phoenix;
     }
 
     /**

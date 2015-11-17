@@ -1,9 +1,7 @@
 <?php namespace Northstar\Services;
 
-use Northstar\Models\User;
-use Northstar\Models\Token;
 use Hash;
-use Northstar\Services\DrupalPasswordChecker;
+use Northstar\Models\User;
 use Symfony\Component\HttpKernel\Exception\UnauthorizedHttpException;
 
 class Registrar
@@ -35,7 +33,7 @@ class Registrar
         } else if (($user instanceof User) && !($user->password)) {
 
             // check to see if $input['password'] equals user's drupal password
-            if ($this->drupal_password_checker->user_check_password($input['password'], $user->drupal_password)) {
+            if ($this->drupal_password_checker->check($input['password'], $user->drupal_password)) {
 
                 // if they're the same, make $input['password'] into a hash and save it to the user.
                 $user->password = $input['password'];

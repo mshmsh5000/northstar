@@ -7,22 +7,27 @@ class AWS
     /**
      * Store an image in S3.
      *
-     * @param string $bucket
-     * @param File $file
+     * @param string $folder - Folder to write image to
+     * @param string $filename - Filename to write image to
+     * @param \Symfony\Component\HttpFoundation\File\File|string $file
+     *   File object, or a base-64 encoded data URI
+     *
+     * @return string - URL of stored image
      */
-    public function storeImage($folder, $id, $file)
+    public function storeImage($folder, $filename, $file)
     {
         if (is_string($file)) {
+            $path = 'uploads/' . $folder . '/' . $filename;
             $data = base64_decode($file);
-            $filename = 'uploads/' . $folder . '/' . $id;
-            Storage::disk('s3')->put($filename, $data);
         } else {
             $extension = $file->guessExtension();
-            $filename = 'uploads/' . $folder . '/' . $id . '.' . $extension;
-            Storage::disk('s3')->put($filename, file_get_contents($file));
+            $path = 'uploads/' . $folder . '/' . $filename . '.' . $extension;
+            $data = file_get_contents($file);
         }
 
-        return getenv('S3_URL') . $filename;
+        Storage::disk('s3')->put($filename, $data);
+
+        return getenv('S3_URL') . $path;
     }
 
 }

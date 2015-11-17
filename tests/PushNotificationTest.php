@@ -12,6 +12,18 @@ use Northstar\Models\Campaign;
 class PushNotificationTest extends TestCase
 {
 
+    /**
+     * Mock Phoenix Drupal API wrapper
+     * @var \Northstar\Services\Phoenix
+     */
+    protected $phoenixMock;
+
+    /**
+     * Mock Parse API wrapper
+     * @var \Northstar\Services\Parse
+     */
+    protected $parseMock;
+
     public function setUp()
     {
         parent::setUp();
@@ -20,7 +32,7 @@ class PushNotificationTest extends TestCase
         Artisan::call('migrate');
         $this->seed();
 
-        $this->drupalMock = $this->mock('Northstar\Services\DrupalAPI');
+        $this->phoenixMock = $this->mock('Northstar\Services\Phoenix');
         $this->parseMock = $this->mock('Northstar\Services\Parse');
     }
 
@@ -66,8 +78,8 @@ class PushNotificationTest extends TestCase
             ]
         ];
 
-        $this->drupalMock->shouldReceive('reportbackContent')->once()->andReturn($reportback_response);
-        $notification = new SendReportbackPushNotification($this->parseMock, $this->drupalMock);
+        $this->phoenixMock->shouldReceive('reportbackContent')->once()->andReturn($reportback_response);
+        $notification = new SendReportbackPushNotification($this->parseMock, $this->phoenixMock);
 
         $pushes = $notification->createPushData($event);
 
@@ -165,9 +177,9 @@ class PushNotificationTest extends TestCase
             ],
         ];
 
-        $this->drupalMock->shouldReceive('reportbackItemContent')->once()->andReturn($reportback_response);
+        $this->phoenixMock->shouldReceive('reportbackItemContent')->once()->andReturn($reportback_response);
 
-        $notification = new SendKudoPushNotification($this->parseMock, $this->drupalMock);
+        $notification = new SendKudoPushNotification($this->parseMock, $this->phoenixMock);
         $pushes = $notification->createPushData($event);
 
         $this->assertEquals('parse-100', $pushes[0]['installation_ids'][0]);

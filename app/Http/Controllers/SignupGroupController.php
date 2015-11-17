@@ -2,16 +2,21 @@
 
 use Illuminate\Http\Request;
 use Northstar\Models\User;
-use Northstar\Services\DrupalAPI;
+use Northstar\Services\Phoenix;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 
 class SignupGroupController extends Controller
 {
-    protected $drupal;
 
-    public function __construct(DrupalAPI $drupal)
+    /**
+     * Phoenix Drupal API wrapper.
+     * @var Phoenix
+     */
+    protected $phoenix;
+
+    public function __construct(Phoenix $phoenix)
     {
-        $this->drupal = $drupal;
+        $this->phoenix = $phoenix;
     }
 
     /**
@@ -90,7 +95,7 @@ class SignupGroupController extends Controller
 
                     if (isset($user->campaigns[$i]->reportback_id)) {
                         // get reportback data from drupal
-                        $rbResponse = $this->drupal->reportbackContent($user->campaigns[$i]->reportback_id);
+                        $rbResponse = $this->phoenix->reportbackContent($user->campaigns[$i]->reportback_id);
                         $user->campaigns[$i]->reportback_data = $rbResponse['data'];
                     }
                 }

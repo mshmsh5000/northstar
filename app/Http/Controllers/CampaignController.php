@@ -5,7 +5,7 @@ use Northstar\Events\UserSignedUp;
 use Northstar\Events\UserReportedBack;
 use Northstar\Models\Campaign;
 use Northstar\Models\User;
-use Northstar\Services\DrupalAPI;
+use Northstar\Services\Phoenix;
 use Symfony\Component\HttpKernel\Exception\HttpException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
@@ -13,14 +13,14 @@ class CampaignController extends Controller
 {
 
     /**
-     * Drupal API wrapper.
-     * @var DrupalAPI
+     * Phoenix Drupal API wrapper.
+     * @var Phoenix
      */
-    protected $drupal;
+    protected $phoenix;
 
-    public function __construct(DrupalAPI $drupal)
+    public function __construct(Phoenix $drupal)
     {
-        $this->drupal = $drupal;
+        $this->phoenix = $drupal;
     }
 
     /**
@@ -46,7 +46,7 @@ class CampaignController extends Controller
 
         foreach ($campaigns as $campaign) {
             if ($campaign->reportback_id) {
-                $response = $this->drupal->reportbackContent($campaign->reportback_id);
+                $response = $this->phoenix->reportbackContent($campaign->reportback_id);
 
                 // Possible for reportback data to be missing if it's been deleted on Drupal
                 if (isset($response['data'])) {
@@ -78,7 +78,7 @@ class CampaignController extends Controller
         }
 
         if ($campaign->reportback_id) {
-            $response = $this->drupal->reportbackContent($campaign->reportback_id);
+            $response = $this->phoenix->reportbackContent($campaign->reportback_id);
 
             if (isset($response['data'])) {
                 $campaign['reportback_data'] = $response['data'];
@@ -123,7 +123,7 @@ class CampaignController extends Controller
             $statusCode = 201;
 
             // Create a Drupal signup via Drupal API, and store signup ID in Northstar.
-            $signup_id = $this->drupal->campaignSignup($user->drupal_id, $campaign_id, $request->input('source'));
+            $signup_id = $this->phoenix->campaignSignup($user->drupal_id, $campaign_id, $request->input('source'));
 
             // Save reference to the signup on the user object.
             $campaign = new Campaign;
@@ -179,7 +179,7 @@ class CampaignController extends Controller
         }
 
         // Create a reportback via the Drupal API, and store reportback ID in Northstar
-        $reportback_id = $this->drupal->campaignReportback($user->drupal_id, $campaign_id, $request->all());
+        $reportback_id = $this->phoenix->campaignReportback($user->drupal_id, $campaign_id, $request->all());
 
         // Set status code based on whether `reportback_id` field already exists or not
         $statusCode = 201;
