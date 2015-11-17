@@ -5,12 +5,12 @@ namespace Northstar\Http\Middleware;
 use Closure;
 use Northstar\Models\Campaign;
 
-class CampaignResponseMiddleware {
-
+class CampaignResponseMiddleware
+{
     public function handle($request, Closure $next)
     {
         $response = $next($request);
-        if (!is_object($response)) {
+        if (! is_object($response)) {
             return $response;
         }
 
@@ -25,7 +25,6 @@ class CampaignResponseMiddleware {
             Campaign::populateAllAttributes($response->data);
         }
 
-        return response()->json($response, $statusCode, array(), JSON_UNESCAPED_SLASHES);
+        return response()->json($response, $statusCode, [], JSON_UNESCAPED_SLASHES);
     }
-
 }

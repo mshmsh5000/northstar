@@ -1,4 +1,6 @@
-<?php namespace Northstar\Http\Controllers;
+<?php
+
+namespace Northstar\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Northstar\Events\UserSignedUp;
@@ -11,7 +13,6 @@ use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class CampaignController extends Controller
 {
-
     /**
      * Phoenix Drupal API wrapper.
      * @var Phoenix
@@ -38,7 +39,7 @@ class CampaignController extends Controller
         // Find the user.
         $user = User::where($term, $id)->first();
 
-        if (!$user) {
+        if (! $user) {
             throw new NotFoundHttpException('The resource does not exist.');
         }
 
@@ -73,7 +74,7 @@ class CampaignController extends Controller
 
         $campaign = $user->campaigns()->where('drupal_id', $campaign_id)->first();
 
-        if (!$campaign) {
+        if (! $campaign) {
             throw new NotFoundHttpException('User has not signed up for this campaign.');
         }
 
@@ -86,9 +87,7 @@ class CampaignController extends Controller
         }
 
         return $this->respond($campaign);
-
     }
-
 
     /**
      * Sign user up for a given campaign.
@@ -104,14 +103,14 @@ class CampaignController extends Controller
     {
         // Validate request body
         $this->validate($request, [
-            'source' => ['required']
+            'source' => ['required'],
         ]);
 
         // Get the currently authenticated Northstar user.
         $user = User::current();
 
         // Return an error if the user doesn't exist.
-        if (!$user->drupal_id) {
+        if (! $user->drupal_id) {
             throw new HttpException(401, 'The user must have a Drupal ID to sign up for a campaign.');
         }
 
@@ -119,7 +118,7 @@ class CampaignController extends Controller
         $campaign = $user->campaigns()->where('drupal_id', $campaign_id)->first();
 
         $statusCode = 200;
-        if (!$campaign) {
+        if (! $campaign) {
             $statusCode = 201;
 
             // Create a Drupal signup via Drupal API, and store signup ID in Northstar.
@@ -167,14 +166,14 @@ class CampaignController extends Controller
         $user = User::current();
 
         // Return an error if the user doesn't exist.
-        if (!$user->drupal_id) {
+        if (! $user->drupal_id) {
             throw new HttpException(401, 'The user must have a Drupal ID to submit a reportback.');
         }
 
         // Check if campaign signup already exists.
         $campaign = $user->campaigns()->where('drupal_id', $campaign_id)->first();
 
-        if (!$campaign) {
+        if (! $campaign) {
             throw new HttpException(401, 'User is not signed up for this campaign yet.');
         }
 
@@ -183,7 +182,7 @@ class CampaignController extends Controller
 
         // Set status code based on whether `reportback_id` field already exists or not
         $statusCode = 201;
-        if($campaign->reportback_id) {
+        if ($campaign->reportback_id) {
             $statusCode = 200;
         }
 
@@ -200,5 +199,4 @@ class CampaignController extends Controller
 
         return $this->respond($campaign, $statusCode);
     }
-
 }

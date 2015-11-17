@@ -1,4 +1,6 @@
-<?php namespace Northstar\Models;
+<?php
+
+namespace Northstar\Models;
 
 use Jenssegers\Mongodb\Model;
 use Illuminate\Auth\Authenticatable;
@@ -7,7 +9,6 @@ use Illuminate\Contracts\Auth\Authenticatable as AuthenticatableContract;
 use Illuminate\Contracts\Auth\CanResetPassword as CanResetPasswordContract;
 use Request;
 use Hash;
-use Validator;
 
 /**
  * Class User
@@ -16,7 +17,6 @@ use Validator;
  */
 class User extends Model implements AuthenticatableContract, CanResetPasswordContract
 {
-
     use Authenticatable, CanResetPassword;
 
     protected $fillable = [
@@ -26,7 +26,7 @@ class User extends Model implements AuthenticatableContract, CanResetPasswordCon
         'school_id' ,'college_name', 'degree_type', 'major_name', 'hs_gradyear', 'hs_name', 'sat_math', 'sat_verbal', 'sat_writing',
         'addr_street1', 'addr_street2', 'addr_city', 'addr_state', 'addr_zip', 'country',
         'cgg_id', 'drupal_id', 'agg_id', 'source',
-        'parse_installation_ids'
+        'parse_installation_ids',
     ];
 
     /**
@@ -61,7 +61,7 @@ class User extends Model implements AuthenticatableContract, CanResetPasswordCon
      * @var array
      */
     protected $casts = [
-        'cgg_id' => 'integer'
+        'cgg_id' => 'integer',
     ];
 
     /**
@@ -74,7 +74,6 @@ class User extends Model implements AuthenticatableContract, CanResetPasswordCon
 
     /**
      * Email address mutator that converts the email value to lowercase
-     *
      */
     public function setEmailAttribute($value)
     {
@@ -83,7 +82,6 @@ class User extends Model implements AuthenticatableContract, CanResetPasswordCon
 
     /**
      * Interests mutator converting comma-delimited string to an array
-     *
      */
     public function setInterestsAttribute($value)
     {
@@ -102,7 +100,6 @@ class User extends Model implements AuthenticatableContract, CanResetPasswordCon
 
     /**
      * Password mutator that hashes the password field
-     *
      */
     public function setPasswordAttribute($value)
     {
@@ -111,7 +108,6 @@ class User extends Model implements AuthenticatableContract, CanResetPasswordCon
 
     /**
      * Define embedded relationship with the Campaign Model
-     *
      */
     public function campaigns()
     {

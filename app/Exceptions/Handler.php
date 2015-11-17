@@ -1,18 +1,19 @@
-<?php namespace Northstar\Exceptions;
+<?php
+
+namespace Northstar\Exceptions;
 
 use Exception;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
 
 class Handler extends ExceptionHandler
 {
-
     /**
      * A list of the exception types that should not be reported.
      *
      * @var array
      */
     protected $dontReport = [
-        'Symfony\Component\HttpKernel\Exception\HttpException'
+        'Symfony\Component\HttpKernel\Exception\HttpException',
     ];
 
     /**
@@ -41,22 +42,22 @@ class Handler extends ExceptionHandler
         if ($request->ajax() || $request->wantsJson()) {
             $code = 500;
 
-            if($this->isHttpException($e)) {
+            if ($this->isHttpException($e)) {
                 $code = $e->getStatusCode();
             }
 
             $response = [
                 'error' => [
                     'code' => $code,
-                    'message' => $e->getMessage()
-                ]
+                    'message' => $e->getMessage(),
+                ],
             ];
 
             // Show more information if we're in debug mode
-            if(config('app.debug')) {
+            if (config('app.debug')) {
                 $response['debug'] = [
                     'file' => $e->getFile(),
-                    'line' => $e->getLine()
+                    'line' => $e->getLine(),
                 ];
             }
 
@@ -65,5 +66,4 @@ class Handler extends ExceptionHandler
 
         return parent::render($request, $e);
     }
-
 }

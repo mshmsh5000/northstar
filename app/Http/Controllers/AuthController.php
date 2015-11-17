@@ -1,18 +1,17 @@
-<?php namespace Northstar\Http\Controllers;
+<?php
+
+namespace Northstar\Http\Controllers;
 
 use Northstar\Models\User;
 use Northstar\Models\Token;
 use Illuminate\Http\Request;
-use Hash;
 use Symfony\Component\HttpKernel\Exception\HttpException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\HttpKernel\Exception\UnauthorizedHttpException;
 use Northstar\Services\Registrar;
 
-
 class AuthController extends Controller
 {
-
     public function __construct(Registrar $registrar)
     {
         $this->registrar = $registrar;
@@ -31,10 +30,11 @@ class AuthController extends Controller
 
         $this->validate($request, [
             'email' => 'email',
-            'password' => 'required'
+            'password' => 'required',
         ]);
 
         $user = $this->registrar->login($input);
+
         return $this->respond($user);
     }
 
@@ -45,7 +45,7 @@ class AuthController extends Controller
      */
     public function logout(Request $request)
     {
-        if (!$request->header('Session')) {
+        if (! $request->header('Session')) {
             throw new HttpException(422, 'No token given.');
         }
 
@@ -69,7 +69,5 @@ class AuthController extends Controller
         } else {
             throw new HttpException(400, 'User could not log out. Please try again.');
         }
-
     }
-
 }

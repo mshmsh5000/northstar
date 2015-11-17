@@ -1,4 +1,6 @@
-<?php namespace Northstar\Http\Controllers;
+<?php
+
+namespace Northstar\Http\Controllers;
 
 use Northstar\Services\AWS;
 use Northstar\Models\User;
@@ -6,7 +8,6 @@ use Illuminate\Http\Request;
 
 class AvatarController extends Controller
 {
-
     public function __construct(AWS $aws)
     {
         $this->aws = $aws;
@@ -29,13 +30,13 @@ class AvatarController extends Controller
         }
 
         $this->validate($request, [
-            'photo' => 'required'
+            'photo' => 'required',
         ]);
 
         $filename = $this->aws->storeImage('avatars', $id, $file);
 
         // Save filename to User model
-        $user = User::where("_id", $id)->first();
+        $user = User::where('_id', $id)->first();
         $user->photo = $filename;
         $user->save();
 
@@ -43,4 +44,3 @@ class AvatarController extends Controller
         return $this->respond($user);
     }
 }
-

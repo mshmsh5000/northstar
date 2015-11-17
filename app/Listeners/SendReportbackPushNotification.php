@@ -7,9 +7,8 @@ use Northstar\Models\User;
 use Northstar\Services\Phoenix;
 use Northstar\Services\Parse;
 
-
-class SendReportbackPushNotification {
-
+class SendReportbackPushNotification
+{
     /**
      * Parse API wrapper.
      * @var Parse
@@ -56,7 +55,7 @@ class SendReportbackPushNotification {
      */
     public function createPushData(UserReportedBack $event)
     {
-        if (!empty($event->campaign->signup_group)) {
+        if (! empty($event->campaign->signup_group)) {
             $group = User::group($event->campaign->signup_group);
         } else {
             $group = [];
@@ -81,13 +80,13 @@ class SendReportbackPushNotification {
         $reportback_user = User::where('drupal_id', '=', $event->user->drupal_id)->first();
         $username = 'A member';
 
-        if (!empty($reportback_user)) {
-            if (!empty($reportback_user->first_name)) {
+        if (! empty($reportback_user)) {
+            if (! empty($reportback_user->first_name)) {
                 $username = $reportback_user->first_name;
             }
 
-            if (!empty($reportback_user->last_name)) {
-                $username .= ' ' . substr($reportback_user->last_name, 0, 1) . '.';
+            if (! empty($reportback_user->last_name)) {
+                $username .= ' '.substr($reportback_user->last_name, 0, 1).'.';
             }
         }
 
@@ -96,10 +95,10 @@ class SendReportbackPushNotification {
         foreach ($group as $user) {
             $drupal_id = $user->drupal_id;
             // Check that this user is not the user that triggered the event.
-            if ($drupal_id !== $event->user->drupal_id && !empty($user->parse_installation_ids)) {
+            if ($drupal_id !== $event->user->drupal_id && ! empty($user->parse_installation_ids)) {
 
                 // Message sent in the push notification
-                $message = $username . ' shared a photo in your ' . $campaign_title . ' group.';
+                $message = $username.' shared a photo in your '.$campaign_title.' group.';
 
                 // @TODO group.data.users doesn't include detailed reportback info for each user, is that ok?
                 $data = [

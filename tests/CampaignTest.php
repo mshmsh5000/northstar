@@ -5,7 +5,6 @@ use Northstar\Models\Campaign;
 
 class CampaignTest extends TestCase
 {
-
     protected $phoenixMock;
 
     protected $server;
@@ -26,34 +25,33 @@ class CampaignTest extends TestCase
         $this->seed();
 
         // Prepare server headers
-        $this->server = array(
+        $this->server = [
             'CONTENT_TYPE' => 'application/json',
             'HTTP_Accept' => 'application/json',
             'HTTP_X-DS-Application-Id' => '456',
             'HTTP_X-DS-REST-API-Key' => 'abc4324',
-            'HTTP_Session' => User::find('5430e850dt8hbc541c37tt3d')->login()->key
-        );
+            'HTTP_Session' => User::find('5430e850dt8hbc541c37tt3d')->login()->key,
+        ];
 
-        $this->signedUpServer = array(
+        $this->signedUpServer = [
             'CONTENT_TYPE' => 'application/json',
             'HTTP_Accept' => 'application/json',
             'HTTP_X-DS-Application-Id' => '456',
             'HTTP_X-DS-REST-API-Key' => 'abc4324',
-            'HTTP_Session' => User::find('5480c950bffebc651c8b456f')->login()->key
-        );
+            'HTTP_Session' => User::find('5480c950bffebc651c8b456f')->login()->key,
+        ];
 
-        $this->reportedBackServer = array(
+        $this->reportedBackServer = [
             'CONTENT_TYPE' => 'application/json',
             'HTTP_Accept' => 'application/json',
             'HTTP_X-DS-Application-Id' => '456',
             'HTTP_X-DS-REST-API-Key' => 'abc4324',
-            'HTTP_Session' => User::find('bf1039b0271bcc636aa5477a')->login()->key
-        );
+            'HTTP_Session' => User::find('bf1039b0271bcc636aa5477a')->login()->key,
+        ];
 
         // Mock Phoenix Drupal API class
         $this->phoenixMock = $this->mock('Northstar\Services\Phoenix');
     }
-
 
     /**
      * Test for retrieving a user's campaigns
@@ -73,7 +71,6 @@ class CampaignTest extends TestCase
         $this->assertJson($content);
     }
 
-
     /**
      * Test for submiting a campaign signup
      * POST /user/campaigns/:nid/signup
@@ -83,7 +80,7 @@ class CampaignTest extends TestCase
     public function testSubmitCampaignSignup()
     {
         $payload = [
-            'source' => 'test'
+            'source' => 'test',
         ];
 
         // Mock successful response from Drupal API
@@ -137,7 +134,7 @@ class CampaignTest extends TestCase
             'quantity' => 10,
             'why_participated' => 'I love helping others',
             'file' => 'data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wCEAAMCA',
-            'caption' => 'Here I am helping others.'
+            'caption' => 'Here I am helping others.',
         ];
 
         // Mock successful response from Drupal API
@@ -170,7 +167,7 @@ class CampaignTest extends TestCase
             'quantity' => 10,
             'why_participated' => 'I love helping others',
             'file' => 'data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wCEAAMCA',
-            'caption' => 'Here I am helping others.'
+            'caption' => 'Here I am helping others.',
         ];
 
         // Mock successful response from Drupal API
@@ -203,7 +200,7 @@ class CampaignTest extends TestCase
             'quantity' => 10,
             'why_participated' => 'I love helping others',
             'file' => 'data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wCEAAMCA',
-            'caption' => 'Here I am helping others.'
+            'caption' => 'Here I am helping others.',
         ];
 
         $response = $this->call('POST', 'v1/user/campaigns/123/reportback', [], [], [], $this->server, json_encode($payload));

@@ -2,7 +2,6 @@
 
 class UserTest extends TestCase
 {
-
     /**
      * Migrate database and set up HTTP headers
      *
@@ -15,15 +14,14 @@ class UserTest extends TestCase
         Artisan::call('migrate');
         $this->seed();
 
-        $this->server = array(
+        $this->server = [
             'CONTENT_TYPE' => 'application/json',
             'HTTP_Accept' => 'application/json',
             'HTTP_X-DS-Application-Id' => '456',
             'HTTP_X-DS-REST-API-Key' => 'abc4324',
-            'HTTP_Session' => 'S0FyZmlRNmVpMzVsSzJMNUFreEFWa3g0RHBMWlJRd0tiQmhSRUNxWXh6cz0='
-        );
+            'HTTP_Session' => 'S0FyZmlRNmVpMzVsSzJMNUFreEFWa3g0RHBMWlJRd0tiQmhSRUNxWXh6cz0=',
+        ];
     }
-
 
     /**
      * Test for retrieving a user
@@ -86,7 +84,7 @@ class UserTest extends TestCase
     public function testGetMultipleUsersById()
     {
         // Retrieve multiple users by _id
-        $response1= $this->call(
+        $response1 = $this->call(
             'GET',
             'v1/users?_id=5430e850dt8hbc541c37tt3d,5480c950bffebc651c8b456f,FAKE_ID',
             [], [], [], $this->server
@@ -122,11 +120,11 @@ class UserTest extends TestCase
     public function testRegisterUser()
     {
         // Create a new user object
-        $user = array(
+        $user = [
             'email' => 'new@dosomething.org',
             'mobile' => '5556667777',
             'password' => 'secret',
-        );
+        ];
 
         $response = $this->call('POST', 'v1/users', [], [], [], $this->server, json_encode($user));
         $content = $response->getContent();
@@ -152,10 +150,10 @@ class UserTest extends TestCase
     public function testUpdateUser()
     {
         // Create a new user object
-        $user = array(
+        $user = [
             'email' => 'newemail@dosomething.org',
             'parse_installation_ids' => 'parse-abc123',
-        );
+        ];
 
         $response = $this->call('PUT', 'v1/users/_id/5480c950bffebc651c8b456f', [], [], [], $this->server, json_encode($user));
         $content = $response->getContent();
@@ -188,7 +186,7 @@ class UserTest extends TestCase
      */
     public function testDelete()
     {
-        $response = $this->call('DELETE', 'v1/users/5480c950bffebc651c8b4570', [], [], [], $this->server, array());
+        $response = $this->call('DELETE', 'v1/users/5480c950bffebc651c8b4570', [], [], [], $this->server, []);
 
         $this->assertEquals(200, $response->getStatusCode());
     }
@@ -201,7 +199,7 @@ class UserTest extends TestCase
      */
     public function testDeleteNoResource()
     {
-        $response = $this->call('DELETE', 'v1/users/DUMMY_ID', [], [], [], $this->server, array());
+        $response = $this->call('DELETE', 'v1/users/DUMMY_ID', [], [], [], $this->server, []);
 
         $this->assertEquals(404, $response->getStatusCode());
     }

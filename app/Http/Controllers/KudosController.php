@@ -1,14 +1,14 @@
-<?php namespace Northstar\Http\Controllers;
+<?php
+
+namespace Northstar\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Northstar\Services\Phoenix;
 use Northstar\Models\User;
 use Northstar\Events\UserGotKudo;
 
-
 class KudosController extends Controller
 {
-
     /**
      * Phoenix Drupal API wrapper.
      * @var Phoenix
@@ -20,15 +20,15 @@ class KudosController extends Controller
         $this->phoenix = $phoenix;
     }
 
-   /**
-   * Store a new kudos from a user.
-   * Kudos request made from mobile app and forwarded to Northstar.
-   * Northstar finds the drupal user and sends request on to Drupal.
-   * POST /kudos
-   *
-   * @param Request $request
-   * @return Response
-   */
+    /**
+     * Store a new kudos from a user.
+     * Kudos request made from mobile app and forwarded to Northstar.
+     * Northstar finds the drupal user and sends request on to Drupal.
+     * POST /kudos
+     *
+     * @param Request $request
+     * @return Response
+     */
     public function store(Request $request)
     {
         $user = User::current();
@@ -42,6 +42,4 @@ class KudosController extends Controller
 
         return $this->respond($response);
     }
-
 }
-

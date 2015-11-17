@@ -1,4 +1,6 @@
-<?php namespace Northstar\Services;
+<?php
+
+namespace Northstar\Services;
 
 use Storage;
 
@@ -17,17 +19,16 @@ class AWS
     public function storeImage($folder, $filename, $file)
     {
         if (is_string($file)) {
-            $path = 'uploads/' . $folder . '/' . $filename;
+            $path = 'uploads/'.$folder.'/'.$filename;
             $data = base64_decode($file);
         } else {
             $extension = $file->guessExtension();
-            $path = 'uploads/' . $folder . '/' . $filename . '.' . $extension;
+            $path = 'uploads/'.$folder.'/'.$filename.'.'.$extension;
             $data = file_get_contents($file);
         }
 
         Storage::disk('s3')->put($filename, $data);
 
-        return getenv('S3_URL') . $path;
+        return getenv('S3_URL').$path;
     }
-
 }

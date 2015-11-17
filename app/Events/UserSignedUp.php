@@ -1,25 +1,26 @@
-<?php namespace Northstar\Events;
+<?php
+
+namespace Northstar\Events;
 
 use Illuminate\Queue\SerializesModels;
 use Northstar\Models\User;
 use Northstar\Models\Campaign;
 
-class UserSignedUp extends Event {
+class UserSignedUp extends Event
+{
+    use SerializesModels;
 
-	use SerializesModels;
+    public $user;
+    public $campaign;
 
-	public $user;
-	public $campaign;
-
-	/**
-	 * Create a new event instance.
-	 *
-	 * @return void
-	 */
-	public function __construct(User $user, Campaign $campaign)
-	{
-		$this->user = $user;
-		$this->campaign = $campaign;
-	}
-
+    /**
+     * Create a new event instance.
+     *
+     * @return void
+     */
+    public function __construct(User $user, Campaign $campaign)
+    {
+        $this->user = $user;
+        $this->campaign = $campaign;
+    }
 }

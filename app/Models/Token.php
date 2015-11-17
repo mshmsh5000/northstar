@@ -1,19 +1,20 @@
-<?php namespace Northstar\Models;
+<?php
+
+namespace Northstar\Models;
 
 use Jenssegers\Mongodb\Model as Eloquent;
 
 class Token extends Eloquent
 {
-
     protected $collection = 'tokens';
 
-    protected $guarded = array('key');
+    protected $guarded = ['key'];
 
     public static function randomKey($size)
     {
         do {
             $key = openssl_random_pseudo_bytes($size, $strongEnough);
-        } while (!$strongEnough);
+        } while (! $strongEnough);
 
         $key = str_replace('+', '', base64_encode($key));
         $key = str_replace('/', '', $key);
@@ -23,25 +24,26 @@ class Token extends Eloquent
 
     public static function getInstance()
     {
-        $token = new Token();
-        $token->key = Token::randomKey(32);
+        $token = new self();
+        $token->key = self::randomKey(32);
+
         return $token;
     }
 
     public static function userFor($token)
     {
-        $token = Token::where('key', '=', $token)->first();
-        if (empty($token)) return null;
+        $token = self::where('key', '=', $token)->first();
+        if (empty($token)) {
+            return;
+        }
 
         return User::find($token->user_id);
     }
 
     public static function isUserToken($user_id, $token)
     {
-        return Token::where('user_id', '=', $user_id)
+        return self::where('user_id', '=', $user_id)
             ->where('key', '=', $token)
             ->exists();
     }
-
-
 }

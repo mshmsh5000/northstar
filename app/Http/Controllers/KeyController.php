@@ -1,4 +1,6 @@
-<?php namespace Northstar\Http\Controllers;
+<?php
+
+namespace Northstar\Http\Controllers;
 
 use Northstar\Models\ApiKey;
 use Input;
@@ -8,7 +10,6 @@ use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class KeyController extends Controller
 {
-
     /**
      * Display a listing of the resource.
      * GET /keys
@@ -18,9 +19,9 @@ class KeyController extends Controller
     public function index()
     {
         $keys = ApiKey::all();
+
         return $this->respond($keys);
     }
-
 
     /**
      * Store a newly created resource in storage.
@@ -56,13 +57,12 @@ class KeyController extends Controller
     {
         // Find the user.
         $key = Key::where('id', $id)->get();
-        if (!$key->isEmpty()) {
+        if (! $key->isEmpty()) {
             return $this->respond($key);
         }
 
         throw new NotFoundHttpException('The resource does not exist.');
     }
-
 
     /**
      * Delete a api key resource.
@@ -72,7 +72,5 @@ class KeyController extends Controller
      */
     public function destroy($id)
     {
-
     }
-
 }

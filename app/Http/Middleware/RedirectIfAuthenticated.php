@@ -1,4 +1,6 @@
-<?php namespace Northstar\Http\Middleware;
+<?php
+
+namespace Northstar\Http\Middleware;
 
 use Closure;
 use Illuminate\Contracts\Auth\Guard;
@@ -6,7 +8,6 @@ use Illuminate\Http\RedirectResponse;
 
 class RedirectIfAuthenticated
 {
-
     /**
      * The Guard implementation.
      *
@@ -40,5 +41,4 @@ class RedirectIfAuthenticated
 
         return $next($request);
     }
-
 }

@@ -1,4 +1,6 @@
-<?php namespace Northstar\Services;
+<?php
+
+namespace Northstar\Services;
 
 use Hash;
 use Northstar\Models\User;
@@ -29,8 +31,9 @@ class Registrar
 
             // Return the session token with the user.
             $user->session_token = $token->key;
+
             return $user;
-        } else if (($user instanceof User) && !($user->password)) {
+        } elseif (($user instanceof User) && ! ($user->password)) {
 
             // check to see if $input['password'] equals user's drupal password
             if ($this->drupal_password_checker->check($input['password'], $user->drupal_password)) {
@@ -45,10 +48,11 @@ class Registrar
 
                 // Return the session token with the user.
                 $user->session_token = $token->key;
+
                 return $user;
             }
         } else {
-            throw new UnauthorizedHttpException(null, 'Invalid ' . $login_type . ' or password.');
+            throw new UnauthorizedHttpException(null, 'Invalid '.$login_type.' or password.');
         }
     }
 }
