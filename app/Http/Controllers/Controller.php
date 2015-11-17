@@ -1,4 +1,6 @@
-<?php namespace Northstar\Http\Controllers;
+<?php
+
+namespace Northstar\Http\Controllers;
 
 use Illuminate\Foundation\Bus\DispatchesCommands;
 use Illuminate\Routing\Controller as BaseController;
@@ -9,7 +11,6 @@ use Input;
 
 abstract class Controller extends BaseController
 {
-
     use DispatchesCommands;
 
     use ValidatesRequests {
@@ -35,7 +36,7 @@ abstract class Controller extends BaseController
             $response = $data;
         }
 
-        return response()->json($response, $code, array(), JSON_UNESCAPED_SLASHES);
+        return response()->json($response, $code, [], JSON_UNESCAPED_SLASHES);
     }
 
     /**
@@ -48,8 +49,9 @@ abstract class Controller extends BaseController
     {
         if (is_a($query, 'Illuminate\Database\Eloquent\Builder')) {
             $limit = Input::get('limit') ?: 20;
-            $response = $query->paginate((int)$limit);
+            $response = $query->paginate((int) $limit);
             $response->appends($inputs);
+
             return response()->json($response);
         }
     }

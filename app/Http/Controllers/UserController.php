@@ -1,4 +1,6 @@
-<?php namespace Northstar\Http\Controllers;
+<?php
+
+namespace Northstar\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Northstar\Services\Phoenix;
@@ -6,10 +8,8 @@ use Northstar\Models\User;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\HttpKernel\Exception\UnauthorizedHttpException;
 
-
 class UserController extends Controller
 {
-
     /**
      * Phoenix Drupal API wrapper.
      * @var Phoenix
@@ -51,6 +51,7 @@ class UserController extends Controller
         }
 
         $response = $this->respondPaginated($users, $inputs);
+
         return $response;
     }
 
@@ -82,7 +83,7 @@ class UserController extends Controller
         }
 
         // If there is no user found, create a new one.
-        if (!$user) {
+        if (! $user) {
             $user = new User;
 
             // This validation might not be needed, the only validation happening right now
@@ -90,7 +91,7 @@ class UserController extends Controller
             // from the query above.
             $this->validate($request, [
                 'email' => 'email|unique:users|required_without:mobile',
-                'mobile' => 'unique:users|required_without:email'
+                'mobile' => 'unique:users|required_without:email',
             ]);
         }
         // Update or create the user from all the input.
@@ -100,7 +101,7 @@ class UserController extends Controller
             // Do we need to forward this user to drupal?
             // If query string exists, make a drupal user.
             // @TODO: we can't create a Drupal user without an email. Do we just create an @mobile one like we had done previously?
-            if ($request->has('create_drupal_user') && $request->has('password') && !$user->drupal_id) {
+            if ($request->has('create_drupal_user') && $request->has('password') && ! $user->drupal_id) {
                 try {
                     $drupal_id = $this->phoenix->register($user, $request->get('password'));
                     $user->drupal_id = $drupal_id;
@@ -148,13 +149,12 @@ class UserController extends Controller
     {
         // Find the user.
         $user = User::where($term, $id)->get();
-        if (!$user->isEmpty()) {
+        if (! $user->isEmpty()) {
             return $this->respond($user);
         }
 
         throw new NotFoundHttpException('The resource does not exist.');
     }
-
 
     /**
      * Update the specified resource in storage.
@@ -180,7 +180,7 @@ class UserController extends Controller
                     $interests = array_map('trim', explode(',', $value));
                     $user->push('interests', $interests, true);
                 } // Only update attribute if value is non-null.
-                elseif (isset($key) && !is_null($value)) {
+                elseif (isset($key) && ! is_null($value)) {
                     $user->$key = $value;
                 }
             }
@@ -228,15 +228,13 @@ class UserController extends Controller
         if (count($errors) > 0) {
             foreach ($errors as $e) {
                 foreach ($e as $message) {
-                    $error_message .= $message . ' ';
+                    $error_message .= $message.' ';
                 }
             }
 
             throw new UnauthorizedHttpException(null, trim($error_message));
-        }
-        else {
+        } else {
             return parent::buildFailedValidationResponse($request, $errors);
         }
     }
-
 }

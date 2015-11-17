@@ -5,7 +5,6 @@ use Northstar\Models\Token;
 
 class TokenTableSeeder extends Seeder
 {
-
     /**
      * Run the database seeds.
      *
@@ -15,15 +14,14 @@ class TokenTableSeeder extends Seeder
     {
         DB::table('tokens')->delete();
 
-        Token::create(array(
+        Token::create([
             'key' => 'S0FyZmlRNmVpMzVsSzJMNUFreEFWa3g0RHBMWlJRd0tiQmhSRUNxWXh6cz0=',
-            'user_id' => '5480c950bffebc651c8b456f'
-        ));
+            'user_id' => '5480c950bffebc651c8b456f',
+        ]);
 
-        Token::create(array(
+        Token::create([
             'key' => 'S0FyZmlRNmVpMzVsSzJMNUFreEFWa3g0RHBMWlJRd0tiQmhSRUNxWXh6cz1=',
-            'user_id' => 'bf1039b0271bcc636aa5477c'
-        ));
+            'user_id' => 'bf1039b0271bcc636aa5477c',
+        ]);
     }
-
 }

@@ -1,16 +1,15 @@
-<?php namespace Northstar\Services;
+<?php
 
-use Parse\ParseObject;
+namespace Northstar\Services;
+
 use Parse\ParseClient;
 use Parse\ParsePush;
 use Parse\ParseInstallation;
 
 class Parse
 {
-
     /**
      * Connect to the Parse API
-     *
      */
     public function __construct()
     {
@@ -24,19 +23,19 @@ class Parse
     /**
      * Sends notifications to an array of installation ids.
      *
-     * @param  Array  $installation_ids
-     * @param  Array  $data
+     * @param  array  $installation_ids
+     * @param  array  $data
      */
     public function sendPushNotification($installation_ids, $data)
     {
         // Loop through the installation ids
         foreach ($installation_ids as $id) {
             $query = ParseInstallation::query();
-            $query->equalTo("installationId", $id);
-            ParsePush::send(array(
-                "where" => $query,
-                "data" => $data
-            ));
+            $query->equalTo('installationId', $id);
+            ParsePush::send([
+                'where' => $query,
+                'data' => $data,
+            ]);
         }
     }
 }

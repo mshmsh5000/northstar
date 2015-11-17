@@ -6,12 +6,12 @@ use Northstar\Models\Campaign;
 use Northstar\Models\User;
 use Closure;
 
-class UserResponseMiddleware {
-
+class UserResponseMiddleware
+{
     public function handle($request, Closure $next)
     {
         $response = $next($request);
-        if (!is_object($response)) {
+        if (! is_object($response)) {
             return $response;
         }
 
@@ -24,12 +24,12 @@ class UserResponseMiddleware {
                 foreach ($response->data as $user) {
                     $this->fillUser($user);
                 }
-            } else if (is_object($response->data)) {
+            } elseif (is_object($response->data)) {
                 $this->fillUser($response->data);
             }
         }
 
-        return response()->json($response, $statusCode, array(), JSON_UNESCAPED_SLASHES);
+        return response()->json($response, $statusCode, [], JSON_UNESCAPED_SLASHES);
     }
 
     /**
@@ -49,11 +49,10 @@ class UserResponseMiddleware {
         }
 
         // Fill campaigns activity data too, if any
-        if (!empty($user->campaigns) && is_array($user->campaigns)) {
+        if (! empty($user->campaigns) && is_array($user->campaigns)) {
             foreach ($user->campaigns as $campaign) {
                 Campaign::populateAllAttributes($campaign);
             }
         }
     }
-
 }

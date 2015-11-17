@@ -1,11 +1,12 @@
-<?php namespace Northstar\Http\Middleware;
+<?php
+
+namespace Northstar\Http\Middleware;
 
 use Closure;
 use Illuminate\Contracts\Auth\Guard;
 
 class Authenticate
 {
-
     /**
      * The Guard implementation.
      *
@@ -43,5 +44,4 @@ class Authenticate
 
         return $next($request);
     }
-
 }

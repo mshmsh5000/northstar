@@ -1,15 +1,15 @@
-<?php namespace Northstar\Models;
+<?php
+
+namespace Northstar\Models;
 
 use Jenssegers\Mongodb\Model as Eloquent;
-use Validator;
 
 class Campaign extends Eloquent
 {
-
     /**
      * Guarded attributes
      */
-    protected $guarded = array('_id');
+    protected $guarded = ['_id'];
 
     /**
      * The attributes excluded from the model's JSON form.
@@ -57,7 +57,7 @@ class Campaign extends Eloquent
      */
     public static function populateAllAttributes(&$campaign)
     {
-        $tmp = new Campaign();
+        $tmp = new self();
 
         $attrs_not_hidden = array_diff($tmp->getAttributes(), $tmp->getHidden());
 
@@ -71,5 +71,4 @@ class Campaign extends Eloquent
             $campaign->$key = isset($campaign->$key) ? $campaign->$key : $default_value;
         }
     }
-
 }

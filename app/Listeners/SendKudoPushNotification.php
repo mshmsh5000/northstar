@@ -7,13 +7,12 @@ use Northstar\Models\User;
 use Northstar\Services\Phoenix;
 use Northstar\Services\Parse;
 
-
-class SendKudoPushNotification {
-
+class SendKudoPushNotification
+{
     /**
-    * Parse API wrapper.
-    * @var Parse
-    */
+     * Parse API wrapper.
+     * @var Parse
+     */
     protected $parse;
 
     /**
@@ -47,7 +46,6 @@ class SendKudoPushNotification {
             $this->parse->sendPushNotification($push['installation_ids'], $push['data']);
         }
     }
-
 
     /**
      * Compile push data per user to send to Parse.

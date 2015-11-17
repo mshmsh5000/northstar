@@ -11,12 +11,12 @@ class SignupGroupTest extends TestCase
         $this->seed();
 
         // Prepare server headers
-        $this->server = array(
+        $this->server = [
             'CONTENT_TYPE' => 'application/json',
             'HTTP_Accept' => 'application/json',
             'HTTP_X-DS-Application-Id' => '456',
-            'HTTP_X-DS-REST-API-Key' => 'abc4324'
-        );
+            'HTTP_X-DS-REST-API-Key' => 'abc4324',
+        ];
     }
 
     public function testShow()

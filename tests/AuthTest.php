@@ -4,7 +4,6 @@ use Northstar\Models\Token;
 
 class AuthTest extends TestCase
 {
-
     /**
      * Migrate database and set up HTTP headers
      *
@@ -17,34 +16,34 @@ class AuthTest extends TestCase
         Artisan::call('migrate');
         $this->seed();
 
-        $this->server = array(
+        $this->server = [
             'CONTENT_TYPE' => 'application/json',
             'HTTP_Accept' => 'application/json',
             'HTTP_X-DS-Application-Id' => '456',
             'HTTP_X-DS-REST-API-Key' => 'abc4324',
-            'HTTP_Session' => 'S0FyZmlRNmVpMzVsSzJMNUFreEFWa3g0RHBMWlJRd0tiQmhSRUNxWXh6cz0='
-        );
+            'HTTP_Session' => 'S0FyZmlRNmVpMzVsSzJMNUFreEFWa3g0RHBMWlJRd0tiQmhSRUNxWXh6cz0=',
+        ];
 
-        $this->serverForParseTest = array(
+        $this->serverForParseTest = [
             'CONTENT_TYPE' => 'application/json',
             'HTTP_Accept' => 'application/json',
             'HTTP_X-DS-Application-Id' => '456',
             'HTTP_X-DS-REST-API-Key' => 'abc4324',
-            'HTTP_Session' => 'S0FyZmlRNmVpMzVsSzJMNUFreEFWa3g0RHBMWlJRd0tiQmhSRUNxWXh6cz1='
-        );
+            'HTTP_Session' => 'S0FyZmlRNmVpMzVsSzJMNUFreEFWa3g0RHBMWlJRd0tiQmhSRUNxWXh6cz1=',
+        ];
 
-        $this->serverMissingToken = array(
+        $this->serverMissingToken = [
             'HTTP_Accept' => 'application/json',
             'HTTP_X-DS-Application-Id' => '456',
             'HTTP_X-DS-REST-API-Key' => 'abc4324',
-        );
+        ];
 
-        $this->serverFakeToken = array(
+        $this->serverFakeToken = [
             'HTTP_Accept' => 'application/json',
             'HTTP_X-DS-Application-Id' => '456',
             'HTTP_X-DS-REST-API-Key' => 'abc4324',
             'HTTP_Session' => 'thisisafaketoken',
-        );
+        ];
     }
 
     /**
@@ -56,10 +55,10 @@ class AuthTest extends TestCase
     public function testLogin()
     {
         // User login info
-        $credentials = array(
+        $credentials = [
             'email' => 'test@dosomething.org',
-            'password' => 'secret'
-        );
+            'password' => 'secret',
+        ];
 
         $response = $this->call('POST', 'v1/login', [], [], [], $this->server, json_encode($credentials));
         $content = $response->getContent();
@@ -107,9 +106,9 @@ class AuthTest extends TestCase
      */
     public function testLogoutRemovesParseInstallationIds()
     {
-        $payload = array(
-            'parse_installation_ids' => 'parse-abc123'
-        );
+        $payload = [
+            'parse_installation_ids' => 'parse-abc123',
+        ];
 
         $logoutResponse = $this->call('POST', 'v1/logout', [], [], [], $this->serverForParseTest, json_encode($payload));
 
@@ -128,7 +127,8 @@ class AuthTest extends TestCase
      * Tests that a proper error is thrown when a route requiring an auth token
      * is given no token.
      */
-    public function testMissingToken() {
+    public function testMissingToken()
+    {
         $response = $this->call('GET', 'v1/user/campaigns/123', [], [], [], $this->serverMissingToken);
 
         $this->assertEquals(401, $response->getStatusCode());
@@ -138,7 +138,8 @@ class AuthTest extends TestCase
      * Tests that a proper error is thrown when a route requiring an auth token
      * is given a fake token.
      */
-    public function testFakeToken() {
+    public function testFakeToken()
+    {
         $response = $this->call('GET', 'v1/user/campaigns/123', [], [], [], $this->serverFakeToken);
 
         $this->assertEquals(401, $response->getStatusCode());

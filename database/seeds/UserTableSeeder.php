@@ -5,7 +5,6 @@ use Northstar\Models\User;
 
 class UserTableSeeder extends Seeder
 {
-
     /**
      * Run the database seeds.
      *
@@ -58,8 +57,8 @@ class UserTableSeeder extends Seeder
                     'drupal_id' => '123',
                     'signup_id' => '100',
                     'signup_source' => 'android',
-                ]
-            ]
+                ],
+            ],
         ]);
 
         // Reported back user
@@ -84,9 +83,9 @@ class UserTableSeeder extends Seeder
                     'drupal_id' => '123',
                     'signup_id' => '101',
                     'signup_source' => 'ios',
-                    'reportback_id' => '125'
-                ]
-            ]
+                    'reportback_id' => '125',
+                ],
+            ],
         ]);
 
         // User invited to campaign
@@ -104,18 +103,18 @@ class UserTableSeeder extends Seeder
                     'signup_id' => '102',
                     'signup_source' => 'test',
                     'signup_group' => '100',
-                ]
-            ]
+                ],
+            ],
         ]);
 
         // Parse user to be logged out
-        User::create(array(
+        User::create([
             '_id' => 'bf1039b0271bcc636aa5477c',
-            'parse_installation_ids' => 'parse-abc123'
-        ));
+            'parse_installation_ids' => 'parse-abc123',
+        ]);
 
         // User 1 for push notification tests
-        User::create(array(
+        User::create([
             '_id' => 'bf1039b0271bcc636aa5477d',
             'drupal_id' => '100005',
             'parse_installation_ids' => 'parse-100',
@@ -125,12 +124,12 @@ class UserTableSeeder extends Seeder
                     'signup_id' => '200',
                     'signup_source' => 'test',
                     'signup_group' => '200',
-                ]
-            ]
-        ));
+                ],
+            ],
+        ]);
 
         // User 2 for push notification tests
-        User::create(array(
+        User::create([
             '_id' => 'bf1039b0271bcc636aa5477e',
             'drupal_id' => '100006',
             'first_name' => 'Push',
@@ -143,11 +142,11 @@ class UserTableSeeder extends Seeder
                     'signup_source' => 'test',
                     'signup_group' => '200',
                     'reportback_id' => '1000',
-                ]
-            ]
-        ));
+                ],
+            ],
+        ]);
 
-        User::create(array(
+        User::create([
             'email' => 'info@dosomething.org',
             'mobile' => '5555550104',
             'password' => 'secret',
@@ -160,14 +159,14 @@ class UserTableSeeder extends Seeder
             'country' => 'US',
             'birthdate' => '12/17/91',
             'first_name' => 'John',
-            'last_name' => 'Doe'
-        ));
+            'last_name' => 'Doe',
+        ]);
 
-        User::create(array(
+        User::create([
             '_id' => '5480c950bffebc651c8b4570',
             'email' => 'delete-test@ds.org',
-            'password' => 'secret'
-        ));
+            'password' => 'secret',
+        ]);
 
         if (App::environment('local')) {
             $faker = Faker\Factory::create();
@@ -191,5 +190,4 @@ class UserTableSeeder extends Seeder
             }
         }
     }
-
 }

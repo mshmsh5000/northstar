@@ -1,13 +1,13 @@
-<?php namespace Northstar\Http\Middleware;
+<?php
+
+namespace Northstar\Http\Middleware;
 
 use Northstar\Models\Token;
 use Closure;
-use Response;
 use Symfony\Component\HttpKernel\Exception\HttpException;
 
 class AuthenticateToken
 {
-
     /**
      * Handle an incoming request.
      *
@@ -19,15 +19,14 @@ class AuthenticateToken
     public function handle($request, Closure $next)
     {
         $token = $request->header('Session');
-        if (!$token) {
+        if (! $token) {
             throw new HttpException(401, 'No token found.');
         }
 
-        if (!Token::where('key', '=', $token)->exists()) {
+        if (! Token::where('key', '=', $token)->exists()) {
             throw new HttpException(401, 'Token mismatched.');
         }
 
         return $next($request);
     }
-
 }

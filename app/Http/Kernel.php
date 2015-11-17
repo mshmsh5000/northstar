@@ -1,10 +1,11 @@
-<?php namespace Northstar\Http;
+<?php
+
+namespace Northstar\Http;
 
 use Illuminate\Foundation\Http\Kernel as HttpKernel;
 
 class Kernel extends HttpKernel
 {
-
     /**
      * The application's global HTTP middleware stack.
      *
@@ -31,5 +32,4 @@ class Kernel extends HttpKernel
         'user' => 'Northstar\Http\Middleware\UserResponseMiddleware',
         'campaign' => 'Northstar\Http\Middleware\CampaignResponseMiddleware',
     ];
-
 }

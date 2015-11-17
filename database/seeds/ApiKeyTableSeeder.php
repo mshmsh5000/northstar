@@ -5,7 +5,6 @@ use Northstar\Models\ApiKey;
 
 class ApiKeyTableSeeder extends Seeder
 {
-
     /**
      * Run the database seeds.
      *
@@ -15,16 +14,14 @@ class ApiKeyTableSeeder extends Seeder
     {
         DB::table('api_keys')->delete();
 
-        ApiKey::create(array(
+        ApiKey::create([
             'app_id' => '456',
-            'api_key' => 'abc4324'
-        ));
+            'api_key' => 'abc4324',
+        ]);
 
-        ApiKey::create(array(
+        ApiKey::create([
             'app_id' => '123',
-            'api_key' => '5464utyrs'
-        ));
-
+            'api_key' => '5464utyrs',
+        ]);
     }
-
 }

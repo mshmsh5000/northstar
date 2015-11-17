@@ -5,7 +5,6 @@ use Illuminate\Database\Eloquent\Model;
 
 class DatabaseSeeder extends Seeder
 {
-
     /**
      * Run the database seeds.
      *
@@ -19,5 +18,4 @@ class DatabaseSeeder extends Seeder
         $this->call('ApiKeyTableSeeder');
         $this->call('TokenTableSeeder');
     }
-
 }

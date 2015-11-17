@@ -1,4 +1,6 @@
-<?php namespace Northstar\Http\Controllers;
+<?php
+
+namespace Northstar\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Northstar\Models\User;
@@ -7,7 +9,6 @@ use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 
 class SignupGroupController extends Controller
 {
-
     /**
      * Phoenix Drupal API wrapper.
      * @var Phoenix
@@ -36,12 +37,12 @@ class SignupGroupController extends Controller
 
             foreach ($group_ids as $group_id) {
                 $group = $this->getGroup($group_id);
-                if (!empty($group)) {
+                if (! empty($group)) {
                     $response[] = $group;
                 }
             }
         } else {
-            throw new BadRequestHttpException("Missing ids query parameter.");
+            throw new BadRequestHttpException('Missing ids query parameter.');
         }
 
         return $this->respond($response);
@@ -105,10 +106,9 @@ class SignupGroupController extends Controller
         $response = [
             'signup_group' => $id,
             'campaign_id' => $campaign_id,
-            'users' => $group
+            'users' => $group,
         ];
 
         return $response;
     }
-
 }

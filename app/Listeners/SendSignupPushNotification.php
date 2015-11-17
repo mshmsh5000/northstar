@@ -6,9 +6,8 @@ use Northstar\Events\UserSignedUp;
 use Northstar\Models\User;
 use Northstar\Services\Parse;
 
-
-class SendSignupPushNotification {
-
+class SendSignupPushNotification
+{
     /**
      * Parse API wrapper.
      * @var Parse
@@ -21,7 +20,7 @@ class SendSignupPushNotification {
      */
     public function __construct(Parse $parse)
     {
-      $this->parse = $parse;
+        $this->parse = $parse;
     }
 
     /**
@@ -47,7 +46,7 @@ class SendSignupPushNotification {
      */
     public function createPushData(UserSignedUp $event)
     {
-        if (!empty($event->campaign->signup_group)) {
+        if (! empty($event->campaign->signup_group)) {
             $group = User::group($event->campaign->signup_group);
         } else {
             $group = [];
@@ -62,13 +61,13 @@ class SendSignupPushNotification {
         $signup_user = User::where('drupal_id', '=', $event->user->drupal_id)->first();
         $username = 'A member';
 
-        if (!empty($signup_user)) {
-            if (!empty($signup_user->first_name)) {
+        if (! empty($signup_user)) {
+            if (! empty($signup_user->first_name)) {
                 $username = $signup_user->first_name;
             }
 
-            if (!empty($signup_user->last_name)) {
-                $username .= ' ' . substr($signup_user->last_name, 0, 1) . '.';
+            if (! empty($signup_user->last_name)) {
+                $username .= ' '.substr($signup_user->last_name, 0, 1).'.';
             }
         }
 
@@ -77,10 +76,10 @@ class SendSignupPushNotification {
         foreach ($group as $user) {
             $drupal_id = $user->drupal_id;
             // Check that this user is not the user that triggered the event.
-            if ($drupal_id !== $event->user->drupal_id && !empty($user->parse_installation_ids)) {
+            if ($drupal_id !== $event->user->drupal_id && ! empty($user->parse_installation_ids)) {
 
                 // Message sent in the push notification
-                $message = $username . ' joined your group!';
+                $message = $username.' joined your group!';
 
                 // @TODO group.data.users doesn't include detailed reportback info for each user, is that ok?
                 $data = [

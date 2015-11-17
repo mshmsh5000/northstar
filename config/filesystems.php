@@ -45,7 +45,7 @@ return [
 
         'local' => [
             'driver' => 'local',
-            'root' => storage_path() . '/app',
+            'root' => storage_path().'/app',
         ],
 
         's3' => [
@@ -54,7 +54,7 @@ return [
             'secret' => env('S3_SECRET'),
             'region' => 'us-east-1',
             'bucket' => env('S3_BUCKET'),
-            'base_url' => 'https://s3-external-1.amazonaws.com'
+            'base_url' => 'https://s3-external-1.amazonaws.com',
         ],
 
         'rackspace' => [
@@ -64,7 +64,7 @@ return [
             'container' => 'your-container',
             'endpoint' => 'https://identity.api.rackspacecloud.com/v2.0/',
             'region' => 'IAD',
-            'url_type' => 'publicURL'
+            'url_type' => 'publicURL',
         ],
 
     ],

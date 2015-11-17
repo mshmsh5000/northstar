@@ -11,7 +11,6 @@ use Northstar\Models\Campaign;
 
 class PushNotificationTest extends TestCase
 {
-
     /**
      * Mock Phoenix Drupal API wrapper
      * @var \Northstar\Services\Phoenix
@@ -65,17 +64,17 @@ class PushNotificationTest extends TestCase
                             'uri' => 'http://www.example.com/reportback-items/1000',
                             'media' => [
                                 'uri' => 'http://www.example.com/reportback-items/1001.jpg',
-                                'type' => 'image'
+                                'type' => 'image',
                             ],
                             'created_at' => '1234567890',
-                            'status' => 'approved'
+                            'status' => 'approved',
                         ],
                     ],
                 ],
                 'campaign' => [
                     'title' => 'Test Campaign',
                 ],
-            ]
+            ],
         ];
 
         $this->phoenixMock->shouldReceive('reportbackContent')->once()->andReturn($reportback_response);
@@ -167,12 +166,12 @@ class PushNotificationTest extends TestCase
                     'uri' => 'http://www.example.com/reportback-items/1000',
                     'media' => [
                         'uri' => 'http://www.example.com/reportback-items/1001.jpg',
-                        'type' => 'image'
+                        'type' => 'image',
                     ],
                     'created_at' => '1234567890',
                     'user' => [
-                        'id' => '100005'
-                    ]
+                        'id' => '100005',
+                    ],
                 ],
             ],
         ];

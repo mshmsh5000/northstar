@@ -46,15 +46,15 @@ return [
 
     'connections' => [
 
-        'mongodb' => array(
+        'mongodb' => [
             'driver' => 'mongodb',
             'host' => env('DB_HOST', 'localhost'),
             'port' => env('DB_PORT', 27017),
             'username' => env('DB_USERNAME', ''),
             'password' => env('DB_PASSWORD', ''),
             'database' => env('DB_NAME', 'userapi'),
-            'options'  => env('DB_REPL_SET_NAME') ? ['replicaSet' => env('DB_REPL_SET_NAME', 'rs0')] : []
-        ),
+            'options'  => env('DB_REPL_SET_NAME') ? ['replicaSet' => env('DB_REPL_SET_NAME', 'rs0')] : [],
+        ],
 
     ],
 

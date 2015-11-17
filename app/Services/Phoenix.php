@@ -1,4 +1,6 @@
-<?php namespace Northstar\Services;
+<?php
+
+namespace Northstar\Services;
 
 use GuzzleHttp\Client;
 use Cache;
@@ -6,7 +8,6 @@ use Symfony\Component\HttpKernel\Exception\UnprocessableEntityHttpException;
 
 class Phoenix
 {
-
     protected $client;
 
     public function __construct()
@@ -15,12 +16,12 @@ class Phoenix
         $version = config('services.drupal.version');
 
         $this->client = new Client([
-            'base_url' => [$base_url . '/api/{version}/', ['version' => $version]],
+            'base_url' => [$base_url.'/api/{version}/', ['version' => $version]],
             'defaults' => [
                 'headers' => [
                     'Content-Type' => 'application/json',
-                    'Accept' => 'application/json'
-                ]
+                    'Accept' => 'application/json',
+                ],
             ],
         ]);
     }
@@ -35,11 +36,11 @@ class Phoenix
         $authentication = Cache::remember('drupal.authentication', 30, function () {
             $payload = [
                 'username' => getenv('DRUPAL_API_USERNAME'),
-                'password' => getenv('DRUPAL_API_PASSWORD')
+                'password' => getenv('DRUPAL_API_PASSWORD'),
             ];
 
             $response = $this->client->post('auth/login', [
-                'body' => json_encode($payload)
+                'body' => json_encode($payload),
             ]);
 
             $body = $response->json();
@@ -49,7 +50,7 @@ class Phoenix
 
             return [
                 'cookie' => [$session_name => $session_value],
-                'token' => $body['token']
+                'token' => $body['token'],
             ];
         });
 
@@ -84,24 +85,24 @@ class Phoenix
      *
      * @return mixed
      */
-    public function campaigns($id = NULL)
+    public function campaigns($id = null)
     {
         // Get all campaigns if there's no id set.
-        if (!$id) {
+        if (! $id) {
             $response = $this->client->get('campaigns.json');
         } else {
-            $response = $this->client->get('content/' . $id . '.json');
+            $response = $this->client->get('content/'.$id.'.json');
         }
+
         return $response->json();
     }
-
 
     /**
      * Forward registration to Drupal.
      * @see: https://github.com/DoSomething/dosomething/wiki/API#create-a-user
      *
      * @param \Northstar\Models\User $user - User to be registered on Drupal site
-     * @param String $password - Password to register with
+     * @param string $password - Password to register with
      *
      * @return int - Created Drupal user UID
      */
@@ -119,6 +120,7 @@ class Phoenix
         ]);
 
         $json = $response->json();
+
         return $json['uid'];
     }
 
@@ -126,9 +128,9 @@ class Phoenix
      * Get a user uid by email.
      * @see: https://github.com/DoSomething/dosomething/wiki/API#find-a-user
      *
-     * @param String $email - Email of user to search for
+     * @param string $email - Email of user to search for
      *
-     * @return String - Drupal User ID
+     * @return string - Drupal User ID
      * @throws \Exception
      */
     public function getUidByEmail($email)
@@ -146,8 +148,7 @@ class Phoenix
         $json = $response->json();
         if (count($json) > 0) {
             return $json[0]['uid'];
-        }
-        else {
+        } else {
             throw new \Exception('Drupal user not found.', $response->getStatusCode());
         }
     }
@@ -156,26 +157,26 @@ class Phoenix
      * Create a new campaign signup on the Drupal site.
      * @see: https://github.com/DoSomething/dosomething/wiki/API#campaign-signup
      *
-     * @param String $user_id - UID of user on the Drupal site
-     * @param String $campaign_id - NID of campaign on the Drupal site
-     * @param String $source - Sign up source (e.g. web, iPhone, etc.)
+     * @param string $user_id - UID of user on the Drupal site
+     * @param string $campaign_id - NID of campaign on the Drupal site
+     * @param string $source - Sign up source (e.g. web, iPhone, etc.)
      *
-     * @return String - Signup ID
+     * @return string - Signup ID
      * @throws \Exception
      */
     public function campaignSignup($user_id, $campaign_id, $source)
     {
         $payload = [
             'uid' => $user_id,
-            'source' => $source
+            'source' => $source,
         ];
 
-        $response = $this->client->post('campaigns/' . $campaign_id . '/signup', [
+        $response = $this->client->post('campaigns/'.$campaign_id.'/signup', [
             'body' => json_encode($payload),
             'cookies' => $this->getAuthenticationCookie(),
             'headers' => [
-                'X-CSRF-Token' => $this->getAuthenticationToken()
-            ]
+                'X-CSRF-Token' => $this->getAuthenticationToken(),
+            ],
         ]);
 
         if ($response->getStatusCode() == 200) {
@@ -195,21 +196,19 @@ class Phoenix
         }
     }
 
-
     /**
      * Create or update a user's reportback on the Drupal site.
      * @see: https://github.com/DoSomething/dosomething/wiki/API#campaign-reportback
      *
-     * @param String $user_id - UID of user on the Drupal site
-     * @param String $campaign_id - NID of campaign on the Drupal site
+     * @param string $user_id - UID of user on the Drupal site
+     * @param string $campaign_id - NID of campaign on the Drupal site
      * @param array $contents - Contents of reportback
      *   @option string $quantity - Quantity of reportback
      *   @option string $why_participated - Why the user participated in this campaign
      *   @option string $file - Reportback image as a Data URL
      *
-     * @return String - Reportback ID
+     * @return string - Reportback ID
      * @throws \Exception
-     *
      */
     public function campaignReportback($user_id, $campaign_id, $contents)
     {
@@ -223,18 +222,18 @@ class Phoenix
             'source' => $contents['source'],
         ];
 
-        $response = $this->client->post('campaigns/' . $campaign_id . '/reportback', [
+        $response = $this->client->post('campaigns/'.$campaign_id.'/reportback', [
             'body' => json_encode($payload),
             'cookies' => $this->getAuthenticationCookie(),
             'headers' => [
-                'X-CSRF-Token' => $this->getAuthenticationToken()
-            ]
+                'X-CSRF-Token' => $this->getAuthenticationToken(),
+            ],
         ]);
 
         $body = $response->json();
         $reportback_id = $body[0];
 
-        if (!$reportback_id) {
+        if (! $reportback_id) {
             throw new \Exception('Could not create/update reportback.');
         }
 
@@ -253,8 +252,8 @@ class Phoenix
             'body' => json_encode($payload),
             'cookies' => $this->getAuthenticationCookie(),
             'headers' => [
-                'X-CSRF-Token' => $this->getAuthenticationToken()
-            ]
+                'X-CSRF-Token' => $this->getAuthenticationToken(),
+            ],
             ]);
 
         $body = $response->json();
@@ -271,7 +270,7 @@ class Phoenix
      */
     public function reportbackContent($reportback_id)
     {
-        $response = $this->client->get('reportbacks/' . $reportback_id . '.json');
+        $response = $this->client->get('reportbacks/'.$reportback_id.'.json');
 
         return $response->json();
     }
@@ -279,15 +278,14 @@ class Phoenix
     /**
      * Get a specific reportback item.
      *
-     * @param String $reportback_item_id - NID of the reportback item on the Drupal site
+     * @param string $reportback_item_id - NID of the reportback item on the Drupal site
      *
      * @return array - Contents of the reportback item.
      */
     public function reportbackItemContent($reportback_item_id)
     {
-        $response = $this->client->get('reportback-items/' . $reportback_item_id . '.json');
+        $response = $this->client->get('reportback-items/'.$reportback_item_id.'.json');
 
         return $response->json();
     }
-
 }
