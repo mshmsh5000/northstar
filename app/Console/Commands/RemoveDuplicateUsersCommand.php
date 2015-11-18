@@ -106,65 +106,43 @@ class RemoveDuplicateUsersCommand extends Command {
         foreach ($duplicates['result'] as $user) {
             $length = $user['count'];
 
-            // if (isset($user['_id']['email'])) {
-                for ($i = 0; $i < $length-1; $i++) {
-                    if (count($user['uniqueIds']) > 1) {
-                        $duplicate_id = $user['uniqueIds'][$i]->{'$id'};
-                        $second_user = User::where('_id', '=', $duplicate_id)->first();
-                        $first_user = User::where('_id', '=', $user['uniqueIds'][$i+1]->{'$id'})->first();
+            for ($i = 0; $i < $length-1; $i++) {
+                if (count($user['uniqueIds']) > 1) {
+                    $duplicate_id = $user['uniqueIds'][$i]->{'$id'};
+                    $second_user = User::where('_id', '=', $duplicate_id)->first();
+                    $first_user = User::where('_id', '=', $user['uniqueIds'][$i+1]->{'$id'})->first();
 
-                        $updated_user = array_merge(array_filter($second_user->toArray()), array_filter($first_user->toArray()));
-                        $first_user->fill($updated_user)->save();
+                    $first_user_array = array_filter($first_user->toArray());
+                    $second_user_array = array_filter($second_user->toArray());
 
-                        User::destroy($duplicate_id);
+                    foreach ($first_user_array as $key => $value) {
+                        if (is_string($value)) {
 
-                        if (isset($user['_id']['email'])) {
-                            echo "user deleted: " . $user['_id']['email'] . " " . $duplicate_id . "\n";
-                        } else if (isset($user['_id']['mobile'])) {
-                            echo "user deleted: " . $user['_id']['mobile'] . " " . $duplicate_id . "\n";
+                            //this is not working - if you have duplicate user with a field filled in in which the original user doesn't have, it doesn't add the new field in. e.g. add a duplicate user with a country to test.
+                            if (!isset($first_user_array[$key]) && (isset($second_user_array[$key]))) {
+                                $updated_user[$key] = $second_user_array[$key];
+                            } else {
+                                $updated_user[$value] = $first_user_array[$key];
+                            }
+
+                            $first_user->fill($updated_user)->save();
+                        } else if (is_array($value)) {
+                            if (isset($second_user_array[$key])) {
+                                array_push($first_user_array[$key], $second_user_array[$key][0]);
+                                $first_user->fill($first_user_array)->save();
+                            }
                         }
                     }
+
+                    User::destroy($duplicate_id);
+
+                    if (isset($user['_id']['email'])) {
+                        echo "user deleted: " . $user['_id']['email'] . " " . $duplicate_id . "\n";
+                    } else if (isset($user['_id']['mobile'])) {
+                        echo "user deleted: " . $user['_id']['mobile'] . " " . $duplicate_id . "\n";
+                    }
                 }
-            // } else if (isset($user['_id']['mobile'])) {
-                // for ($i = 0; $i < $length-1; $i++) {
-                //     if (count($user['uniqueIds']) > 1) {
-                //         $duplicate_id = $user['uniqueIds'][$i]->{'$id'};
-                //         $second_user = User::where('_id', '=', $duplicate_id)->first();
-                //         $first_user = User::where('_id', '=', $user['uniqueIds'][$i+1]->{'$id'})->first();
-
-                //         $updated_user = array_merge(array_filter($second_user->toArray()), array_filter($first_user->toArray()));
-                //         $first_user->fill($updated_user)->save();
-
-                //         User::destroy($duplicate_id);
-                //         echo "user deleted: " . $user['_id']['mobile'] . " " . $duplicate_id . "\n";
-                //     }
-                // }
-            // }
+            }
         }
     }
 }
-    /**
-     * Combine fields with information from first created user and delete duplicate records.
-     */
-
-    // public function combine($first_user, $second_user)
-    // {
-    //     // Always make sure $first_user is the "original" user that we're going merge.
-    //     if ($first_user->created_at > $second_user->created_at) {
-    //         $tmp = $second_user;
-    //         $second_user = $first_user;
-    //         $first_user = $tmp;
-    //     }
-    //     // Merge their data and save to the first user
-    //     $updated_user = array_merge(array_filter($second_user->toArray()), array_filter($first_user->toArray()));
-    //     $first_user->fill($updated_user)->save();
-
-    //     User::destroy($second_user->_id);
-
-    //     if (isset($second_user->email)) {
-    //         echo "user deleted: " . $second_user->email . $second_user->_id . "\n";
-    //     } else {
-    //         echo "user deleted: " . $second_user->mobile . $second_user->id . "\n";
-    //     }
-    // }
-// }

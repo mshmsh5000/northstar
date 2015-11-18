@@ -77,6 +77,11 @@ class User extends Model implements AuthenticatableContract, CanResetPasswordCon
      */
     public function setEmailAttribute($value)
     {
+        if (is_array($value))
+        {
+            $value = implode(',', $value);
+        }
+
         $this->attributes['email'] = strtolower($value);
     }
 
