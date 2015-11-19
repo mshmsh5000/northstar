@@ -6,7 +6,7 @@ define('DRUPAL_MIN_HASH_COUNT', 7);
 define('DRUPAL_MAX_HASH_COUNT', 30);
 define('DRUPAL_HASH_LENGTH', 55);
 
-class DrupalPasswordChecker
+class DrupalPasswordHash
 {
     /**
      * Check if a given password matches the hash created by Drupal. For details,
@@ -18,7 +18,7 @@ class DrupalPasswordChecker
      *
      * @return bool - Do they match?
      */
-    public function check($password, $drupal_password)
+    public static function check($password, $drupal_password)
     {
         if (substr($drupal_password, 0, 2) == 'U$') {
             // This may be an updated password from user_update_7000(). Such hashes
@@ -34,14 +34,14 @@ class DrupalPasswordChecker
         switch ($type) {
             case '$S$':
                 // A normal Drupal 7 password using sha512.
-                $hash = $this->_password_crypt('sha512', $password, $stored_hash);
+                $hash = self::_password_crypt('sha512', $password, $stored_hash);
                 break;
             case '$H$':
                 // phpBB3 uses "$H$" for the same thing as "$P$".
             case '$P$':
                 // A phpass password generated using md5.  This is an
                 // imported password or from an earlier Drupal version.
-                $hash = _password_crypt('md5', $password, $stored_hash);
+                $hash = self::_password_crypt('md5', $password, $stored_hash);
                 break;
                 default:
                 return FALSE;
@@ -50,7 +50,7 @@ class DrupalPasswordChecker
     }
 
     // @see: https://api.drupal.org/api/drupal/includes%21password.inc/function/_password_crypt/7
-    private function _password_crypt($algo, $password, $setting)
+    private static function _password_crypt($algo, $password, $setting)
     {
         // Prevent DoS attacks by refusing to hash large passwords.
         if (strlen($password) > 512) {
@@ -62,7 +62,7 @@ class DrupalPasswordChecker
         if ($setting[0] != '$' || $setting[2] != '$') {
         return FALSE;
         }
-        $count_log2 = $this->_password_get_count_log2($setting);
+        $count_log2 = self::_password_get_count_log2($setting);
         // Hashes may be imported from elsewhere, so we allow != DRUPAL_HASH_COUNT
         if ($count_log2 < DRUPAL_MIN_HASH_COUNT || $count_log2 > DRUPAL_MAX_HASH_COUNT) {
         return FALSE;
@@ -83,7 +83,7 @@ class DrupalPasswordChecker
         } while (--$count);
 
         $len = strlen($hash);
-        $output =  $setting . $this->_password_base64_encode($hash, $len);
+        $output =  $setting . self::_password_base64_encode($hash, $len);
         // _password_base64_encode() of a 16 byte MD5 will always be 22 characters.
         // _password_base64_encode() of a 64 byte sha512 will always be 86 characters.
         $expected = 12 + ceil((8 * $len) / 6);
@@ -91,10 +91,10 @@ class DrupalPasswordChecker
     }
 
     // @see https://api.drupal.org/api/drupal/includes%21password.inc/function/_password_base64_encode/7
-    private function _password_base64_encode($input, $count) {
+    private static function _password_base64_encode($input, $count) {
       $output = '';
       $i = 0;
-      $itoa64 = $this->_password_itoa64();
+      $itoa64 = self::_password_itoa64();
       do {
         $value = ord($input[$i++]);
         $output .= $itoa64[$value & 0x3f];
@@ -119,14 +119,14 @@ class DrupalPasswordChecker
     }
 
     // @see https://api.drupal.org/api/drupal/includes%21password.inc/function/_password_get_count_log2/7
-    private function _password_get_count_log2($setting)
+    private static function _password_get_count_log2($setting)
     {
-      $itoa64 = $this->_password_itoa64();
+      $itoa64 = self::_password_itoa64();
       return strpos($itoa64, $setting[3]);
     }
 
     // @see https://api.drupal.org/api/drupal/includes%21password.inc/function/_password_itoa64/7
-    private function _password_itoa64() {
+    private static function _password_itoa64() {
         return './0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz';
     }
 }
