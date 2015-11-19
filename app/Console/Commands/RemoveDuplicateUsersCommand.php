@@ -112,30 +112,27 @@ class RemoveDuplicateUsersCommand extends Command {
                     $second_user = User::where('_id', '=', $duplicate_id)->first();
                     $first_user = User::where('_id', '=', $user['uniqueIds'][$i+1]->{'$id'})->first();
 
-                    // $user_array = array_filter($user->toArray());
                     $first_user_array = array_filter($first_user->toArray());
                     $second_user_array = array_filter($second_user->toArray());
 
                     foreach ($second_user_array as $key => $value) {
+                        $updated_user = [];
                         if (is_string($value)) {
-                            $updated_user = [];
-
                             if (!isset($first_user_array[$key]) && (isset($second_user_array[$key]))) {
                                 $updated_user[$key] = $second_user_array[$key];
+                                $first_user->fill($updated_user)->save();
                             } else {
                                 $updated_user[$value] = $first_user_array[$key];
+                                $first_user->fill($updated_user)->save();
                             }
-
-                            $first_user->fill($updated_user)->save();
-
-                        }
-                    }
-
-                    foreach ($first_user_array as $key => $value) {
-                        if (is_array($value)) {
+                        } else if (is_array($value)) {
                             if (isset($second_user_array[$key])) {
-                                array_push($first_user_array[$key], $second_user_array[$key][0]);
-                                $first_user->fill($first_user_array)->save();
+                                if (!in_array($key, $first_user_array)) {
+                                    $updated_user[$key] = $second_user_array[$key][0];
+                                    $first_user->fill($updated_user)->save();
+                                } else {
+                                    array_push($first_user_array[$key], $second_user_array[$key][0]);
+                                }
                             }
                         }
                     }
