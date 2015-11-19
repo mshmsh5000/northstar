@@ -15,7 +15,7 @@ class AvatarController extends Controller
 
     /**
      * Store a new avatar for a user.
-     * POST /users/{id}/avatar
+     * POST /users/:id/avatar
      *
      * @param Request $request
      * @param $id - User ID

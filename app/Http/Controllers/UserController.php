@@ -23,8 +23,7 @@ class UserController extends Controller
 
     /**
      * Display a listing of the resource.
-     * GET /users
-     * Get /users?attr1=value1&attr2=value2&...
+     * GET /users/:term/:identifier
      *
      * @param Request $request
      * @return \Illuminate\Http\Response
