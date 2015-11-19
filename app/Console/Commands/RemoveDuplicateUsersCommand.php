@@ -112,13 +112,14 @@ class RemoveDuplicateUsersCommand extends Command {
                     $second_user = User::where('_id', '=', $duplicate_id)->first();
                     $first_user = User::where('_id', '=', $user['uniqueIds'][$i+1]->{'$id'})->first();
 
+                    // $user_array = array_filter($user->toArray());
                     $first_user_array = array_filter($first_user->toArray());
                     $second_user_array = array_filter($second_user->toArray());
 
-                    foreach ($first_user_array as $key => $value) {
+                    foreach ($second_user_array as $key => $value) {
                         if (is_string($value)) {
+                            $updated_user = [];
 
-                            //this is not working - if you have duplicate user with a field filled in in which the original user doesn't have, it doesn't add the new field in. e.g. add a duplicate user with a country to test.
                             if (!isset($first_user_array[$key]) && (isset($second_user_array[$key]))) {
                                 $updated_user[$key] = $second_user_array[$key];
                             } else {
@@ -126,7 +127,12 @@ class RemoveDuplicateUsersCommand extends Command {
                             }
 
                             $first_user->fill($updated_user)->save();
-                        } else if (is_array($value)) {
+
+                        }
+                    }
+
+                    foreach ($first_user_array as $key => $value) {
+                        if (is_array($value)) {
                             if (isset($second_user_array[$key])) {
                                 array_push($first_user_array[$key], $second_user_array[$key][0]);
                                 $first_user->fill($first_user_array)->save();
