@@ -2,7 +2,6 @@
 
 namespace Northstar\Http\Controllers;
 
-use Northstar\Models\User;
 use Northstar\Models\Token;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpKernel\Exception\HttpException;
@@ -21,7 +20,7 @@ class AuthController extends Controller
      * Authenticate a registered user
      *
      * @param Request $request
-     * @return Response
+     * @return \Illuminate\Http\Response
      * @throws UnauthorizedHttpException
      */
     public function login(Request $request)
@@ -40,7 +39,7 @@ class AuthController extends Controller
 
     /**
      * Logout the current user by invalidating their session token.
-     * @return Response
+     * @return \Illuminate\Http\Response
      * @throws HttpException
      */
     public function logout(Request $request)

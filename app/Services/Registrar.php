@@ -8,11 +8,6 @@ use Symfony\Component\HttpKernel\Exception\UnauthorizedHttpException;
 
 class Registrar
 {
-    public function __construct(DrupalPasswordChecker $drupal_password_checker)
-    {
-        $this->drupal_password_checker = $drupal_password_checker;
-    }
-
     public function login($input)
     {
         $login_type = 'username';
@@ -36,7 +31,7 @@ class Registrar
         } elseif (($user instanceof User) && ! ($user->password)) {
 
             // check to see if $input['password'] equals user's drupal password
-            if ($this->drupal_password_checker->check($input['password'], $user->drupal_password)) {
+            if (DrupalPasswordHash::check($input['password'], $user->drupal_password)) {
 
                 // if they're the same, make $input['password'] into a hash and save it to the user.
                 $user->password = $input['password'];
