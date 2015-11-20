@@ -153,9 +153,9 @@ class RemoveDuplicateUsersCommand extends Command
                     User::destroy($duplicate_id);
 
                     if (isset($user['_id']['email'])) {
-                        echo 'user deleted: '.$user['_id']['email'].' '.$duplicate_id.'\n';
+                        echo 'user deleted: '.$user['_id']['email'].' '.$duplicate_id."\n";
                     } elseif (isset($user['_id']['mobile'])) {
-                        echo 'user deleted: '.$user['_id']['mobile'].' '.$duplicate_id.'\n';
+                        echo 'user deleted: '.$user['_id']['mobile'].' '.$duplicate_id."\n";
                     }
                 }
             }
