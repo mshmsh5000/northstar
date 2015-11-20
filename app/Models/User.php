@@ -73,12 +73,11 @@ class User extends Model implements AuthenticatableContract, CanResetPasswordCon
     protected $dates = ['created_at', 'updated_at'];
 
     /**
-     * Email address mutator that converts the email value to lowercase
+     * Email address mutator that converts the email value to lowercase.
      */
     public function setEmailAttribute($value)
     {
-        if (is_array($value))
-        {
+        if (is_array($value)) {
             $value = implode(',', $value);
         }
 
@@ -86,12 +85,11 @@ class User extends Model implements AuthenticatableContract, CanResetPasswordCon
     }
 
     /**
-     * Interests mutator converting comma-delimited string to an array
+     * Interests mutator converting comma-delimited string to an array.
      */
     public function setInterestsAttribute($value)
     {
-        if (is_array($value))
-        {
+        if (is_array($value)) {
             $value = implode(',', $value);
         }
 
@@ -100,8 +98,7 @@ class User extends Model implements AuthenticatableContract, CanResetPasswordCon
     }
 
     /**
-     * Mobile number mutator that converts number value to only numbers
-     *
+     * Mobile number mutator that converts number value to only numbers.
      */
     public function setMobileAttribute($value)
     {
@@ -109,7 +106,7 @@ class User extends Model implements AuthenticatableContract, CanResetPasswordCon
     }
 
     /**
-     * Mutator saves Parse installation ids as an array
+     * Mutator saves Parse installation ids as an array.
      */
     public function setParseInstallationIdsAttribute($value)
     {
