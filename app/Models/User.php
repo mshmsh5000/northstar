@@ -77,10 +77,6 @@ class User extends Model implements AuthenticatableContract, CanResetPasswordCon
      */
     public function setEmailAttribute($value)
     {
-        if (is_array($value)) {
-            $value = implode(',', $value);
-        }
-
         $this->attributes['email'] = strtolower($value);
     }
 
@@ -89,11 +85,8 @@ class User extends Model implements AuthenticatableContract, CanResetPasswordCon
      */
     public function setInterestsAttribute($value)
     {
-        if (is_array($value)) {
-            $value = implode(',', $value);
-        }
+        $interests = is_array($value) ? $value : array_map('trim', explode(',', $value));
 
-        $interests = array_map('trim', explode(',', $value));
         $this->push('interests', $interests, true);
     }
 
@@ -110,7 +103,8 @@ class User extends Model implements AuthenticatableContract, CanResetPasswordCon
      */
     public function setParseInstallationIdsAttribute($value)
     {
-        $ids = array_map('trim', explode(',', $value));
+        $ids = is_array($value) ? $value : array_map('trim', explode(',', $value));
+
         $this->push('parse_installation_ids', $ids, true);
     }
 

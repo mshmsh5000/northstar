@@ -43,6 +43,13 @@ class RemoveDuplicateUsersCommand extends Command
             return $collection->aggregate(
                 [
                     [
+                        '$match' => [
+                                'email' => [
+                                    '$ne' => '',
+                                ],
+                        ],
+                    ],
+                    [
                         '$group' => [
                             '_id' => [
                                 'email' => '$email',
@@ -70,12 +77,20 @@ class RemoveDuplicateUsersCommand extends Command
         });
 
         // Delete email duplicates.
-        $this->deduplicate($email_duplicates);
+        $this->deduplicate($email_duplicates, "email");
 
         // Find all duplicate users by mobile.
         $mobile_duplicates = User::raw(function ($collection) {
             return $collection->aggregate(
                 [
+                    [
+                        '$match' => [
+                            'mobile' => [
+                                '$ne' => '',
+                                '$exists' => true,
+                            ],
+                        ],
+                    ],
                     [
                         '$group' => [
                             '_id' => [
@@ -104,62 +119,88 @@ class RemoveDuplicateUsersCommand extends Command
         });
 
         // Delete mobile duplicates.
-        $this->deduplicate($mobile_duplicates);
-
-        $this->info('Deduplication complete.');
+        $this->deduplicate($mobile_duplicates, "mobile");
+        $this->info('Script successful. Re-run script until no users are deleted and yields only this message. If only this message, deduplication complete!');
     }
 
     /**
      * Combine all user info. into one record and delete all duplicates.
      * @param  array $duplicates
+     * @param  string $type - describes if it is an email or mobile duplicate
      * @return void
      */
-    public function deduplicate($duplicates)
+    public function deduplicate($duplicates, $type)
     {
         foreach ($duplicates['result'] as $user) {
             $length = $user['count'];
 
-            for ($i = 0; $i < $length - 1; $i++) {
-                if (count($user['uniqueIds']) > 1) {
-                    $duplicate_id = $user['uniqueIds'][$i]->{'$id'};
-                    $second_user = User::where('_id', '=', $duplicate_id)->first();
-                    $first_user = User::where('_id', '=', $user['uniqueIds'][$i + 1]->{'$id'})->first();
+            // No need to deduplicate anything
+            if ($length <= 1) {
+                continue;
+            }
 
-                    $first_user_array = array_filter($first_user->toArray());
-                    $second_user_array = array_filter($second_user->toArray());
+            // Default master doc is the first one in the list (just to give us somewhere to start)
+            $master_doc = User::where('_id', '=',  $user['uniqueIds'][0]->{'$id'})->first();
 
-                    foreach ($second_user_array as $key => $value) {
-                        $updated_user = [];
-                        if (is_string($value)) {
-                            if (! isset($first_user_array[$key]) && (isset($second_user_array[$key]))) {
-                                $updated_user[$key] = $second_user_array[$key];
-                                $first_user->fill($updated_user)->save();
+            if (!$master_doc) {
+                echo "ERROR can't find a doc for: ".$user['uniqueIds'][0]->{'$id'}."\n";
+                continue;
+            }
+
+            // Ensure the doc actually has value that matches the $type we're running this for.
+            if (($type == 'mobile' && empty($master_doc['mobile'])) ||
+                ($type == 'email' && empty($master_doc['email']))) {
+                continue;
+            }
+
+            for ($i = 1; $i < $length; $i++) {
+                $master_doc_arr = $master_doc->toArray();
+
+                $compare_doc = User::where('_id', '=', $user['uniqueIds'][$i]->{'$id'})->first();
+                $compare_doc_arr = $compare_doc->toArray();
+
+                // Convert string to date and ensure that master_doc is the original user created.
+                $master_doc_created_at = strtotime($master_doc_arr['created_at']) * 1000;
+                $compare_doc_created_at = strtotime($compare_doc_arr['created_at']) * 1000;
+
+                if ($master_doc_created_at > $compare_doc_created_at) {
+                    $tmp = $compare_doc_arr;
+                    $compare_doc_arr = $master_doc_arr;
+                    $master_doc_arr = $tmp;
+                }
+
+                foreach ($compare_doc_arr as $key => $value) {
+                    $updated_user = [];
+                    if (is_string($value)) {
+                        if (empty($master_doc_arr[$key])) {
+                            $master_doc_arr[$key] = $value;
+                        }
+                    } elseif (is_array($value)) {
+                        if (isset($compare_doc_arr[$key])) {
+                            if (! in_array($key, $master_doc_arr)) {
+                                $updated_user[$key] = $compare_doc_arr[$key];
+                                $master_doc->fill($updated_user)->save();
                             } else {
-                                $updated_user[$value] = $first_user_array[$key];
-                                $first_user->fill($updated_user)->save();
-                            }
-                        } elseif (is_array($value)) {
-                            // dd($second_user_array[$key]);
-                            if (isset($second_user_array[$key])) {
-                                if (! in_array($key, $first_user_array)) {
-                                    $updated_user[$key] = $second_user_array[$key];
-                                    $first_user->fill($updated_user)->save();
-                                } else {
-                                    array_push($first_user_array[$key], $second_user_array[$key]);
-                                }
+                                $master_doc_arry[$key] = array_push($master_doc_arr[$key], $compare_doc_arr[$key]);
                             }
                         }
                     }
+                }
 
-                    User::destroy($duplicate_id);
+                // Fill model with updates. array_filter to remove any keys with null values.
+                $master_doc->fill(array_filter($master_doc_arr));
 
-                    if (isset($user['_id']['email'])) {
-                        echo 'user deleted: '.$user['_id']['email'].' '.$duplicate_id."\n";
-                    } elseif (isset($user['_id']['mobile'])) {
-                        echo 'user deleted: '.$user['_id']['mobile'].' '.$duplicate_id."\n";
-                    }
+                // Delete the compare_doc
+                User::destroy($compare_doc_arr['_id']);
+                if (!empty($compare_doc_arr['email'])) {
+                    echo 'user deleted: '.$compare_doc_arr['email'].' '.$compare_doc_arr['_id']."\n";
+                } elseif (!empty($compare_doc_arr['mobile'])) {
+                    echo 'user deleted: '.$compare_doc_arr['mobile'].' '.$compare_doc_arr['_id']."\n";
                 }
             }
+
+            // Then save the master_doc we've got cached over here
+            $master_doc->save();
         }
     }
 }
