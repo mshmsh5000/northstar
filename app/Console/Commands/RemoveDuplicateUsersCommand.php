@@ -139,12 +139,13 @@ class RemoveDuplicateUsersCommand extends Command
                                 $first_user->fill($updated_user)->save();
                             }
                         } elseif (is_array($value)) {
+                            // dd($second_user_array[$key]);
                             if (isset($second_user_array[$key])) {
                                 if (! in_array($key, $first_user_array)) {
-                                    $updated_user[$key] = $second_user_array[$key][0];
+                                    $updated_user[$key] = $second_user_array[$key];
                                     $first_user->fill($updated_user)->save();
                                 } else {
-                                    array_push($first_user_array[$key], $second_user_array[$key][0]);
+                                    array_push($first_user_array[$key], $second_user_array[$key]);
                                 }
                             }
                         }
