@@ -17,6 +17,7 @@ class ApiKeyTableSeeder extends Seeder
         ApiKey::create([
             'app_id' => '456',
             'api_key' => 'abc4324',
+            'scope' => ['admin', 'user'],
         ]);
 
         ApiKey::create([
