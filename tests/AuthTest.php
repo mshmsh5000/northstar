@@ -32,6 +32,14 @@ class AuthTest extends TestCase
             'HTTP_Session' => 'S0FyZmlRNmVpMzVsSzJMNUFreEFWa3g0RHBMWlJRd0tiQmhSRUNxWXh6cz1=',
         ];
 
+        $this->serverForParseTest2 = [
+            'CONTENT_TYPE' => 'application/json',
+            'HTTP_Accept' => 'application/json',
+            'HTTP_X-DS-Application-Id' => '456',
+            'HTTP_X-DS-REST-API-Key' => 'abc4324',
+            'HTTP_Session' => 'S0FyZmlRNmVpMzVsSzJMNUFreEFWa3g0RHBMWlJRd0tiQmhSRUNxWXh6cz2=',
+        ];
+
         $this->serverMissingToken = [
             'HTTP_Accept' => 'application/json',
             'HTTP_X-DS-Application-Id' => '456',
@@ -116,10 +124,11 @@ class AuthTest extends TestCase
         $this->assertEquals(200, $logoutResponse->getStatusCode());
 
         // Verify parse_installation_ids got removed from the user
-        $getResponse = $this->call('GET', 'v1/users/_id/bf1039b0271bcc636aa5477c', [], [], [], $this->serverForParseTest);
+        $getResponse = $this->call('GET', 'v1/users/_id/bf1039b0271bcc636aa5477c', [], [], [], $this->serverForParseTest2);
         $getContent = $getResponse->getContent();
         $user = json_decode($getContent, true);
 
+        $this->assertEquals(200, $getResponse->getStatusCode());
         $this->assertEquals(0, count($user['data'][0]['parse_installation_ids']));
     }
 
