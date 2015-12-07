@@ -73,6 +73,7 @@ class Token extends Model
     /**
      * Get the user associated with a given token key.
      * @param int $token - Token key
+     * @return User|null
      */
     public static function userFor($token)
     {

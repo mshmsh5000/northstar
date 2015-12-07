@@ -39,6 +39,8 @@ class AuthController extends Controller
 
     /**
      * Logout the current user by invalidating their session token.
+     *
+     * @param Request $request
      * @return \Illuminate\Http\Response
      * @throws HttpException
      */

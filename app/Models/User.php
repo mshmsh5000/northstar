@@ -12,8 +12,6 @@ use Hash;
 
 /**
  * Class User
- *
- * @method static where()
  */
 class User extends Model implements AuthenticatableContract, CanResetPasswordContract
 {
