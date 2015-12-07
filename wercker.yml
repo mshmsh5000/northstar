@@ -36,11 +36,10 @@ deploy:
           echo -e $WERCKER_APP_KEY_PRIVATE > $CAP_PRIVATE_KEY
     - cap
   after-steps:
-      - iansmith9876/pretty-slack-notify:
-          team: dosomething
+      - sherzberg/slack-notify:
+          subdomain: dosomething
           token: $SLACK_TOKEN
           channel: $SLACK_ROOM
-          username: george
       - script:
           name: Run Runscope tests
           code: curl $RUNSCOPE_TRIGGER_URL
