@@ -10,11 +10,6 @@ use Illuminate\Contracts\Auth\CanResetPassword as CanResetPasswordContract;
 use Request;
 use Hash;
 
-/**
- * Class User
- *
- * @method static where()
- */
 class User extends Model implements AuthenticatableContract, CanResetPasswordContract
 {
     use Authenticatable, CanResetPassword;
@@ -23,7 +18,7 @@ class User extends Model implements AuthenticatableContract, CanResetPasswordCon
         'email', 'mobile', 'password', 'drupal_password',
         'first_name', 'last_name', 'birthdate', 'photo', 'interests',
         'race', 'religion',
-        'school_id' ,'college_name', 'degree_type', 'major_name', 'hs_gradyear', 'hs_name', 'sat_math', 'sat_verbal', 'sat_writing',
+        'school_id', 'college_name', 'degree_type', 'major_name', 'hs_gradyear', 'hs_name', 'sat_math', 'sat_verbal', 'sat_writing',
         'addr_street1', 'addr_street2', 'addr_city', 'addr_state', 'addr_zip', 'country',
         'cgg_id', 'drupal_id', 'agg_id', 'source',
         'parse_installation_ids',
@@ -40,13 +35,6 @@ class User extends Model implements AuthenticatableContract, CanResetPasswordCon
     public static $indexes = [
         '_id', 'drupal_id',
     ];
-
-    /**
-     * The database collection used by the model.
-     *
-     * @var string
-     */
-    protected $collection = 'users';
 
     /**
      * The attributes excluded from the model's JSON form.

@@ -14,6 +14,9 @@ class AuthController extends Controller
     public function __construct(Registrar $registrar)
     {
         $this->registrar = $registrar;
+
+        $this->middleware('key:user');
+        $this->middleware('auth', ['only' => 'logout']);
     }
 
     /**
@@ -39,6 +42,8 @@ class AuthController extends Controller
 
     /**
      * Logout the current user by invalidating their session token.
+     *
+     * @param Request $request
      * @return \Illuminate\Http\Response
      * @throws HttpException
      */

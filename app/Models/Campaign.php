@@ -2,9 +2,9 @@
 
 namespace Northstar\Models;
 
-use Jenssegers\Mongodb\Model as Eloquent;
+use Jenssegers\Mongodb\Model;
 
-class Campaign extends Eloquent
+class Campaign extends Model
 {
     /**
      * Guarded attributes

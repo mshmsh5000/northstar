@@ -2,44 +2,29 @@
 
 namespace Northstar\Http\Middleware;
 
+use Northstar\Models\Token;
 use Closure;
-use Illuminate\Contracts\Auth\Guard;
+use Symfony\Component\HttpKernel\Exception\HttpException;
 
 class Authenticate
 {
-    /**
-     * The Guard implementation.
-     *
-     * @var Guard
-     */
-    protected $auth;
-
-    /**
-     * Create a new filter instance.
-     *
-     * @param  Guard $auth
-     * @return void
-     */
-    public function __construct(Guard $auth)
-    {
-        $this->auth = $auth;
-    }
-
     /**
      * Handle an incoming request.
      *
      * @param  \Illuminate\Http\Request $request
      * @param  \Closure $next
      * @return mixed
+     * @throws HttpException
      */
     public function handle($request, Closure $next)
     {
-        if ($this->auth->guest()) {
-            if ($request->ajax()) {
-                return response('Unauthorized.', 401);
-            } else {
-                return redirect()->guest('auth/login');
-            }
+        $token = $request->header('Session');
+        if (! $token) {
+            throw new HttpException(401, 'No token found.');
+        }
+
+        if (! Token::where('key', $token)->exists()) {
+            throw new HttpException(401, 'Token mismatched.');
         }
 
         return $next($request);

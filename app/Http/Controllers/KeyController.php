@@ -2,19 +2,23 @@
 
 namespace Northstar\Http\Controllers;
 
+use Illuminate\Http\Request;
 use Northstar\Models\ApiKey;
-use Input;
-use Response;
 use Symfony\Component\HttpKernel\Exception\HttpException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class KeyController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware('key:admin');
+    }
+
     /**
      * Display a listing of the resource.
      * GET /keys
      *
-     * @return Response
+     * @return \Illuminate\Http\Response
      */
     public function index()
     {
@@ -27,36 +31,34 @@ class KeyController extends Controller
      * Store a newly created resource in storage.
      * POST /keys
      *
-     * @return Response
+     * @param Request $request
+     * @return \Illuminate\Http\Response
      * @throws HttpException
      */
-    public function store()
+    public function store(Request $request)
     {
         // Get the app name from submission.
-        if (Input::has('app_name')) {
-            $app_name = Input::get('app_name');
-            $key = new ApiKey();
-            $key->app_id = snake_case(str_replace(' ', '', $app_name));
-            $key->api_key = str_random(40);
-            // Save new key.
-            $key->save();
-
-            return $this->respond($key);
+        if (! $request->has('app_name')) {
+            throw new HttpException(400, 'Missing required information.');
         }
 
-        throw new HttpException(400, 'Missing required information.');
+        $key = ApiKey::create([
+            'app_id' => $request->get('app_name'),
+        ]);
+
+        return $this->respond($key, 201);
     }
 
     /**
      * Display the specified resource.
      *
-     * @return Response
+     * @return \Illuminate\Http\Response
      * @throws NotFoundHttpException
      */
     public function show($id)
     {
         // Find the user.
-        $key = Key::where('id', $id)->get();
+        $key = ApiKey::where('id', $id)->get();
         if (! $key->isEmpty()) {
             return $this->respond($key);
         }
@@ -65,10 +67,9 @@ class KeyController extends Controller
     }
 
     /**
-     * Delete a api key resource.
-     * DELETE /key/:id
+     * Delete an API key resource.
      *
-     * @return Response
+     * @return \Illuminate\Http\Response
      */
     public function destroy($id)
     {
