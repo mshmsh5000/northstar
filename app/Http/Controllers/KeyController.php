@@ -46,7 +46,7 @@ class KeyController extends Controller
             'app_id' => $request->get('app_name'),
         ]);
 
-        return $this->respond($key);
+        return $this->respond($key, 201);
     }
 
     /**
