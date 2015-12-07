@@ -31,7 +31,8 @@ class Token extends Eloquent
     {
         parent::__construct($attributes);
 
-        // Set a random key for the token.
+        // Automatically set random token key. This field *may* be manually
+        // set when seeding the database, so we first check if empty.
         if(empty($this->key)) {
             $this->key = self::randomKey(32);
         }
