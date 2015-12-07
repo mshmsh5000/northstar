@@ -22,6 +22,22 @@ class Token extends Eloquent
 
 
     /**
+     * Create a new Token.
+     *
+     * @param  array  $attributes
+     * @return Token
+     */
+    public function __construct(array $attributes = [])
+    {
+        parent::__construct($attributes);
+
+        // Set a random key for the token.
+        if(empty($this->key)) {
+            $this->key = self::randomKey(32);
+        }
+    }
+
+    /**
      * Generate a random key of given length.
      *
      * @param $size
@@ -39,10 +55,16 @@ class Token extends Eloquent
         return base64_encode($key);
     }
 
+    /**
+     * Create a new token. DEPRECATED: Use standard class
+     * constructor instead.
+     *
+     * @return Token
+     * @deprecated
+     */
     public static function getInstance()
     {
         $token = new self();
-        $token->key = self::randomKey(32);
 
         return $token;
     }
