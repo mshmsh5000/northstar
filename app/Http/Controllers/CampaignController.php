@@ -22,6 +22,11 @@ class CampaignController extends Controller
     public function __construct(Phoenix $drupal)
     {
         $this->phoenix = $drupal;
+
+        $this->middleware('key:user');
+        $this->middleware('auth');
+
+        $this->middleware('campaign');
     }
 
     /**

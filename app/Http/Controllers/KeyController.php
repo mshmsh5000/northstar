@@ -9,6 +9,11 @@ use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class KeyController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware('key:admin');
+    }
+
     /**
      * Display a listing of the resource.
      * GET /keys

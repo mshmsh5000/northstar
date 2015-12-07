@@ -18,6 +18,8 @@ class SignupGroupController extends Controller
     public function __construct(Phoenix $phoenix)
     {
         $this->phoenix = $phoenix;
+
+        $this->middleware('key:admin');
     }
 
     /**

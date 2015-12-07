@@ -11,6 +11,11 @@ class AvatarController extends Controller
     public function __construct(AWS $aws)
     {
         $this->aws = $aws;
+
+        $this->middleware('key:user');
+        $this->middleware('auth');
+
+        $this->middleware('user');
     }
 
     /**

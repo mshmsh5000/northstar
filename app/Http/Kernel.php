@@ -25,10 +25,11 @@ class Kernel extends HttpKernel
      * @var array
      */
     protected $routeMiddleware = [
+        // Authorization:
         'auth' => 'Northstar\Http\Middleware\Authenticate',
-        'auth.token' => 'Northstar\Http\Middleware\AuthenticateToken',
-        'auth.api' => 'Northstar\Http\Middleware\AuthenticateAPI',
-        'guest' => 'Northstar\Http\Middleware\RedirectIfAuthenticated',
+        'key' => 'Northstar\Http\Middleware\AuthenticateAPIKey',
+
+        // Formatting responses:
         'user' => 'Northstar\Http\Middleware\UserResponseMiddleware',
         'campaign' => 'Northstar\Http\Middleware\CampaignResponseMiddleware',
     ];

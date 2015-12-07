@@ -5,7 +5,7 @@ namespace Northstar\Http\Middleware;
 use Northstar\Models\ApiKey;
 use Closure;
 
-class AuthenticateAPI
+class AuthenticateAPIKey
 {
     /**
      * Handle an incoming request.

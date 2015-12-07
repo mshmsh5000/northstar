@@ -19,6 +19,11 @@ class UserController extends Controller
     public function __construct(Phoenix $phoenix)
     {
         $this->phoenix = $phoenix;
+
+        $this->middleware('key:user');
+        $this->middleware('auth');
+
+        $this->middleware('user');
     }
 
     /**
