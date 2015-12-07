@@ -6,10 +6,22 @@ use Jenssegers\Mongodb\Model as Eloquent;
 
 class Token extends Eloquent
 {
+    /**
+     * The database collection used by the model.
+     *
+     * @var string
+     */
     protected $collection = 'tokens';
 
     protected $guarded = ['key'];
 
+
+    /**
+     * Generate a random key of given length.
+     *
+     * @param $size
+     * @return string
+     */
     public static function randomKey($size)
     {
         do {
@@ -30,6 +42,10 @@ class Token extends Eloquent
         return $token;
     }
 
+    /**
+     * Get the user associated with a given token key.
+     * @param int $token - Token key
+     */
     public static function userFor($token)
     {
         $token = self::where('key', '=', $token)->first();
@@ -40,6 +56,13 @@ class Token extends Eloquent
         return User::find($token->user_id);
     }
 
+    /**
+     * Check if this given token is associated with the given user.
+     *
+     * @param int   $user_id
+     * @param Token $token
+     * @return mixed
+     */
     public static function isUserToken($user_id, $token)
     {
         return self::where('user_id', '=', $user_id)
