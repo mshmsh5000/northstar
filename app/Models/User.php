@@ -37,13 +37,6 @@ class User extends Model implements AuthenticatableContract, CanResetPasswordCon
     ];
 
     /**
-     * The database collection used by the model.
-     *
-     * @var string
-     */
-    protected $collection = 'users';
-
-    /**
      * The attributes excluded from the model's JSON form.
      *
      * @var array
