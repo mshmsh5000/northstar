@@ -20,7 +20,6 @@ class Token extends Model
      */
     protected $fillable = [];
 
-
     /**
      * Create a new Token.
      *
@@ -33,7 +32,7 @@ class Token extends Model
 
         // Automatically set random token key. This field *may* be manually
         // set when seeding the database, so we first check if empty.
-        if(empty($this->key)) {
+        if (empty($this->key)) {
             $this->key = self::randomKey(32);
         }
     }

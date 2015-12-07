@@ -1,7 +1,5 @@
 <?php
 
-use Northstar\Models\ApiKey;
-
 class ApiKeyTest extends TestCase
 {
     protected $adminScope;
@@ -31,7 +29,6 @@ class ApiKeyTest extends TestCase
             'HTTP_X-DS-REST-API-Key' => '5464utyrs',
             'HTTP_Session' => 'S0FyZmlRNmVpMzVsSzJMNUFreEFWa3g0RHBMWlJRd0tiQmhSRUNxWXh6cz0=',
         ];
-
     }
 
     /**
@@ -58,15 +55,14 @@ class ApiKeyTest extends TestCase
     {
         // Verify a "user" scoped key is not able to list keys
         $response = $this->call('POST', 'v1/keys', [], [], [], $this->userScope, json_encode([
-            'app_name' => 'test'
+            'app_name' => 'test',
         ]));
         $this->assertEquals(403, $response->getStatusCode());
 
         // Verify an admin key is able to create a new key
         $response = $this->call('POST', 'v1/keys', [], [], [], $this->adminScope, json_encode([
-            'app_name' => 'test'
+            'app_name' => 'test',
         ]));
         $this->assertEquals(201, $response->getStatusCode());
     }
-
 }

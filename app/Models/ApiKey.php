@@ -19,7 +19,7 @@ class ApiKey extends Model
      * @var array
      */
     protected $attributes = [
-        'scope' => ['user']
+        'scope' => ['user'],
     ];
 
     /**
@@ -37,7 +37,8 @@ class ApiKey extends Model
      * @var array
      */
     protected $fillable = [
-        'app_id', 'scope'
+        'app_id',
+        'scope',
     ];
 
     /**
@@ -52,7 +53,7 @@ class ApiKey extends Model
 
         // Automatically set random API key. This field *may* be manually
         // set when seeding the database, so we first check if empty.
-        if(empty($this->api_key)) {
+        if (empty($this->api_key)) {
             $this->api_key = str_random(40);
         }
     }
@@ -71,11 +72,10 @@ class ApiKey extends Model
     public function getScopeAttribute()
     {
         $scope = $this->attributes['scope'];
-        if(is_string($scope)) {
+        if (is_string($scope)) {
             $scope = json_decode($scope);
         }
 
-        return !empty($scope) ? $scope : ['user'];
+        return ! empty($scope) ? $scope : ['user'];
     }
-
 }

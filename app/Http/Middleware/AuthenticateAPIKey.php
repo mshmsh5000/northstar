@@ -26,7 +26,7 @@ class AuthenticateAPIKey
             return response()->json('Unauthorized access.', 401);
         }
 
-        if(! in_array($scope, $key->scope)) {
+        if (! in_array($scope, $key->scope)) {
             return response()->json('API key is missing required scope.', 403);
         }
 
