@@ -13,7 +13,12 @@ class Token extends Eloquent
      */
     protected $collection = 'tokens';
 
-    protected $guarded = ['key'];
+    /**
+     * The attributes that are mass assignable.
+     *
+     * @var array
+     */
+    protected $fillable = [];
 
 
     /**
