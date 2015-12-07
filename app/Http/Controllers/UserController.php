@@ -95,7 +95,7 @@ class UserController extends Controller
             // is for unique email or phone numbers, and that should return a user
             // from the query above.
             $this->validate($request, [
-                'email' => 'email|unique:users|required_without:mobile',
+                'email' => 'email|max:60|unique:users|required_without:mobile',
                 'mobile' => 'unique:users|required_without:email',
             ]);
         }
