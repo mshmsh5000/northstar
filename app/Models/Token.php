@@ -2,9 +2,9 @@
 
 namespace Northstar\Models;
 
-use Jenssegers\Mongodb\Model as Eloquent;
+use Jenssegers\Mongodb\Model;
 
-class Token extends Eloquent
+class Token extends Model
 {
     /**
      * The database collection used by the model.

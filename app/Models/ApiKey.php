@@ -2,9 +2,9 @@
 
 namespace Northstar\Models;
 
-use Jenssegers\Mongodb\Model as Eloquent;
+use Jenssegers\Mongodb\Model;
 
-class ApiKey extends Eloquent
+class ApiKey extends Model
 {
     protected $primaryKey = '_id';
 
