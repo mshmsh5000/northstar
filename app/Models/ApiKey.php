@@ -71,11 +71,12 @@ class ApiKey extends Model
      */
     public function getScopeAttribute()
     {
-        if(empty($this->attributes['scope'])) {
+        if (empty($this->attributes['scope'])) {
             return ['user'];
         }
 
         $scope = $this->attributes['scope'];
+
         return is_string($scope) ? json_decode($scope) : $scope;
     }
 }
