@@ -40,6 +40,3 @@ deploy:
           subdomain: dosomething
           token: $SLACK_TOKEN
           channel: $SLACK_ROOM
-      - script:
-          name: Run Runscope tests
-          code: curl $RUNSCOPE_TRIGGER_URL
