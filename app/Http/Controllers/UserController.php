@@ -20,7 +20,8 @@ class UserController extends Controller
     {
         $this->phoenix = $phoenix;
 
-        $this->middleware('key:user');
+        $this->middleware('key:user', ['except' => 'destroy']);
+        $this->middleware('key:admin', ['only' => 'destroy']);
 
         $this->middleware('user');
     }
