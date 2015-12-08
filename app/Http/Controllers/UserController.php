@@ -21,7 +21,6 @@ class UserController extends Controller
         $this->phoenix = $phoenix;
 
         $this->middleware('key:user');
-        $this->middleware('auth');
 
         $this->middleware('user');
     }
