@@ -77,7 +77,7 @@ class RemoveDuplicateUsersCommand extends Command
         });
 
         // Delete email duplicates.
-        $this->deduplicate($email_duplicates, "email");
+        $this->deduplicate($email_duplicates, 'email');
 
         // Find all duplicate users by mobile.
         $mobile_duplicates = User::raw(function ($collection) {
@@ -119,7 +119,7 @@ class RemoveDuplicateUsersCommand extends Command
         });
 
         // Delete mobile duplicates.
-        $this->deduplicate($mobile_duplicates, "mobile");
+        $this->deduplicate($mobile_duplicates, 'mobile');
         $this->info('Script successful. Re-run script until no users are deleted and yields only this message. If only this message, deduplication complete!');
     }
 
@@ -140,9 +140,9 @@ class RemoveDuplicateUsersCommand extends Command
             }
 
             // Default master doc is the first one in the list (just to give us somewhere to start)
-            $master_doc = User::where('_id', '=',  $user['uniqueIds'][0]->{'$id'})->first();
+            $master_doc = User::where('_id', '=', $user['uniqueIds'][0]->{'$id'})->first();
 
-            if (!$master_doc) {
+            if (! $master_doc) {
                 echo "ERROR can't find a doc for: ".$user['uniqueIds'][0]->{'$id'}."\n";
                 continue;
             }
@@ -192,9 +192,9 @@ class RemoveDuplicateUsersCommand extends Command
 
                 // Delete the compare_doc
                 User::destroy($compare_doc_arr['_id']);
-                if (!empty($compare_doc_arr['email'])) {
+                if (! empty($compare_doc_arr['email'])) {
                     echo 'user deleted: '.$compare_doc_arr['email'].' '.$compare_doc_arr['_id']."\n";
-                } elseif (!empty($compare_doc_arr['mobile'])) {
+                } elseif (! empty($compare_doc_arr['mobile'])) {
                     echo 'user deleted: '.$compare_doc_arr['mobile'].' '.$compare_doc_arr['_id']."\n";
                 }
             }
