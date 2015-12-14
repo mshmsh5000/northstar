@@ -3,6 +3,10 @@
 namespace Northstar\Http\Controllers;
 
 use Illuminate\Http\Request;
+use League\Fractal\Manager;
+use League\Fractal\Resource\Item;
+use League\Fractal\Serializer\DataArraySerializer;
+use Northstar\Http\Transformers\UserTransformer;
 use Northstar\Services\Phoenix;
 use Northstar\Models\User;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
@@ -16,14 +20,28 @@ class UserController extends Controller
      */
     protected $phoenix;
 
+    /**
+     * @var Manager
+     */
+    protected $manager;
+
+    /**
+     * @var UserTransformer
+     */
+    protected $transformer;
+
     public function __construct(Phoenix $phoenix)
     {
         $this->phoenix = $phoenix;
 
+        $this->manager = new Manager();
+        $serializer = new DataArraySerializer();
+        $this->manager->setSerializer($serializer);
+
+        $this->transformer = new UserTransformer();
+
         $this->middleware('key:user', ['except' => 'destroy']);
         $this->middleware('key:admin', ['only' => 'destroy']);
-
-        $this->middleware('user');
     }
 
     /**
@@ -153,12 +171,16 @@ class UserController extends Controller
     public function show($term, $id)
     {
         // Find the user.
-        $user = User::where($term, $id)->get();
-        if (! $user->isEmpty()) {
-            return $this->respond($user);
+        $user = User::where($term, $id)->first();
+
+        if(! $user) {
+            throw new NotFoundHttpException('The resource does not exist.');
         }
 
-        throw new NotFoundHttpException('The resource does not exist.');
+        // Prepare response
+        $resource = new Item($user, $this->transformer, 'user');
+
+        return $this->manager->createData($resource)->toArray();
     }
 
     /**
