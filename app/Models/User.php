@@ -95,7 +95,13 @@ class User extends Model implements AuthenticatableContract, CanResetPasswordCon
      */
     public function setMobileAttribute($value)
     {
-        $this->attributes['mobile'] = preg_replace('/\D/', '', $value);
+        // Skip mutator if attribute is null.
+        if (empty($value)) {
+            return;
+        }
+
+        // Otherwise, remove all non-numeric characters.
+        $this->attributes['mobile'] = preg_replace('/[^0-9]/', '', $value);
     }
 
     /**
