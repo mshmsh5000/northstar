@@ -61,7 +61,7 @@ class User extends Model implements AuthenticatableContract, CanResetPasswordCon
     protected $dates = ['created_at', 'updated_at'];
 
     /**
-     * Email address mutator that converts the email value to lowercase
+     * Email address mutator that converts the email value to lowercase.
      */
     public function setEmailAttribute($value)
     {
@@ -69,20 +69,36 @@ class User extends Model implements AuthenticatableContract, CanResetPasswordCon
     }
 
     /**
-     * Interests mutator converting comma-delimited string to an array
+     * Interests mutator converting comma-delimited string to an array.
      */
     public function setInterestsAttribute($value)
     {
-        $interests = array_map('trim', explode(',', $value));
+        $interests = is_array($value) ? $value : array_map('trim', explode(',', $value));
+
         $this->push('interests', $interests, true);
     }
 
     /**
-     * Mutator saves Parse installation ids as an array
+     * Mobile number mutator that converts number value to only numbers.
+     */
+    public function setMobileAttribute($value)
+    {
+        // Skip mutator if attribute is null.
+        if (empty($value)) {
+            return;
+        }
+
+        // Otherwise, remove all non-numeric characters.
+        $this->attributes['mobile'] = preg_replace('/[^0-9]/', '', $value);
+    }
+
+    /**
+     * Mutator saves Parse installation ids as an array.
      */
     public function setParseInstallationIdsAttribute($value)
     {
-        $ids = array_map('trim', explode(',', $value));
+        $ids = is_array($value) ? $value : array_map('trim', explode(',', $value));
+
         $this->push('parse_installation_ids', $ids, true);
     }
 
