@@ -168,6 +168,24 @@ class UserTableSeeder extends Seeder
             'password' => 'secret',
         ]);
 
+        // User with a drupal_password but no password
+        User::create([
+            '_id' => '5430e850dt8hbc541c37cal3',
+            'email' => 'test4@dosomething.org',
+            'mobile' => '5555550103',
+            'drupal_password' => '$S$DOQoztwlGzTeaobeBZKNzlDttbZscuCkkZPv8yeoEvrn26H/GN5b',
+            'drupal_id' => '100007',
+            'addr_street1' => '123',
+            'addr_street2' => '456',
+            'addr_city' => 'Paris',
+            'addr_state' => 'Florida',
+            'addr_zip' => '555555',
+            'country' => 'US',
+            'birthdate' => '12/17/91',
+            'first_name' => 'First',
+            'last_name' => 'Last',
+        ]);
+
         if (App::environment('local')) {
             $faker = Faker\Factory::create();
             foreach (range(1, 50) as $index) {
