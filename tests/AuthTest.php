@@ -1,6 +1,7 @@
 <?php
 
 use Northstar\Models\Token;
+use Northstar\Models\User;
 
 class AuthTest extends TestCase
 {
@@ -51,6 +52,13 @@ class AuthTest extends TestCase
             'HTTP_X-DS-Application-Id' => '456',
             'HTTP_X-DS-REST-API-Key' => 'abc4324',
             'HTTP_Session' => 'thisisafaketoken',
+        ];
+
+        $this->serverDrupalPasswordChecker = [
+            'CONTENT_TYPE' => 'application/json',
+            'HTTP_Accept' => 'application/json',
+            'HTTP_X-DS-Application-Id' => '456',
+            'HTTP_X-DS-REST-API-Key' => 'abc4324',
         ];
     }
 
@@ -152,5 +160,37 @@ class AuthTest extends TestCase
         $response = $this->call('GET', 'v1/user/campaigns/123', [], [], [], $this->serverFakeToken);
 
         $this->assertEquals(401, $response->getStatusCode());
+    }
+
+    /**
+     * Tests that drupal password checker is working correctly.
+     */
+    public function testDrupalPasswordChecker()
+    {
+        // User login info
+        $credentials = [
+            'email' => 'test4@dosomething.org',
+            'password' => 'secret',
+        ];
+
+        $response = $this->call('POST', 'v1/login', [], [], [], $this->serverDrupalPasswordChecker, json_encode($credentials));
+        $content = $response->getContent();
+        $data = json_decode($content, true);
+        $user = User::find('5430e850dt8hbc541c37cal3');
+        dd($user);
+
+        // Assert reponse is 200 and has expected data
+        $this->assertEquals(200, $response->getStatusCode());
+        $this->assertEquals($credentials['email'], $data['data']['email']);
+        $this->assertEquals(null, $user->drupal_password);
+        $this->assertArrayHasKey('password', $user['attributes']);
+
+        // Response should include user ID & session token
+        $this->assertArrayHasKey('_id', $data['data']);
+        $this->assertArrayHasKey('session_token', $data['data']);
+
+        // Assert token exists in database
+        $tokenCount = Token::where('key', '=', $data['data']['session_token'])->count();
+        $this->assertEquals($tokenCount, 1);
     }
 }

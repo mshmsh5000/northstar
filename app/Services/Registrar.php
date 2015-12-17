@@ -46,8 +46,8 @@ class Registrar
 
                 return $user;
             }
-        } else {
-            throw new UnauthorizedHttpException(null, 'Invalid '.$login_type.' or password.');
         }
+
+        throw new UnauthorizedHttpException(null, 'Invalid '.$login_type.' or password.');
     }
 }

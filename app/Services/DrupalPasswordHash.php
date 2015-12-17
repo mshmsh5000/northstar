@@ -49,6 +49,11 @@ class DrupalPasswordHash
             return ($hash && $stored_hash == $hash);
     }
 
+    private static function hash($password)
+    {
+        return self::_password_crypt('sha512', $password, $stored_hash);
+    }
+
     // @see: https://api.drupal.org/api/drupal/includes%21password.inc/function/_password_crypt/7
     private static function _password_crypt($algo, $password, $setting)
     {
