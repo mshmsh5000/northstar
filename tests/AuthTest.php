@@ -177,7 +177,6 @@ class AuthTest extends TestCase
         $content = $response->getContent();
         $data = json_decode($content, true);
         $user = User::find('5430e850dt8hbc541c37cal3');
-        dd($user);
 
         // Assert reponse is 200 and has expected data
         $this->assertEquals(200, $response->getStatusCode());
