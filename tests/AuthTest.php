@@ -196,12 +196,13 @@ class AuthTest extends TestCase
     /**
      * Tests GET /users/{term}/{id} endpoint works correctly
      */
-    public function testRetrieveUser() {
+    public function testRetrieveUser()
+    {
         // User info
         $user = User::find('5430e850dt8hbc541c37tt3d');
 
         // GET /users/_id/<user_id>
-        $response = $this->call('GET', 'v1/users/_id/' . $user->_id, [], [], [], $this->serverMissingToken);
+        $response = $this->call('GET', 'v1/users/_id/' .$user->_id, [], [], [], $this->serverMissingToken);
         $content = $response->getContent();
         $data = json_decode($content, true);
 
@@ -211,7 +212,7 @@ class AuthTest extends TestCase
         $this->assertArrayHasKey('_id', $data['data'][0]);
 
         // GET /users/mobile/<mobile>
-        $response = $this->call('GET', 'v1/users/mobile/' . $user->mobile, [], [], [], $this->serverMissingToken);
+        $response = $this->call('GET', 'v1/users/mobile/' .$user->mobile, [], [], [], $this->serverMissingToken);
         $content = $response->getContent();
         $data = json_decode($content, true);
         $this->assertEquals(200, $response->getStatusCode());
@@ -219,7 +220,7 @@ class AuthTest extends TestCase
         $this->assertArrayHasKey('mobile', $data['data'][0]);
 
         // GET /users/email/<email>
-        $response = $this->call('GET', 'v1/users/email/' . $user->email, [], [], [], $this->serverMissingToken);
+        $response = $this->call('GET', 'v1/users/email/' .$user->email, [], [], [], $this->serverMissingToken);
         $content = $response->getContent();
         $data = json_decode($content, true);
         $this->assertEquals(200, $response->getStatusCode());
@@ -227,7 +228,7 @@ class AuthTest extends TestCase
         $this->assertArrayHasKey('email', $data['data'][0]);
 
         // GET /users/drupal_id/<drupal_id>
-        $response = $this->call('GET', 'v1/users/drupal_id/' . $user->drupal_id, [], [], [], $this->serverMissingToken);
+        $response = $this->call('GET', 'v1/users/drupal_id/' .$user->drupal_id, [], [], [], $this->serverMissingToken);
         $content = $response->getContent();
         $data = json_decode($content, true);
         $this->assertEquals(200, $response->getStatusCode());
