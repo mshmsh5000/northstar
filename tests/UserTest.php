@@ -257,6 +257,32 @@ class UserTest extends TestCase
     }
 
     /**
+     * Test for creating a user's profile image with a Base64 string
+     * POST /users/:user_id/avatar
+     *
+     * @return void
+     */
+    public function testCreateUserAvatarWithBase64()
+    {
+        $payload = [
+            'photo' => '123456789',
+        ];
+
+        $response = $this->call('POST', 'v1/users/5480c950bffebc651c8b456f/avatar', [], [], [], $this->server, json_encode($payload));
+        $content = $response->getContent();
+        $data = json_decode($content, true);
+
+        // The response should return a 200 status code
+        $this->assertEquals(200, $response->getStatusCode());
+
+        // Response should be valid JSON
+        $this->assertJson($content);
+
+        // Response should return avatar's url
+        $this->assertNotEmpty($data['data']['photo']);
+    }
+
+    /**
      * Test for deleting an existing user
      * DELETE /users
      *
