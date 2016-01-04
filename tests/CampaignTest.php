@@ -79,7 +79,7 @@ class CampaignTest extends TestCase
      */
     public function testGetSingleCampaignFromUser()
     {
-        $response = $this->call('GET', 'v1/user/campaigns/123',[], [], [], $this->signedUpServer);
+        $response = $this->call('GET', 'v1/user/campaigns/123', [], [], [], $this->signedUpServer);
         $content = $response->getContent();
 
         // The response should return a 200 OK status code
