@@ -87,7 +87,6 @@ class CampaignTest extends TestCase
 
         // Response should be valid JSON
         $this->assertJson($content);
-
     }
 
     /**
