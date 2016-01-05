@@ -24,16 +24,14 @@ class UserTest extends TestCase
             'HTTP_Session' => 'S0FyZmlRNmVpMzVsSzJMNUFreEFWa3g0RHBMWlJRd0tiQmhSRUNxWXh6cz0=',
         ];
 
-<<<<<<< HEAD
         $this->serverRetrieveUser = [
             'HTTP_Accept' => 'application/json',
             'HTTP_X-DS-Application-Id' => '456',
             'HTTP_X-DS-REST-API-Key' => 'abc4324',
         ];
-=======
+
         // Mock AWS API class
         $this->awsMock = $this->mock('Northstar\Services\AWS');
->>>>>>> adds awsMock
     }
 
     /**
