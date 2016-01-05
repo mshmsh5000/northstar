@@ -248,7 +248,7 @@ class UserTest extends TestCase
         ];
 
         // Mock successful response from AWS API
-        $this->awsMock->shouldReceive('storeImage')->once()->andReturn('http://bucket.s3.amazonaws.com/example.jpg');
+        $this->awsMock->shouldReceive('storeImage')->once()->andReturn('http://bucket.s3.amazonaws.com/5480c950bffebc651c8b456f.jpg');
 
         $response = $this->call('POST', 'v1/users/5480c950bffebc651c8b456f/avatar', [], [], [], $this->server, json_encode($payload));
         $content = $response->getContent();
@@ -277,7 +277,7 @@ class UserTest extends TestCase
         ];
 
         // Mock successful response from AWS API
-        $this->awsMock->shouldReceive('storeImage')->once()->andReturn('http://bucket.s3.amazonaws.com/123456789');
+        $this->awsMock->shouldReceive('storeImage')->once()->andReturn('http://bucket.s3.amazonaws.com/5480c950bffebc651c8b456f.jpg');
 
         $response = $this->call('POST', 'v1/users/5480c950bffebc651c8b456f/avatar', [], [], [], $this->server, json_encode($payload));
         $content = $response->getContent();
