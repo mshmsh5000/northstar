@@ -24,11 +24,16 @@ class UserTest extends TestCase
             'HTTP_Session' => 'S0FyZmlRNmVpMzVsSzJMNUFreEFWa3g0RHBMWlJRd0tiQmhSRUNxWXh6cz0=',
         ];
 
+<<<<<<< HEAD
         $this->serverRetrieveUser = [
             'HTTP_Accept' => 'application/json',
             'HTTP_X-DS-Application-Id' => '456',
             'HTTP_X-DS-REST-API-Key' => 'abc4324',
         ];
+=======
+        // Mock AWS API class
+        $this->awsMock = $this->mock('Northstar\Services\AWS');
+>>>>>>> adds awsMock
     }
 
     /**
@@ -239,8 +244,11 @@ class UserTest extends TestCase
     public function testCreateUserAvatarWithFile()
     {
         $payload = [
-            'photo' => 'profile_pic.jpeg',
+            'photo' => 'example.jpeg',
         ];
+
+        // Mock successful response from AWS API
+        $this->awsMock->shouldReceive('storeImage')->once()->andReturn('http://bucket.s3.amazonaws.com/example.jpg');
 
         $response = $this->call('POST', 'v1/users/5480c950bffebc651c8b456f/avatar', [], [], [], $this->server, json_encode($payload));
         $content = $response->getContent();
@@ -267,6 +275,9 @@ class UserTest extends TestCase
         $payload = [
             'photo' => '123456789',
         ];
+
+        // Mock successful response from AWS API
+        $this->awsMock->shouldReceive('storeImage')->once()->andReturn('http://bucket.s3.amazonaws.com/123456789');
 
         $response = $this->call('POST', 'v1/users/5480c950bffebc651c8b456f/avatar', [], [], [], $this->server, json_encode($payload));
         $content = $response->getContent();
