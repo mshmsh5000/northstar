@@ -72,6 +72,24 @@ class CampaignTest extends TestCase
     }
 
     /**
+     * Test for retrieving a user's activity on a single campaign
+     * GET /user/campaigns/:campaign_id
+     *
+     * @return void
+     */
+    public function testGetSingleCampaignFromUser()
+    {
+        $response = $this->call('GET', 'v1/user/campaigns/123', [], [], [], $this->signedUpServer);
+        $content = $response->getContent();
+
+        // The response should return a 200 OK status code
+        $this->assertEquals(200, $response->getStatusCode());
+
+        // Response should be valid JSON
+        $this->assertJson($content);
+    }
+
+    /**
      * Test for submiting a campaign signup
      * POST /user/campaigns/:nid/signup
      *
