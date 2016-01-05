@@ -19,7 +19,7 @@ class SignupGroupController extends Controller
     {
         $this->phoenix = $phoenix;
 
-        $this->middleware('key:admin');
+        $this->middleware('key:user');
     }
 
     /**
