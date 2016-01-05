@@ -1,5 +1,7 @@
 <?php
 
+use Northstar\Models\User;
+
 class UserTest extends TestCase
 {
     /**
@@ -20,6 +22,12 @@ class UserTest extends TestCase
             'HTTP_X-DS-Application-Id' => '456',
             'HTTP_X-DS-REST-API-Key' => 'abc4324',
             'HTTP_Session' => 'S0FyZmlRNmVpMzVsSzJMNUFreEFWa3g0RHBMWlJRd0tiQmhSRUNxWXh6cz0=',
+        ];
+
+        $this->serverRetrieveUser = [
+            'HTTP_Accept' => 'application/json',
+            'HTTP_X-DS-Application-Id' => '456',
+            'HTTP_X-DS-REST-API-Key' => 'abc4324',
         ];
     }
 
@@ -109,6 +117,50 @@ class UserTest extends TestCase
         );
         $data3 = json_decode($response3->getContent());
         $this->assertCount(1, $data3->data);
+    }
+
+    /**
+     * Tests retreiving a user
+     * GET /users/{term}/{id}
+     */
+    public function testRetrieveUser()
+    {
+        // User info
+        $user = User::find('5430e850dt8hbc541c37tt3d');
+
+        // GET /users/_id/<user_id>
+        $response = $this->call('GET', 'v1/users/_id/'.$user->_id, [], [], [], $this->serverRetrieveUser);
+        $content = $response->getContent();
+        $data = json_decode($content, true);
+
+        // Assert response is 200 and has expected data
+        $this->assertEquals(200, $response->getStatusCode());
+        $this->assertJson($content);
+        $this->assertArrayHasKey('_id', $data['data'][0]);
+
+        // GET /users/mobile/<mobile>
+        $response = $this->call('GET', 'v1/users/mobile/'.$user->mobile, [], [], [], $this->serverRetrieveUser);
+        $content = $response->getContent();
+        $data = json_decode($content, true);
+        $this->assertEquals(200, $response->getStatusCode());
+        $this->assertJson($content);
+        $this->assertArrayHasKey('mobile', $data['data'][0]);
+
+        // GET /users/email/<email>
+        $response = $this->call('GET', 'v1/users/email/'.$user->email, [], [], [], $this->serverRetrieveUser);
+        $content = $response->getContent();
+        $data = json_decode($content, true);
+        $this->assertEquals(200, $response->getStatusCode());
+        $this->assertJson($content);
+        $this->assertArrayHasKey('email', $data['data'][0]);
+
+        // GET /users/drupal_id/<drupal_id>
+        $response = $this->call('GET', 'v1/users/drupal_id/'.$user->drupal_id, [], [], [], $this->serverRetrieveUser);
+        $content = $response->getContent();
+        $data = json_decode($content, true);
+        $this->assertEquals(200, $response->getStatusCode());
+        $this->assertJson($content);
+        $this->assertArrayHasKey('drupal_id', $data['data'][0]);
     }
 
     /**
