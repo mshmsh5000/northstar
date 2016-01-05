@@ -29,6 +29,9 @@ class UserTest extends TestCase
             'HTTP_X-DS-Application-Id' => '456',
             'HTTP_X-DS-REST-API-Key' => 'abc4324',
         ];
+
+        // Mock AWS API class
+        $this->awsMock = $this->mock('Northstar\Services\AWS');
     }
 
     /**
@@ -228,6 +231,64 @@ class UserTest extends TestCase
 
         $this->assertEquals('newemail@dosomething.org', $updatedUser['data'][0]['email']);
         $this->assertEquals('parse-abc123', $updatedUser['data'][0]['parse_installation_ids'][0]);
+    }
+
+    /**
+     * Test for creating a user's profile image with a file
+     * POST /users/:user_id/avatar
+     *
+     * @return void
+     */
+    public function testCreateUserAvatarWithFile()
+    {
+        $payload = [
+            'photo' => 'example.jpeg',
+        ];
+
+        // Mock successful response from AWS API
+        $this->awsMock->shouldReceive('storeImage')->once()->andReturn('http://bucket.s3.amazonaws.com/5480c950bffebc651c8b456f.jpg');
+
+        $response = $this->call('POST', 'v1/users/5480c950bffebc651c8b456f/avatar', [], [], [], $this->server, json_encode($payload));
+        $content = $response->getContent();
+        $data = json_decode($content, true);
+
+        // The response should return a 200 status code
+        $this->assertEquals(200, $response->getStatusCode());
+
+        // Response should be valid JSON
+        $this->assertJson($content);
+
+        // Response should return avatar's url
+        $this->assertNotEmpty($data['data']['photo']);
+    }
+
+    /**
+     * Test for creating a user's profile image with a Base64 string
+     * POST /users/:user_id/avatar
+     *
+     * @return void
+     */
+    public function testCreateUserAvatarWithBase64()
+    {
+        $payload = [
+            'photo' => '123456789',
+        ];
+
+        // Mock successful response from AWS API
+        $this->awsMock->shouldReceive('storeImage')->once()->andReturn('http://bucket.s3.amazonaws.com/5480c950bffebc651c8b456f.jpg');
+
+        $response = $this->call('POST', 'v1/users/5480c950bffebc651c8b456f/avatar', [], [], [], $this->server, json_encode($payload));
+        $content = $response->getContent();
+        $data = json_decode($content, true);
+
+        // The response should return a 200 status code
+        $this->assertEquals(200, $response->getStatusCode());
+
+        // Response should be valid JSON
+        $this->assertJson($content);
+
+        // Response should return avatar's url
+        $this->assertNotEmpty($data['data']['photo']);
     }
 
     /**
