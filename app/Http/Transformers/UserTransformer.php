@@ -16,25 +16,26 @@ class UserTransformer extends TransformerAbstract
         return [
             'id' => $user->_id,
             '_id' => $user->_id, // @DEPRECATED: Will be removed.
-            'email' => $user->email,
-            'mobile' => $user->mobile,
 
             'first_name' => $user->first_name,
-            'last_name' => $user->last_name,
-            'birthdate' => $user->birthdate,
             'photo' => $user->photo,
             'interests' => $user->interests,
 
-            'race' => $user->race,
-            'religion' => $user->religion,
+            // @TODO: Restrict these, based on API key scope or authenticated user.
+            'email' => $user->email,
+            'mobile' => $user->mobile,
+            // 'last_name' => $user->last_name,
+            // 'birthdate' => $user->birthdate,
+            // 'race' => $user->race,
+            // 'religion' => $user->religion,
+            // 'addr_street1' => $user->addr_street1,
+            // 'addr_street2' => $user->addr_street2,
+            // 'addr_city' => $user->addr_city,
+            // 'addr_state' => $user->addr_state,
+            // 'addr_zip' => $user->addr_zip,
+            // 'country' => $user->country,
 
-            'addr_street1' => $user->addr_street1,
-            'addr_street2' => $user->addr_street2,
-            'addr_city' => $user->addr_city,
-            'addr_state' => $user->addr_state,
-            'addr_zip' => $user->addr_zip,
-            'country' => $user->country,
-
+            // References to app-specific user IDs.
             'drupal_id' => $user->drupal_id,
             'cgg_id' => $user->cgg_id,
             'agg_id' => $user->agg_id,
