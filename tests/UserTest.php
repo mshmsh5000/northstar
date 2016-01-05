@@ -139,7 +139,7 @@ class UserTest extends TestCase
         // Assert response is 200 and has expected data
         $this->assertEquals(200, $response->getStatusCode());
         $this->assertJson($content);
-        $this->assertArrayHasKey('_id', $data['data'][0]);
+        $this->assertArrayHasKey('_id', $data['data']);
 
         // GET /users/mobile/<mobile>
         $response = $this->call('GET', 'v1/users/mobile/'.$user->mobile, [], [], [], $this->serverRetrieveUser);
@@ -147,7 +147,7 @@ class UserTest extends TestCase
         $data = json_decode($content, true);
         $this->assertEquals(200, $response->getStatusCode());
         $this->assertJson($content);
-        $this->assertArrayHasKey('mobile', $data['data'][0]);
+        $this->assertArrayHasKey('mobile', $data['data']);
 
         // GET /users/email/<email>
         $response = $this->call('GET', 'v1/users/email/'.$user->email, [], [], [], $this->serverRetrieveUser);
@@ -155,7 +155,7 @@ class UserTest extends TestCase
         $data = json_decode($content, true);
         $this->assertEquals(200, $response->getStatusCode());
         $this->assertJson($content);
-        $this->assertArrayHasKey('email', $data['data'][0]);
+        $this->assertArrayHasKey('email', $data['data']);
 
         // GET /users/drupal_id/<drupal_id>
         $response = $this->call('GET', 'v1/users/drupal_id/'.$user->drupal_id, [], [], [], $this->serverRetrieveUser);
@@ -163,7 +163,7 @@ class UserTest extends TestCase
         $data = json_decode($content, true);
         $this->assertEquals(200, $response->getStatusCode());
         $this->assertJson($content);
-        $this->assertArrayHasKey('drupal_id', $data['data'][0]);
+        $this->assertArrayHasKey('drupal_id', $data['data']);
     }
 
     /**
@@ -229,8 +229,8 @@ class UserTest extends TestCase
         $getContent = $getResponse->getContent();
         $updatedUser = json_decode($getContent, true);
 
-        $this->assertEquals('newemail@dosomething.org', $updatedUser['data'][0]['email']);
-        $this->assertEquals('parse-abc123', $updatedUser['data'][0]['parse_installation_ids'][0]);
+        $this->assertEquals('newemail@dosomething.org', $updatedUser['data']['email']);
+        $this->assertEquals('parse-abc123', $updatedUser['data']['parse_installation_ids'][0]);
     }
 
     /**
