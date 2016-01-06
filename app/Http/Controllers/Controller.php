@@ -2,7 +2,7 @@
 
 namespace Northstar\Http\Controllers;
 
-use Illuminate\Foundation\Bus\DispatchesCommands;
+use Illuminate\Foundation\Bus\DispatchesJobs;
 use Illuminate\Routing\Controller as BaseController;
 use Illuminate\Foundation\Validation\ValidatesRequests;
 use Illuminate\Database\Eloquent;
@@ -11,7 +11,7 @@ use Input;
 
 abstract class Controller extends BaseController
 {
-    use DispatchesCommands;
+    use DispatchesJobs;
 
     use ValidatesRequests {
         buildFailedValidationResponse as traitBuildFailedValidationResponse;
