@@ -50,6 +50,7 @@ class KeyController extends Controller
 
     /**
      * Display the specified resource.
+     * GET /keys/:api_key
      *
      * @return \Illuminate\Http\Response
      * @throws NotFoundHttpException
@@ -57,9 +58,9 @@ class KeyController extends Controller
     public function show($id)
     {
         // Find the user.
-        $key = ApiKey::where('id', $id)->get();
-        if (! $key->isEmpty()) {
-            return $this->respond($key);
+        $key = ApiKey::where('api_key', $id)->first();
+        if (! $key) {
+            throw new NotFoundHttpException('The resource does not exist.');
         }
 
         return $this->respond($key);
