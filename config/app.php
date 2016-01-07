@@ -148,6 +148,7 @@ return [
         Northstar\Providers\AppServiceProvider::class,
         Northstar\Providers\EventServiceProvider::class,
         Northstar\Providers\RouteServiceProvider::class,
+        Northstar\Providers\ValidationServiceProvider::class,
 
     ],
 

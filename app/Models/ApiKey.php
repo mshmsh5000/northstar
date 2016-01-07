@@ -3,6 +3,7 @@
 namespace Northstar\Models;
 
 use Jenssegers\Mongodb\Model;
+use Northstar\ApiKeyScopes;
 
 class ApiKey extends Model
 {

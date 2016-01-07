@@ -3,6 +3,7 @@
 namespace Northstar\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Northstar\ApiKeyScopes;
 use Northstar\Models\ApiKey;
 use Symfony\Component\HttpKernel\Exception\HttpException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
@@ -37,14 +38,12 @@ class KeyController extends Controller
      */
     public function store(Request $request)
     {
-        // Get the app name from submission.
-        if (! $request->has('app_name')) {
-            throw new HttpException(400, 'Missing required information.');
-        }
-
-        $key = ApiKey::create([
-            'app_id' => $request->get('app_name'),
+        $this->validate($request, [
+            'app_id' => 'required|unique:api_keys,app_id',
+            'scope' => 'array|scope' // @see ApiKeyScopes::validate
         ]);
+
+        $key = ApiKey::create($request->all());
 
         return $this->respond($key, 201);
     }
@@ -63,7 +62,27 @@ class KeyController extends Controller
             return $this->respond($key);
         }
 
-        throw new NotFoundHttpException('The resource does not exist.');
+        return $this->respond($key);
+    }
+
+    /**
+     * Update the specified resource.
+     * PUT /keys/:api_key
+     *
+     * @param Request $request
+     * @return \Illuminate\Http\Response
+     * @throws HttpException
+     */
+    public function update($key, Request $request)
+    {
+        $this->validate($request, [
+            'scope' => 'array|scope' // @see ApiKeyScopes::validate
+        ]);
+
+        $key = ApiKey::where('api_key', $key)->firstOrFail();
+        $key->update($request->all());
+
+        return $this->respond($key, 200);
     }
 
     /**
