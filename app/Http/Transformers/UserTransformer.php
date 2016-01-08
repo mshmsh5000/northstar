@@ -20,6 +20,7 @@ class UserTransformer extends TransformerAbstract
             'first_name' => $user->first_name,
             'photo' => $user->photo,
             'interests' => $user->interests,
+            'country' => $user->country,
 
             // @TODO: Restrict these, based on API key scope or authenticated user.
             'email' => $user->email,
@@ -33,7 +34,6 @@ class UserTransformer extends TransformerAbstract
             // 'addr_city' => $user->addr_city,
             // 'addr_state' => $user->addr_state,
             // 'addr_zip' => $user->addr_zip,
-            // 'country' => $user->country,
 
             // References to app-specific user IDs.
             'drupal_id' => $user->drupal_id,
