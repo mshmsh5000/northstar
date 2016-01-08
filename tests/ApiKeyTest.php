@@ -100,4 +100,22 @@ class ApiKeyTest extends TestCase
         $key = ApiKey::where('api_key', '5464utyrs')->firstOrFail();
         $this->assertEquals($key->scope, ['admin', 'user']);
     }
+
+    /**
+     * Test authentication & functionality of key deletion endpoint.
+     * @test
+     */
+    public function testDestroy()
+    {
+        // Verify a "user" scoped key is not able to delete keys
+        $response = $this->call('DELETE', 'v1/keys/5464utyrs', [], [], [], $this->userScope);
+        $this->assertEquals(403, $response->getStatusCode());
+
+        // Verify an admin key is able to delete a key
+        $response = $this->call('DELETE', 'v1/keys/5464utyrs', [], [], [], $this->adminScope);
+        $this->assertEquals(200, $response->getStatusCode());
+
+        $key = ApiKey::where('api_key', '5464utyrs')->exists();
+        $this->assertFalse($key);
+    }
 }

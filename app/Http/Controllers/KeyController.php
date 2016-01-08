@@ -91,7 +91,11 @@ class KeyController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroy($key)
     {
+        $key = ApiKey::where('api_key', $key)->firstOrFail();
+        $key->delete();
+
+        return $this->respond('Deleted key.', 200);
     }
 }
