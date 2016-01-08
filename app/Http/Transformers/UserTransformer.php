@@ -18,6 +18,7 @@ class UserTransformer extends TransformerAbstract
             '_id' => $user->_id, // @DEPRECATED: Will be removed.
 
             'first_name' => $user->first_name,
+            'last_initial' => $user->last_initial,
             'photo' => $user->photo,
             'interests' => $user->interests,
             'country' => $user->country,

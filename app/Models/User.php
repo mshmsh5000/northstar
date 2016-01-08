@@ -75,6 +75,17 @@ class User extends Model implements AuthenticatableContract, CanResetPasswordCon
     }
 
     /**
+     * Computed last initial field, for public profiles.
+     * @return string
+     */
+    public function getLastInitialAttribute()
+    {
+        $initial = substr($this->last_name, 0, 1);
+
+        return strtoupper($initial);
+    }
+
+    /**
      * Interests mutator converting comma-delimited string to an array.
      */
     public function setInterestsAttribute($value)
