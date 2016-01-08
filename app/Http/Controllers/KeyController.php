@@ -37,20 +37,19 @@ class KeyController extends Controller
      */
     public function store(Request $request)
     {
-        // Get the app name from submission.
-        if (! $request->has('app_name')) {
-            throw new HttpException(400, 'Missing required information.');
-        }
-
-        $key = ApiKey::create([
-            'app_id' => $request->get('app_name'),
+        $this->validate($request, [
+            'app_id' => 'required|unique:api_keys,app_id',
+            'scope' => 'array|scope' // @see ApiKey::validateScopes
         ]);
+
+        $key = ApiKey::create($request->all());
 
         return $this->respond($key, 201);
     }
 
     /**
      * Display the specified resource.
+     * GET /keys/:api_key
      *
      * @return \Illuminate\Http\Response
      * @throws NotFoundHttpException
@@ -58,12 +57,32 @@ class KeyController extends Controller
     public function show($id)
     {
         // Find the user.
-        $key = ApiKey::where('id', $id)->get();
-        if (! $key->isEmpty()) {
-            return $this->respond($key);
+        $key = ApiKey::where('api_key', $id)->first();
+        if (! $key) {
+            throw new NotFoundHttpException('The resource does not exist.');
         }
 
-        throw new NotFoundHttpException('The resource does not exist.');
+        return $this->respond($key);
+    }
+
+    /**
+     * Update the specified resource.
+     * PUT /keys/:api_key
+     *
+     * @param Request $request
+     * @return \Illuminate\Http\Response
+     * @throws HttpException
+     */
+    public function update($key, Request $request)
+    {
+        $this->validate($request, [
+            'scope' => 'array|scope' // @see ApiKey::validateScopes
+        ]);
+
+        $key = ApiKey::where('api_key', $key)->firstOrFail();
+        $key->update($request->all());
+
+        return $this->respond($key, 200);
     }
 
     /**
@@ -71,7 +90,11 @@ class KeyController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroy($key)
     {
+        $key = ApiKey::where('api_key', $key)->firstOrFail();
+        $key->delete();
+
+        return $this->respond('Deleted key.', 200);
     }
 }
