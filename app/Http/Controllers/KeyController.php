@@ -2,15 +2,25 @@
 
 namespace Northstar\Http\Controllers;
 
+use League\Fractal\Resource\Item;
+use League\Fractal\Resource\Collection;
 use Illuminate\Http\Request;
+use Northstar\Http\Transformers\ApiKeyTransformer;
 use Northstar\Models\ApiKey;
 use Symfony\Component\HttpKernel\Exception\HttpException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class KeyController extends Controller
 {
-    public function __construct()
+    /**
+     * @var ApiKeyTransformer
+     */
+    protected $transformer;
+
+    public function __construct(ApiKeyTransformer $transformer)
     {
+        $this->transformer = $transformer;
+
         $this->middleware('key:admin');
     }
 
@@ -24,7 +34,7 @@ class KeyController extends Controller
     {
         $keys = ApiKey::all();
 
-        return $this->respond($keys);
+        return $this->collection($keys);
     }
 
     /**
@@ -44,7 +54,7 @@ class KeyController extends Controller
 
         $key = ApiKey::create($request->all());
 
-        return $this->respond($key, 201);
+        return $this->item($key, 201);
     }
 
     /**
@@ -62,7 +72,7 @@ class KeyController extends Controller
             throw new NotFoundHttpException('The resource does not exist.');
         }
 
-        return $this->respond($key);
+        return $this->item($key);
     }
 
     /**
@@ -82,7 +92,7 @@ class KeyController extends Controller
         $key = ApiKey::where('api_key', $key)->firstOrFail();
         $key->update($request->all());
 
-        return $this->respond($key, 200);
+        return $this->item($key);
     }
 
     /**
