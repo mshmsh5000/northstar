@@ -3,9 +3,7 @@
 namespace Northstar\Http\Controllers;
 
 use Illuminate\Http\Request;
-use League\Fractal\Manager;
 use League\Fractal\Resource\Item;
-use League\Fractal\Serializer\DataArraySerializer;
 use Northstar\Http\Transformers\UserTransformer;
 use Northstar\Services\Phoenix;
 use Northstar\Models\User;
@@ -21,11 +19,6 @@ class UserController extends Controller
     protected $phoenix;
 
     /**
-     * @var Manager
-     */
-    protected $manager;
-
-    /**
      * @var UserTransformer
      */
     protected $transformer;
@@ -33,10 +26,6 @@ class UserController extends Controller
     public function __construct(Phoenix $phoenix)
     {
         $this->phoenix = $phoenix;
-
-        $this->manager = new Manager();
-        $serializer = new DataArraySerializer();
-        $this->manager->setSerializer($serializer);
 
         $this->transformer = new UserTransformer();
 
@@ -150,7 +139,7 @@ class UserController extends Controller
             $token = $user->login();
             $user->session_token = $token->key;
 
-            return $this->respond($user);
+            return $this->item($user);
         } catch (\Exception $e) {
             return $this->respond($e, 401);
         }
@@ -177,10 +166,7 @@ class UserController extends Controller
             throw new NotFoundHttpException('The resource does not exist.');
         }
 
-        // Prepare response
-        $resource = new Item($user, $this->transformer, 'user');
-
-        return $this->manager->createData($resource)->toArray();
+        return $this->item($user);
     }
 
     /**
@@ -214,7 +200,7 @@ class UserController extends Controller
 
             $user->save();
 
-            return $this->respond($user, 202);
+            return $this->item($user, 202);
         }
 
         throw new NotFoundHttpException('The resource does not exist.');

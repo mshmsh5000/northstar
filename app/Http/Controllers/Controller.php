@@ -2,6 +2,10 @@
 
 namespace Northstar\Http\Controllers;
 
+use League\Fractal\Manager;
+use League\Fractal\Resource\Collection as FractalCollection;
+use League\Fractal\Resource\Item as FractalItem;
+use League\Fractal\Serializer\DataArraySerializer;
 use Illuminate\Foundation\Bus\DispatchesJobs;
 use Illuminate\Routing\Controller as BaseController;
 use Illuminate\Foundation\Validation\ValidatesRequests;
@@ -15,6 +19,45 @@ abstract class Controller extends BaseController
 
     use ValidatesRequests {
         buildFailedValidationResponse as traitBuildFailedValidationResponse;
+    }
+
+    /**
+     * @var \League\Fractal\TransformerAbstract
+     */
+    protected $transformer;
+
+    public function collection($collection, $code = 200, $meta = null, $transformer = null)
+    {
+        if(is_null($transformer)) {
+            $transformer = $this->transformer;
+        }
+
+        $manager = new Manager(new DataArraySerializer());
+        $resource = new FractalCollection($collection, $transformer, 'things');
+        $response = $manager->createData($resource)->toArray();
+
+        if($meta) {
+            $response['meta'] = $meta;
+        }
+
+        return response()->json($response, $code, [], JSON_UNESCAPED_SLASHES);
+    }
+
+    public function item($item, $code = 200, $meta = null, $transformer = null)
+    {
+        if(is_null($transformer)) {
+            $transformer = $this->transformer;
+        }
+
+        $manager = new Manager(new DataArraySerializer());
+        $resource = new FractalItem($item, $transformer, 'thing');
+        $response = $manager->createData($resource)->toArray();
+
+        if($meta) {
+            $response['meta'] = $meta;
+        }
+
+        return response()->json($response, $code, [], JSON_UNESCAPED_SLASHES);
     }
 
     /**
