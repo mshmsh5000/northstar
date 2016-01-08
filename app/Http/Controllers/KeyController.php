@@ -3,7 +3,6 @@
 namespace Northstar\Http\Controllers;
 
 use Illuminate\Http\Request;
-use Northstar\ApiKeyScopes;
 use Northstar\Models\ApiKey;
 use Symfony\Component\HttpKernel\Exception\HttpException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
@@ -40,7 +39,7 @@ class KeyController extends Controller
     {
         $this->validate($request, [
             'app_id' => 'required|unique:api_keys,app_id',
-            'scope' => 'array|scope' // @see ApiKeyScopes::validate
+            'scope' => 'array|scope' // @see ApiKey::validateScopes
         ]);
 
         $key = ApiKey::create($request->all());
@@ -77,7 +76,7 @@ class KeyController extends Controller
     public function update($key, Request $request)
     {
         $this->validate($request, [
-            'scope' => 'array|scope' // @see ApiKeyScopes::validate
+            'scope' => 'array|scope' // @see ApiKey::validateScopes
         ]);
 
         $key = ApiKey::where('api_key', $key)->firstOrFail();

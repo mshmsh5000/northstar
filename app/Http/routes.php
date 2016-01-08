@@ -44,6 +44,6 @@ $router->group(['prefix' => 'v1'], function () use ($router) {
     // Api Keys
     $router->resource('keys', 'KeyController');
     $router->get('scopes', function() {
-        return \Northstar\ApiKeyScopes::all();
+        return \Northstar\Models\ApiKey::scopes();
     });
 });
