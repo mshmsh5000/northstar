@@ -12,7 +12,7 @@ class AvatarController extends Controller
      * Amazon Web Services API wrapper.
      * @var AWS
      */
-    protected $phoenix;
+    protected $aws;
 
     public function __construct(AWS $aws)
     {
