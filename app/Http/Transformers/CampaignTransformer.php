@@ -24,6 +24,10 @@ class CampaignTransformer extends TransformerAbstract
             'signup_source' => $campaign->signup_source,
 
             'signup_group' => $campaign->signup_group,
+
+            // @TODO: Sometimes these aren't set... why?
+            'updated_at' => $campaign->updated_at ? $campaign->updated_at->toISO8601String() : null,
+            'created_at' => $campaign->created_at ? $campaign->created_at->toISO8601String() : null,
         ];
     }
 }
