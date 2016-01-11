@@ -43,26 +43,26 @@ class UserController extends Controller
      */
     public function index(Request $request)
     {
-        $except_list = User::$indexes;
-        array_push($except_list, 'page');
-        $inputs = $request->except($except_list);
-        $users = User::where($inputs);
+        // Create an empty User query, which we can either filter (below)
+        // or paginate to retrieve all user records.
+        $query = (new User)->newQuery();
 
-        // Query for multiple ids
-        $query_ids = [];
-        foreach (User::$indexes as $id_key) {
-            if ($request->has($id_key)) {
-                $str_ids = $request->get($id_key);
-                $arr_ids = explode(',', $str_ids);
-                $query_ids[$id_key] = $arr_ids;
+        // Requests may be filtered by indexed fields.
+        $filters = $request->query('filter');
+        if($filters) {
+            $filters = array_intersect_key($filters, array_flip(User::$indexes));
+
+            // You can filter by multiple values, e.g. `filter[source]=agg,cgg`
+            // to get records that have a source value of either `agg` or `cgg`.
+            foreach ($filters as $filter => $values) {
+                $values = explode(',', $values);
+                foreach ($values as $value) {
+                    $query->orWhere($filter, $value);
+                }
             }
         }
 
-        foreach ($query_ids as $id_key => $id_value) {
-            $users->whereIn($id_key, $id_value);
-        }
-
-        $response = $this->respondPaginated($users, $inputs);
+        $response = $this->paginate($query, $request);
 
         return $response;
     }

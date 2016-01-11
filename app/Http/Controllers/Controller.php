@@ -3,6 +3,7 @@
 namespace Northstar\Http\Controllers;
 
 use League\Fractal\Manager;
+use League\Fractal\Pagination\IlluminatePaginatorAdapter;
 use League\Fractal\Resource\Collection as FractalCollection;
 use League\Fractal\Resource\Item as FractalItem;
 use League\Fractal\Serializer\DataArraySerializer;
@@ -61,6 +62,37 @@ abstract class Controller extends BaseController
     }
 
     /**
+     * Method to standardize paginated responses.
+     *
+     * @param $query - Eloquent query
+     * @return \Symfony\Component\HttpFoundation\Response
+     */
+    public function paginate($query, $request, $code = 200, $meta = null, $transformer = null)
+    {
+        if(is_null($transformer)) {
+            $transformer = $this->transformer;
+        }
+
+        $paginator = $query->paginate((int) $request->query('limit', 20));
+
+        $manager = new Manager(new DataArraySerializer());
+        $resource = new FractalCollection($paginator->getCollection(), $transformer);
+
+        $queryParams = array_diff_key($request->query(), array_flip(['page']));
+        $paginator->appends($queryParams);
+
+        $resource->setPaginator(new IlluminatePaginatorAdapter($paginator));
+        $response = $manager->createData($resource)->toArray();
+
+        if($meta) {
+            // @TODO: Don't overwrite pagination though!
+            $response['meta'] = $meta;
+        }
+
+        return response()->json($response, $code, [], JSON_UNESCAPED_SLASHES);
+    }
+
+    /**
      * Method to standardize responses sent from child controllers.
      *
      * @param mixed $data - Data to send in the response
@@ -80,23 +112,6 @@ abstract class Controller extends BaseController
         }
 
         return response()->json($response, $code, [], JSON_UNESCAPED_SLASHES);
-    }
-
-    /**
-     * Method to standardize paginated responses.
-     *
-     * @param $query - Eloquent query
-     * @return \Symfony\Component\HttpFoundation\Response
-     */
-    protected function respondPaginated($query, $inputs)
-    {
-        if (is_a($query, 'Illuminate\Database\Eloquent\Builder')) {
-            $limit = Input::get('limit') ?: 20;
-            $response = $query->paginate((int) $limit);
-            $response->appends($inputs);
-
-            return response()->json($response);
-        }
     }
 
     /**
