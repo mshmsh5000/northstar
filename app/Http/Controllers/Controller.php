@@ -28,30 +28,6 @@ abstract class Controller extends BaseController
     protected $transformer;
 
     /**
-     * Format & return a collection response.
-     *
-     * @param $collection
-     * @param int $code
-     * @param array $meta
-     * @param null $transformer
-     * @return \Illuminate\Http\JsonResponse
-     */
-    public function collection($collection, $code = 200, $meta = [], $transformer = null)
-    {
-        if(is_null($transformer)) {
-            $transformer = $this->transformer;
-        }
-
-        $resource = new FractalCollection($collection, $transformer, 'things');
-        $resource->setMeta($meta);
-
-        $manager = new Manager(new DataArraySerializer());
-        $response = $manager->createData($resource)->toArray();
-
-        return response()->json($response, $code, [], JSON_UNESCAPED_SLASHES);
-    }
-
-    /**
      * Format & return a single item response.
      *
      * @param $item
@@ -67,6 +43,30 @@ abstract class Controller extends BaseController
         }
 
         $resource = new FractalItem($item, $transformer, 'thing');
+        $resource->setMeta($meta);
+
+        $manager = new Manager(new DataArraySerializer());
+        $response = $manager->createData($resource)->toArray();
+
+        return response()->json($response, $code, [], JSON_UNESCAPED_SLASHES);
+    }
+
+    /**
+     * Format & return a collection response.
+     *
+     * @param $collection
+     * @param int $code
+     * @param array $meta
+     * @param null $transformer
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function collection($collection, $code = 200, $meta = [], $transformer = null)
+    {
+        if(is_null($transformer)) {
+            $transformer = $this->transformer;
+        }
+
+        $resource = new FractalCollection($collection, $transformer, 'things');
         $resource->setMeta($meta);
 
         $manager = new Manager(new DataArraySerializer());
