@@ -67,9 +67,7 @@ class UserController extends Controller
             }
         }
 
-        $response = $this->paginate($query, $request);
-
-        return $response;
+        return $this->paginatedCollection($query, $request);
     }
 
     /**

@@ -81,7 +81,7 @@ abstract class Controller extends BaseController
      * @param $query - Eloquent query
      * @return \Symfony\Component\HttpFoundation\Response
      */
-    public function paginate($query, $request, $code = 200, $meta = [], $transformer = null)
+    public function paginatedCollection($query, $request, $code = 200, $meta = [], $transformer = null)
     {
         if(is_null($transformer)) {
             $transformer = $this->transformer;
