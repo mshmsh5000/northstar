@@ -5,6 +5,7 @@ namespace Northstar\Http\Controllers;
 use Illuminate\Http\Request;
 use Northstar\Events\UserSignedUp;
 use Northstar\Events\UserReportedBack;
+use Northstar\Http\Transformers\CampaignTransformer;
 use Northstar\Models\Campaign;
 use Northstar\Models\User;
 use Northstar\Services\Phoenix;
@@ -19,14 +20,19 @@ class CampaignController extends Controller
      */
     protected $phoenix;
 
+    /**
+     * @var CampaignTransformer
+     */
+    protected $transformer;
+
     public function __construct(Phoenix $drupal)
     {
         $this->phoenix = $drupal;
 
+        $this->transformer = new CampaignTransformer();
+
         $this->middleware('key:user');
         $this->middleware('auth');
-
-        $this->middleware('campaign');
     }
 
     /**
@@ -56,12 +62,12 @@ class CampaignController extends Controller
 
                 // Possible for reportback data to be missing if it's been deleted on Drupal
                 if (isset($response['data'])) {
-                    $campaign['reportback_data'] = $response['data'];
+                    $campaign->reportback_data = $response['data'];
                 }
             }
         }
 
-        return $this->respond($campaigns);
+        return $this->collection($campaigns);
     }
 
     /**
@@ -87,11 +93,11 @@ class CampaignController extends Controller
             $response = $this->phoenix->reportbackContent($campaign->reportback_id);
 
             if (isset($response['data'])) {
-                $campaign['reportback_data'] = $response['data'];
+                $campaign->reportback_data = $response['data'];
             }
         }
 
-        return $this->respond($campaign);
+        return $this->item($campaign);
     }
 
     /**
@@ -142,7 +148,7 @@ class CampaignController extends Controller
             event(new UserSignedUp($user, $campaign));
         }
 
-        return $this->respond($campaign, $statusCode);
+        return $this->item($campaign, $statusCode);
     }
 
     /**
@@ -202,6 +208,6 @@ class CampaignController extends Controller
         // Fire reportback event.
         event(new UserReportedBack($user, $campaign));
 
-        return $this->respond($campaign, $statusCode);
+        return $this->item($campaign, $statusCode);
     }
 }

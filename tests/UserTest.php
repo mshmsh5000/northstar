@@ -64,15 +64,14 @@ class UserTest extends TestCase
         $this->assertEquals(200, $response->getStatusCode());
 
         $data = json_decode($response->getContent());
-        $this->assertObjectHasAttribute('total', $data);
-        $this->assertObjectHasAttribute('per_page', $data);
-        $this->assertObjectHasAttribute('current_page', $data);
-        $this->assertObjectHasAttribute('last_page', $data);
-        $this->assertObjectHasAttribute('next_page_url', $data);
-        $this->assertObjectHasAttribute('prev_page_url', $data);
-        $this->assertObjectHasAttribute('from', $data);
-        $this->assertObjectHasAttribute('to', $data);
         $this->assertObjectHasAttribute('data', $data);
+        $this->assertObjectHasAttribute('meta', $data);
+        $this->assertObjectHasAttribute('pagination', $data->meta);
+        $this->assertObjectHasAttribute('total', $data->meta->pagination);
+        $this->assertObjectHasAttribute('count', $data->meta->pagination);
+        $this->assertObjectHasAttribute('per_page', $data->meta->pagination);
+        $this->assertObjectHasAttribute('current_page', $data->meta->pagination);
+        $this->assertObjectHasAttribute('links', $data->meta->pagination);
     }
 
     /**
@@ -97,7 +96,7 @@ class UserTest extends TestCase
         // Retrieve multiple users by _id
         $response1 = $this->call(
             'GET',
-            'v1/users?_id=5430e850dt8hbc541c37tt3d,5480c950bffebc651c8b456f,FAKE_ID',
+            'v1/users?filter[_id]=5430e850dt8hbc541c37tt3d,5480c950bffebc651c8b456f,FAKE_ID',
             [], [], [], $this->server
         );
         $data1 = json_decode($response1->getContent());
@@ -106,7 +105,7 @@ class UserTest extends TestCase
         // Retrieve multiple users by drupal_id
         $response2 = $this->call(
             'GET',
-            'v1/users?drupal_id=FAKE_ID,100001,100002,100003',
+            'v1/users?filter[drupal_id]=FAKE_ID,100001,100002,100003',
             [], [], [], $this->server
         );
         $data2 = json_decode($response2->getContent());
@@ -115,7 +114,7 @@ class UserTest extends TestCase
         // Test compound queries
         $response3 = $this->call(
             'GET',
-            'v1/users?drupal_id=FAKE_ID,100001,100002,100003&mobile=5555550100',
+            'v1/users?filter[drupal_id]=FAKE_ID,100001,100002,100003&filter[mobile]=5555550100',
             [], [], [], $this->server
         );
         $data3 = json_decode($response3->getContent());
@@ -139,7 +138,7 @@ class UserTest extends TestCase
         // Assert response is 200 and has expected data
         $this->assertEquals(200, $response->getStatusCode());
         $this->assertJson($content);
-        $this->assertArrayHasKey('_id', $data['data'][0]);
+        $this->assertArrayHasKey('_id', $data['data']);
 
         // GET /users/mobile/<mobile>
         $response = $this->call('GET', 'v1/users/mobile/'.$user->mobile, [], [], [], $this->serverRetrieveUser);
@@ -147,7 +146,7 @@ class UserTest extends TestCase
         $data = json_decode($content, true);
         $this->assertEquals(200, $response->getStatusCode());
         $this->assertJson($content);
-        $this->assertArrayHasKey('mobile', $data['data'][0]);
+        $this->assertArrayHasKey('mobile', $data['data']);
 
         // GET /users/email/<email>
         $response = $this->call('GET', 'v1/users/email/'.$user->email, [], [], [], $this->serverRetrieveUser);
@@ -155,7 +154,7 @@ class UserTest extends TestCase
         $data = json_decode($content, true);
         $this->assertEquals(200, $response->getStatusCode());
         $this->assertJson($content);
-        $this->assertArrayHasKey('email', $data['data'][0]);
+        $this->assertArrayHasKey('email', $data['data']);
 
         // GET /users/drupal_id/<drupal_id>
         $response = $this->call('GET', 'v1/users/drupal_id/'.$user->drupal_id, [], [], [], $this->serverRetrieveUser);
@@ -163,7 +162,7 @@ class UserTest extends TestCase
         $data = json_decode($content, true);
         $this->assertEquals(200, $response->getStatusCode());
         $this->assertJson($content);
-        $this->assertArrayHasKey('drupal_id', $data['data'][0]);
+        $this->assertArrayHasKey('drupal_id', $data['data']);
     }
 
     /**
@@ -229,8 +228,8 @@ class UserTest extends TestCase
         $getContent = $getResponse->getContent();
         $updatedUser = json_decode($getContent, true);
 
-        $this->assertEquals('newemail@dosomething.org', $updatedUser['data'][0]['email']);
-        $this->assertEquals('parse-abc123', $updatedUser['data'][0]['parse_installation_ids'][0]);
+        $this->assertEquals('newemail@dosomething.org', $updatedUser['data']['email']);
+        $this->assertEquals('parse-abc123', $updatedUser['data']['parse_installation_ids'][0]);
     }
 
     /**

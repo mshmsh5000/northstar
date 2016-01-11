@@ -137,7 +137,7 @@ class AuthTest extends TestCase
         $user = json_decode($getContent, true);
 
         $this->assertEquals(200, $getResponse->getStatusCode());
-        $this->assertEquals(0, count($user['data'][0]['parse_installation_ids']));
+        $this->assertEquals(0, count($user['data']['parse_installation_ids']));
     }
 
     /**

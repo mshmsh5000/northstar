@@ -8,7 +8,8 @@
     "guzzlehttp/guzzle": "~5.2",
     "jenssegers/mongodb": "^2.2",
     "league/flysystem-aws-s3-v3": "~1.0",
-    "parse/php-sdk" : "1.1.*"
+    "parse/php-sdk" : "1.1.*",
+    "league/fractal": "0.13.*"
   },
   "require-dev": {
     "phpunit/phpunit": "~4.0",

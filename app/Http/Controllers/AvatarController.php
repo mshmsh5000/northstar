@@ -8,14 +8,18 @@ use Illuminate\Http\Request;
 
 class AvatarController extends Controller
 {
+    /**
+     * Amazon Web Services API wrapper.
+     * @var AWS
+     */
+    protected $aws;
+
     public function __construct(AWS $aws)
     {
         $this->aws = $aws;
 
         $this->middleware('key:user');
         $this->middleware('auth');
-
-        $this->middleware('user');
     }
 
     /**
