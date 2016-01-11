@@ -48,27 +48,4 @@ class Campaign extends Model
         'signup_id' => null,
         'signup_source' => null,
     ];
-
-    /**
-     * For all Campaign attributes not hidden, where keys are unset, set those
-     * value to null.
-     *
-     * @param $campaign User campaign activity data
-     */
-    public static function populateAllAttributes(&$campaign)
-    {
-        $tmp = new self();
-
-        $attrs_not_hidden = array_diff($tmp->getAttributes(), $tmp->getHidden());
-
-        foreach ($attrs_not_hidden as $key => $value) {
-            if ($key == 'signup_group') {
-                $default_value = isset($campaign->signup_id) ? $campaign->signup_id : null;
-            } else {
-                $default_value = null;
-            }
-
-            $campaign->$key = isset($campaign->$key) ? $campaign->$key : $default_value;
-        }
-    }
 }
