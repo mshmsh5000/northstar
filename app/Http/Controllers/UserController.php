@@ -56,8 +56,13 @@ class UserController extends Controller
             // to get records that have a source value of either `agg` or `cgg`.
             foreach ($filters as $filter => $values) {
                 $values = explode(',', $values);
+
+                // For the first `where` query, we want to limit results... from then on,
+                // we want to append (e.g. `SELECT * WHERE _ OR WHERE _ OR WHERE _`)
+                $firstWhere = true;
                 foreach ($values as $value) {
-                    $query->orWhere($filter, $value);
+                    $query->where($filter, '=', $value, ($firstWhere ? 'and' : 'or'));
+                    $firstWhere = false;
                 }
             }
         }
