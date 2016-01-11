@@ -27,6 +27,15 @@ abstract class Controller extends BaseController
      */
     protected $transformer;
 
+    /**
+     * Format & return a collection response.
+     *
+     * @param $collection
+     * @param int $code
+     * @param array $meta
+     * @param null $transformer
+     * @return \Illuminate\Http\JsonResponse
+     */
     public function collection($collection, $code = 200, $meta = [], $transformer = null)
     {
         if(is_null($transformer)) {
@@ -42,6 +51,15 @@ abstract class Controller extends BaseController
         return response()->json($response, $code, [], JSON_UNESCAPED_SLASHES);
     }
 
+    /**
+     * Format & return a single item response.
+     *
+     * @param $item
+     * @param int $code
+     * @param array $meta
+     * @param null $transformer
+     * @return \Illuminate\Http\JsonResponse
+     */
     public function item($item, $code = 200, $meta = [], $transformer = null)
     {
         if(is_null($transformer)) {
@@ -58,7 +76,7 @@ abstract class Controller extends BaseController
     }
 
     /**
-     * Method to standardize paginated responses.
+     * Format & return a paginated collection response.
      *
      * @param $query - Eloquent query
      * @return \Symfony\Component\HttpFoundation\Response
@@ -85,7 +103,7 @@ abstract class Controller extends BaseController
     }
 
     /**
-     * Method to standardize responses sent from child controllers.
+     * Format & return a standard object, array, or string response.
      *
      * @param mixed $data - Data to send in the response
      * @param int $code - Status code
