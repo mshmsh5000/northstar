@@ -39,7 +39,7 @@ class User extends Model implements AuthenticatableContract, CanResetPasswordCon
      * @var array
      */
     public static $indexes = [
-        '_id', 'drupal_id',
+        '_id', 'drupal_id', 'email', 'mobile'
     ];
 
     /**
