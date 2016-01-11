@@ -27,36 +27,32 @@ abstract class Controller extends BaseController
      */
     protected $transformer;
 
-    public function collection($collection, $code = 200, $meta = null, $transformer = null)
+    public function collection($collection, $code = 200, $meta = [], $transformer = null)
     {
         if(is_null($transformer)) {
             $transformer = $this->transformer;
         }
 
-        $manager = new Manager(new DataArraySerializer());
         $resource = new FractalCollection($collection, $transformer, 'things');
-        $response = $manager->createData($resource)->toArray();
+        $resource->setMeta($meta);
 
-        if($meta) {
-            $response['meta'] = $meta;
-        }
+        $manager = new Manager(new DataArraySerializer());
+        $response = $manager->createData($resource)->toArray();
 
         return response()->json($response, $code, [], JSON_UNESCAPED_SLASHES);
     }
 
-    public function item($item, $code = 200, $meta = null, $transformer = null)
+    public function item($item, $code = 200, $meta = [], $transformer = null)
     {
         if(is_null($transformer)) {
             $transformer = $this->transformer;
         }
 
-        $manager = new Manager(new DataArraySerializer());
         $resource = new FractalItem($item, $transformer, 'thing');
-        $response = $manager->createData($resource)->toArray();
+        $resource->setMeta($meta);
 
-        if($meta) {
-            $response['meta'] = $meta;
-        }
+        $manager = new Manager(new DataArraySerializer());
+        $response = $manager->createData($resource)->toArray();
 
         return response()->json($response, $code, [], JSON_UNESCAPED_SLASHES);
     }
@@ -67,7 +63,7 @@ abstract class Controller extends BaseController
      * @param $query - Eloquent query
      * @return \Symfony\Component\HttpFoundation\Response
      */
-    public function paginate($query, $request, $code = 200, $meta = null, $transformer = null)
+    public function paginate($query, $request, $code = 200, $meta = [], $transformer = null)
     {
         if(is_null($transformer)) {
             $transformer = $this->transformer;
@@ -75,19 +71,15 @@ abstract class Controller extends BaseController
 
         $paginator = $query->paginate((int) $request->query('limit', 20));
 
-        $manager = new Manager(new DataArraySerializer());
         $resource = new FractalCollection($paginator->getCollection(), $transformer);
+        $resource->setMeta($meta);
 
         $queryParams = array_diff_key($request->query(), array_flip(['page']));
         $paginator->appends($queryParams);
-
         $resource->setPaginator(new IlluminatePaginatorAdapter($paginator));
-        $response = $manager->createData($resource)->toArray();
 
-        if($meta) {
-            // @TODO: Don't overwrite pagination though!
-            $response['meta'] = $meta;
-        }
+        $manager = new Manager(new DataArraySerializer());
+        $response = $manager->createData($resource)->toArray();
 
         return response()->json($response, $code, [], JSON_UNESCAPED_SLASHES);
     }
