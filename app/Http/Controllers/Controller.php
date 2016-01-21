@@ -125,6 +125,64 @@ abstract class Controller extends BaseController
     }
 
     /**
+     * @param $class
+     * @return mixed
+     */
+    public function newQuery($class)
+    {
+        return (new $class)->newQuery();
+    }
+
+    /**
+     * @param $query
+     * @param $filters
+     * @param $indexes
+     * @return mixed
+     */
+    public function filter($query, $filters, $indexes)
+    {
+        if(!$filters) {
+            return $query;
+        }
+
+        // Requests may be filtered by indexed fields.
+        $filters = array_intersect_key($filters, array_flip($indexes));
+
+        // You can filter by multiple values, e.g. `filter[source]=agg,cgg`
+        // to get records that have a source value of either `agg` or `cgg`.
+        foreach ($filters as $filter => $values) {
+            $values = explode(',', $values);
+
+            // For the first `where` query, we want to limit results... from then on,
+            // we want to append (e.g. `SELECT * WHERE _ OR WHERE _ OR WHERE _`)
+            $firstWhere = true;
+            foreach ($values as $value) {
+                $query->where($filter, '=', $value, ($firstWhere ? 'and' : 'or'));
+                $firstWhere = false;
+            }
+        }
+
+        return $query;
+    }
+
+    public function search($query, $searches)
+    {
+        if(!$searches) {
+            return $query;
+        }
+
+        // For the first `where` query, we want to limit results... from then on,
+        // we want to append (e.g. `SELECT * WHERE _ OR WHERE _ OR WHERE _`)
+        $firstWhere = true;
+        foreach ($searches as $term => $value) {
+            $query->where($term, 'like', '%'.$value.'%', ($firstWhere ? 'and' : 'or'));
+            $firstWhere = false;
+        }
+
+        return $query;
+    }
+
+    /**
      * Create the response for when a request fails validation. Overrides the ValidatesRequests trait.
      *
      * @param Request $request
