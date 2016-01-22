@@ -185,7 +185,7 @@ abstract class Controller extends BaseController
         }
 
         // Searches may only be performed on indexed fields.
-        $filters = array_intersect_key($searches, array_flip($indexes));
+        $searches = array_intersect_key($searches, array_flip($indexes));
 
         // For the first `where` query, we want to limit results... from then on,
         // we want to append (e.g. `SELECT * WHERE _ OR WHERE _ OR WHERE _`)
