@@ -3,6 +3,7 @@
 namespace Northstar\Models;
 
 use Jenssegers\Mongodb\Model;
+use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 
 class ApiKey extends Model
 {
@@ -79,6 +80,17 @@ class ApiKey extends Model
     }
 
     /**
+     * Check if this API key has the given scope.
+     *
+     * @param $scope - Scope to test for
+     * @return bool
+     */
+    public function hasScope($scope)
+    {
+       return in_array($scope, $this->scope);
+    }
+
+    /**
      * Validate if all the given scopes are valid.
      *
      * @param $scopes
@@ -95,10 +107,39 @@ class ApiKey extends Model
 
     /**
      * Return a list of all scopes & their descriptions.
+     *
      * @return array
      */
     public static function scopes()
     {
         return static::$scopes;
+    }
+
+    /**
+     * Get the API key specified for the current request.
+     *
+     * @return \Northstar\Models\ApiKey
+     */
+    public static function current()
+    {
+        $app_id = request()->header('X-DS-Application-Id');
+        $api_key = request()->header('X-DS-REST-API-Key');
+
+        return static::where('app_id', $app_id)->where('api_key', $api_key)->first();
+    }
+
+    /**
+     * Throw an exception if a properly scoped API key is not
+     * provided with the current request.
+     *
+     * @param $scope
+     */
+    public static function gate($scope)
+    {
+        $key = ApiKey::current();
+
+        if (! $key || ! $key->hasScope($scope)) {
+            throw new AccessDeniedHttpException('You must be using an API key with "'.$scope.'" scope to do that.');
+        }
     }
 }
