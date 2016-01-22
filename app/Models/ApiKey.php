@@ -87,7 +87,7 @@ class ApiKey extends Model
      */
     public function hasScope($scope)
     {
-       return in_array($scope, $this->scope);
+        return in_array($scope, $this->scope);
     }
 
     /**
@@ -136,7 +136,7 @@ class ApiKey extends Model
      */
     public static function gate($scope)
     {
-        $key = ApiKey::current();
+        $key = self::current();
 
         if (! $key || ! $key->hasScope($scope)) {
             throw new AccessDeniedHttpException('You must be using an API key with "'.$scope.'" scope to do that.');
