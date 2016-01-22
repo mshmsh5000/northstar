@@ -49,7 +49,7 @@ class KeyController extends Controller
     {
         $this->validate($request, [
             'app_id' => 'required|unique:api_keys,app_id',
-            'scope' => 'array|scope' // @see ApiKey::validateScopes
+            'scope' => 'array|scope', // @see ApiKey::validateScopes
         ]);
 
         $key = ApiKey::create($request->all());
@@ -86,7 +86,7 @@ class KeyController extends Controller
     public function update($key, Request $request)
     {
         $this->validate($request, [
-            'scope' => 'array|scope' // @see ApiKey::validateScopes
+            'scope' => 'array|scope', // @see ApiKey::validateScopes
         ]);
 
         $key = ApiKey::where('api_key', $key)->firstOrFail();

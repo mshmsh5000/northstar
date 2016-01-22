@@ -30,6 +30,14 @@ class UserTest extends TestCase
             'HTTP_X-DS-REST-API-Key' => 'abc4324',
         ];
 
+        $this->userScope = [
+            'CONTENT_TYPE' => 'application/json',
+            'HTTP_Accept' => 'application/json',
+            'HTTP_X-DS-Application-Id' => '123',
+            'HTTP_X-DS-REST-API-Key' => '5464utyrs',
+            'HTTP_Session' => 'S0FyZmlRNmVpMzVsSzJMNUFreEFWa3g0RHBMWlJRd0tiQmhSRUNxWXh6cz0=',
+        ];
+
         // Mock AWS API class
         $this->awsMock = $this->mock('Northstar\Services\AWS');
     }
@@ -88,10 +96,10 @@ class UserTest extends TestCase
 
     /**
      * Tests retrieving multiple users by their id
-     * GET /users?_id=:id_1,...,:id_N
-     * GET /users?drupal_id=:id_1,...,:id_N
+     * GET /users?filter[_id]=:id_1,...,:id_N
+     * GET /users?filter[drupal_id]=:id_1,...,:id_N
      */
-    public function testGetMultipleUsersById()
+    public function testFilterUsersById()
     {
         // Retrieve multiple users by _id
         $response1 = $this->call(
@@ -122,7 +130,33 @@ class UserTest extends TestCase
     }
 
     /**
-     * Tests retreiving a user
+     * Tests searching users.
+     * GET /users/?search[field]=term
+     */
+    public function testSearchUsers()
+    {
+        // Search should be limited to `admin` scoped keys.
+        $response = $this->call(
+            'GET',
+            'v1/users?search[email]=search.example.com',
+            [], [], [], $this->userScope
+        );
+        $this->assertEquals(403, $response->getStatusCode());
+
+        // Query by a "known" search term
+        $response = $this->call(
+            'GET',
+            'v1/users?search[email]=search.example.com',
+            [], [], [], $this->server
+        );
+        $data = json_decode($response->getContent());
+
+        // We seeded 5 users with this email domain.
+        $this->assertCount(5, $data->data);
+    }
+
+    /**
+     * Tests retrieving a user
      * GET /users/{term}/{id}
      */
     public function testRetrieveUser()

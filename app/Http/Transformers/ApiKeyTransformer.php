@@ -15,7 +15,7 @@ class ApiKeyTransformer extends TransformerAbstract
     {
         return [
             'app_id' => $key->app_id,
-            'api_key' => $key-> api_key,
+            'api_key' => $key->api_key,
             'scope' => $key->scope,
 
             'updated_at' => $key->updated_at->toISO8601String(),

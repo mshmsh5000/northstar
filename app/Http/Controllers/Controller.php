@@ -12,7 +12,7 @@ use Illuminate\Routing\Controller as BaseController;
 use Illuminate\Foundation\Validation\ValidatesRequests;
 use Illuminate\Database\Eloquent;
 use Illuminate\Http\Request;
-use Input;
+use Northstar\Models\ApiKey;
 
 abstract class Controller extends BaseController
 {
@@ -38,7 +38,7 @@ abstract class Controller extends BaseController
      */
     public function item($item, $code = 200, $meta = [], $transformer = null)
     {
-        if(is_null($transformer)) {
+        if (is_null($transformer)) {
             $transformer = $this->transformer;
         }
 
@@ -62,7 +62,7 @@ abstract class Controller extends BaseController
      */
     public function collection($collection, $code = 200, $meta = [], $transformer = null)
     {
-        if(is_null($transformer)) {
+        if (is_null($transformer)) {
             $transformer = $this->transformer;
         }
 
@@ -83,7 +83,7 @@ abstract class Controller extends BaseController
      */
     public function paginatedCollection($query, $request, $code = 200, $meta = [], $transformer = null)
     {
-        if(is_null($transformer)) {
+        if (is_null($transformer)) {
             $transformer = $this->transformer;
         }
 
@@ -122,6 +122,83 @@ abstract class Controller extends BaseController
         }
 
         return response()->json($response, $code, [], JSON_UNESCAPED_SLASHES);
+    }
+
+    /**
+     * Create a new query builder from the given Eloquent class, which can then be
+     * filtered, searched, and/or paginated.
+     *
+     * @param string $class - Eloquent model class name
+     * @return \Illuminate\Database\Eloquent\Builder
+     */
+    public function newQuery($class)
+    {
+        return (new $class)->newQuery();
+    }
+
+    /**
+     * Limit results to users exactly matching a set of filters.
+     *
+     * @param $query
+     * @param $filters
+     * @param $indexes - Indexed fields (whitelisted for filtering)
+     * @return mixed
+     */
+    public function filter($query, $filters, $indexes)
+    {
+        if (! $filters) {
+            return $query;
+        }
+
+        // Requests may be filtered by indexed fields.
+        $filters = array_intersect_key($filters, array_flip($indexes));
+
+        // You can filter by multiple values, e.g. `filter[source]=agg,cgg`
+        // to get records that have a source value of either `agg` or `cgg`.
+        foreach ($filters as $filter => $values) {
+            $values = explode(',', $values);
+
+            // For the first `where` query, we want to limit results... from then on,
+            // we want to append (e.g. `SELECT * WHERE _ OR WHERE _ OR WHERE _`)
+            $firstWhere = true;
+            foreach ($values as $value) {
+                $query->where($filter, '=', $value, ($firstWhere ? 'and' : 'or'));
+                $firstWhere = false;
+            }
+        }
+
+        return $query;
+    }
+
+    /**
+     * Limit results to users matching a set of search terms.
+     *
+     * @param $query - Query to apply search to
+     * @param array $searches - Key/value array of fields and search terms
+     * @param array $indexes - Indexed fields (whitelisted for search)
+     * @return mixed
+     */
+    public function search($query, $searches, $indexes)
+    {
+        if (! $searches) {
+            return $query;
+        }
+
+        // Only "admin" keys should be able to search
+        ApiKey::gate('admin');
+
+        // Searches may only be performed on indexed fields.
+        $searches = array_intersect_key($searches, array_flip($indexes));
+
+        // For the first `where` query, we want to limit results... from then on,
+        // we want to append (e.g. `SELECT * WHERE _ OR WHERE _ OR WHERE _`)
+        $firstWhere = true;
+        foreach ($searches as $term => $value) {
+            $query->where($term, 'like', '%'.$value.'%', ($firstWhere ? 'and' : 'or'));
+            $firstWhere = false;
+        }
+
+        return $query;
     }
 
     /**

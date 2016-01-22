@@ -45,27 +45,10 @@ class UserController extends Controller
     {
         // Create an empty User query, which we can either filter (below)
         // or paginate to retrieve all user records.
-        $query = (new User)->newQuery();
+        $query = $this->newQuery(User::class);
 
-        // Requests may be filtered by indexed fields.
-        $filters = $request->query('filter');
-        if($filters) {
-            $filters = array_intersect_key($filters, array_flip(User::$indexes));
-
-            // You can filter by multiple values, e.g. `filter[source]=agg,cgg`
-            // to get records that have a source value of either `agg` or `cgg`.
-            foreach ($filters as $filter => $values) {
-                $values = explode(',', $values);
-
-                // For the first `where` query, we want to limit results... from then on,
-                // we want to append (e.g. `SELECT * WHERE _ OR WHERE _ OR WHERE _`)
-                $firstWhere = true;
-                foreach ($values as $value) {
-                    $query->where($filter, '=', $value, ($firstWhere ? 'and' : 'or'));
-                    $firstWhere = false;
-                }
-            }
-        }
+        $query = $this->filter($query, $request->query('filter'), User::$indexes);
+        $query = $this->search($query, $request->query('search'), User::$indexes);
 
         return $this->paginatedCollection($query, $request);
     }
@@ -165,7 +148,7 @@ class UserController extends Controller
         // Find the user.
         $user = User::where($term, $id)->first();
 
-        if(! $user) {
+        if (! $user) {
             throw new NotFoundHttpException('The resource does not exist.');
         }
 
