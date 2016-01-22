@@ -2,7 +2,6 @@
 
 namespace Northstar\Http\Controllers;
 
-use Illuminate\Database\Eloquent\Model;
 use League\Fractal\Manager;
 use League\Fractal\Pagination\IlluminatePaginatorAdapter;
 use League\Fractal\Resource\Collection as FractalCollection;
@@ -13,6 +12,7 @@ use Illuminate\Routing\Controller as BaseController;
 use Illuminate\Foundation\Validation\ValidatesRequests;
 use Illuminate\Database\Eloquent;
 use Illuminate\Http\Request;
+use Northstar\Models\ApiKey;
 
 abstract class Controller extends BaseController
 {
@@ -183,6 +183,9 @@ abstract class Controller extends BaseController
         if (! $searches) {
             return $query;
         }
+
+        // Only "admin" keys should be able to search
+        ApiKey::gate('admin');
 
         // Searches may only be performed on indexed fields.
         $searches = array_intersect_key($searches, array_flip($indexes));

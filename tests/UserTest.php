@@ -30,6 +30,14 @@ class UserTest extends TestCase
             'HTTP_X-DS-REST-API-Key' => 'abc4324',
         ];
 
+        $this->userScope = [
+            'CONTENT_TYPE' => 'application/json',
+            'HTTP_Accept' => 'application/json',
+            'HTTP_X-DS-Application-Id' => '123',
+            'HTTP_X-DS-REST-API-Key' => '5464utyrs',
+            'HTTP_Session' => 'S0FyZmlRNmVpMzVsSzJMNUFreEFWa3g0RHBMWlJRd0tiQmhSRUNxWXh6cz0=',
+        ];
+
         // Mock AWS API class
         $this->awsMock = $this->mock('Northstar\Services\AWS');
     }
@@ -127,6 +135,14 @@ class UserTest extends TestCase
      */
     public function testSearchUsers()
     {
+        // Search should be limited to `admin` scoped keys.
+        $response = $this->call(
+            'GET',
+            'v1/users?search[email]=search.example.com',
+            [], [], [], $this->userScope
+        );
+        $this->assertEquals(403, $response->getStatusCode());
+
         // Query by a "known" search term
         $response = $this->call(
             'GET',
