@@ -2,6 +2,7 @@
 
 namespace Northstar\Http\Controllers;
 
+use Illuminate\Database\Eloquent\Model;
 use League\Fractal\Manager;
 use League\Fractal\Pagination\IlluminatePaginatorAdapter;
 use League\Fractal\Resource\Collection as FractalCollection;
@@ -12,7 +13,6 @@ use Illuminate\Routing\Controller as BaseController;
 use Illuminate\Foundation\Validation\ValidatesRequests;
 use Illuminate\Database\Eloquent;
 use Illuminate\Http\Request;
-use Input;
 
 abstract class Controller extends BaseController
 {
@@ -38,7 +38,7 @@ abstract class Controller extends BaseController
      */
     public function item($item, $code = 200, $meta = [], $transformer = null)
     {
-        if(is_null($transformer)) {
+        if (is_null($transformer)) {
             $transformer = $this->transformer;
         }
 
@@ -62,7 +62,7 @@ abstract class Controller extends BaseController
      */
     public function collection($collection, $code = 200, $meta = [], $transformer = null)
     {
-        if(is_null($transformer)) {
+        if (is_null($transformer)) {
             $transformer = $this->transformer;
         }
 
@@ -83,7 +83,7 @@ abstract class Controller extends BaseController
      */
     public function paginatedCollection($query, $request, $code = 200, $meta = [], $transformer = null)
     {
-        if(is_null($transformer)) {
+        if (is_null($transformer)) {
             $transformer = $this->transformer;
         }
 
@@ -125,8 +125,11 @@ abstract class Controller extends BaseController
     }
 
     /**
-     * @param $class
-     * @return mixed
+     * Create a new query builder from the given Eloquent class, which can then be
+     * filtered, searched, and/or paginated.
+     *
+     * @param string $class - Eloquent model class name
+     * @return \Illuminate\Database\Eloquent\Builder
      */
     public function newQuery($class)
     {
@@ -134,14 +137,16 @@ abstract class Controller extends BaseController
     }
 
     /**
+     * Limit results to users exactly matching a set of filters.
+     *
      * @param $query
      * @param $filters
-     * @param $indexes
+     * @param $indexes - Indexed fields (whitelisted for filtering)
      * @return mixed
      */
     public function filter($query, $filters, $indexes)
     {
-        if(!$filters) {
+        if (! $filters) {
             return $query;
         }
 
@@ -165,11 +170,22 @@ abstract class Controller extends BaseController
         return $query;
     }
 
-    public function search($query, $searches)
+    /**
+     * Limit results to users matching a set of search terms.
+     *
+     * @param $query - Query to apply search to
+     * @param array $searches - Key/value array of fields and search terms
+     * @param array $indexes - Indexed fields (whitelisted for search)
+     * @return mixed
+     */
+    public function search($query, $searches, $indexes)
     {
-        if(!$searches) {
+        if (! $searches) {
             return $query;
         }
+
+        // Searches may only be performed on indexed fields.
+        $filters = array_intersect_key($searches, array_flip($indexes));
 
         // For the first `where` query, we want to limit results... from then on,
         // we want to append (e.g. `SELECT * WHERE _ OR WHERE _ OR WHERE _`)

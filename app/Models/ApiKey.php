@@ -82,13 +82,15 @@ class ApiKey extends Model
      * Validate if all the given scopes are valid.
      *
      * @param $scopes
-     * @return boolean
+     * @return bool
      */
     public static function validateScopes($scopes)
     {
-        if(! is_array($scopes)) return false;
+        if (! is_array($scopes)) {
+            return false;
+        }
 
-        return !array_diff($scopes, array_keys(static::$scopes));
+        return ! array_diff($scopes, array_keys(static::$scopes));
     }
 
     /**
