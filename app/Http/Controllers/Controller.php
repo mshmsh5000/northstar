@@ -194,15 +194,7 @@ abstract class Controller extends BaseController
         // we want to append (e.g. `SELECT * WHERE _ OR WHERE _ OR WHERE _`)
         $firstWhere = true;
         foreach ($searches as $term => $value) {
-            $operator = '=';
-
-            // We can't query the Object ID by regex. For everything else, prepare a regex query.
-            if ($term !== '_id') {
-                $value = '%'.preg_quote($value).'%';
-                $operator = 'like';
-            }
-
-            $query->where($term, $operator, $value, ($firstWhere ? 'and' : 'or'));
+            $query->where($term, '=', $value, ($firstWhere ? 'and' : 'or'));
             $firstWhere = false;
         }
 
