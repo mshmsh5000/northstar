@@ -138,7 +138,7 @@ class UserTest extends TestCase
         // Search should be limited to `admin` scoped keys.
         $response = $this->call(
             'GET',
-            'v1/users?search[email]=search.example.com',
+            'v1/users?search[email]=test@dosomething.org',
             [], [], [], $this->userScope
         );
         $this->assertEquals(403, $response->getStatusCode());
@@ -146,13 +146,13 @@ class UserTest extends TestCase
         // Query by a "known" search term
         $response = $this->call(
             'GET',
-            'v1/users?search[email]=search.example.com',
+            'v1/users?search[_id]=test@dosomething.org&search[email]=test@dosomething.org',
             [], [], [], $this->server
         );
         $data = json_decode($response->getContent());
 
-        // We seeded 5 users with this email domain.
-        $this->assertCount(5, $data->data);
+        // There should be one match (a user with the provided email)
+        $this->assertCount(1, $data->data);
     }
 
     /**
