@@ -186,18 +186,6 @@ class UserTableSeeder extends Seeder
             'last_name' => 'Last',
         ]);
 
-        // Seeded users for UserTest@testSearchUsers
-        foreach (range(1, 5) as $index) {
-            $faker = Faker\Factory::create();
-            User::create([
-                'first_name' => $faker->firstName,
-                'last_name' => $faker->lastName,
-                'email' => $faker->unique()->userName.'@search.example.com',
-                'password' => 'secret',
-                'birthdate' => '12/17/91',
-            ]);
-        }
-
         if (App::environment('local')) {
             $faker = Faker\Factory::create();
             foreach (range(1, 50) as $index) {
