@@ -11,6 +11,12 @@ use Northstar\Services\Registrar;
 
 class AuthController extends Controller
 {
+    /**
+     * The registrar.
+     * @var Registrar
+     */
+    protected $registrar;
+
     public function __construct(Registrar $registrar)
     {
         $this->registrar = $registrar;
