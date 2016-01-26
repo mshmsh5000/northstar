@@ -17,6 +17,8 @@ return [
     'drupal' => [
         'url' => env('DRUPAL_API_URL'),
         'version' => 'v1',
+        'username' => env('DRUPAL_API_USERNAME'),
+        'password' => env('DRUPAL_API_PASSWORD'),
     ],
 
     'parse' => [

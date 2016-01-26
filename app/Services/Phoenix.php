@@ -35,8 +35,8 @@ class Phoenix
     {
         $authentication = Cache::remember('drupal.authentication', 30, function () {
             $payload = [
-                'username' => getenv('DRUPAL_API_USERNAME'),
-                'password' => getenv('DRUPAL_API_PASSWORD'),
+                'username' => config('services.drupal.username'),
+                'password' => config('services.drupal.password'),
             ];
 
             $response = $this->client->post('auth/login', [

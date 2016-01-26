@@ -55,6 +55,7 @@ return [
             'region' => 'us-east-1',
             'bucket' => env('S3_BUCKET'),
             'base_url' => 'https://s3-external-1.amazonaws.com',
+            'public_url' => env('S3_URL'),
         ],
 
         'rackspace' => [
