@@ -43,12 +43,38 @@ class UserTest extends TestCase
     }
 
     /**
-     * Test for retrieving a user
-     * GET /users
+     * Test for retrieving a user with a non-admin key.
+     * GET /users/:term/:id
      *
      * @return void
      */
-    public function testGetDataFromUser()
+    public function testGetPublicDataFromUser()
+    {
+        $response = $this->call('GET', 'v1/users/email/test@dosomething.org', [], [], [], $this->userScope);
+        $content = $response->getContent();
+
+        // The response should return a 200 OK status code
+        $this->assertEquals(200, $response->getStatusCode());
+
+        // Response should be valid JSON
+        $this->assertJson($content);
+        $json = json_decode($content);
+
+        // Check that public profile fields are visible...
+        $this->assertObjectHasAttribute('id', $json->data);
+        $this->assertObjectHasAttribute('email', $json->data);
+
+        // ...and private profile fields are hidden.
+        $this->assertObjectNotHasAttribute('last_name', $json->data);
+    }
+
+    /**
+     * Test for retrieving a user with an admin key.
+     * GET /users/:term/:id
+     *
+     * @return void
+     */
+    public function testGetAllDataFromUser()
     {
         $response = $this->call('GET', 'v1/users/email/test@dosomething.org', [], [], [], $this->server);
         $content = $response->getContent();
@@ -58,6 +84,12 @@ class UserTest extends TestCase
 
         // Response should be valid JSON
         $this->assertJson($content);
+        $json = json_decode($content);
+
+        // Check that public & private profile fields are visible
+        $this->assertObjectHasAttribute('id', $json->data);
+        $this->assertObjectHasAttribute('email', $json->data);
+        $this->assertObjectHasAttribute('last_name', $json->data);
     }
 
     /**

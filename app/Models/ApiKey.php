@@ -20,7 +20,7 @@ class ApiKey extends Model
      * @var array
      */
     protected $attributes = [
-        'scope' => ['user'],
+        'scope' => [],
     ];
 
     /**
@@ -65,18 +65,6 @@ class ApiKey extends Model
     public function setAppIdAttribute($app_id)
     {
         $this->attributes['app_id'] = snake_case(str_replace(' ', '', $app_id));
-    }
-
-    /**
-     * Getter for 'scope' field.
-     */
-    public function getScopeAttribute()
-    {
-        if (empty($this->attributes['scope'])) {
-            return ['user'];
-        }
-
-        return $this->attributes['scope'];
     }
 
     /**
