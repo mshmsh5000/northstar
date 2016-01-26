@@ -29,6 +29,6 @@ class AWS
 
         Storage::disk('s3')->put($filename, $data);
 
-        return getenv('S3_URL').$path;
+        return config('filesystems.disks.s3.public_url').$path;
     }
 }
