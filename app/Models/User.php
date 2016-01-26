@@ -20,6 +20,11 @@ class User extends Model implements AuthenticatableContract, CanResetPasswordCon
      */
     public $incrementing = false;
 
+    /**
+     * The attributes that are mass assignable.
+     *
+     * @var array
+     */
     protected $fillable = [
         'email', 'mobile', 'password', 'drupal_password',
 

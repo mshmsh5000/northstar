@@ -8,8 +8,9 @@ and [MongoDB](https://www.mongodb.com).
 
 Fork and clone this repository, and install into your local [DS Homestead](https://github.com/DoSomething/ds-homestead).
 
-After installation, run the outstanding migrations:
+After installation, set environment variables & run the outstanding migrations:
 
+    $ cp .env.example .env
     $ php artisan migrate
 
 You can seed the database with test data:
