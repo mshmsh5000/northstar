@@ -7,12 +7,18 @@ use Illuminate\Auth\Authenticatable;
 use Illuminate\Auth\Passwords\CanResetPassword;
 use Illuminate\Contracts\Auth\Authenticatable as AuthenticatableContract;
 use Illuminate\Contracts\Auth\CanResetPassword as CanResetPasswordContract;
-use Request;
 use Hash;
 
 class User extends Model implements AuthenticatableContract, CanResetPasswordContract
 {
     use Authenticatable, CanResetPassword;
+
+    /**
+     * Indicates if the IDs are auto-incrementing.
+     *
+     * @var bool
+     */
+    public $incrementing = false;
 
     protected $fillable = [
         'email', 'mobile', 'password', 'drupal_password',
@@ -156,7 +162,7 @@ class User extends Model implements AuthenticatableContract, CanResetPasswordCon
      */
     public static function current()
     {
-        $token = Request::header('Session');
+        $token = request()->header('Session');
         $user = Token::userFor($token);
 
         return $user;
