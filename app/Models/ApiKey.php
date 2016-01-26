@@ -60,11 +60,25 @@ class ApiKey extends Model
     }
 
     /**
-     * Mutator for 'app_id' field.
+     * Mutator for 'app_id' attribute.
+     * @return string
      */
     public function setAppIdAttribute($app_id)
     {
         $this->attributes['app_id'] = snake_case(str_replace(' ', '', $app_id));
+    }
+
+    /**
+     * Mutator for 'scope' attribute.
+     * @return array
+     */
+    public function getScopeAttribute()
+    {
+        if (! isset($this->attributes['scope']) || ! is_array($this->attributes['scope'])) {
+            return [];
+        }
+
+        return $this->attributes['scope'];
     }
 
     /**
