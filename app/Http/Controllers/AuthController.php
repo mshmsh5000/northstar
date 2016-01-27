@@ -2,7 +2,6 @@
 
 namespace Northstar\Http\Controllers;
 
-use Northstar\Models\Token;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpKernel\Exception\HttpException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
