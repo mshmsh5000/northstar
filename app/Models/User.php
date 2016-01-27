@@ -153,24 +153,11 @@ class User extends Model implements AuthenticatableContract, CanResetPasswordCon
      */
     public function login()
     {
-        $token = Token::getInstance();
+        $token = new Token();
         $token->user_id = $this->_id;
         $token->save();
 
         return $token;
-    }
-
-    /**
-     * Get the currently authenticated user from the session token.
-     *
-     * @return User
-     */
-    public static function current()
-    {
-        $token = request()->header('Session');
-        $user = Token::userFor($token);
-
-        return $user;
     }
 
     /**

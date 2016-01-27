@@ -30,11 +30,11 @@ class KudosController extends Controller
      * POST /kudos
      *
      * @param Request $request
-     * @return Response
+     * @return \Illuminate\Http\Response
      */
     public function store(Request $request)
     {
-        $user = User::current();
+        $user = Auth::user();
 
         $drupal_id = $user->drupal_id;
 

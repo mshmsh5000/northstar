@@ -55,33 +55,9 @@ class Token extends Model
         return base64_encode($key);
     }
 
-    /**
-     * Create a new token. DEPRECATED: Use standard class
-     * constructor instead.
-     *
-     * @return Token
-     * @deprecated
-     */
-    public static function getInstance()
+    public function user()
     {
-        $token = new self();
-
-        return $token;
-    }
-
-    /**
-     * Get the user associated with a given token key.
-     * @param int $token - Token key
-     * @return User|null
-     */
-    public static function userFor($token)
-    {
-        $token = self::where('key', '=', $token)->first();
-        if (empty($token)) {
-            return;
-        }
-
-        return User::find($token->user_id);
+        return $this->belongsTo(User::class);
     }
 
     /**

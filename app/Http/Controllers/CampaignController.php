@@ -3,6 +3,7 @@
 namespace Northstar\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Northstar\Events\UserSignedUp;
 use Northstar\Events\UserReportedBack;
 use Northstar\Http\Transformers\CampaignTransformer;
@@ -81,7 +82,7 @@ class CampaignController extends Controller
      */
     public function show($campaign_id)
     {
-        $user = User::current();
+        $user = Auth::user();
 
         $campaign = $user->campaigns()->where('drupal_id', $campaign_id)->first();
 
@@ -118,7 +119,7 @@ class CampaignController extends Controller
         ]);
 
         // Get the currently authenticated Northstar user.
-        $user = User::current();
+        $user = Auth::user();
 
         // Return an error if the user doesn't exist.
         if (! $user->drupal_id) {
@@ -174,7 +175,7 @@ class CampaignController extends Controller
         ]);
 
         // Get the currently authenticated Northstar user.
-        $user = User::current();
+        $user = Auth::user();
 
         // Return an error if the user doesn't exist.
         if (! $user->drupal_id) {
