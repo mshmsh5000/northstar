@@ -2,6 +2,7 @@
 
 namespace Northstar\Http\Transformers;
 
+use Northstar\Models\ApiKey;
 use Northstar\Models\User;
 use League\Fractal\TransformerAbstract;
 use Gate;
@@ -23,7 +24,7 @@ class UserTransformer extends TransformerAbstract
             'first_name' => $user->first_name,
         ];
 
-        if (Gate::allows('view-full-profile', $user)) {
+        if (ApiKey::allows('admin') || Gate::allows('view-full-profile', $user)) {
             $response['last_name'] = $user->last_name;
         }
 
@@ -32,7 +33,7 @@ class UserTransformer extends TransformerAbstract
         $response['photo'] = $user->photo;
         $response['interests'] = $user->interests;
 
-        if (Gate::allows('view-full-profile', $user)) {
+        if (ApiKey::allows('admin') || Gate::allows('view-full-profile', $user)) {
             $response['birthdate'] = $user->birthdate;
             $response['race'] = $user->race;
             $response['religion'] = $user->religion;
