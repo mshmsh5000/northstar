@@ -7,7 +7,7 @@ use Illuminate\Http\Request;
 use Symfony\Component\HttpKernel\Exception\HttpException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\HttpKernel\Exception\UnauthorizedHttpException;
-use Northstar\Services\Registrar;
+use Northstar\Auth\Registrar;
 use Auth;
 
 class AuthController extends Controller
