@@ -67,20 +67,6 @@ class ApiKey extends Model
     }
 
     /**
-     * Generate a secure, unique API key.
-     *
-     * @return string
-     */
-    public function generateAPIKey()
-    {
-        do {
-            $api_key = Str::random(40);
-        } while(static::where('api_key', $api_key)->exists());
-
-        return $api_key;
-    }
-
-    /**
      * Mutator for 'app_id' attribute.
      * @return string
      */
@@ -145,10 +131,9 @@ class ApiKey extends Model
      */
     public static function current()
     {
-        $app_id = request()->header('X-DS-Application-Id');
         $api_key = request()->header('X-DS-REST-API-Key');
 
-        return static::where('app_id', $app_id)->where('api_key', $api_key)->first();
+        return static::where('api_key', $api_key)->first();
     }
 
     /**
