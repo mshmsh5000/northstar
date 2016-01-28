@@ -2,6 +2,7 @@
 
 namespace Northstar\Http\Middleware;
 
+use Auth;
 use Northstar\Models\Token;
 use Closure;
 use Symfony\Component\HttpKernel\Exception\HttpException;
@@ -18,13 +19,8 @@ class Authenticate
      */
     public function handle($request, Closure $next)
     {
-        $token = $request->header('Session');
-        if (! $token) {
-            throw new HttpException(401, 'No token found.');
-        }
-
-        if (! Token::where('key', $token)->exists()) {
-            throw new HttpException(401, 'Token mismatched.');
+        if (! Auth::check()) {
+            throw new HttpException(401, 'Authentication token mismatched.');
         }
 
         return $next($request);
