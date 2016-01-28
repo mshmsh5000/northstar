@@ -2,12 +2,12 @@
 
 namespace Northstar\Http\Controllers;
 
-use Northstar\Models\Token;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpKernel\Exception\HttpException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\HttpKernel\Exception\UnauthorizedHttpException;
-use Northstar\Services\Registrar;
+use Northstar\Auth\Registrar;
+use Auth;
 
 class AuthController extends Controller
 {
@@ -48,6 +48,7 @@ class AuthController extends Controller
 
     /**
      * Logout the current user by invalidating their session token.
+     * POST /logout
      *
      * @param Request $request
      * @return \Illuminate\Http\Response
@@ -55,29 +56,26 @@ class AuthController extends Controller
      */
     public function logout(Request $request)
     {
-        if (! $request->header('Session')) {
-            throw new HttpException(422, 'No token given.');
+        $token = Auth::token();
+
+        if (! $token) {
+            throw new NotFoundHttpException('No active session found.');
         }
 
-        $input_token = $request->header('Session');
-        $token = Token::where('key', '=', $input_token)->first();
-        $user = Token::userFor($input_token);
-
-        if (empty($token)) {
-            throw new NotFoundHttpException('No active session found.');
-        } elseif ($token->user_id !== $user->_id) {
-            throw new HttpException(403, 'You do not own this token.');
-        } elseif ($token->delete()) {
-            // Remove Parse installation ID. Disables push notifications.
-            if ($request->has('parse_installation_ids')) {
-                $removeId = $request->parse_installation_ids;
-                $user->pull('parse_installation_ids', $removeId);
-                $user->save();
-            }
-
-            return $this->respond('User logged out successfully.');
-        } else {
+        // Attempt to delete token.
+        $deleted = $token->delete();
+        if (! $deleted) {
             throw new HttpException(400, 'User could not log out. Please try again.');
         }
+
+        // Remove Parse installation ID. Disables push notifications.
+        $user = $token->user;
+        if ($user && $request->has('parse_installation_ids')) {
+            $removeIds = $request->input('parse_installation_ids');
+            $user->pull('parse_installation_ids', $removeIds);
+            $user->save();
+        }
+
+        return $this->respond('User logged out successfully.');
     }
 }

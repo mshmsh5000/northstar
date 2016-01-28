@@ -6,6 +6,7 @@ use Illuminate\Validation\ValidationException;
 use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Symfony\Component\HttpKernel\Exception\HttpException;
+use Illuminate\Foundation\Validation\ValidationException as LegacyValidationException;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
 use Exception;
 
@@ -21,6 +22,7 @@ class Handler extends ExceptionHandler
         HttpException::class,
         ModelNotFoundException::class,
         ValidationException::class,
+        LegacyValidationException::class,
     ];
 
     /**
@@ -47,8 +49,14 @@ class Handler extends ExceptionHandler
     {
         // If client requests it, render exception as JSON object
         if ($request->ajax() || $request->wantsJson()) {
-            $code = 500;
 
+            // If reporting a validation exception, use the prepared response
+            // @see \Northstar\Http\Controller@buildFailedValidationResponse
+            if ($e instanceof ValidationException) {
+                return $e->response;
+            }
+
+            $code = 500;
             if ($this->isHttpException($e)) {
                 $code = $e->getStatusCode();
             }

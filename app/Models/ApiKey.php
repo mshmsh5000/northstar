@@ -131,16 +131,28 @@ class ApiKey extends Model
     }
 
     /**
-     * Throw an exception if a properly scoped API key is not
-     * provided with the current request.
+     * Return whether a properly scoped API key is provided
+     * with the current request.
      *
-     * @param $scope
+     * @param $scope - Required scope
+     * @return bool
      */
-    public static function gate($scope)
+    public static function allows($scope)
     {
         $key = self::current();
 
-        if (! $key || ! $key->hasScope($scope)) {
+        return $key && $key->hasScope($scope);
+    }
+
+    /**
+     * Throw an exception if a properly scoped API key is not
+     * provided with the current request.
+     *
+     * @param $scope - Required scope
+     */
+    public static function gate($scope)
+    {
+        if (! static::allows($scope)) {
             throw new AccessDeniedHttpException('You must be using an API key with "'.$scope.'" scope to do that.');
         }
     }

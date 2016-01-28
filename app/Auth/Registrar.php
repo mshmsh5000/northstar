@@ -1,6 +1,6 @@
 <?php
 
-namespace Northstar\Services;
+namespace Northstar\Auth;
 
 use Hash;
 use Northstar\Models\User;
