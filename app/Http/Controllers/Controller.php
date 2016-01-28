@@ -2,6 +2,7 @@
 
 namespace Northstar\Http\Controllers;
 
+use Illuminate\Http\Request;
 use League\Fractal\Manager;
 use League\Fractal\Pagination\IlluminatePaginatorAdapter;
 use League\Fractal\Resource\Collection as FractalCollection;
@@ -11,16 +12,12 @@ use Illuminate\Foundation\Bus\DispatchesJobs;
 use Illuminate\Routing\Controller as BaseController;
 use Illuminate\Foundation\Validation\ValidatesRequests;
 use Illuminate\Database\Eloquent;
-use Illuminate\Http\Request;
 use Northstar\Models\ApiKey;
+use Symfony\Component\HttpFoundation\JsonResponse;
 
 abstract class Controller extends BaseController
 {
-    use DispatchesJobs;
-
-    use ValidatesRequests {
-        buildFailedValidationResponse as traitBuildFailedValidationResponse;
-    }
+    use DispatchesJobs, ValidatesRequests;
 
     /**
      * @var \League\Fractal\TransformerAbstract
@@ -202,14 +199,21 @@ abstract class Controller extends BaseController
     }
 
     /**
-     * Create the response for when a request fails validation. Overrides the ValidatesRequests trait.
+     * Create the response for when a request fails validation. Overrides the
+     * `buildFailedValidationResponse` method from the `ValidatesRequests` trait.
      *
-     * @param Request $request
-     * @param array $errors
+     * @param  \Illuminate\Http\Request  $request
+     * @param  array  $errors
      * @return \Illuminate\Http\Response
      */
     protected function buildFailedValidationResponse(Request $request, array $errors)
     {
-        return $this->traitBuildFailedValidationResponse($request, $errors);
+        $response = [
+            'code' => 422,
+            'message' => 'Failed validation.',
+            'errors' => $errors,
+        ];
+
+        return new JsonResponse($response, 422);
     }
 }

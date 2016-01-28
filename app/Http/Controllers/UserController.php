@@ -212,28 +212,4 @@ class UserController extends Controller
             throw new NotFoundHttpException('The resource does not exist.');
         }
     }
-
-    /**
-     * Create the response for when a request fails validation. Overrides the ValidatesRequests trait.
-     *
-     * @param Request $request
-     * @param array $errors
-     * @return \Illuminate\Http\Response
-     * @throws UnauthorizedHttpException
-     */
-    protected function buildFailedValidationResponse(Request $request, array $errors)
-    {
-        $error_message = '';
-        if (count($errors) > 0) {
-            foreach ($errors as $e) {
-                foreach ($e as $message) {
-                    $error_message .= $message.' ';
-                }
-            }
-
-            throw new UnauthorizedHttpException(null, trim($error_message));
-        } else {
-            return parent::buildFailedValidationResponse($request, $errors);
-        }
-    }
 }
