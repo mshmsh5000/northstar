@@ -2,6 +2,7 @@
 
 namespace Northstar\Models;
 
+use Illuminate\Support\Str;
 use Jenssegers\Mongodb\Model;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 
@@ -54,9 +55,29 @@ class ApiKey extends Model
 
         // Automatically set random API key. This field *may* be manually
         // set when seeding the database, so we first check if empty.
-        if (empty($this->api_key)) {
-            $this->api_key = str_random(40);
-        }
+        static::creating(function (ApiKey $key) {
+            if (empty($key->api_key)) {
+                do {
+                    $key = Str::random(32);
+                } while(static::where('api_key', $key)->exists());
+
+                $key->api_key = $key;
+            }
+        });
+    }
+
+    /**
+     * Generate a secure, unique API key.
+     *
+     * @return string
+     */
+    public function generateAPIKey()
+    {
+        do {
+            $api_key = Str::random(40);
+        } while(static::where('api_key', $api_key)->exists());
+
+        return $api_key;
     }
 
     /**

@@ -2,6 +2,7 @@
 
 namespace Northstar\Models;
 
+use Illuminate\Support\Str;
 use Jenssegers\Mongodb\Model;
 
 class Token extends Model
@@ -32,29 +33,22 @@ class Token extends Model
 
         // Automatically set random token key. This field *may* be manually
         // set when seeding the database, so we first check if empty.
-        if (empty($this->key)) {
-            $this->key = self::randomKey(32);
-        }
+        static::creating(function (Token $token) {
+            if (empty($token->key)) {
+                do {
+                    $key = Str::random(32);
+                } while(static::where('key', $key)->exists());
+
+                $token->key = $key;
+            }
+        });
     }
 
     /**
-     * Generate a random key of given length.
+     * A token belongs to a user.
      *
-     * @param $size
-     * @return string
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
-    public static function randomKey($size)
-    {
-        do {
-            $key = openssl_random_pseudo_bytes($size, $strongEnough);
-        } while (! $strongEnough);
-
-        $key = str_replace('+', '', base64_encode($key));
-        $key = str_replace('/', '', $key);
-
-        return base64_encode($key);
-    }
-
     public function user()
     {
         return $this->belongsTo(User::class);
