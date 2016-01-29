@@ -37,7 +37,7 @@ class Token extends Model
             if (empty($token->key)) {
                 do {
                     $key = Str::random(32);
-                } while(static::where('key', $key)->exists());
+                } while (static::where('key', $key)->exists());
 
                 $token->key = $key;
             }

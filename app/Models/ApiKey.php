@@ -59,7 +59,7 @@ class ApiKey extends Model
             if (empty($key->api_key)) {
                 do {
                     $key = Str::random(32);
-                } while(static::where('api_key', $key)->exists());
+                } while (static::where('api_key', $key)->exists());
 
                 $key->api_key = $key;
             }
