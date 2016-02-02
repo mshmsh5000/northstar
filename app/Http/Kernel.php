@@ -12,7 +12,7 @@ class Kernel extends HttpKernel
      * @var array
      */
     protected $middleware = [
-        'Illuminate\Foundation\Http\Middleware\CheckForMaintenanceMode',
+        \Illuminate\Foundation\Http\Middleware\CheckForMaintenanceMode::class,
     ];
 
     /**
@@ -21,7 +21,8 @@ class Kernel extends HttpKernel
      * @var array
      */
     protected $routeMiddleware = [
-        'auth' => 'Northstar\Http\Middleware\Authenticate',
-        'key' => 'Northstar\Http\Middleware\AuthenticateAPIKey',
+        'auth' => \Northstar\Http\Middleware\Authenticate::class,
+        'guest' => \Northstar\Http\Middleware\RedirectIfAuthenticated::class,
+        'key' => \Northstar\Http\Middleware\AuthenticateAPIKey::class,
     ];
 }
