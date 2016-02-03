@@ -53,6 +53,29 @@ class AuthController extends Controller
         $token = $this->registrar->login($credentials);
 
         return $this->item($token);
+    /**
+     * Verify user credentials without making a session.
+     *
+     * @param Request $request
+     * @return \Illuminate\Http\Response
+     * @throws UnauthorizedHttpException
+     */
+    public function verify(Request $request)
+    {
+        $this->validate($request, [
+            'email' => 'email|required_without:mobile',
+            'mobile' => 'required_without:email',
+            'password' => 'required',
+        ]);
+
+        $credentials = $request->only('email', 'mobile', 'password');
+        $user = $this->registrar->resolve($credentials);
+
+        if(! $this->registrar->verify($user, $credentials)) {
+            throw new UnauthorizedHttpException(null, 'Invalid credentials.');
+        }
+
+        return $this->item($user, 200, [], new UserTransformer());
     }
 
     /**

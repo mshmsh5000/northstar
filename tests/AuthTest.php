@@ -97,6 +97,32 @@ class AuthTest extends TestCase
     }
 
     /**
+     * Test for logging in a user
+     * POST /login
+     *
+     * @return void
+     */
+    public function testVerify()
+    {
+        // User login info
+        $credentials = [
+            'email' => 'test@dosomething.org',
+            'password' => 'secret',
+        ];
+
+        $response = $this->call('POST', 'v1/auth/verify', [], [], [], $this->server, json_encode($credentials));
+        $content = $response->getContent();
+        $data = json_decode($content, true);
+
+        // The response should return a 200 Okay status code
+        $this->assertEquals(200, $response->getStatusCode());
+
+        // Response should be valid JSON, & include user data
+        $this->assertJson($content);
+        $this->assertArrayHasKey('_id', $data['data']);
+    }
+
+    /**
      * Test for logging out a user
      * POST /logout
      *
