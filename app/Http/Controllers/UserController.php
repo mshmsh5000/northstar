@@ -183,6 +183,10 @@ class UserController extends Controller
                     $user->$key = $value;
                 }
             }
+        $this->validate($request, [
+            'email' => 'email|max:60|unique:users,email,'.$user->id.',_id',
+            'mobile' => 'unique:users,mobile,'.$user->id.',_id',
+        ]);
 
             $user->save();
 
