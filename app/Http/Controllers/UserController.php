@@ -3,12 +3,11 @@
 namespace Northstar\Http\Controllers;
 
 use Illuminate\Http\Request;
-use League\Fractal\Resource\Item;
+use Northstar\Auth\Registrar;
 use Northstar\Http\Transformers\UserTransformer;
 use Northstar\Services\Phoenix;
 use Northstar\Models\User;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
-use Symfony\Component\HttpKernel\Exception\UnauthorizedHttpException;
 
 class UserController extends Controller
 {
@@ -19,18 +18,29 @@ class UserController extends Controller
     protected $phoenix;
 
     /**
+     * The registrar.
+     * @var Registrar
+     */
+    protected $registrar;
+
+    /**
      * @var UserTransformer
      */
     protected $transformer;
 
-    public function __construct(Phoenix $phoenix)
+    /**
+     * UserController constructor.
+     * @param Phoenix $phoenix
+     * @param Registrar $registrar
+     */
+    public function __construct(Phoenix $phoenix, Registrar $registrar)
     {
         $this->phoenix = $phoenix;
+        $this->registrar = $registrar;
 
         $this->transformer = new UserTransformer();
 
-        $this->middleware('key:user', ['except' => 'destroy']);
-        $this->middleware('key:admin', ['only' => 'destroy']);
+        $this->middleware('key:admin', ['except' => ['index', 'show']]);
     }
 
     /**
@@ -59,76 +69,37 @@ class UserController extends Controller
      *
      * @param Request $request
      * @return \Illuminate\Http\Response
-     * @throws UnauthorizedHttpException
      */
     public function store(Request $request)
     {
-        $check = $request->only('email', 'mobile');
-        $input = $request->all();
-
-        $user = false;
-        $found_user = false;
+        $user = null;
 
         // Does this user exist already?
-        if ($request->has('email')) {
-            $found_user = User::where('email', '=', $check['email'])->first();
-        } elseif ($request->has('mobile')) {
-            $found_user = User::where('mobile', '=', $check['mobile'])->first();
+        $existingUser = $this->registrar->resolve($request->only('email', 'mobile'));
+        if ($existingUser && $this->registrar->verify($existingUser, $request->only('password'))) {
+            $user = $existingUser;
         }
 
-        if ($found_user && password_verify($input['password'], $found_user->password)) {
-            $user = $found_user;
-        }
+        $this->validate($request, [
+            'email' => 'email|max:60|unique:users|required_without:mobile',
+            'mobile' => 'unique:users|required_without:email',
+        ]);
 
-        // If there is no user found, create a new one.
-        if (! $user) {
-            $user = new User;
+        $user = $this->registrar->register($request->all(), $user);
 
-            // This validation might not be needed, the only validation happening right now
-            // is for unique email or phone numbers, and that should return a user
-            // from the query above.
-            $this->validate($request, [
-                'email' => 'email|max:60|unique:users|required_without:mobile',
-                'mobile' => 'unique:users|required_without:email',
-            ]);
-        }
-        // Update or create the user from all the input.
-        try {
-            $user->fill($input);
-
-            // Do we need to forward this user to drupal?
-            // If query string exists, make a drupal user.
-            // @TODO: we can't create a Drupal user without an email. Do we just create an @mobile one like we had done previously?
-            if ($request->has('create_drupal_user') && $request->has('password') && ! $user->drupal_id) {
-                try {
-                    $drupal_id = $this->phoenix->register($user, $request->get('password'));
-                    $user->drupal_id = $drupal_id;
-                } catch (\Exception $e) {
-                    // If user already exists, find the user to get the uid.
-                    if ($e->getCode() == 403) {
-                        try {
-                            $drupal_id = $drupal->getUidByEmail($user->email);
-                            $user->drupal_id = $drupal_id;
-                        } catch (\Exception $e) {
-                            // @TODO: still ok to just continue and allow the user to be saved?
-                        }
-                    }
-                }
-            }
-            if ($request->has('created_at')) {
-                $user->created_at = $request->get('created_at');
-            }
-
+        // Optionally, allow setting a custom "created_at" (useful for back-filling from other services).
+        if ($request->has('created_at')) {
+            $user->created_at = $request->input('created_at');
             $user->save();
-
-            // Log the user in & attach their session token to response.
-            $token = $user->login();
-            $user->session_token = $token->key;
-
-            return $this->item($user);
-        } catch (\Exception $e) {
-            return $this->respond($e, 401);
         }
+
+        // Should we try to make a Drupal account for this user?
+        if ($request->has('create_drupal_user') && $request->has('password') && ! $user->drupal_id) {
+            $user = $this->registrar->createDrupalUser($user, $request->input('password'));
+            $user->save();
+        }
+
+        return $this->item($user);
     }
 
     /**
@@ -169,31 +140,25 @@ class UserController extends Controller
      */
     public function update($term, $id, Request $request)
     {
-        $input = $request->all();
-
         $user = User::where($term, $id)->first();
+        if(!$user) {
+            throw new NotFoundHttpException('The resource does not exist.');
+        }
 
-        if ($user instanceof User) {
-            foreach ($input as $key => $value) {
-                if ($key == 'interests') {
-                    $interests = array_map('trim', explode(',', $value));
-                    $user->push('interests', $interests, true);
-                } // Only update attribute if value is non-null.
-                elseif (isset($key) && ! is_null($value)) {
-                    $user->$key = $value;
-                }
-            }
         $this->validate($request, [
             'email' => 'email|max:60|unique:users,email,'.$user->id.',_id',
             'mobile' => 'unique:users,mobile,'.$user->id.',_id',
         ]);
 
-            $user->save();
+        $user = $this->registrar->register($request->all(), $user);
 
-            return $this->item($user, 202);
+        // Should we try to make a Drupal account for this user?
+        if ($request->has('create_drupal_user') && $request->has('password') && ! $user->drupal_id) {
+            $user = $this->registrar->createDrupalUser($user, $request->input('password'));
+            $user->save();
         }
 
-        throw new NotFoundHttpException('The resource does not exist.');
+        return $this->item($user);
     }
 
     /**

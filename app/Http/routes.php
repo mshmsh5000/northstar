@@ -14,9 +14,10 @@ $router->get('/', function () {
 
 // https://api.dosomething.org/v1/
 $router->group(['prefix' => 'v1'], function () use ($router) {
-    // Sessions.
+    // Authentication
     $router->post('login', 'AuthController@login');
     $router->post('logout', 'AuthController@logout');
+    $router->post('register', 'AuthController@register');
 
     // Users
     $router->resource('users', 'UserController', ['except' => ['show', 'update']]);
@@ -41,7 +42,7 @@ $router->group(['prefix' => 'v1'], function () use ($router) {
     $router->resource('signup-group', 'SignupGroupController');
     $router->get('signup-group/{id}', 'SignupGroupController@show');
 
-    // Api Keys
+    // API Keys
     $router->resource('keys', 'KeyController');
     $router->get('scopes', function () {
         return \Northstar\Models\ApiKey::scopes();

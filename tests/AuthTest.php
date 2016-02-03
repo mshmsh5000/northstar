@@ -20,15 +20,19 @@ class AuthTest extends TestCase
         $this->server = [
             'CONTENT_TYPE' => 'application/json',
             'HTTP_Accept' => 'application/json',
-            'HTTP_X-DS-Application-Id' => '456',
             'HTTP_X-DS-REST-API-Key' => 'abc4324',
-            'HTTP_Session' => 'S0FyZmlRNmVpMzVsSzJMNUFreEFWa3g0RHBMWlJRd0tiQmhSRUNxWXh6cz0=',
+        ];
+
+        $this->loggedInServer = [
+            'CONTENT_TYPE' => 'application/json',
+            'HTTP_Accept' => 'application/json',
+            'HTTP_X-DS-REST-API-Key' => 'abc4324',
+            'HTTP_Session' => 'S0FyZmlRNmVpMzVsSzJMNUFreEFWa3g0RHBMWlJRd0tiQmhSRUNxWXh6cz1=',
         ];
 
         $this->serverForParseTest = [
             'CONTENT_TYPE' => 'application/json',
             'HTTP_Accept' => 'application/json',
-            'HTTP_X-DS-Application-Id' => '456',
             'HTTP_X-DS-REST-API-Key' => 'abc4324',
             'HTTP_Session' => 'S0FyZmlRNmVpMzVsSzJMNUFreEFWa3g0RHBMWlJRd0tiQmhSRUNxWXh6cz1=',
         ];
@@ -36,20 +40,17 @@ class AuthTest extends TestCase
         $this->serverForParseTest2 = [
             'CONTENT_TYPE' => 'application/json',
             'HTTP_Accept' => 'application/json',
-            'HTTP_X-DS-Application-Id' => '456',
             'HTTP_X-DS-REST-API-Key' => 'abc4324',
             'HTTP_Session' => 'S0FyZmlRNmVpMzVsSzJMNUFreEFWa3g0RHBMWlJRd0tiQmhSRUNxWXh6cz2=',
         ];
 
         $this->serverMissingToken = [
             'HTTP_Accept' => 'application/json',
-            'HTTP_X-DS-Application-Id' => '456',
             'HTTP_X-DS-REST-API-Key' => 'abc4324',
         ];
 
         $this->serverFakeToken = [
             'HTTP_Accept' => 'application/json',
-            'HTTP_X-DS-Application-Id' => '456',
             'HTTP_X-DS-REST-API-Key' => 'abc4324',
             'HTTP_Session' => 'thisisafaketoken',
         ];
@@ -57,7 +58,6 @@ class AuthTest extends TestCase
         $this->serverDrupalPasswordChecker = [
             'CONTENT_TYPE' => 'application/json',
             'HTTP_Accept' => 'application/json',
-            'HTTP_X-DS-Application-Id' => '456',
             'HTTP_X-DS-REST-API-Key' => 'abc4324',
         ];
     }
@@ -86,12 +86,13 @@ class AuthTest extends TestCase
         // Response should be valid JSON
         $this->assertJson($content);
 
-        // Response should include user ID & session token
-        $this->assertArrayHasKey('_id', $data['data']);
-        $this->assertArrayHasKey('session_token', $data['data']);
+        // Response should include user ID & authentication token
+        $this->assertArrayHasKey('user', $data['data']);
+        $this->assertArrayHasKey('_id', $data['data']['user']['data']);
+        $this->assertArrayHasKey('key', $data['data']);
 
         // Assert token exists in database
-        $tokenCount = Token::where('key', '=', $data['data']['session_token'])->count();
+        $tokenCount = Token::where('key', '=', $data['data']['key'])->count();
         $this->assertEquals($tokenCount, 1);
     }
 
@@ -103,7 +104,7 @@ class AuthTest extends TestCase
      */
     public function testLogout()
     {
-        $response = $this->call('POST', 'v1/logout', [], [], [], $this->server);
+        $response = $this->call('POST', 'v1/logout', [], [], [], $this->loggedInServer);
         $content = $response->getContent();
 
         // The response should return a 200 Created status code
@@ -178,18 +179,18 @@ class AuthTest extends TestCase
         $data = json_decode($content, true);
         $user = User::find('5430e850dt8hbc541c37cal3');
 
-        // Assert reponse is 200 and has expected data
+        // Assert response is 200 and has expected data
         $this->assertEquals(200, $response->getStatusCode());
-        $this->assertEquals($credentials['email'], $data['data']['email']);
+        $this->assertEquals($credentials['email'], $data['data']['user']['data']['email']);
         $this->assertEquals(null, $user->drupal_password);
         $this->assertArrayHasKey('password', $user['attributes']);
 
-        // Response should include user ID & session token
-        $this->assertArrayHasKey('_id', $data['data']);
-        $this->assertArrayHasKey('session_token', $data['data']);
+        // Response should include user ID & authentication token
+        $this->assertArrayHasKey('_id', $data['data']['user']['data']);
+        $this->assertArrayHasKey('key', $data['data']);
 
         // Assert token exists in database
-        $tokenCount = Token::where('key', '=', $data['data']['session_token'])->count();
+        $tokenCount = Token::where('key', '=', $data['data']['key'])->count();
         $this->assertEquals($tokenCount, 1);
     }
 }
