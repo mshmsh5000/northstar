@@ -12,13 +12,13 @@ $router->get('/', function () {
     return redirect()->to('https://github.com/DoSomething/api');
 });
 
-// https://api.dosomething.org/v1/
+// https://northstar.dosomething.org/v1/
 $router->group(['prefix' => 'v1'], function () use ($router) {
     // Authentication
-    $router->post('login', 'AuthController@login');
-    $router->post('logout', 'AuthController@logout');
-    $router->post('register', 'AuthController@register');
+    $router->post('auth/token', 'AuthController@createToken');
+    $router->post('auth/invalidate', 'AuthController@invalidateToken');
     $router->post('auth/verify', 'AuthController@verify');
+    $router->post('auth/register', 'AuthController@register');
 
     // Users
     $router->resource('users', 'UserController', ['except' => ['show', 'update']]);

@@ -76,12 +76,12 @@ class AuthTest extends TestCase
             'password' => 'secret',
         ];
 
-        $response = $this->call('POST', 'v1/login', [], [], [], $this->server, json_encode($credentials));
+        $response = $this->call('POST', 'v1/auth/token', [], [], [], $this->server, json_encode($credentials));
         $content = $response->getContent();
         $data = json_decode($content, true);
 
-        // The response should return a 200 Created status code
-        $this->assertEquals(200, $response->getStatusCode());
+        // The response should return a 201 Created status code
+        $this->assertEquals(201, $response->getStatusCode());
 
         // Response should be valid JSON
         $this->assertJson($content);
@@ -130,7 +130,7 @@ class AuthTest extends TestCase
      */
     public function testLogout()
     {
-        $response = $this->call('POST', 'v1/logout', [], [], [], $this->loggedInServer);
+        $response = $this->call('POST', 'v1/auth/invalidate', [], [], [], $this->loggedInServer);
         $content = $response->getContent();
 
         // The response should return a 200 Created status code
@@ -153,7 +153,7 @@ class AuthTest extends TestCase
             'parse_installation_ids' => 'parse-abc123',
         ];
 
-        $logoutResponse = $this->call('POST', 'v1/logout', [], [], [], $this->serverForParseTest, json_encode($payload));
+        $logoutResponse = $this->call('POST', 'v1/auth/invalidate', [], [], [], $this->serverForParseTest, json_encode($payload));
 
         // The response should return a 200 Created status code
         $this->assertEquals(200, $logoutResponse->getStatusCode());
@@ -200,13 +200,13 @@ class AuthTest extends TestCase
             'password' => 'secret',
         ];
 
-        $response = $this->call('POST', 'v1/login', [], [], [], $this->serverDrupalPasswordChecker, json_encode($credentials));
+        $response = $this->call('POST', 'v1/auth/token', [], [], [], $this->serverDrupalPasswordChecker, json_encode($credentials));
         $content = $response->getContent();
         $data = json_decode($content, true);
         $user = User::find('5430e850dt8hbc541c37cal3');
 
-        // Assert response is 200 and has expected data
-        $this->assertEquals(200, $response->getStatusCode());
+        // Assert response is 201 Created and has expected data
+        $this->assertEquals(201, $response->getStatusCode());
         $this->assertEquals($credentials['email'], $data['data']['user']['data']['email']);
         $this->assertEquals(null, $user->drupal_password);
         $this->assertArrayHasKey('password', $user['attributes']);

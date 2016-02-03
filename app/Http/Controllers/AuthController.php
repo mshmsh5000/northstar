@@ -30,18 +30,19 @@ class AuthController extends Controller
         $this->transformer = new TokenTransformer();
 
         $this->middleware('key:user');
-        $this->middleware('auth', ['only' => 'logout']);
-        $this->middleware('guest', ['except' => 'logout']);
+        $this->middleware('auth', ['only' => 'invalidateToken']);
+        $this->middleware('guest', ['except' => 'invalidateToken']);
     }
 
     /**
-     * Authenticate a registered user
+     * Authenticate a registered user based on the given credentials,
+     * and return an authentication token.
      *
      * @param Request $request
      * @return \Illuminate\Http\Response
      * @throws UnauthorizedHttpException
      */
-    public function login(Request $request)
+    public function createToken(Request $request)
     {
         $this->validate($request, [
             'email' => 'email|required_without:mobile',
@@ -52,7 +53,9 @@ class AuthController extends Controller
         $credentials = $request->only('email', 'mobile', 'password');
         $token = $this->registrar->login($credentials);
 
-        return $this->item($token);
+        return $this->item($token, 201);
+    }
+
     /**
      * Verify user credentials without making a session.
      *
@@ -86,7 +89,7 @@ class AuthController extends Controller
      * @return \Illuminate\Http\Response
      * @throws HttpException
      */
-    public function logout(Request $request)
+    public function invalidateToken(Request $request)
     {
         $token = Auth::token();
 
