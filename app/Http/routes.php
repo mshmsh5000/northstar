@@ -25,11 +25,12 @@ $router->group(['prefix' => 'v1'], function () use ($router) {
     $router->get('users/{term}/{id}', 'UserController@show');
     $router->put('users/{term}/{id}', 'UserController@update');
     $router->post('users/{id}/avatar', 'AvatarController@store');
-
-    // User campaign activity
     $router->get('users/{term}/{id}/campaigns', 'CampaignController@index');
 
-    // Campaigns
+    // Profile (the currently authenticated user)
+    $router->get('profile', 'ProfileController@show');
+    $router->post('profile', 'ProfileController@update');
+
     $router->get('user/campaigns/{campaign_id}', 'CampaignController@show');
     $router->post('user/campaigns/{campaign_id}/signup', 'CampaignController@signup');
     $router->post('user/campaigns/{campaign_id}/reportback', 'CampaignController@reportback');
