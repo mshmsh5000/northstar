@@ -74,7 +74,7 @@ class AuthController extends Controller
         $credentials = $request->only('email', 'mobile', 'password');
         $user = $this->registrar->resolve($credentials);
 
-        if(! $this->registrar->verify($user, $credentials)) {
+        if (! $this->registrar->verify($user, $credentials)) {
             throw new UnauthorizedHttpException(null, 'Invalid credentials.');
         }
 

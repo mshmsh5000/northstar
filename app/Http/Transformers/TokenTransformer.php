@@ -13,7 +13,7 @@ class TokenTransformer extends TransformerAbstract
      * @var array
      */
     protected $defaultIncludes = [
-        'user'
+        'user',
     ];
 
     /**
@@ -24,7 +24,7 @@ class TokenTransformer extends TransformerAbstract
     {
         return [
             'key' => $token->key,
-            'user' => $token->user()
+            'user' => $token->user(),
         ];
     }
 

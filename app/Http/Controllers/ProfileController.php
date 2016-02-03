@@ -3,7 +3,6 @@
 namespace Northstar\Http\Controllers;
 
 use Auth;
-use Illuminate\Contracts\Auth\Guard;
 use Northstar\Http\Transformers\UserTransformer;
 use Illuminate\Http\Request;
 

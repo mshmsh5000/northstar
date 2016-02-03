@@ -43,7 +43,7 @@ class Registrar
     {
         $user = $this->resolve($credentials);
 
-        if(! $this->verify($user, $credentials)) {
+        if (! $this->verify($user, $credentials)) {
             throw new UnauthorizedHttpException(null, 'Invalid credentials.');
         }
 
@@ -60,14 +60,13 @@ class Registrar
     {
         if ($credentials['email']) {
             $email = strtolower($credentials['email']);
+
             return User::where('email', $email)->first();
         }
 
         if ($credentials['mobile']) {
             return User::where('mobile', $credentials['mobile'])->first();
         }
-
-        return null;
     }
 
     /**
@@ -80,7 +79,9 @@ class Registrar
      */
     public function verify($user, $credentials)
     {
-        if(!$user) return false;
+        if (! $user) {
+            return false;
+        }
 
         if (Hash::check($credentials['password'], $user->password)) {
             return true;
