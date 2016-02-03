@@ -119,6 +119,8 @@ class Registrar
     /**
      * Create a new user.
      *
+     * @param array $input - Profile fields
+     * @param User $user - Optionally, user to update
      * @return User|null
      */
     public function register($input, $user = null)
@@ -135,8 +137,10 @@ class Registrar
     }
 
     /**
-     * @param $user
-     * @param $password
+     * Attempt to create a Drupal user for the given account.
+     *
+     * @param User $user
+     * @param string $password
      * @return mixed
      */
     public function createDrupalUser($user, $password)
