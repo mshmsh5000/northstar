@@ -55,13 +55,13 @@ class ApiKey extends Model
 
         // Automatically set random API key. This field *may* be manually
         // set when seeding the database, so we first check if empty.
-        static::creating(function (ApiKey $key) {
-            if (empty($key->api_key)) {
+        static::creating(function (ApiKey $apiKey) {
+            if (empty($apiKey->api_key)) {
                 do {
                     $key = Str::random(32);
                 } while (static::where('api_key', $key)->exists());
 
-                $key->api_key = $key;
+                $apiKey->api_key = $key;
             }
         });
     }

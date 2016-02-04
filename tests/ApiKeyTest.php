@@ -50,6 +50,30 @@ class ApiKeyTest extends TestCase
     }
 
     /**
+     * Test authentication & functionality of key creation endpoint.
+     * @test
+     */
+    public function testStore()
+    {
+        $attributes = [
+            'app_id' => 'dog',
+        ];
+
+        // Verify a "user" scoped key is not able to create new keys
+        $response = $this->call('POST', 'v1/keys', [], [], [], $this->userScope, json_encode($attributes));
+        $this->assertEquals(403, $response->getStatusCode());
+
+        // Verify an admin key is able to create a new key
+        $response = $this->call('POST', 'v1/keys', [], [], [], $this->adminScope, json_encode($attributes));
+        $this->assertEquals(201, $response->getStatusCode());
+
+        $data = json_decode($response->getContent())->data;
+        $this->assertObjectHasAttribute('app_id', $data);
+        $this->assertObjectHasAttribute('api_key', $data);
+        $this->assertObjectHasAttribute('scope', $data);
+    }
+
+    /**
      * Test authentication & functionality of key details endpoint.
      * @test
      */
