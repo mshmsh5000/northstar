@@ -3,8 +3,9 @@
 namespace Northstar\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Northstar\Http\Transformers\TokenTransformer;
+use Northstar\Http\Transformers\UserTransformer;
 use Symfony\Component\HttpKernel\Exception\HttpException;
-use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\HttpKernel\Exception\UnauthorizedHttpException;
 use Northstar\Auth\Registrar;
 use Auth;
@@ -17,33 +18,67 @@ class AuthController extends Controller
      */
     protected $registrar;
 
+    /**
+     * @var TokenTransformer
+     */
+    protected $transformer;
+
     public function __construct(Registrar $registrar)
     {
         $this->registrar = $registrar;
 
+        $this->transformer = new TokenTransformer();
+
         $this->middleware('key:user');
-        $this->middleware('auth', ['only' => 'logout']);
+        $this->middleware('auth', ['only' => 'invalidateToken']);
+        $this->middleware('guest', ['except' => 'invalidateToken']);
     }
 
     /**
-     * Authenticate a registered user
+     * Authenticate a registered user based on the given credentials,
+     * and return an authentication token.
      *
      * @param Request $request
      * @return \Illuminate\Http\Response
      * @throws UnauthorizedHttpException
      */
-    public function login(Request $request)
+    public function createToken(Request $request)
     {
-        $input = $request->only('email', 'mobile', 'password');
-
         $this->validate($request, [
-            'email' => 'email',
+            'email' => 'email|required_without:mobile',
+            'mobile' => 'required_without:email',
             'password' => 'required',
         ]);
 
-        $user = $this->registrar->login($input);
+        $credentials = $request->only('email', 'mobile', 'password');
+        $token = $this->registrar->login($credentials);
 
-        return $this->respond($user);
+        return $this->item($token, 201);
+    }
+
+    /**
+     * Verify user credentials without making a session.
+     *
+     * @param Request $request
+     * @return \Illuminate\Http\Response
+     * @throws UnauthorizedHttpException
+     */
+    public function verify(Request $request)
+    {
+        $this->validate($request, [
+            'email' => 'email|required_without:mobile',
+            'mobile' => 'required_without:email',
+            'password' => 'required',
+        ]);
+
+        $credentials = $request->only('email', 'mobile', 'password');
+        $user = $this->registrar->resolve($credentials);
+
+        if (! $this->registrar->verify($user, $credentials)) {
+            throw new UnauthorizedHttpException(null, 'Invalid credentials.');
+        }
+
+        return $this->item($user, 200, [], new UserTransformer());
     }
 
     /**
@@ -54,13 +89,9 @@ class AuthController extends Controller
      * @return \Illuminate\Http\Response
      * @throws HttpException
      */
-    public function logout(Request $request)
+    public function invalidateToken(Request $request)
     {
         $token = Auth::token();
-
-        if (! $token) {
-            throw new NotFoundHttpException('No active session found.');
-        }
 
         // Attempt to delete token.
         $deleted = $token->delete();
@@ -77,5 +108,33 @@ class AuthController extends Controller
         }
 
         return $this->respond('User logged out successfully.');
+    }
+
+    /**
+     * Authenticate a registered user
+     *
+     * @param Request $request
+     * @return \Illuminate\Http\Response
+     * @throws UnauthorizedHttpException
+     */
+    public function register(Request $request)
+    {
+        $this->validate($request, [
+            'email' => 'email|max:60|unique:users|required_without:mobile',
+            'mobile' => 'unique:users|required_without:email',
+            'password' => 'required',
+        ]);
+
+        $user = $this->registrar->register($request->all());
+
+        // Should we try to make a Drupal account for this user?
+        if ($request->has('create_drupal_user') && $request->has('password') && ! $user->drupal_id) {
+            $user = $this->registrar->createDrupalUser($user, $request->input('password'));
+            $user->save();
+        }
+
+        $token = $this->registrar->createToken($user);
+
+        return $this->item($token);
     }
 }
