@@ -2,9 +2,11 @@
 
 namespace Northstar\Services;
 
+use Exception;
 use GuzzleHttp\Client;
+use GuzzleHttp\Exception\ClientException;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Cache;
-use Symfony\Component\HttpKernel\Exception\UnprocessableEntityHttpException;
 
 class Phoenix
 {
@@ -131,7 +133,7 @@ class Phoenix
      * @param string $email - Email of user to search for
      *
      * @return string - Drupal User ID
-     * @throws \Exception
+     * @throws Exception
      */
     public function getUidByEmail($email)
     {
@@ -149,7 +151,55 @@ class Phoenix
         if (count($json) > 0) {
             return $json[0]['uid'];
         } else {
-            throw new \Exception('Drupal user not found.', $response->getStatusCode());
+            throw new Exception('Drupal user not found.', $response->getStatusCode());
+        }
+    }
+
+    /**
+     * Get an index of (optionally filtered) campaign signups from Phoenix.
+     * @see: https://github.com/DoSomething/phoenix/wiki/API#retrieve-a-signup-collection
+     *
+     * @param array|string $query - query string, for filtering results
+     * @return array - JSON response
+     */
+    public function getSignupIndex($query)
+    {
+        $response = $this->client->get('signups', [
+            'query' => $query,
+            'cookies' => $this->getAuthenticationCookie(),
+            'headers' => [
+                'X-CSRF-Token' => $this->getAuthenticationToken(),
+            ],
+        ]);
+
+        return $response->json();
+    }
+
+    /**
+     * Get details for a particular campaign signup from Phoenix.
+     * @see: https://github.com/DoSomething/phoenix/wiki/API#retrieve-a-specific-signup
+     *
+     * @return array - JSON response
+     * @throws NotFoundHttpException
+     * @throws Exception
+     */
+    public function getSignup($signup_id)
+    {
+        try {
+            $response = $this->client->get('signups/'.$signup_id, [
+                'cookies' => $this->getAuthenticationCookie(),
+                'headers' => [
+                    'X-CSRF-Token' => $this->getAuthenticationToken(),
+                ],
+            ]);
+
+            return $response->json();
+        } catch (ClientException $e) {
+            if ($e->getCode() === 404) {
+                throw new NotFoundHttpException('That signup could not be found.');
+            }
+
+            throw new Exception('Unknown error getting signup: '.$e->getMessage());
         }
     }
 
@@ -162,9 +212,9 @@ class Phoenix
      * @param string $source - Sign up source (e.g. web, iPhone, etc.)
      *
      * @return string - Signup ID
-     * @throws \Exception
+     * @throws Exception
      */
-    public function campaignSignup($user_id, $campaign_id, $source)
+    public function createSignup($user_id, $campaign_id, $source)
     {
         $payload = [
             'uid' => $user_id,
@@ -179,20 +229,54 @@ class Phoenix
             ],
         ]);
 
-        if ($response->getStatusCode() == 200) {
-            $body = $response->json();
-            $signup_id = $body[0];
+        return $response->json();
+    }
 
-            if ($signup_id) {
-                return $signup_id;
-            } else {
-                // Response code can be a 200 OK, but not include an id in the
-                // return. This indicates that a signup already exists.
-                // @TODO Find a way to actually get this signup id
-                throw new UnprocessableEntityHttpException('Signup already exists, but unable to get the signup id.');
+    /**
+     * Get an index of (optionally filtered) campaign reportbacks from Phoenix.
+     * @see: https://github.com/DoSomething/phoenix/wiki/API#retrieve-a-reportback-collection
+     *
+     * @param array|string $query - query string, for filtering results
+     * @return array - JSON response
+     */
+    public function getReportbackIndex($query)
+    {
+        $response = $this->client->get('signups', [
+            'query' => $query,
+            'cookies' => $this->getAuthenticationCookie(),
+            'headers' => [
+                'X-CSRF-Token' => $this->getAuthenticationToken(),
+            ],
+        ]);
+
+        return $response->json();
+    }
+
+    /**
+     * Get details for a particular campaign signup from Phoenix.
+     * @see: https://github.com/DoSomething/phoenix/wiki/API#retrieve-a-specific-reportback
+     *
+     * @return array - JSON response
+     * @throws NotFoundHttpException
+     * @throws Exception
+     */
+    public function getReportback($signup_id)
+    {
+        try {
+            $response = $this->client->get('signups/'.$signup_id, [
+                'cookies' => $this->getAuthenticationCookie(),
+                'headers' => [
+                    'X-CSRF-Token' => $this->getAuthenticationToken(),
+                ],
+            ]);
+
+            return $response->json();
+        } catch (ClientException $e) {
+            if ($e->getCode() === 404) {
+                throw new NotFoundHttpException('That signup could not be found.');
             }
-        } else {
-            throw new \Exception('Could not create signup.');
+
+            throw new Exception('Unknown error getting signup: '.$e->getMessage());
         }
     }
 
@@ -207,17 +291,16 @@ class Phoenix
      *   @option string $why_participated - Why the user participated in this campaign
      *   @option string $file - Reportback image as a Data URL
      *
-     * @return string - Reportback ID
-     * @throws \Exception
+     * @return array - API response
+     * @throws Exception
      */
-    public function campaignReportback($user_id, $campaign_id, $contents)
+    public function createReportback($user_id, $campaign_id, $contents)
     {
         $payload = [
             'uid' => $user_id,
             'quantity' => $contents['quantity'],
             'why_participated' => $contents['why_participated'],
             'file' => $contents['file'],
-            'filename' => 'test123456.jpg',
             'caption' => $contents['caption'],
             'source' => $contents['source'],
         ];
@@ -230,16 +313,12 @@ class Phoenix
             ],
         ]);
 
-        $body = $response->json();
-        $reportback_id = $body[0];
-
-        if (! $reportback_id) {
-            throw new \Exception('Could not create/update reportback.');
-        }
-
-        return $reportback_id;
+        return $response->json();
     }
 
+    /**
+     * ...
+     */
     public function storeKudos($drupal_id, $request)
     {
         $payload = [

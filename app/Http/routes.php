@@ -30,11 +30,12 @@ $router->group(['prefix' => 'v1'], function () use ($router) {
     // Profile (the currently authenticated user)
     $router->get('profile', 'ProfileController@show');
     $router->post('profile', 'ProfileController@update');
+    $router->get('profile/signups', 'SignupController@profile');
+    $router->get('profile/reportbacks', 'ReportbackController@profile');
 
-    $router->get('user/campaigns/{campaign_id}', 'CampaignController@show');
-    $router->post('user/campaigns/{campaign_id}/signup', 'CampaignController@signup');
-    $router->post('user/campaigns/{campaign_id}/reportback', 'CampaignController@reportback');
-    $router->put('user/campaigns/{campaign_id}/reportback', 'CampaignController@reportback');
+    // Signups & Reportbacks (Phoenix)
+    $router->resource('signups', 'SignupController', ['only' => ['index', 'show', 'store']]);
+    $router->resource('reportbacks', 'ReportbackController', ['only' => ['index', 'show', 'store']]);
 
     // Kudos
     $router->post('kudos', 'KudosController@store');
