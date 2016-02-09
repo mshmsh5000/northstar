@@ -40,10 +40,6 @@ $router->group(['prefix' => 'v1'], function () use ($router) {
     $router->post('kudos', 'KudosController@store');
     $router->delete('kudos', 'KudosController@delete');
 
-    // Signup Groups
-    $router->resource('signup-group', 'SignupGroupController');
-    $router->get('signup-group/{id}', 'SignupGroupController@show');
-
     // API Keys
     $router->resource('keys', 'KeyController');
     $router->get('scopes', function () {
