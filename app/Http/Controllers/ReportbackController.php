@@ -35,11 +35,12 @@ class ReportbackController extends Controller
      * @see Phoenix /api/v1/reportbacks endpoint
      * <https://github.com/DoSomething/phoenix/wiki/API#retrieve-a-reportback-collection>
      *
+     * @param Request $request
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
-        return $this->phoenix->getReportbackIndex($request->getQueryString());
+        return $this->phoenix->getReportbackIndex($request->query());
     }
 
     /**
