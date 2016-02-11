@@ -3,6 +3,7 @@
 namespace Northstar\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Northstar\Models\User;
 use Northstar\Services\Phoenix;
 use Symfony\Component\HttpKernel\Exception\HttpException;
 use Auth;
@@ -40,7 +41,14 @@ class SignupController extends Controller
      */
     public function index(Request $request)
     {
-        return $this->phoenix->getSignupIndex($request->query());
+        $options = $request->query();
+
+        // If a user is specified, turn Northstar ID into Drupal ID
+        if (! empty($options['user'])) {
+            $options['user'] = User::drupalIDForNorthstarId($options['user']);
+        }
+
+        return $this->phoenix->getSignupIndex($options);
     }
 
     /**
