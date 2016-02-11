@@ -239,7 +239,7 @@ class Phoenix
      * @param array|string $query - query string, for filtering results
      * @return array - JSON response
      */
-    public function getReportbackIndex($query)
+    public function getReportbackIndex(array $query = [])
     {
         $response = $this->client->get('signups', [
             'query' => $query,
