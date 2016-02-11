@@ -40,7 +40,7 @@ class SignupController extends Controller
      */
     public function index(Request $request)
     {
-        return $this->phoenix->getSignupIndex($request->getQueryString());
+        return $this->phoenix->getSignupIndex($request->query());
     }
 
     /**

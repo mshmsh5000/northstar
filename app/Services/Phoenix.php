@@ -159,10 +159,10 @@ class Phoenix
      * Get an index of (optionally filtered) campaign signups from Phoenix.
      * @see: https://github.com/DoSomething/phoenix/wiki/API#retrieve-a-signup-collection
      *
-     * @param array|string $query - query string, for filtering results
+     * @param array $query - query string, for filtering results
      * @return array - JSON response
      */
-    public function getSignupIndex($query)
+    public function getSignupIndex(array $query = [])
     {
         $response = $this->client->get('signups', [
             'query' => $query,
