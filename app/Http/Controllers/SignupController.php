@@ -24,12 +24,12 @@ class SignupController extends Controller
     {
         $this->phoenix = $phoenix;
 
-        $this->middleware('key:user', ['only' => 'store']);
-        $this->middleware('auth', ['only' => 'store']);
+        $this->middleware('key:user', ['only' => ['profile', 'store']]);
+        $this->middleware('auth', ['only' => ['profile', 'store']]);
     }
 
     /**
-     * Displays the authenticated user's signups.
+     * Displays the (optionally filtered) index of signups.
      * GET /signups
      *
      * @see Phoenix /api/v1/signups endpoint
@@ -41,6 +41,28 @@ class SignupController extends Controller
     public function index(Request $request)
     {
         return $this->phoenix->getSignupIndex($request->query());
+    }
+
+    /**
+     * Displays the currently authenticated user's signups.
+     * GET /profile/signups
+     *
+     * @see Phoenix /api/v1/signups endpoint
+     * <https://github.com/DoSomething/phoenix/wiki/API#retrieve-a-signup-collection>
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function profile()
+    {
+        // Get the currently authenticated Northstar user.
+        $user = Auth::user();
+
+        // Return an error if the user doesn't exist in Phoenix.
+        if (! $user->drupal_id) {
+            throw new HttpException(401, 'The user must have a Drupal ID to sign up for a campaign.');
+        }
+
+        return $this->phoenix->getSignupIndex(['user' => $user->drupal_id]);
     }
 
     /**
@@ -77,7 +99,7 @@ class SignupController extends Controller
         // Get the currently authenticated Northstar user.
         $user = Auth::user();
 
-        // Return an error if the user doesn't exist.
+        // Return an error if the user doesn't exist in Phoenix.
         if (! $user->drupal_id) {
             throw new HttpException(401, 'The user must have a Drupal ID to sign up for a campaign.');
         }
