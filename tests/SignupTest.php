@@ -70,7 +70,7 @@ class SignupTest extends TestCase
     public function testSignupIndex()
     {
         // For testing, we'll mock a successful Phoenix API response.
-        $this->mock(Phoenix::class)->shouldReceive('getSignupIndex')->once()->andReturn([
+        $this->mock(Phoenix::class)->shouldReceive('getSignupIndex')->with(['user' => 12345])->once()->andReturn([
             'data' => [
                 [
                     'id' => '243',
@@ -83,7 +83,7 @@ class SignupTest extends TestCase
             ],
         ]);
 
-        $response = $this->call('GET', 'v1/signups', [], [], [], $this->server);
+        $response = $this->call('GET', 'v1/signups?user=12345', [], [], [], $this->server);
         $content = $response->getContent();
 
         // The response should return a 200 OK status code
