@@ -12,6 +12,11 @@ $router->get('/', function () {
     return redirect()->to('https://github.com/DoSomething/api');
 });
 
+// Simple health check endpoint
+$router->get('/status', function () {
+    return ['status' => 'good'];
+});
+
 // https://northstar.dosomething.org/v1/
 $router->group(['prefix' => 'v1'], function () use ($router) {
     // Authentication
