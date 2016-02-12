@@ -161,6 +161,25 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
     }
 
     /**
+     * Get the corresponding Drupal ID for the given Northstar ID,
+     * if it exists.
+     *
+     * @param $northstar_id
+     * @return string|null
+     */
+    public static function drupalIDForNorthstarId($northstar_id)
+    {
+        $user = self::find($northstar_id);
+
+        if ($user) {
+            return $user->drupal_id;
+        }
+
+        // If user doesn't exist, return null.
+        return null;
+    }
+
+    /**
      * Scope a query to get all of the users in a group.
      *
      * @return \Illuminate\Database\Eloquent\Builder

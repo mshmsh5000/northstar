@@ -241,7 +241,7 @@ class Phoenix
      */
     public function getReportbackIndex(array $query = [])
     {
-        $response = $this->client->get('signups', [
+        $response = $this->client->get('reportbacks', [
             'query' => $query,
             'cookies' => $this->getAuthenticationCookie(),
             'headers' => [
