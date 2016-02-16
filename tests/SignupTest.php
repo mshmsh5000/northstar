@@ -128,8 +128,15 @@ class SignupTest extends TestCase
     public function testSubmitSignup()
     {
         // For testing, we'll mock a successful Phoenix API response.
-        $this->mock(Phoenix::class)->shouldReceive('createSignup')->once()->andReturn([
+        $mock = $this->mock(Phoenix::class);
+        $mock->shouldReceive('createSignup')->once()->andReturn([
             '1307',
+        ]);
+        $mock->shouldReceive('getSignup')->with('1307')->once()->andReturn([
+            'data' => [
+                'id' => '1307',
+                // ...
+            ],
         ]);
 
         // Make the request

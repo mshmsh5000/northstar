@@ -112,6 +112,14 @@ class SignupController extends Controller
             throw new HttpException(401, 'The user must have a Drupal ID to sign up for a campaign.');
         }
 
-        return $this->phoenix->createSignup($user->drupal_id, $request->input('campaign_id'), $request->input('source'));
+        // Phoenix returns [":signup_id"] on new signup, or [false] if a signup already exists.
+        $signup = $this->phoenix->createSignup($user->drupal_id, $request->input('campaign_id'), $request->input('source'));
+
+        // If signup already exists, return a polite response.
+        if ($signup[0] === false) {
+            return $this->respond('Signup already exists.', 200);
+        }
+
+        return $this->phoenix->getSignup($signup[0]);
     }
 }
