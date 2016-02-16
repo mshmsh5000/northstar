@@ -5,6 +5,7 @@ namespace Northstar\Services;
 use Exception;
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\ClientException;
+use Illuminate\Support\Str;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Cache;
 
@@ -301,6 +302,7 @@ class Phoenix
             'quantity' => $contents['quantity'],
             'why_participated' => $contents['why_participated'],
             'file' => $contents['file'],
+            'filename' => Str::random(10).'.jpg', // Hackz. This sets the filename Phoenix saves reportback with.
             'caption' => $contents['caption'],
             'source' => $contents['source'],
         ];
