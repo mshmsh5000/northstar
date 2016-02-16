@@ -5,6 +5,7 @@ namespace Northstar\Services;
 use Exception;
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\ClientException;
+use Illuminate\Support\Str;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Cache;
 
@@ -260,10 +261,10 @@ class Phoenix
      * @throws NotFoundHttpException
      * @throws Exception
      */
-    public function getReportback($signup_id)
+    public function getReportback($reportback_id)
     {
         try {
-            $response = $this->client->get('signups/'.$signup_id, [
+            $response = $this->client->get('reportbacks/'.$reportback_id, [
                 'cookies' => $this->getAuthenticationCookie(),
                 'headers' => [
                     'X-CSRF-Token' => $this->getAuthenticationToken(),
@@ -273,7 +274,7 @@ class Phoenix
             return $response->json();
         } catch (ClientException $e) {
             if ($e->getCode() === 404) {
-                throw new NotFoundHttpException('That signup could not be found.');
+                throw new NotFoundHttpException('That reportback could not be found.');
             }
 
             throw new Exception('Unknown error getting signup: '.$e->getMessage());
@@ -301,6 +302,7 @@ class Phoenix
             'quantity' => $contents['quantity'],
             'why_participated' => $contents['why_participated'],
             'file' => $contents['file'],
+            'filename' => Str::random(10).'.jpg', // Hackz. This sets the filename Phoenix saves reportback with.
             'caption' => $contents['caption'],
             'source' => $contents['source'],
         ];
