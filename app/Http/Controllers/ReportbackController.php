@@ -121,9 +121,10 @@ class ReportbackController extends Controller
 
         // HACK: Since the "create reportback" services endpoint returns a less-than-helpful
         // response (see above), we'll use that to fetch the full transformed response.
+        $reportbackResponse = $this->phoenix->getReportback($reportback[0]);
+
         // NOTE: Since we don't know whether a reportback is new or just updating an existing RB,
         // we'll always just return 200 OK. This will probably change when we update Phoenix.
-        $reportbackResponse = $this->phoenix->getReportback($reportback[0]);
         return response()->json($reportbackResponse, 200);
     }
 }

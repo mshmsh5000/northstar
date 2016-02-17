@@ -115,20 +115,26 @@ class SignupController extends Controller
         // Phoenix returns [":signup_id"] on new signup, or [false] if a signup already exists.
         $signup = $this->phoenix->createSignup($user->drupal_id, $request->input('campaign_id'), $request->input('source'));
 
-        // If signup already exists, return a polite response.
+        // If signup already exists, try to find the right signup from the filtered /signups
+        // index endpoint (via campaign & user ID). Since a campaign might have multiple signups
+        // if it has more than one Campaign Run, we'll get the last (most recent) one,
         if ($signup[0] === false) {
             $signups = $this->phoenix->getSignupIndex(['user' => $user->drupal_id, 'campaigns' => $request->input('campaign_id')]);
 
-            if(count($signups['data']) === 0) {
+            if (empty($signups['data'])) {
                 throw new HttpException(500, 'Signup already exists, but could not display.');
             }
 
             // Return a "mocked" 200 individual item response.
-            return response()->json(['data' => $signups['data'][0]], 200);
+            return response()->json(['data' => last($signups['data'])], 200);
         }
 
-        // If we successfully created signup, return "show" response w/ 201
+        // HACK: Since the "create signup" services endpoint returns a less-than-helpful
+        // response (see above), we can use a [":signup_id"] response to get full transformed
+        // version from the GET signups/:signup_id endpoint.
         $signupResponse = $this->phoenix->getSignup($signup[0]);
+
+        // If we successfully created signup, return "show" response w/ 201
         return response()->json($signupResponse, 201);
     }
 }
