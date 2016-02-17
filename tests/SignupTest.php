@@ -128,8 +128,15 @@ class SignupTest extends TestCase
     public function testSubmitSignup()
     {
         // For testing, we'll mock a successful Phoenix API response.
-        $this->mock(Phoenix::class)->shouldReceive('createSignup')->once()->andReturn([
+        $mock = $this->mock(Phoenix::class);
+        $mock->shouldReceive('createSignup')->once()->andReturn([
             '1307',
+        ]);
+        $mock->shouldReceive('getSignup')->with('1307')->once()->andReturn([
+            'data' => [
+                'id' => '1307',
+                // ...
+            ],
         ]);
 
         // Make the request
@@ -138,8 +145,8 @@ class SignupTest extends TestCase
             'source' => 'test',
         ]));
 
-        // The response should return a 200 OK status code
-        $this->assertEquals(200, $response->getStatusCode());
+        // The response should return a 201 Created status code
+        $this->assertEquals(201, $response->getStatusCode());
 
         // Response should be valid JSON
         $content = $response->getContent();

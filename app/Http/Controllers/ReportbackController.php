@@ -116,6 +116,15 @@ class ReportbackController extends Controller
             throw new HttpException(401, 'The user must have a Drupal ID to submit a reportback.');
         }
 
-        return $this->phoenix->createReportback($user->drupal_id, $request->input('campaign_id'), $request->except('campaign_id'));
+        // Phoenix returns [":reportback_id"] on successful creation.
+        $reportback = $this->phoenix->createReportback($user->drupal_id, $request->input('campaign_id'), $request->except('campaign_id'));
+
+        // HACK: Since the "create reportback" services endpoint returns a less-than-helpful
+        // response (see above), we'll use that to fetch the full transformed response.
+        $reportbackResponse = $this->phoenix->getReportback($reportback[0]);
+
+        // NOTE: Since we don't know whether a reportback is new or just updating an existing RB,
+        // we'll always just return 200 OK. This will probably change when we update Phoenix.
+        return response()->json($reportbackResponse, 200);
     }
 }

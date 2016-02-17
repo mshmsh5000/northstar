@@ -77,9 +77,16 @@ class ReportbackTest extends TestCase
             'caption' => 'Here I am helping others.',
         ];
 
-        // For testing, we'll mock a successful Phoenix API response.
-        $this->mock(Phoenix::class)->shouldReceive('createReportback')->once()->andReturn([
+        // For testing, we'll mock successful Phoenix API responses.
+        $phoenix = $this->mock(Phoenix::class);
+        $phoenix->shouldReceive('createReportback')->once()->andReturn([
             '127',
+        ]);
+        $phoenix->shouldReceive('getReportback')->once()->andReturn([
+            'data' => [
+                'id' => 127,
+                // ...
+            ],
         ]);
 
         $response = $this->call('POST', 'v1/reportbacks', [], [], [], $this->signedUpServer, json_encode($payload));
