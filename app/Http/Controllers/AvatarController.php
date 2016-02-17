@@ -3,10 +3,13 @@
 namespace Northstar\Http\Controllers;
 
 use Northstar\Http\Transformers\UserTransformer;
+use Northstar\Models\ApiKey;
 use Northstar\Services\AWS;
 use Northstar\Models\User;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
+use Symfony\Component\HttpKernel\Exception\UnauthorizedHttpException;
+use Gate;
 
 class AvatarController extends Controller
 {
@@ -49,6 +52,13 @@ class AvatarController extends Controller
 
         if (! $user) {
             throw new NotFoundHttpException('The resource does not exist.');
+        }
+
+        // Only the currently authorized user to edit their own profile
+        // or, if using an `admin` scoped API key, any profile.
+        $allowed = ApiKey::allows('admin') || Gate::allows('edit-profile', $user);
+        if (! $allowed) {
+            throw new UnauthorizedHttpException('auth/token', 'You are not authorized to edit that user\'s avatar.');
         }
 
         // If a file is attached via multipart/form-data, use that. Otherwise, look
