@@ -30,7 +30,6 @@ $router->group(['prefix' => 'v1'], function () use ($router) {
     $router->get('users/{term}/{id}', 'UserController@show');
     $router->put('users/{term}/{id}', 'UserController@update');
     $router->post('users/{id}/avatar', 'AvatarController@store');
-    $router->get('users/{term}/{id}/campaigns', 'CampaignController@index');
 
     // Profile (the currently authenticated user)
     $router->get('profile', 'ProfileController@show');
@@ -41,10 +40,6 @@ $router->group(['prefix' => 'v1'], function () use ($router) {
     // Signups & Reportbacks (Phoenix)
     $router->resource('signups', 'SignupController', ['only' => ['index', 'show', 'store']]);
     $router->resource('reportbacks', 'ReportbackController', ['only' => ['index', 'show', 'store']]);
-
-    // Kudos
-    $router->post('kudos', 'KudosController@store');
-    $router->delete('kudos', 'KudosController@delete');
 
     // API Keys
     $router->resource('keys', 'KeyController');
