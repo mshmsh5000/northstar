@@ -117,9 +117,18 @@ class SignupController extends Controller
 
         // If signup already exists, return a polite response.
         if ($signup[0] === false) {
-            return $this->respond('Signup already exists.', 200);
+            $signups = $this->phoenix->getSignupIndex(['user' => $user->drupal_id, 'campaigns' => $request->input('campaign_id')]);
+
+            if(count($signups['data']) === 0) {
+                throw new HttpException(500, 'Signup already exists, but could not display.');
+            }
+
+            // Return a "mocked" 200 individual item response.
+            return response()->json(['data' => $signups['data'][0]], 200);
         }
 
-        return $this->phoenix->getSignup($signup[0]);
+        // If we successfully created signup, return "show" response w/ 201
+        $signupResponse = $this->phoenix->getSignup($signup[0]);
+        return response()->json($signupResponse, 201);
     }
 }

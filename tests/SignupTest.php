@@ -145,8 +145,8 @@ class SignupTest extends TestCase
             'source' => 'test',
         ]));
 
-        // The response should return a 200 OK status code
-        $this->assertEquals(200, $response->getStatusCode());
+        // The response should return a 201 Created status code
+        $this->assertEquals(201, $response->getStatusCode());
 
         // Response should be valid JSON
         $content = $response->getContent();
