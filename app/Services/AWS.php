@@ -35,12 +35,13 @@ class AWS
      */
     public function storeImage($folder, $filename, $file)
     {
+        // Parse string as a Data URL, or Symfony File class
         if (is_string($file)) {
             $data = $this->base64StringToDataString($file);
             $extension = $this->guessExtension($data);
         } else {
-            $extension = $file->guessExtension();
             $data = file_get_contents($file->getPathname());
+            $extension = $file->guessExtension();
         }
 
         // Make sure we're only uploading valid image types
