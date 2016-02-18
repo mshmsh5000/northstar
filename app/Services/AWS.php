@@ -3,30 +3,45 @@
 namespace Northstar\Services;
 
 use finfo;
-use Storage;
+use Illuminate\Contracts\Filesystem\Filesystem;
+use Illuminate\Filesystem\FilesystemManager;
 use Symfony\Component\HttpFoundation\File\MimeType\ExtensionGuesser;
+use Symfony\Component\HttpKernel\Exception\HttpException;
 use Symfony\Component\HttpKernel\Exception\UnprocessableEntityHttpException;
 
 class AWS
 {
     /**
+     * The Amazon S3 file system.
+     * @see https://laravel.com/docs/5.1/filesystem
+     * @var Filesystem
+     */
+    protected $filesystem;
+
+    public function __construct(FilesystemManager $filesystem)
+    {
+        $this->filesystem = $filesystem->disk('s3');
+    }
+
+    /**
      * Store an image in S3.
      *
      * @param string $folder - Folder to write image to
      * @param string $filename - Filename to write image to
-     * @param \Symfony\Component\HttpFoundation\File\File|string $file
+     * @param \Symfony\Component\HttpFoundation\File\UploadedFile|string $file
      *   File object, or a base-64 encoded data URI
      *
      * @return string - URL of stored image
      */
     public function storeImage($folder, $filename, $file)
     {
+        // Parse string as a Data URL, or Symfony File class
         if (is_string($file)) {
             $data = $this->base64StringToDataString($file);
             $extension = $this->guessExtension($data);
         } else {
+            $data = file_get_contents($file->getPathname());
             $extension = $file->guessExtension();
-            $data = file_get_contents($file);
         }
 
         // Make sure we're only uploading valid image types
@@ -35,7 +50,11 @@ class AWS
         }
 
         $path = 'uploads/'.$folder.'/'.$filename.'.'.$extension;
-        Storage::disk('s3')->put($filename, $data);
+        $success = $this->filesystem->put($path, $data);
+
+        if (! $success) {
+            throw new HttpException(500, 'Unable to save image to S3.');
+        }
 
         return config('filesystems.disks.s3.public_url').$path;
     }
