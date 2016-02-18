@@ -6,6 +6,7 @@ use finfo;
 use Illuminate\Contracts\Filesystem\Filesystem;
 use Illuminate\Filesystem\FilesystemManager;
 use Symfony\Component\HttpFoundation\File\MimeType\ExtensionGuesser;
+use Symfony\Component\HttpKernel\Exception\HttpException;
 use Symfony\Component\HttpKernel\Exception\UnprocessableEntityHttpException;
 
 class AWS
@@ -48,7 +49,11 @@ class AWS
         }
 
         $path = 'uploads/'.$folder.'/'.$filename.'.'.$extension;
-        $this->filesystem->put($filename, $data, true);
+        $success = $this->filesystem->put($filename, $data, true);
+
+        if (! $success) {
+            throw new HttpException(500, 'Unable to save image to S3.');
+        }
 
         return config('filesystems.disks.s3.public_url').$path;
     }
