@@ -3,12 +3,25 @@
 namespace Northstar\Services;
 
 use finfo;
-use Storage;
+use Illuminate\Contracts\Filesystem\Filesystem;
+use Illuminate\Filesystem\FilesystemManager;
 use Symfony\Component\HttpFoundation\File\MimeType\ExtensionGuesser;
 use Symfony\Component\HttpKernel\Exception\UnprocessableEntityHttpException;
 
 class AWS
 {
+    /**
+     * The Amazon S3 file system.
+     * @see https://laravel.com/docs/5.1/filesystem
+     * @var Filesystem
+     */
+    protected $filesystem;
+
+    public function __construct(FilesystemManager $filesystem)
+    {
+        $this->filesystem = $filesystem->disk('s3');
+    }
+
     /**
      * Store an image in S3.
      *
@@ -35,7 +48,7 @@ class AWS
         }
 
         $path = 'uploads/'.$folder.'/'.$filename.'.'.$extension;
-        Storage::disk('s3')->put($filename, $data);
+        $this->filesystem->put($filename, $data, true);
 
         return config('filesystems.disks.s3.public_url').$path;
     }
