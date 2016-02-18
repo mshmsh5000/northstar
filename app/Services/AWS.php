@@ -50,7 +50,7 @@ class AWS
         }
 
         $path = 'uploads/'.$folder.'/'.$filename.'.'.$extension;
-        $success = $this->filesystem->put($filename, $data, true);
+        $success = $this->filesystem->put($path, $data);
 
         if (! $success) {
             throw new HttpException(500, 'Unable to save image to S3.');
