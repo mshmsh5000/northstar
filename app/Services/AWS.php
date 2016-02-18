@@ -14,7 +14,7 @@ class AWS
      *
      * @param string $folder - Folder to write image to
      * @param string $filename - Filename to write image to
-     * @param \Symfony\Component\HttpFoundation\File\File|string $file
+     * @param \Symfony\Component\HttpFoundation\File\UploadedFile|string $file
      *   File object, or a base-64 encoded data URI
      *
      * @return string - URL of stored image
@@ -26,7 +26,7 @@ class AWS
             $extension = $this->guessExtension($data);
         } else {
             $extension = $file->guessExtension();
-            $data = file_get_contents($file);
+            $data = file_get_contents($file->getPathname());
         }
 
         // Make sure we're only uploading valid image types
