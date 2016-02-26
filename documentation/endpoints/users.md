@@ -329,7 +329,8 @@ curl -X DELETE \
 ```
 
 ## Set User Avatar
-Save an avatar to the user's Northstar profile. Accepts a file or Base64 string in the data request.
+Save an avatar to the user's Northstar profile. Accepts a file or Base64 string in the data request. This will return
+the updated User profile document, with a `photo` attribute pointing to the newly created image.
 
 ```
 POST /users/:user_id/avatar
@@ -363,7 +364,7 @@ curl -X POST \
 {
     "data": {
         "id": "5430e850dt8hbc541c37tt3d",
-        "photo": "https://avatar.dosomething.org/uploads/avatars/55566327bffebc0b3e8b45a5.jpeg"
+        "photo": "https://avatar.dosomething.org/uploads/avatars/55566327bffebc0b3e8b45a5-1456498835.jpeg"
         // the rest of the user object...
         "updated_at": "2016-02-25T18:33:25+0000"
     }

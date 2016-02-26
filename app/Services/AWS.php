@@ -49,7 +49,9 @@ class AWS
             throw new UnprocessableEntityHttpException('Invalid file type. Upload a JPEG or PNG.');
         }
 
-        $path = 'uploads/'.$folder.'/'.$filename.'.'.$extension;
+        // Add a unique timestamp (e.g. uploads/folder/filename-1456498664.jpeg) to
+        // uploads to prevent AWS cache giving the user an old upload.
+        $path = 'uploads/'.$folder.'/'.$filename.'-'.time().'.'.$extension;
         $success = $this->filesystem->put($path, $data);
 
         if (! $success) {
