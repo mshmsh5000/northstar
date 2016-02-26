@@ -65,6 +65,9 @@ Endpoint                                     | Functionality                    
 `GET /scopes`                                | [Retrieve All API Key Scopes](endpoints/keys.md#retrieve-all-api-key-scopes) |
 
 <br>
+> :bulb: __Did you know?__ We also have a shared [Paw Collection](endpoints.paw) for testing these endpoints against your local environment.  
+
+<br>
 
 ## Responses
 

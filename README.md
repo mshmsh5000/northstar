@@ -6,6 +6,11 @@ and [MongoDB](https://www.mongodb.com).
 
 ### Getting Started
 
+Check out the [API Documentation](https://github.com/DoSomething/northstar/blob/dev/documentation/README.md) to start using
+Northstar! :sparkles:
+
+### Contributing
+
 Fork and clone this repository, and install into your local [DS Homestead](https://github.com/DoSomething/ds-homestead).
 
 After installation, set environment variables & run the outstanding migrations:
@@ -21,7 +26,6 @@ You may run unit tests locally using PHPUnit:
 
     $ vendor/bin/phpunit
     
-### Contributing
 We follow [Laravel's code style](http://laravel.com/docs/5.1/contributions#coding-style) and automatically
 lint all pull requests with [StyleCI](https://styleci.io/repos/26884886). Be sure to configure
 [EditorConfig](http://editorconfig.org) to ensure you have proper indentation settings.
@@ -32,6 +36,6 @@ yourself & others to review your code and ensures we don't accidentally break so
 
 
 ### License
-&copy;2015 DoSomething.org. Northstar is free software, and may be redistributed under the terms specified
+&copy;2016 DoSomething.org. Northstar is free software, and may be redistributed under the terms specified
 in the [LICENSE](https://github.com/DoSomething/northstar/blob/dev/LICENSE) file. The name and logo for
 DoSomething.org are trademarks of Do Something, Inc and may not be used without permission.
