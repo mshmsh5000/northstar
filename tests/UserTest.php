@@ -268,7 +268,7 @@ class UserTest extends TestCase
     {
         User::create([
             'email' => 'upsert-me@dosomething.org',
-            'source' => 'database'
+            'source' => 'database',
         ]);
 
         // Post a "new" user object to merge into existing record

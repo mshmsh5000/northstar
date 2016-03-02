@@ -141,8 +141,8 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
      */
     public function setSourceAttribute($value)
     {
-        if(empty($this->attributes['source'])) {
-           $this->attributes['source'] = $value;
+        if (empty($this->attributes['source'])) {
+            $this->attributes['source'] = $value;
         }
     }
 
