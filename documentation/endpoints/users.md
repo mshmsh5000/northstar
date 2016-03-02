@@ -107,13 +107,14 @@ Either a mobile number or email is required.
   /* Optional */
   birthdate: Date
   first_name: String
-  last_name : String
-  addr_street1 : String
-  addr_street2 : String
-  addr_city : String
-  addr_state : String
-  addr_zip : String
-  country : String // two character country code
+  last_name: String
+  addr_street1: String
+  addr_street2: String
+  addr_city: String
+  addr_state: String
+  addr_zip: String
+  country: String // two character country code
+  language: String
   agg_id: Number
   cgg_id: Number
   drupal_id: String
@@ -124,7 +125,7 @@ Either a mobile number or email is required.
   major_name: String
   hs_gradyear: String
   hs_name: String
-  interests: String,
+  interests: String
   sat_math: Number
   sat_verbal: Number
   sat_writing: Number
