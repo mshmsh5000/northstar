@@ -232,33 +232,68 @@ class UserTest extends TestCase
     }
 
     /**
-     * Test for registering a new user
+     * Test for creating a new user.
      * POST /users
      *
      * @return void
      */
-    public function testRegisterUser()
+    public function testCreateUser()
     {
         // Create a new user object
         $user = [
             'email' => 'new@dosomething.org',
-            'mobile' => '5556667777',
-            'password' => 'secret',
+            'source' => 'phpunit',
         ];
 
         $response = $this->call('POST', 'v1/users', [], [], [], $this->server, json_encode($user));
         $content = $response->getContent();
-        $data = json_decode($content, true);
+        $data = json_decode($content, true)['data'];
 
-        // The response should return a 200 Okay status code
+        // The response should return JSON with a 200 Okay status code
         $this->assertEquals(200, $response->getStatusCode());
-
-        // Response should be valid JSON
         $this->assertJson($content);
 
         // Response should return created at and id columns
-        $this->assertArrayHasKey('created_at', $data['data']);
-        $this->assertArrayHasKey('_id', $data['data']);
+        $this->assertArrayHasKey('created_at', $data);
+        $this->assertArrayHasKey('id', $data);
+    }
+
+    /**
+     * Test for "upserting" an existing user.
+     * POST /users
+     *
+     * @return void
+     */
+    public function testUpsertUser()
+    {
+        User::create([
+            'email' => 'upsert-me@dosomething.org',
+            'source' => 'database',
+        ]);
+
+        // Post a "new" user object to merge into existing record
+        $user = [
+            'email' => 'upsert-me@dosomething.org',
+            'mobile' => '5556667777',
+            'password' => 'secret',
+            'first_name' => 'Puppet',
+            'source' => 'phpunit',
+        ];
+
+        $response = $this->call('POST', 'v1/users', [], [], [], $this->server, json_encode($user));
+        $content = $response->getContent();
+        $data = json_decode($content, true)['data'];
+
+        // The response should return JSON with a 200 Okay status code
+        $this->assertEquals(200, $response->getStatusCode());
+        $this->assertJson($content);
+
+        // Check for the new fields we "upserted".
+        $this->assertEquals('Puppet', $data['first_name']);
+        $this->assertEquals('5556667777', $data['mobile']);
+
+        // Ensure the `source` field is immutable (since it was set to 'phpunit' above).
+        $this->assertEquals('database', $data['source']);
     }
 
     /**

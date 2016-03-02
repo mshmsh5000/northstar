@@ -99,16 +99,16 @@ Either a mobile number or email is required.
 // Content-Type: application/json
 
 {
-  /* Required if 'mobile' is not provided */
+  // Required if 'mobile' is not provided
   email: String
 
-  /* Required if 'email' is not provided */
+  // Required if 'email' is not provided
   mobile: String
 
-  /* Optional, but required for user to be able to log in! */
+  // Optional, but required for user to be able to log in!
   password: String
 
-  /* Optional */
+  // Optional:
   birthdate: Date
   first_name: String
   last_name: String
@@ -122,6 +122,10 @@ Either a mobile number or email is required.
   agg_id: Number
   cgg_id: Number
   drupal_id: String
+  interests: String
+  source: String // Immutable (can only be set if existing value is `null`)
+  
+  // Hidden fields (optional):
   race: String
   religion: String
   college_name: String
@@ -129,11 +133,9 @@ Either a mobile number or email is required.
   major_name: String
   hs_gradyear: String
   hs_name: String
-  interests: String
   sat_math: Number
   sat_verbal: Number
   sat_writing: Number
-  source: String
 }
 ```
 
