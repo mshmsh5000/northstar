@@ -35,8 +35,6 @@ class UserTransformer extends TransformerAbstract
 
         if (ApiKey::allows('admin') || Gate::allows('view-full-profile', $user)) {
             $response['birthdate'] = $user->birthdate;
-            $response['race'] = $user->race;
-            $response['religion'] = $user->religion;
 
             $response['addr_street1'] = $user->addr_street1;
             $response['addr_street2'] = $user->addr_street2;
