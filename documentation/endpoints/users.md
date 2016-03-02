@@ -118,6 +118,7 @@ Either a mobile number or email is required.
   agg_id: Number
   cgg_id: Number
   drupal_id: String
+  source: String // Immutable (can only be set if existing value is `null`)
   race: String
   religion: String
   college_name: String
@@ -129,7 +130,6 @@ Either a mobile number or email is required.
   sat_math: Number
   sat_verbal: Number
   sat_writing: Number
-  source: String
 }
 ```
 

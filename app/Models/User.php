@@ -134,6 +134,19 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
     }
 
     /**
+     * Mutator to make the `source` field immutable (e.g. once a user has been assigned
+     * a source, that value cannot be changed). This allows applications to always
+     * pass their own identifier in the user's source, without overwriting that value
+     * for existing users.
+     */
+    public function setSourceAttribute($value)
+    {
+        if(empty($this->attributes['source'])) {
+           $this->attributes['source'] = $value;
+        }
+    }
+
+    /**
      * Mutator to add new Parse IDs to the user's installation IDs array,
      * either by passing an array or a comma-separated list of values.
      */
