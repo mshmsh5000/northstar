@@ -43,6 +43,7 @@ class UserTransformer extends TransformerAbstract
             $response['addr_zip'] = $user->addr_zip;
         }
 
+        $response['language'] = $user->language;
         $response['country'] = $user->country;
 
         // Signup source (e.g. drupal, cgg, mobile...)
