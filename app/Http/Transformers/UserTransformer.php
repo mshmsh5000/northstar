@@ -50,12 +50,12 @@ class UserTransformer extends TransformerAbstract
         // Signup source (e.g. drupal, cgg, mobile...)
         $response['source'] = $user->source;
 
-        // References to app-specific user IDs.
+        // Internal & third-party service IDs:
         $response['drupal_id'] = $user->drupal_id;
-        $response['cgg_id'] = $user->cgg_id;
-        $response['agg_id'] = $user->agg_id;
-
+        $response['mobilecommons_id'] = $user->mobilecommons_id;
         $response['parse_installation_ids'] = $user->parse_installation_ids;
+
+        $response['mobilecommons_status'] = $user->mobilecommons_status;
 
         $response['updated_at'] = $user->updated_at->toISO8601String();
         $response['created_at'] = $user->created_at->toISO8601String();
