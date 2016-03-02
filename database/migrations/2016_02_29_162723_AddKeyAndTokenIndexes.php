@@ -27,7 +27,7 @@ class AddKeyAndTokenIndexes extends Migration
      */
     public function down()
     {
-        Schema::table('users', function ($collection) {
+        Schema::table('tokens', function ($collection) {
             $collection->dropIndex('key');
         });
 
