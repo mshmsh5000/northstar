@@ -79,14 +79,6 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
     protected $dates = ['created_at', 'updated_at'];
 
     /**
-     * Email address mutator that converts the email value to lowercase.
-     */
-    public function setEmailAttribute($value)
-    {
-        $this->attributes['email'] = strtolower($value);
-    }
-
-    /**
      * Computed last initial field, for public profiles.
      * @return string
      */
@@ -98,7 +90,25 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
     }
 
     /**
-     * Interests mutator converting comma-delimited string to an array.
+     * Mutator to normalize email addresses to lowercase.
+     *
+     * @param string $value
+     */
+    public function setEmailAttribute($value)
+    {
+        // Skip mutator if attribute is null.
+        if (empty($value)) {
+            return;
+        }
+
+        $this->attributes['email'] = strtolower($value);
+    }
+
+    /**
+     * Mutator to add interests to the user's interests array, either by
+     * passing an array or a comma-separated list of values.
+     *
+     * @param string|array $value
      */
     public function setInterestsAttribute($value)
     {
@@ -108,7 +118,9 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
     }
 
     /**
-     * Mobile number mutator that converts number value to only numbers.
+     * Mutator to strip non-numeric characters from mobile numbers.
+     *
+     * @param string $value
      */
     public function setMobileAttribute($value)
     {
@@ -122,7 +134,8 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
     }
 
     /**
-     * Mutator saves Parse installation ids as an array.
+     * Mutator to add new Parse IDs to the user's installation IDs array,
+     * either by passing an array or a comma-separated list of values.
      */
     public function setParseInstallationIdsAttribute($value)
     {
@@ -132,7 +145,7 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
     }
 
     /**
-     * Password mutator that hashes the password field
+     * Mutator to automatically hash any value saved to the password field.
      */
     public function setPasswordAttribute($value)
     {
