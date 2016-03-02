@@ -72,17 +72,16 @@ class UserController extends Controller
      */
     public function store(Request $request)
     {
-        $user = null;
+        // This is an "upsert" endpoint (so it will either create a new user, or
+        // update a user if one with a matching email or mobile number is found.
+        // So... does this user exist already?
+        $user = $this->registrar->resolve($request->only('email', 'mobile'));
 
-        // Does this user exist already?
-        $existingUser = $this->registrar->resolve($request->only('email', 'mobile'));
-        if ($existingUser && $this->registrar->verify($existingUser, $request->only('password'))) {
-            $user = $existingUser;
-        }
-
+        // Validate format & index uniqueness (excluding the profile being updated, if one exists)
+        $existingId = isset($user->id) ? $user->id : 'null';
         $this->validate($request, [
-            'email' => 'email|max:60|unique:users|required_without:mobile',
-            'mobile' => 'unique:users|required_without:email',
+            'email' => 'email|max:60|unique:users,email,'.$existingId.',_id|required_without:mobile',
+            'mobile' => 'unique:users,mobile,'.$existingId.',_id|required_without:email',
         ]);
 
         $user = $this->registrar->register($request->all(), $user);

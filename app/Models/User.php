@@ -36,7 +36,7 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
 
         'addr_street1', 'addr_street2', 'addr_city', 'addr_state', 'addr_zip', 'country',
 
-        'cgg_id', 'drupal_id', 'agg_id', 'source',
+        'mobilecommons_id', 'mobilecommons_status', 'cgg_id', 'drupal_id', 'agg_id', 'source',
 
         'parse_installation_ids',
     ];
