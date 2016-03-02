@@ -153,14 +153,6 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
     }
 
     /**
-     * Define embedded relationship with the Campaign Model
-     */
-    public function campaigns()
-    {
-        return $this->embedsMany('Northstar\Models\Campaign');
-    }
-
-    /**
      * Generate a token to authenticate a user
      *
      * @return mixed
