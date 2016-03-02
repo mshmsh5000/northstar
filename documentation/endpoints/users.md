@@ -82,7 +82,11 @@ curl -X GET \
 ```
 
 ## Create a User
-Create a new user.  This endpoint requires an API key with `admin` scope. For registering a user, consider using the [`auth/register`](#register-user) endpoint, which will also create and return a new authentication token.
+Create a new user. This is performed as an "[upsert](https://docs.mongodb.org/v2.6/reference/glossary/#term-upsert)", so
+if a user with a matching identifier is found, new/changed properties will be merged into the existing document. 
+
+This endpoint requires an API key with `admin` scope. For registering a user, consider using the
+[`auth/register`](#register-user) endpoint, which will also create and return a new authentication token.
 
 ```
 POST /users
