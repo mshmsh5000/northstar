@@ -83,7 +83,7 @@ curl -X GET \
 
 ## Create a User
 Create a new user. This is performed as an "[upsert](https://docs.mongodb.org/v2.6/reference/glossary/#term-upsert)", so
-if a user with a matching identifier is found, new/changed properties will be merged into the existing document. 
+if a user with a matching identifier is found, new/changed properties will be merged into the existing document. This means making the same request multiple times will _not_ create duplicate accounts.
 
 This endpoint requires an API key with `admin` scope. For registering a user, consider using the
 [`auth/register`](#register-user) endpoint, which will also create and return a new authentication token.
@@ -122,7 +122,7 @@ Either a mobile number or email is required.
   agg_id: Number
   cgg_id: Number
   drupal_id: String
-  interests: String
+  interests: String, Array // CSV values or array will be appended to existing interests
   source: String // Immutable (can only be set if existing value is `null`)
   
   // Hidden fields (optional):
