@@ -122,6 +122,7 @@ Either a mobile number or email is required.
   agg_id: Number
   cgg_id: Number
   drupal_id: String
+  parse_installation_ids: String // CSV values or array will be appended to existing interests
   interests: String, Array // CSV values or array will be appended to existing interests
   source: String // Immutable (can only be set if existing value is `null`)
   
@@ -230,48 +231,37 @@ PUT /users/drupal_id/<drupal_id>
 ```
 
 **Parameters:**   
+POST /users
+```
+
+**Body Parameters:**
+
+Either a mobile number or email is required.
 ```js
 // Content-Type: application/json
 
 {
-  /* Email address - forced to lowercase */
   email: String
-
-  /* Mobile phone number */
   mobile: String
-
-  /* Drupal ID */
-  drupal_id: String
-
-  /* Athletes Gone Good ID */
-  agg_id: Number
-
-  /* Celebs Gone Good ID */
-  cgg_id: Number
-
-  /* Mailing address */
+  password: String
+  birthdate: Date
+  first_name: String
+  last_name: String
   addr_street1: String
   addr_street2: String
   addr_city: String
   addr_state: String
   addr_zip: String
-
-  /* Country */
-  country: String
-
-  /* Date of birth */
-  birthdate: Date
- 
-  /* First name */
-  first_name: String
-
-  /* Last name */
-  last_name: String
-
-  /* Installation ID from Parse for push notifications */
-  parse_installation_ids: String
-
-  /* And more... */
+  country: String // two character country code
+  language: String
+  agg_id: Number
+  cgg_id: Number
+  drupal_id: String
+  parse_installation_ids: String // CSV values or array will be appended to existing interests
+  interests: String, Array // CSV values or array will be appended to existing interests
+  source: String // Immutable (can only be set if existing value is `null`)
+  
+  // Hidden fields (optional):
   race: String
   religion: String
   college_name: String
@@ -279,11 +269,9 @@ PUT /users/drupal_id/<drupal_id>
   major_name: String
   hs_gradyear: String
   hs_name: String
-  interests: String
   sat_math: Number
   sat_verbal: Number
   sat_writing: Number
-  source: String
 }
 ```
 
