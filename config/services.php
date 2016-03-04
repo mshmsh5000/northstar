@@ -30,6 +30,6 @@ return [
     'stathat' => [
         'ez_key' => env('STATHAT_EZ_KEY'),
         'debug' => env('APP_DEBUG'),
-    ]
+    ],
 
 ];
