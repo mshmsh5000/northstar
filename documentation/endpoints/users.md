@@ -230,13 +230,8 @@ PUT /users/_id/<user_id>
 PUT /users/drupal_id/<drupal_id>
 ```
 
-**Parameters:**   
-POST /users
-```
-
 **Body Parameters:**
 
-Either a mobile number or email is required.
 ```js
 // Content-Type: application/json
 
@@ -287,7 +282,7 @@ curl -X PUT \
 **Example Response:**
 
 ```js
-200 Okay
+// 200 Okay
 
 {
     "data": {
