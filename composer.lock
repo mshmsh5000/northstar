@@ -243,16 +243,16 @@
         },
         {
             "name": "dosomething/stathat",
-            "version": "v2.0.0",
+            "version": "v2.0.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/DoSomething/stathat-php.git",
-                "reference": "1a9153655b1eb714f37ed832548b8d392a38facf"
+                "reference": "114930272b957bb7846b76f935a4b7eb37541862"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/DoSomething/stathat-php/zipball/1a9153655b1eb714f37ed832548b8d392a38facf",
-                "reference": "1a9153655b1eb714f37ed832548b8d392a38facf",
+                "url": "https://api.github.com/repos/DoSomething/stathat-php/zipball/114930272b957bb7846b76f935a4b7eb37541862",
+                "reference": "114930272b957bb7846b76f935a4b7eb37541862",
                 "shasum": ""
             },
             "require": {
@@ -278,7 +278,7 @@
                 }
             ],
             "description": "Simple API wrapper for StatHat.",
-            "time": "2016-03-07 16:19:02"
+            "time": "2016-03-07 18:05:40"
         },
         {
             "name": "guzzlehttp/guzzle",
