@@ -31,7 +31,7 @@ class EventServiceProvider extends ServiceProvider
         // e.g. will increment the "northstar - v1/users/{term}/{id}" stat each
         // time a client attempts to view a user profile through that route.
         $events->listen(RouteMatched::class, function (RouteMatched $match) {
-            app('stathat')->ezCount(env('STATHAT_APP_NAME', 'northstar').' - '.$match->route->getUri());
+            app('stathat')->ezCount('route: '.$match->route->getUri());
         });
     }
 }

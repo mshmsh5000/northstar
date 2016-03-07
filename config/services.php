@@ -29,6 +29,7 @@ return [
 
     'stathat' => [
         'ez_key' => env('STATHAT_EZ_KEY'),
+        'prefix' => env('STATHAT_APP_NAME', 'northstar').' - ',
         'debug' => env('APP_DEBUG'),
     ],
 
