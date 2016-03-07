@@ -96,7 +96,7 @@ class AuthController extends Controller
         // Attempt to delete token.
         $deleted = $token->delete();
         if (! $deleted) {
-            app('stathat')->ezCount(env('STATHAT_APP_NAME', 'northstar').' - logout error');
+            app('stathat')->ezCount('logout error');
             throw new HttpException(400, 'User could not log out. Please try again.');
         }
 
