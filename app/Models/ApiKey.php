@@ -159,6 +159,7 @@ class ApiKey extends Model
     public static function gate($scope)
     {
         if (! static::allows($scope)) {
+            app('stathat')->ezCount(env('STATHAT_APP_NAME', 'northstar').' - invalid API key error');
             throw new AccessDeniedHttpException('You must be using an API key with "'.$scope.'" scope to do that.');
         }
     }

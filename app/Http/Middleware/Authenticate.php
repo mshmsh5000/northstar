@@ -19,6 +19,7 @@ class Authenticate
     public function handle($request, Closure $next)
     {
         if (! Auth::check()) {
+            app('stathat')->ezCount(env('STATHAT_APP_NAME', 'northstar').' - invalid auth token error');
             throw new HttpException(401, 'Authentication token mismatched.');
         }
 

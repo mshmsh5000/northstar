@@ -1,11 +1,10 @@
 {
     "_readme": [
         "This file locks the dependencies of your project to a known state",
-        "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
+        "Read more about it at http://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "f3d0e60f770c5545c501b03d9eb8273e",
-    "content-hash": "46967e44077d42f5597815da107550e4",
+    "hash": "33b6f8bf2ca940583804b720c51db240",
     "packages": [
         {
             "name": "aws/aws-sdk-php",
@@ -239,6 +238,44 @@
                 "string"
             ],
             "time": "2015-11-06 14:35:42"
+        },
+        {
+            "name": "dosomething/stathat",
+            "version": "v1.1.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/DoSomething/stathat-php.git",
+                "reference": "a072aee65315ad09b89e5282140c1d09acfbc99a"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/DoSomething/stathat-php/zipball/a072aee65315ad09b89e5282140c1d09acfbc99a",
+                "reference": "a072aee65315ad09b89e5282140c1d09acfbc99a",
+                "shasum": ""
+            },
+            "require": {
+                "guzzlehttp/guzzle": "~5.0",
+                "illuminate/support": "~4.0|~5.0",
+                "php": ">=5.4.0"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "DoSomething\\StatHat\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "David Furnes",
+                    "email": "dfurnes@dosomething.org"
+                }
+            ],
+            "description": "Simple API wrapper for StatHat.",
+            "time": "2015-05-28 17:37:59"
         },
         {
             "name": "guzzlehttp/guzzle",
