@@ -19,6 +19,14 @@ class TestCase extends Illuminate\Foundation\Testing\TestCase
         'HTTP_Accept' => 'application/json',
     ];
 
+    public function setUp()
+    {
+        parent::setUp();
+
+        // Migrate & seed a fresh copy of the database before each test case.
+        $this->artisan('migrate');
+        $this->seed();
+    }
     /**
      * Creates the application.
      *
