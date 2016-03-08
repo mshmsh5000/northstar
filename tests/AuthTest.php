@@ -6,16 +6,6 @@ use Northstar\Models\User;
 class AuthTest extends TestCase
 {
     /**
-     * Additional server variables for the request.
-     *
-     * @var array
-     */
-    protected $serverVariables = [
-        'CONTENT_TYPE' => 'application/json',
-        'HTTP_Accept' => 'application/json',
-    ];
-
-    /**
      * Headers for a user-scoped API key.
      * @var array
      */

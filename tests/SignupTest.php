@@ -6,16 +6,6 @@ use Northstar\Services\Phoenix;
 class SignupTest extends TestCase
 {
     /**
-     * Additional server variables for the request.
-     *
-     * @var array
-     */
-    protected $serverVariables = [
-        'CONTENT_TYPE' => 'application/json',
-        'HTTP_Accept' => 'application/json',
-    ];
-
-    /**
      * Headers for a typical user.
      * @var array
      */

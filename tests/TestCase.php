@@ -2,7 +2,22 @@
 
 class TestCase extends Illuminate\Foundation\Testing\TestCase
 {
-    protected $baseUrl = 'http://northstar.dev';
+    /**
+     * The base URL to use while testing the application.
+     *
+     * @var string
+     */
+    protected $baseUrl = 'http://localhost';
+
+    /**
+     * Additional server variables for the request.
+     *
+     * @var array
+     */
+    protected $serverVariables = [
+        'CONTENT_TYPE' => 'application/json',
+        'HTTP_Accept' => 'application/json',
+    ];
 
     /**
      * Creates the application.
