@@ -32,19 +32,6 @@ class AuthTest extends TestCase
     ];
 
     /**
-     * Migrate database and set up HTTP headers
-     *
-     * @return void
-     */
-    public function setUp()
-    {
-        parent::setUp();
-
-        $this->artisan('migrate');
-        $this->seed();
-    }
-
-    /**
      * Test for logging in a user
      * POST /login
      *
@@ -58,24 +45,23 @@ class AuthTest extends TestCase
             'password' => 'secret',
         ];
 
-        $response = $this->call('POST', 'v1/auth/token', [], [], [], $this->server, json_encode($credentials));
-        $content = $response->getContent();
-        $data = json_decode($content, true);
+        $this->withAuthorizedScopes(['user'])->json('POST', 'v1/auth/token', $credentials);
+        $this->assertResponseStatus(201);
+        $this->seeJsonStructure([
+            'data' => [
+                'key',
+                'user' => [
+                    'data' => [
+                        'id'
+                    ],
+                ],
+            ],
+        ]);
 
-        // The response should return a 201 Created status code
-        $this->assertEquals(201, $response->getStatusCode());
-
-        // Response should be valid JSON
-        $this->assertJson($content);
-
-        // Response should include user ID & authentication token
-        $this->assertArrayHasKey('user', $data['data']);
-        $this->assertArrayHasKey('_id', $data['data']['user']['data']);
-        $this->assertArrayHasKey('key', $data['data']);
-
-        // Assert token exists in database
-        $tokenCount = Token::where('key', '=', $data['data']['key'])->count();
-        $this->assertEquals($tokenCount, 1);
+        // Assert token given in the response also exists in database
+        $this->seeInDatabase('tokens', [
+            'key' => $this->decodeResponseJson()['data']['key']
+        ]);
     }
 
     /**
@@ -92,16 +78,13 @@ class AuthTest extends TestCase
             'password' => 'secret',
         ];
 
-        $response = $this->call('POST', 'v1/auth/verify', [], [], [], $this->server, json_encode($credentials));
-        $content = $response->getContent();
-        $data = json_decode($content, true);
-
-        // The response should return a 200 Okay status code
-        $this->assertEquals(200, $response->getStatusCode());
-
-        // Response should be valid JSON, & include user data
-        $this->assertJson($content);
-        $this->assertArrayHasKey('_id', $data['data']);
+        $this->withAuthorizedScopes(['user'])->json('POST', 'v1/auth/verify', $credentials);
+        $this->assertResponseStatus(200);
+        $this->seeJsonStructure([
+            'data' => [
+                'id',
+            ],
+        ]);
     }
 
     /**
@@ -112,14 +95,12 @@ class AuthTest extends TestCase
      */
     public function testLogout()
     {
-        $response = $this->call('POST', 'v1/auth/invalidate', [], [], [], $this->loggedInServer);
-        $content = $response->getContent();
+        $user = User::create(['first_name' => 'Puppet']);
+        $this->asUser($user)->withAuthorizedScopes(['user'])->json('POST', 'v1/auth/invalidate');
 
-        // The response should return a 200 Created status code
-        $this->assertEquals(200, $response->getStatusCode());
-
-        // Response should be valid JSON
-        $this->assertJson($content);
+        // Should return 200 with valid JSON status message
+        $this->assertResponseStatus(200);
+        $this->seeJson();
     }
 
     /**
@@ -131,29 +112,35 @@ class AuthTest extends TestCase
      */
     public function testLogoutRemovesParseInstallationIds()
     {
-        $payload = [
-            'parse_installation_ids' => 'parse-abc123',
-        ];
+        $user = User::create([
+            'first_name' => 'Puppet',
+            'parse_installation_ids' => [
+                'parse-abc123',
+            ]
+        ]);
 
-        $logoutResponse = $this->call('POST', 'v1/auth/invalidate', [], [], [], $this->loggedInServer, json_encode($payload));
+        $this->asUser($user)->withAuthorizedScopes(['user'])->json('POST', 'v1/auth/invalidate', [
+            'parse_installation_ids' => 'parse-abc123',
+        ]);
 
         // The response should return a 200 OK status code
-        $this->assertEquals(200, $logoutResponse->getStatusCode());
+        $this->assertResponseStatus(200);
 
         // Verify parse_installation_ids got removed from the user
-        $user = User::find('bf1039b0271bcc636aa5477c');
-        $this->assertEquals(0, count($user->parse_installation_ids));
+        $this->notSeeIndatabase('users', [
+            '_id' => $user->_id,
+            'parse_installation_ids' => ['parse-abc123'],
+        ]);
     }
 
     /**
      * Tests that a proper error is thrown when a route requiring an auth token
-     * is given no token.
+     * is called without a token in the Authorization header.
      */
     public function testMissingToken()
     {
-        $response = $this->call('GET', 'v1/profile', [], [], [], $this->server);
-
-        $this->assertEquals(401, $response->getStatusCode());
+        $this->withAuthorizedScopes(['user'])->get('v1/profile');
+        $this->assertResponseStatus(401);
     }
 
     /**
@@ -162,39 +149,47 @@ class AuthTest extends TestCase
      */
     public function testFakeToken()
     {
-        $response = $this->call('GET', 'v1/profile', [], [], [], $this->serverFakeToken);
+        $this->withAuthorizedScopes(['user'])->get('v1/profile', [
+            'Authorization' => 'Bearer any_token_anytime_anywhere'
+        ]);
 
-        $this->assertEquals(401, $response->getStatusCode());
+        $this->assertResponseStatus(401);
     }
 
     /**
-     * Tests that drupal password checker is working correctly.
+     * Tests that Drupal password hasher is working correctly.
      */
-    public function testDrupalPasswordChecker()
+    public function testAuthenticatingWithDrupalPassword()
     {
-        // User login info
-        $credentials = [
-            'email' => 'test4@dosomething.org',
+        $user = User::create([
+            'email' => 'dries.buytaert@example.com',
+            'drupal_password' => '$S$DOQoztwlGzTeaobeBZKNzlDttbZscuCkkZPv8yeoEvrn26H/GN5b',
+        ]);
+
+        $this->withAuthorizedScopes(['user'])->json('POST', 'v1/auth/verify', [
+            'email' => 'dries.buytaert@example.com',
             'password' => 'secret',
-        ];
+        ]);
 
-        $response = $this->call('POST', 'v1/auth/token', [], [], [], $this->server, json_encode($credentials));
-        $content = $response->getContent();
-        $data = json_decode($content, true);
-        $user = User::find('5430e850dt8hbc541c37cal3');
+        // Assert response is 200 OK and has expected data
+        $this->assertResponseStatus(200);
+        $this->seeJsonSubset([
+            'data' => [
+                'id' => $user->_id,
+                'email' => $user->email
+            ],
+        ]);
 
-        // Assert response is 201 Created and has expected data
-        $this->assertEquals(201, $response->getStatusCode());
-        $this->assertEquals($credentials['email'], $data['data']['user']['data']['email']);
-        $this->assertEquals(null, $user->drupal_password);
+        // Assert user has been updated in the database with a newly hashed password.
+        $user = $user->fresh();
+        $this->assertArrayNotHasKey('drupal_password', $user['attributes']);
         $this->assertArrayHasKey('password', $user['attributes']);
 
-        // Response should include user ID & authentication token
-        $this->assertArrayHasKey('_id', $data['data']['user']['data']);
-        $this->assertArrayHasKey('key', $data['data']);
-
-        // Assert token exists in database
-        $tokenCount = Token::where('key', '=', $data['data']['key'])->count();
-        $this->assertEquals($tokenCount, 1);
+        // Finally, let's try logging in with the newly hashed password
+        $this->withAuthorizedScopes(['user'])->json('POST', 'v1/auth/verify', [
+            'email' => 'dries.buytaert@example.com',
+            'password' => 'secret',
+        ]);
+        $this->assertResponseStatus(200);
     }
 }
