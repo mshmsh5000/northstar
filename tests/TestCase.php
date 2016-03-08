@@ -1,6 +1,7 @@
 <?php
 
 use Northstar\Models\ApiKey;
+use Northstar\Models\User;
 
 class TestCase extends Illuminate\Foundation\Testing\TestCase
 {
@@ -59,6 +60,25 @@ class TestCase extends Illuminate\Foundation\Testing\TestCase
         ]);
 
         $this->withApiKey($key);
+
+        return $this;
+    }
+
+    /**
+     * Set the currently logged in user for the application. Use this instead of Laravel's
+     * built-in $this->actingAs() or $this->be() because it will create an actual token in
+     * the database to be manipulated/checked & set proper authentication header.
+     *
+     * @param User $user
+     * @param  string|null $driver
+     * @return $this
+     */
+    public function asUser(User $user, $driver = null)
+    {
+        $token = $user->login();
+        $this->serverVariables = array_replace($this->serverVariables, [
+            'HTTP_Authorization' => 'Bearer '.$token->key
+        ]);
 
         return $this;
     }
