@@ -1,5 +1,7 @@
 <?php
 
+use Northstar\Models\ApiKey;
+
 class TestCase extends Illuminate\Foundation\Testing\TestCase
 {
     /**
@@ -27,6 +29,40 @@ class TestCase extends Illuminate\Foundation\Testing\TestCase
         $this->artisan('migrate');
         $this->seed();
     }
+
+    /**
+     * Use the given API key for this request.
+     *
+     * @param ApiKey $key
+     * @return $this
+     */
+    public function withApiKey(ApiKey $key)
+    {
+        $this->serverVariables = array_replace($this->serverVariables, [
+            'HTTP_X-DS-REST-API-Key' => $key->api_key,
+        ]);
+
+        return $this;
+    }
+
+    /**
+     *
+     *
+     * @param array $scopes
+     * @return $this
+     */
+    public function withAuthorizedScopes(array $scopes)
+    {
+        $key = ApiKey::create([
+            'app_id' => 'testing'.time(),
+            'scope' => $scopes
+        ]);
+
+        $this->withApiKey($key);
+
+        return $this;
+    }
+
     /**
      * Creates the application.
      *
