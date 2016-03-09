@@ -6,62 +6,6 @@ use Northstar\Services\Phoenix;
 class SignupTest extends TestCase
 {
     /**
-     * Additional server variables for the request.
-     *
-     * @var array
-     */
-    protected $serverVariables = [
-        'CONTENT_TYPE' => 'application/json',
-        'HTTP_Accept' => 'application/json',
-    ];
-
-    /**
-     * Headers for a typical user.
-     * @var array
-     */
-    protected $server;
-
-    /**
-     * Headers for a user who has already signed up.
-     * @var array
-     */
-    protected $signedUpServer;
-
-    /**
-     * Headers for a user who has already reported back.
-     * @var array
-     */
-    protected $reportedBackServer;
-
-    /**
-     * Migrate database and set HTTP headers.
-     */
-    public function setUp()
-    {
-        parent::setUp();
-
-        // Migrate & seed database
-        $this->artisan('migrate');
-        $this->seed();
-
-        // Prepare server headers
-        $this->server = [
-            'HTTP_X-DS-REST-API-Key' => 'abc4324',
-            'HTTP_Authorization' => 'Bearer '.User::find('5430e850dt8hbc541c37tt3d')->login()->key,
-        ];
-
-        $this->signedUpServer = [
-            'HTTP_X-DS-REST-API-Key' => 'abc4324',
-            'HTTP_Authorization' => 'Bearer '.User::find('5480c950bffebc651c8b456f')->login()->key,
-        ];
-
-        $this->reportedBackServer = [
-            'HTTP_X-DS-REST-API-Key' => 'abc4324',
-            'HTTP_Authorization' => 'Bearer '.User::find('bf1039b0271bcc636aa5477a')->login()->key,
-        ];
-    }
-
-    /**
      * Test for retrieving a user's campaigns
      * GET /:signups
      *
@@ -69,6 +13,8 @@ class SignupTest extends TestCase
      */
     public function testSignupIndex()
     {
+        $user = User::create(['drupal_id' => '100001']);
+
         // For testing, we'll mock a successful Phoenix API response.
         $this->mock(Phoenix::class)->shouldReceive('getSignupIndex')->with(['user' => '100001'])->once()->andReturn([
             'data' => [
@@ -83,14 +29,9 @@ class SignupTest extends TestCase
             ],
         ]);
 
-        $response = $this->call('GET', 'v1/signups?user=5430e850dt8hbc541c37tt3d', [], [], [], $this->server);
-        $content = $response->getContent();
-
-        // The response should return a 200 OK status code
-        $this->assertEquals(200, $response->getStatusCode());
-
-        // Response should be valid JSON
-        $this->assertJson($content);
+        $this->asUser($user)->withScopes(['user'])->get('v1/signups?user='.$user->_id);
+        $this->assertResponseStatus(200);
+        $this->seeJson();
     }
 
     /**
@@ -109,14 +50,11 @@ class SignupTest extends TestCase
             ],
         ]);
 
-        $response = $this->call('GET', 'v1/signups/123', [], [], [], $this->signedUpServer);
+        $this->get('v1/signups/123');
 
-        // The response should return a 200 OK status code
-        $this->assertEquals(200, $response->getStatusCode());
-
-        // Response should be valid JSON
-        $content = $response->getContent();
-        $this->assertJson($content);
+        // The response should return 200 OK & be valid JSON
+        $this->assertResponseStatus(200);
+        $this->seeJson();
     }
 
     /**
@@ -127,11 +65,11 @@ class SignupTest extends TestCase
      */
     public function testSubmitSignup()
     {
+        $user = User::create(['drupal_id' => '123451']);
+
         // For testing, we'll mock a successful Phoenix API response.
         $mock = $this->mock(Phoenix::class);
-        $mock->shouldReceive('createSignup')->once()->andReturn([
-            '1307',
-        ]);
+        $mock->shouldReceive('createSignup')->with('123451', '123', 'test')->once()->andReturn(['1307']);
         $mock->shouldReceive('getSignup')->with('1307')->once()->andReturn([
             'data' => [
                 'id' => '1307',
@@ -140,16 +78,13 @@ class SignupTest extends TestCase
         ]);
 
         // Make the request
-        $response = $this->call('POST', 'v1/signups', [], [], [], $this->server, json_encode([
+        $this->asUser($user)->withScopes(['user'])->json('POST', 'v1/signups', [
             'campaign_id' => '123',
             'source' => 'test',
-        ]));
+        ]);
 
-        // The response should return a 201 Created status code
-        $this->assertEquals(201, $response->getStatusCode());
-
-        // Response should be valid JSON
-        $content = $response->getContent();
-        $this->assertJson($content);
+        // The response should return 201 Created & be valid JSON
+        $this->assertResponseStatus(201);
+        $this->seeJson();
     }
 }
