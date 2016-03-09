@@ -2,8 +2,6 @@
 
 namespace Northstar\Http\Controllers;
 
-use League\Fractal\Resource\Item;
-use League\Fractal\Resource\Collection;
 use Illuminate\Http\Request;
 use Northstar\Http\Transformers\ApiKeyTransformer;
 use Northstar\Models\ApiKey;
@@ -19,7 +17,7 @@ class KeyController extends Controller
 
     public function __construct(ApiKeyTransformer $transformer)
     {
-        $this->transformer = $transformer;
+        $this->transformer = new ApiKeyTransformer();
 
         $this->middleware('key:admin');
     }

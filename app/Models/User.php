@@ -158,10 +158,15 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
     }
 
     /**
-     * Mutator to automatically hash any value saved to the password field.
+     * Mutator to automatically hash any value saved to the password field,
+     * and remove the hashed Drupal password if one exists.
      */
     public function setPasswordAttribute($value)
     {
+        if (isset($this->drupal_password)) {
+            $this->unset('drupal_password');
+        }
+
         $this->attributes['password'] = Hash::make($value);
     }
 
