@@ -53,7 +53,7 @@ class PasswordTest extends TestCase
         ]);
 
         $this->withScopes(['admin'])->json('PUT', 'v1/users/_id/'.$user->_id, [
-            'password' => 'secret'
+            'password' => 'secret',
         ]);
 
         $this->assertResponseStatus(200);
