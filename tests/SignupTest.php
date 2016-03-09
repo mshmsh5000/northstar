@@ -29,7 +29,7 @@ class SignupTest extends TestCase
             ],
         ]);
 
-        $this->asUser($user)->withAuthorizedScopes(['user'])->get('v1/signups?user='.$user->_id);
+        $this->asUser($user)->withScopes(['user'])->get('v1/signups?user='.$user->_id);
         $this->assertResponseStatus(200);
         $this->seeJson();
     }
@@ -78,7 +78,7 @@ class SignupTest extends TestCase
         ]);
 
         // Make the request
-        $this->asUser($user)->withAuthorizedScopes(['user'])->json('POST', 'v1/signups', [
+        $this->asUser($user)->withScopes(['user'])->json('POST', 'v1/signups', [
             'campaign_id' => '123',
             'source' => 'test',
         ]);

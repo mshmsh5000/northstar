@@ -47,12 +47,12 @@ class TestCase extends Illuminate\Foundation\Testing\TestCase
     }
 
     /**
-     *
+     * Set an API key with the given scopes on the request.
      *
      * @param array $scopes
      * @return $this
      */
-    public function withAuthorizedScopes(array $scopes)
+    public function withScopes(array $scopes)
     {
         $key = ApiKey::create([
             'app_id' => 'testing'.time(),

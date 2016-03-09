@@ -162,6 +162,10 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
      */
     public function setPasswordAttribute($value)
     {
+        // Since we're setting the password, we can discard any existing
+        // Drupal-hashed value copied into the `drupal_password` field.
+//        $this->unset('drupal_password');
+
         $this->attributes['password'] = Hash::make($value);
     }
 

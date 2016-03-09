@@ -45,7 +45,7 @@ class AuthTest extends TestCase
             'password' => 'secret',
         ];
 
-        $this->withAuthorizedScopes(['user'])->json('POST', 'v1/auth/token', $credentials);
+        $this->withScopes(['user'])->json('POST', 'v1/auth/token', $credentials);
         $this->assertResponseStatus(201);
         $this->seeJsonStructure([
             'data' => [
@@ -78,7 +78,7 @@ class AuthTest extends TestCase
             'password' => 'secret',
         ];
 
-        $this->withAuthorizedScopes(['user'])->json('POST', 'v1/auth/verify', $credentials);
+        $this->withScopes(['user'])->json('POST', 'v1/auth/verify', $credentials);
         $this->assertResponseStatus(200);
         $this->seeJsonStructure([
             'data' => [
@@ -96,7 +96,7 @@ class AuthTest extends TestCase
     public function testLogout()
     {
         $user = User::create(['first_name' => 'Puppet']);
-        $this->asUser($user)->withAuthorizedScopes(['user'])->json('POST', 'v1/auth/invalidate');
+        $this->asUser($user)->withScopes(['user'])->json('POST', 'v1/auth/invalidate');
 
         // Should return 200 with valid JSON status message
         $this->assertResponseStatus(200);
@@ -119,7 +119,7 @@ class AuthTest extends TestCase
             ]
         ]);
 
-        $this->asUser($user)->withAuthorizedScopes(['user'])->json('POST', 'v1/auth/invalidate', [
+        $this->asUser($user)->withScopes(['user'])->json('POST', 'v1/auth/invalidate', [
             'parse_installation_ids' => 'parse-abc123',
         ]);
 
@@ -139,7 +139,7 @@ class AuthTest extends TestCase
      */
     public function testMissingToken()
     {
-        $this->withAuthorizedScopes(['user'])->get('v1/profile');
+        $this->withScopes(['user'])->get('v1/profile');
         $this->assertResponseStatus(401);
     }
 
@@ -149,7 +149,7 @@ class AuthTest extends TestCase
      */
     public function testFakeToken()
     {
-        $this->withAuthorizedScopes(['user'])->get('v1/profile', [
+        $this->withScopes(['user'])->get('v1/profile', [
             'Authorization' => 'Bearer any_token_anytime_anywhere'
         ]);
 
@@ -166,7 +166,7 @@ class AuthTest extends TestCase
             'drupal_password' => '$S$DOQoztwlGzTeaobeBZKNzlDttbZscuCkkZPv8yeoEvrn26H/GN5b',
         ]);
 
-        $this->withAuthorizedScopes(['user'])->json('POST', 'v1/auth/verify', [
+        $this->withScopes(['user'])->json('POST', 'v1/auth/verify', [
             'email' => 'dries.buytaert@example.com',
             'password' => 'secret',
         ]);
@@ -186,7 +186,7 @@ class AuthTest extends TestCase
         $this->assertArrayHasKey('password', $user['attributes']);
 
         // Finally, let's try logging in with the newly hashed password
-        $this->withAuthorizedScopes(['user'])->json('POST', 'v1/auth/verify', [
+        $this->withScopes(['user'])->json('POST', 'v1/auth/verify', [
             'email' => 'dries.buytaert@example.com',
             'password' => 'secret',
         ]);

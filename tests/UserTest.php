@@ -13,7 +13,7 @@ class UserTest extends TestCase
     public function testGetPublicDataFromUser()
     {
         // Test that we can view public profile of a seeded user.
-        $this->withAuthorizedScopes(['user'])->get('v1/users/email/test@dosomething.org');
+        $this->withScopes(['user'])->get('v1/users/email/test@dosomething.org');
         $this->assertResponseStatus(200);
         $this->seeJsonStructure([
             'data' => [
@@ -33,7 +33,7 @@ class UserTest extends TestCase
      */
     public function testGetAllDataFromUser()
     {
-        $this->withAuthorizedScopes(['user', 'admin'])->get('v1/users/email/test@dosomething.org');
+        $this->withScopes(['user', 'admin'])->get('v1/users/email/test@dosomething.org');
         $this->assertResponseStatus(200);
 
         // Check that public & private profile fields are visible
@@ -122,7 +122,7 @@ class UserTest extends TestCase
         $this->assertResponseStatus(403);
 
         // Query by a "known" search term
-        $this->withAuthorizedScopes(['admin'])
+        $this->withScopes(['admin'])
             ->get('v1/users?search[_id]=test@dosomething.org&search[email]=test@dosomething.org');
         $this->assertResponseStatus(200);
 
@@ -200,7 +200,7 @@ class UserTest extends TestCase
             'source' => 'phpunit',
         ];
 
-        $this->withAuthorizedScopes(['admin'])->json('POST', 'v1/users', $payload);
+        $this->withScopes(['admin'])->json('POST', 'v1/users', $payload);
         $this->assertResponseStatus(200);
         $this->seeJsonStructure([
             'data' => [
@@ -223,7 +223,7 @@ class UserTest extends TestCase
         ]);
 
         // Post a "new" user object to merge into existing record
-        $this->withAuthorizedScopes(['admin'])->json('POST', 'v1/users', [
+        $this->withScopes(['admin'])->json('POST', 'v1/users', [
             'email' => 'upsert-me@dosomething.org',
             'mobile' => '5556667777',
             'password' => 'secret',
@@ -254,7 +254,7 @@ class UserTest extends TestCase
     public function testUpdateUser()
     {
         // Create a new user object
-        $this->withAuthorizedScopes(['admin'])->json('PUT', 'v1/users/_id/5480c950bffebc651c8b456f', [
+        $this->withScopes(['admin'])->json('PUT', 'v1/users/_id/5480c950bffebc651c8b456f', [
             'email' => 'newemail@dosomething.org',
             'parse_installation_ids' => 'parse-abc123',
         ]);
@@ -290,7 +290,7 @@ class UserTest extends TestCase
         // Mock successful response from AWS API
         $this->mock('Northstar\Services\AWS')->shouldReceive('storeImage')->once()->andReturn('http://bucket.s3.amazonaws.com/5480c950bffebc651c8b456f-1234567.jpg');
 
-        $this->asUser($user)->withAuthorizedScopes(['user'])->json('POST', 'v1/users/5480c950bffebc651c8b456f/avatar', [
+        $this->asUser($user)->withScopes(['user'])->json('POST', 'v1/users/5480c950bffebc651c8b456f/avatar', [
             'photo' => 'example.jpeg',
         ]);
 
@@ -315,7 +315,7 @@ class UserTest extends TestCase
         // Mock successful response from AWS API
         $this->mock('Northstar\Services\AWS')->shouldReceive('storeImage')->once()->andReturn('http://bucket.s3.amazonaws.com/5480c950bffebc651c8b456f-123415.jpg');
 
-        $this->asUser($user)->withAuthorizedScopes(['user'])->json('POST', 'v1/users/5480c950bffebc651c8b456f/avatar', [
+        $this->asUser($user)->withScopes(['user'])->json('POST', 'v1/users/5480c950bffebc651c8b456f/avatar', [
             'photo' => '123456789',
         ]);
 
@@ -339,7 +339,7 @@ class UserTest extends TestCase
         $this->delete('v1/users/5480c950bffebc651c8b4570');
         $this->assertResponseStatus(403);
 
-        $this->withAuthorizedScopes(['admin'])->delete('v1/users/5480c950bffebc651c8b4570');
+        $this->withScopes(['admin'])->delete('v1/users/5480c950bffebc651c8b4570');
         $this->assertResponseStatus(200);
     }
 
@@ -351,7 +351,7 @@ class UserTest extends TestCase
      */
     public function testDeleteNoResource()
     {
-        $this->withAuthorizedScopes(['admin'])->delete('v1/users/DUMMY_ID');
+        $this->withScopes(['admin'])->delete('v1/users/DUMMY_ID');
         $this->assertResponseStatus(404);
     }
 }
