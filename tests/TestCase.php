@@ -70,10 +70,9 @@ class TestCase extends Illuminate\Foundation\Testing\TestCase
      * the database to be manipulated/checked & set proper authentication header.
      *
      * @param User $user
-     * @param  string|null $driver
      * @return $this
      */
-    public function asUser(User $user, $driver = null)
+    public function asUser(User $user)
     {
         $token = $user->login();
         $this->serverVariables = array_replace($this->serverVariables, [
