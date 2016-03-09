@@ -5,44 +5,6 @@ use Northstar\Models\User;
 class UserTest extends TestCase
 {
     /**
-     * Migrate database and set up HTTP headers
-     *
-     * @return void
-     */
-    public function setUp()
-    {
-        parent::setUp();
-
-        Artisan::call('migrate');
-        $this->seed();
-
-        $this->server = [
-            'CONTENT_TYPE' => 'application/json',
-            'HTTP_Accept' => 'application/json',
-            'HTTP_X-DS-Application-Id' => '456',
-            'HTTP_X-DS-REST-API-Key' => 'abc4324',
-            'HTTP_Session' => 'S0FyZmlRNmVpMzVsSzJMNUFreEFWa3g0RHBMWlJRd0tiQmhSRUNxWXh6cz0=',
-        ];
-
-        $this->serverRetrieveUser = [
-            'HTTP_Accept' => 'application/json',
-            'HTTP_X-DS-Application-Id' => '456',
-            'HTTP_X-DS-REST-API-Key' => 'abc4324',
-        ];
-
-        $this->userScope = [
-            'CONTENT_TYPE' => 'application/json',
-            'HTTP_Accept' => 'application/json',
-            'HTTP_X-DS-Application-Id' => '123',
-            'HTTP_X-DS-REST-API-Key' => '5464utyrs',
-            'HTTP_Session' => 'S0FyZmlRNmVpMzVsSzJMNUFreEFWa3g0RHBMWlJRd0tiQmhSRUNxWXh6cz0=',
-        ];
-
-        // Mock AWS API class
-        $this->awsMock = $this->mock('Northstar\Services\AWS');
-    }
-
-    /**
      * Test for retrieving a user with a non-admin key.
      * GET /users/:term/:id
      *
@@ -50,22 +12,17 @@ class UserTest extends TestCase
      */
     public function testGetPublicDataFromUser()
     {
-        $response = $this->call('GET', 'v1/users/email/test@dosomething.org', [], [], [], $this->userScope);
-        $content = $response->getContent();
+        // Test that we can view public profile of a seeded user.
+        $this->withAuthorizedScopes(['user'])->get('v1/users/email/test@dosomething.org');
+        $this->assertResponseStatus(200);
+        $this->seeJsonStructure([
+            'data' => [
+                'id', 'email'
+            ],
+        ]);
 
-        // The response should return a 200 OK status code
-        $this->assertEquals(200, $response->getStatusCode());
-
-        // Response should be valid JSON
-        $this->assertJson($content);
-        $json = json_decode($content);
-
-        // Check that public profile fields are visible...
-        $this->assertObjectHasAttribute('id', $json->data);
-        $this->assertObjectHasAttribute('email', $json->data);
-
-        // ...and private profile fields are hidden.
-        $this->assertObjectNotHasAttribute('last_name', $json->data);
+        // And test that private profile fields are hidden for 'user' scope.
+        $this->assertArrayNotHasKey('last_name', $this->decodeResponseJson()['data']);
     }
 
     /**
@@ -76,20 +33,15 @@ class UserTest extends TestCase
      */
     public function testGetAllDataFromUser()
     {
-        $response = $this->call('GET', 'v1/users/email/test@dosomething.org', [], [], [], $this->server);
-        $content = $response->getContent();
-
-        // The response should return a 200 OK status code
-        $this->assertEquals(200, $response->getStatusCode());
-
-        // Response should be valid JSON
-        $this->assertJson($content);
-        $json = json_decode($content);
+        $this->withAuthorizedScopes(['user', 'admin'])->get('v1/users/email/test@dosomething.org');
+        $this->assertResponseStatus(200);
 
         // Check that public & private profile fields are visible
-        $this->assertObjectHasAttribute('id', $json->data);
-        $this->assertObjectHasAttribute('email', $json->data);
-        $this->assertObjectHasAttribute('last_name', $json->data);
+        $this->seeJsonStructure([
+            'data' => [
+                'id', 'email', 'last_name'
+            ]
+        ]);
     }
 
     /**
@@ -100,18 +52,21 @@ class UserTest extends TestCase
      */
     public function testIndex()
     {
-        $response = $this->call('GET', 'v1/users', [], [], [], $this->server);
-        $this->assertEquals(200, $response->getStatusCode());
+        $this->get('v1/users');
+        $this->assertResponseStatus(200);
 
-        $data = json_decode($response->getContent());
-        $this->assertObjectHasAttribute('data', $data);
-        $this->assertObjectHasAttribute('meta', $data);
-        $this->assertObjectHasAttribute('pagination', $data->meta);
-        $this->assertObjectHasAttribute('total', $data->meta->pagination);
-        $this->assertObjectHasAttribute('count', $data->meta->pagination);
-        $this->assertObjectHasAttribute('per_page', $data->meta->pagination);
-        $this->assertObjectHasAttribute('current_page', $data->meta->pagination);
-        $this->assertObjectHasAttribute('links', $data->meta->pagination);
+        $this->seeJsonStructure([
+            'data' => [
+                '*' => [
+                    'id',
+                ],
+            ],
+            'meta' => [
+                'pagination' => [
+                   'total', 'count', 'per_page', 'current_page', 'links',
+                ],
+            ],
+        ]);
     }
 
     /**
@@ -122,8 +77,8 @@ class UserTest extends TestCase
      */
     public function testNonexistentUser()
     {
-        $response = $this->call('GET', 'v1/users/_id/FAKE', [], [], [], $this->server);
-        $this->assertEquals(404, $response->getStatusCode());
+        $this->get('v1/users/_id/FAKE');
+        $this->assertResponseStatus(404);
     }
 
     /**
@@ -134,31 +89,26 @@ class UserTest extends TestCase
     public function testFilterUsersById()
     {
         // Retrieve multiple users by _id
-        $response1 = $this->call(
-            'GET',
-            'v1/users?filter[_id]=5430e850dt8hbc541c37tt3d,5480c950bffebc651c8b456f,FAKE_ID',
-            [], [], [], $this->server
-        );
-        $data1 = json_decode($response1->getContent());
-        $this->assertCount(2, $data1->data);
+        $this->get('v1/users?filter[_id]=5430e850dt8hbc541c37tt3d,5480c950bffebc651c8b456f,FAKE_ID');
+        $this->assertCount(2, $this->decodeResponseJson()['data']);
+        $this->seeJsonStructure([
+            'data' => [
+                '*' => [
+                    'id',
+                ],
+            ],
+            'meta' => [
+                'pagination',
+            ],
+        ]);
 
         // Retrieve multiple users by drupal_id
-        $response2 = $this->call(
-            'GET',
-            'v1/users?filter[drupal_id]=FAKE_ID,100001,100002,100003',
-            [], [], [], $this->server
-        );
-        $data2 = json_decode($response2->getContent());
-        $this->assertCount(3, $data2->data);
+        $this->get('v1/users?filter[drupal_id]=FAKE_ID,100001,100002,100003');
+        $this->assertCount(3, $this->decodeResponseJson()['data']);
 
         // Test compound queries
-        $response3 = $this->call(
-            'GET',
-            'v1/users?filter[drupal_id]=FAKE_ID,100001,100002,100003&filter[mobile]=5555550100',
-            [], [], [], $this->server
-        );
-        $data3 = json_decode($response3->getContent());
-        $this->assertCount(1, $data3->data);
+        $this->get('v1/users?filter[drupal_id]=FAKE_ID,100001,100002,100003&filter[mobile]=5555550100');
+        $this->assertCount(1, $this->decodeResponseJson()['data']);
     }
 
     /**
@@ -168,23 +118,16 @@ class UserTest extends TestCase
     public function testSearchUsers()
     {
         // Search should be limited to `admin` scoped keys.
-        $response = $this->call(
-            'GET',
-            'v1/users?search[email]=test@dosomething.org',
-            [], [], [], $this->userScope
-        );
-        $this->assertEquals(403, $response->getStatusCode());
+        $this->get('v1/users?search[email]=test@dosomething.org');
+        $this->assertResponseStatus(403);
 
         // Query by a "known" search term
-        $response = $this->call(
-            'GET',
-            'v1/users?search[_id]=test@dosomething.org&search[email]=test@dosomething.org',
-            [], [], [], $this->server
-        );
-        $data = json_decode($response->getContent());
+        $this->withAuthorizedScopes(['admin'])
+            ->get('v1/users?search[_id]=test@dosomething.org&search[email]=test@dosomething.org');
+        $this->assertResponseStatus(200);
 
         // There should be one match (a user with the provided email)
-        $this->assertCount(1, $data->data);
+        $this->assertCount(1, $this->decodeResponseJson()['data']);
     }
 
     /**
@@ -194,41 +137,53 @@ class UserTest extends TestCase
     public function testRetrieveUser()
     {
         // User info
-        $user = User::find('5430e850dt8hbc541c37tt3d');
+        $user = User::create([
+            'email' => 'sterling.archer@example.com',
+            'mobile' => '5551231245',
+            'drupal_id' => '4567890',
+        ]);
 
         // GET /users/_id/<user_id>
-        $response = $this->call('GET', 'v1/users/_id/'.$user->_id, [], [], [], $this->serverRetrieveUser);
-        $content = $response->getContent();
-        $data = json_decode($content, true);
+        $this->get('v1/users/_id/'.$user->_id);
 
         // Assert response is 200 and has expected data
-        $this->assertEquals(200, $response->getStatusCode());
-        $this->assertJson($content);
-        $this->assertArrayHasKey('_id', $data['data']);
+        $this->assertResponseStatus(200);
+        $this->seeJsonSubset([
+            'data' => [
+                'id' => $user->_id,
+                'email' => $user->email,
+            ],
+        ]);
 
         // GET /users/mobile/<mobile>
-        $response = $this->call('GET', 'v1/users/mobile/'.$user->mobile, [], [], [], $this->serverRetrieveUser);
-        $content = $response->getContent();
-        $data = json_decode($content, true);
-        $this->assertEquals(200, $response->getStatusCode());
-        $this->assertJson($content);
-        $this->assertArrayHasKey('mobile', $data['data']);
+        $this->get('v1/users/mobile/'.$user->mobile);
+        $this->assertResponseStatus(200);
+        $this->seeJsonSubset([
+            'data' => [
+                'id' => $user->_id,
+                'mobile' => $user->mobile,
+            ],
+        ]);
 
         // GET /users/email/<email>
-        $response = $this->call('GET', 'v1/users/email/'.$user->email, [], [], [], $this->serverRetrieveUser);
-        $content = $response->getContent();
-        $data = json_decode($content, true);
-        $this->assertEquals(200, $response->getStatusCode());
-        $this->assertJson($content);
-        $this->assertArrayHasKey('email', $data['data']);
+        $this->get('v1/users/email/'.$user->email);
+        $this->assertResponseStatus(200);
+        $this->seeJsonSubset([
+            'data' => [
+                'id' => $user->_id,
+                'email' => $user->email,
+            ],
+        ]);
 
         // GET /users/drupal_id/<drupal_id>
-        $response = $this->call('GET', 'v1/users/drupal_id/'.$user->drupal_id, [], [], [], $this->serverRetrieveUser);
-        $content = $response->getContent();
-        $data = json_decode($content, true);
-        $this->assertEquals(200, $response->getStatusCode());
-        $this->assertJson($content);
-        $this->assertArrayHasKey('drupal_id', $data['data']);
+        $this->get('v1/users/drupal_id/'.$user->drupal_id);
+        $this->assertResponseStatus(200);
+        $this->seeJsonSubset([
+            'data' => [
+                'id' => $user->_id,
+                'drupal_id' => $user->drupal_id,
+            ],
+        ]);
     }
 
     /**
@@ -240,22 +195,18 @@ class UserTest extends TestCase
     public function testCreateUser()
     {
         // Create a new user object
-        $user = [
+        $payload = [
             'email' => 'new@dosomething.org',
             'source' => 'phpunit',
         ];
 
-        $response = $this->call('POST', 'v1/users', [], [], [], $this->server, json_encode($user));
-        $content = $response->getContent();
-        $data = json_decode($content, true)['data'];
-
-        // The response should return JSON with a 200 Okay status code
-        $this->assertEquals(200, $response->getStatusCode());
-        $this->assertJson($content);
-
-        // Response should return created at and id columns
-        $this->assertArrayHasKey('created_at', $data);
-        $this->assertArrayHasKey('id', $data);
+        $this->withAuthorizedScopes(['admin'])->json('POST', 'v1/users', $payload);
+        $this->assertResponseStatus(200);
+        $this->seeJsonStructure([
+            'data' => [
+                'id', 'email', 'source', 'created_at',
+            ],
+        ]);
     }
 
     /**
@@ -272,28 +223,26 @@ class UserTest extends TestCase
         ]);
 
         // Post a "new" user object to merge into existing record
-        $user = [
+        $this->withAuthorizedScopes(['admin'])->json('POST', 'v1/users', [
             'email' => 'upsert-me@dosomething.org',
             'mobile' => '5556667777',
             'password' => 'secret',
             'first_name' => 'Puppet',
             'source' => 'phpunit',
-        ];
-
-        $response = $this->call('POST', 'v1/users', [], [], [], $this->server, json_encode($user));
-        $content = $response->getContent();
-        $data = json_decode($content, true)['data'];
+        ]);
 
         // The response should return JSON with a 200 Okay status code
-        $this->assertEquals(200, $response->getStatusCode());
-        $this->assertJson($content);
-
-        // Check for the new fields we "upserted".
-        $this->assertEquals('Puppet', $data['first_name']);
-        $this->assertEquals('5556667777', $data['mobile']);
-
-        // Ensure the `source` field is immutable (since it was set to 'phpunit' above).
-        $this->assertEquals('database', $data['source']);
+        $this->assertResponseStatus(200);
+        $this->seeJsonSubset([
+            'data' => [
+                'email' => 'upsert-me@dosomething.org',
+                // Check for the new fields we "upserted":
+                'first_name' => 'Puppet',
+                'mobile' => '5556667777',
+                // Ensure the `source` field is immutable (since we tried to update to 'phpunit'):
+                'source' => 'database',
+            ]
+        ]);
     }
 
     /**
@@ -305,32 +254,27 @@ class UserTest extends TestCase
     public function testUpdateUser()
     {
         // Create a new user object
-        $user = [
+        $this->withAuthorizedScopes(['admin'])->json('PUT', 'v1/users/_id/5480c950bffebc651c8b456f', [
             'email' => 'newemail@dosomething.org',
             'parse_installation_ids' => 'parse-abc123',
-        ];
+        ]);
 
-        $response = $this->call('PUT', 'v1/users/_id/5480c950bffebc651c8b456f', [], [], [], $this->server, json_encode($user));
-        $content = $response->getContent();
-        $data = json_decode($content, true);
-
-        // The response should return a 200 status code
-        $this->assertEquals(200, $response->getStatusCode());
-
-        // Response should be valid JSON
-        $this->assertJson($content);
-
-        // Response should return updated_at and unchanged user values should remain unchanged
-        $this->assertArrayHasKey('updated_at', $data['data']);
-        $this->assertEquals('5555550101', $data['data']['mobile']);
+        $this->assertResponseStatus(200);
+        $this->seeJsonSubset([
+            'data' => [
+                'email' => 'newemail@dosomething.org',
+                'parse_installation_ids' => ['parse-abc123'],
+                'mobile' => '5555550101' // unchanged user values should remain unchanged
+            ],
+        ]);
 
         // Verify user data got updated
-        $getResponse = $this->call('GET', 'v1/users/_id/5480c950bffebc651c8b456f', [], [], [], $this->server);
-        $getContent = $getResponse->getContent();
-        $updatedUser = json_decode($getContent, true);
-
-        $this->assertEquals('newemail@dosomething.org', $updatedUser['data']['email']);
-        $this->assertEquals('parse-abc123', $updatedUser['data']['parse_installation_ids'][0]);
+        $this->seeInDatabase('users', [
+            '_id' => '5480c950bffebc651c8b456f',
+            'email' => 'newemail@dosomething.org',
+            'parse_installation_ids' => ['parse-abc123'],
+            'mobile' => '5555550101'
+        ]);
     }
 
     /**
@@ -341,25 +285,21 @@ class UserTest extends TestCase
      */
     public function testCreateUserAvatarWithFile()
     {
-        $payload = [
-            'photo' => 'example.jpeg',
-        ];
+        $user = User::find('5480c950bffebc651c8b456f');
 
         // Mock successful response from AWS API
-        $this->awsMock->shouldReceive('storeImage')->once()->andReturn('http://bucket.s3.amazonaws.com/5480c950bffebc651c8b456f.jpg');
+        $this->mock('Northstar\Services\AWS')->shouldReceive('storeImage')->once()->andReturn('http://bucket.s3.amazonaws.com/5480c950bffebc651c8b456f-1234567.jpg');
 
-        $response = $this->call('POST', 'v1/users/5480c950bffebc651c8b456f/avatar', [], [], [], $this->server, json_encode($payload));
-        $content = $response->getContent();
-        $data = json_decode($content, true);
+        $this->asUser($user)->withAuthorizedScopes(['user'])->json('POST', 'v1/users/5480c950bffebc651c8b456f/avatar', [
+            'photo' => 'example.jpeg',
+        ]);
 
-        // The response should return a 200 status code
-        $this->assertEquals(200, $response->getStatusCode());
-
-        // Response should be valid JSON
-        $this->assertJson($content);
-
-        // Response should return avatar's url
-        $this->assertNotEmpty($data['data']['photo']);
+        $this->assertResponseStatus(200);
+        $this->seeJsonSubset([
+            'data' => [
+                'photo' => 'http://bucket.s3.amazonaws.com/5480c950bffebc651c8b456f-1234567.jpg'
+            ],
+        ]);
     }
 
     /**
@@ -370,25 +310,21 @@ class UserTest extends TestCase
      */
     public function testCreateUserAvatarWithBase64()
     {
-        $payload = [
-            'photo' => '123456789',
-        ];
+        $user = User::find('5480c950bffebc651c8b456f');
 
         // Mock successful response from AWS API
-        $this->awsMock->shouldReceive('storeImage')->once()->andReturn('http://bucket.s3.amazonaws.com/5480c950bffebc651c8b456f.jpg');
+        $this->mock('Northstar\Services\AWS')->shouldReceive('storeImage')->once()->andReturn('http://bucket.s3.amazonaws.com/5480c950bffebc651c8b456f-123415.jpg');
 
-        $response = $this->call('POST', 'v1/users/5480c950bffebc651c8b456f/avatar', [], [], [], $this->server, json_encode($payload));
-        $content = $response->getContent();
-        $data = json_decode($content, true);
+        $this->asUser($user)->withAuthorizedScopes(['user'])->json('POST', 'v1/users/5480c950bffebc651c8b456f/avatar', [
+            'photo' => '123456789',
+        ]);
 
-        // The response should return a 200 status code
-        $this->assertEquals(200, $response->getStatusCode());
-
-        // Response should be valid JSON
-        $this->assertJson($content);
-
-        // Response should return avatar's url
-        $this->assertNotEmpty($data['data']['photo']);
+        $this->assertResponseStatus(200);
+        $this->seeJsonSubset([
+            'data' => [
+                'photo' => 'http://bucket.s3.amazonaws.com/5480c950bffebc651c8b456f-123415.jpg'
+            ],
+        ]);
     }
 
     /**
@@ -399,9 +335,12 @@ class UserTest extends TestCase
      */
     public function testDelete()
     {
-        $response = $this->call('DELETE', 'v1/users/5480c950bffebc651c8b4570', [], [], [], $this->server, []);
+        // Only 'admin' scoped keys should be able to delete users.
+        $this->delete('v1/users/5480c950bffebc651c8b4570');
+        $this->assertResponseStatus(403);
 
-        $this->assertEquals(200, $response->getStatusCode());
+        $this->withAuthorizedScopes(['admin'])->delete('v1/users/5480c950bffebc651c8b4570');
+        $this->assertResponseStatus(200);
     }
 
     /**
@@ -412,8 +351,7 @@ class UserTest extends TestCase
      */
     public function testDeleteNoResource()
     {
-        $response = $this->call('DELETE', 'v1/users/DUMMY_ID', [], [], [], $this->server, []);
-
-        $this->assertEquals(404, $response->getStatusCode());
+        $this->withAuthorizedScopes(['admin'])->delete('v1/users/DUMMY_ID');
+        $this->assertResponseStatus(404);
     }
 }
