@@ -91,7 +91,6 @@ class Registrar
             // If this user has a Drupal-hashed password, rehash it, remove the
             // Drupal password field from the user document, and save the user.
             $user->password = $credentials['password'];
-            $user->unset('drupal_password');
             $user->save();
 
             return true;
