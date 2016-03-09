@@ -123,6 +123,12 @@ of the problem:
     "error": {
         "code": 418,
         "message": "Tea. Earl Grey. Hot."
+        
+        // For 422 Unprocessable Entity, the "fields" object has specific validation errors:
+        "fields": {
+          "email": ["The email must be a valid email address."],
+          "mobile": ["The mobile has already been taken."]
+        }
     },
     // When running locally, debug information will be included in the response:
     "debug": {
