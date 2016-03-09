@@ -56,7 +56,7 @@ class TestCase extends Illuminate\Foundation\Testing\TestCase
     {
         $key = ApiKey::create([
             'app_id' => 'testing'.time(),
-            'scope' => $scopes
+            'scope' => $scopes,
         ]);
 
         $this->withApiKey($key);
@@ -76,7 +76,7 @@ class TestCase extends Illuminate\Foundation\Testing\TestCase
     {
         $token = $user->login();
         $this->serverVariables = array_replace($this->serverVariables, [
-            'HTTP_Authorization' => 'Bearer '.$token->key
+            'HTTP_Authorization' => 'Bearer '.$token->key,
         ]);
 
         return $this;

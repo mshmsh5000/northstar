@@ -68,7 +68,7 @@ class ApiKeyTest extends TestCase
         $this->assertResponseStatus(200);
         $this->seeJsonStructure([
             'data' => [
-                'app_id', 'api_key', 'scope'
+                'app_id', 'api_key', 'scope',
             ],
         ]);
     }

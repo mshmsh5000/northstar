@@ -17,7 +17,7 @@ class UserTest extends TestCase
         $this->assertResponseStatus(200);
         $this->seeJsonStructure([
             'data' => [
-                'id', 'email'
+                'id', 'email',
             ],
         ]);
 
@@ -39,8 +39,8 @@ class UserTest extends TestCase
         // Check that public & private profile fields are visible
         $this->seeJsonStructure([
             'data' => [
-                'id', 'email', 'last_name'
-            ]
+                'id', 'email', 'last_name',
+            ],
         ]);
     }
 
@@ -241,7 +241,7 @@ class UserTest extends TestCase
                 'mobile' => '5556667777',
                 // Ensure the `source` field is immutable (since we tried to update to 'phpunit'):
                 'source' => 'database',
-            ]
+            ],
         ]);
     }
 
@@ -264,7 +264,7 @@ class UserTest extends TestCase
             'data' => [
                 'email' => 'newemail@dosomething.org',
                 'parse_installation_ids' => ['parse-abc123'],
-                'mobile' => '5555550101' // unchanged user values should remain unchanged
+                'mobile' => '5555550101', // unchanged user values should remain unchanged
             ],
         ]);
 
@@ -273,7 +273,7 @@ class UserTest extends TestCase
             '_id' => '5480c950bffebc651c8b456f',
             'email' => 'newemail@dosomething.org',
             'parse_installation_ids' => ['parse-abc123'],
-            'mobile' => '5555550101'
+            'mobile' => '5555550101',
         ]);
     }
 
@@ -297,7 +297,7 @@ class UserTest extends TestCase
         $this->assertResponseStatus(200);
         $this->seeJsonSubset([
             'data' => [
-                'photo' => 'http://bucket.s3.amazonaws.com/5480c950bffebc651c8b456f-1234567.jpg'
+                'photo' => 'http://bucket.s3.amazonaws.com/5480c950bffebc651c8b456f-1234567.jpg',
             ],
         ]);
     }
@@ -322,7 +322,7 @@ class UserTest extends TestCase
         $this->assertResponseStatus(200);
         $this->seeJsonSubset([
             'data' => [
-                'photo' => 'http://bucket.s3.amazonaws.com/5480c950bffebc651c8b456f-123415.jpg'
+                'photo' => 'http://bucket.s3.amazonaws.com/5480c950bffebc651c8b456f-123415.jpg',
             ],
         ]);
     }

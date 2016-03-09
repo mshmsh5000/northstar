@@ -6,32 +6,6 @@ use Northstar\Models\User;
 class AuthTest extends TestCase
 {
     /**
-     * Headers for a user-scoped API key.
-     * @var array
-     */
-    protected $server = [
-        'HTTP_X-DS-REST-API-Key' => 'abc4324',
-    ];
-
-    /**
-     * Headers for a user-scoped API key and authentication token.
-     * @var array
-     */
-    protected $loggedInServer = [
-        'HTTP_X-DS-REST-API-Key' => 'abc4324',
-        'HTTP_Authorization' => 'Bearer S0FyZmlRNmVpMzVsSzJMNUFreEFWa3g0RHBMWlJRd0tiQmhSRUNxWXh6cz1=',
-    ];
-
-    /**
-     * Headers for a user-scoped API key and fake token.
-     * @var array
-     */
-    protected $serverFakeToken = [
-        'HTTP_X-DS-REST-API-Key' => 'abc4324',
-        'HTTP_Authorization' => 'Bearer thisisafaketoken',
-    ];
-
-    /**
      * Test for logging in a user
      * POST /login
      *
@@ -52,7 +26,7 @@ class AuthTest extends TestCase
                 'key',
                 'user' => [
                     'data' => [
-                        'id'
+                        'id',
                     ],
                 ],
             ],
@@ -60,7 +34,7 @@ class AuthTest extends TestCase
 
         // Assert token given in the response also exists in database
         $this->seeInDatabase('tokens', [
-            'key' => $this->decodeResponseJson()['data']['key']
+            'key' => $this->decodeResponseJson()['data']['key'],
         ]);
     }
 
@@ -72,13 +46,11 @@ class AuthTest extends TestCase
      */
     public function testVerify()
     {
-        // User login info
-        $credentials = [
+        $this->withScopes(['user'])->json('POST', 'v1/auth/verify', [
             'email' => 'test@dosomething.org',
             'password' => 'secret',
-        ];
+        ]);
 
-        $this->withScopes(['user'])->json('POST', 'v1/auth/verify', $credentials);
         $this->assertResponseStatus(200);
         $this->seeJsonStructure([
             'data' => [
@@ -116,7 +88,7 @@ class AuthTest extends TestCase
             'first_name' => 'Puppet',
             'parse_installation_ids' => [
                 'parse-abc123',
-            ]
+            ],
         ]);
 
         $this->asUser($user)->withScopes(['user'])->json('POST', 'v1/auth/invalidate', [
@@ -150,7 +122,7 @@ class AuthTest extends TestCase
     public function testFakeToken()
     {
         $this->withScopes(['user'])->get('v1/profile', [
-            'Authorization' => 'Bearer any_token_anytime_anywhere'
+            'Authorization' => 'Bearer any_token_anytime_anywhere',
         ]);
 
         $this->assertResponseStatus(401);
@@ -176,7 +148,7 @@ class AuthTest extends TestCase
         $this->seeJsonSubset([
             'data' => [
                 'id' => $user->_id,
-                'email' => $user->email
+                'email' => $user->email,
             ],
         ]);
 
