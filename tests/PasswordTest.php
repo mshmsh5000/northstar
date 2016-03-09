@@ -1,5 +1,6 @@
 <?php
 
+use Northstar\Auth\DrupalPasswordHash;
 use Northstar\Models\User;
 
 class PasswordTest extends TestCase
@@ -43,7 +44,6 @@ class PasswordTest extends TestCase
 
     /**
      * Test that updating a user's password will re-hash it.
-     * @test
      */
     public function testUpdatingUser()
     {
@@ -69,5 +69,24 @@ class PasswordTest extends TestCase
             'password' => 'secret',
         ]);
         $this->assertResponseStatus(200);
+    }
+
+    /**
+     * Test the Drupal password hasher against known good/bad
+     * password hashes.
+     */
+    public function testHashesCorrectly()
+    {
+        // Succeeds if given a good password
+        $this->assertTrue(DrupalPasswordHash::check('testtest', '$S$DYvEbMTfOWVPq5FyHhp70eXBrt8FClzE8bV8RoR8alahwR71PoLE'), 'Succeeds if given a good password');
+
+        // Fails if given a bad password
+        $this->assertFalse(DrupalPasswordHash::check('secret', '$S$DYvEbMTfOWVPq5FyHhp70eXBrt8FClzE8bV8RoR8alahwR71PoLE'), 'Fails if given a bad password');
+
+        // Can check older MD5 passwords.
+        $this->assertTrue(DrupalPasswordHash::check('derpalicious', '$P$DxTIL/YfZCdJtFYNh1Ef9ERbMBkuQ91'), 'Password check succeeds on valid MD5 password.');
+        $this->assertTrue(DrupalPasswordHash::check('derpalicious', '$H$DxTIL/YfZCdJtFYNh1Ef9ERbMBkuQ91'), 'Password check succeeds on valid MD5 password.');
+        $this->assertFalse(DrupalPasswordHash::check('nowaytraderjose', '$P$DxTIL/YfZCdJtFYNh1Ef9ERbMBkuQ91'), 'Password check fails on invalid MD5 password.');
+        $this->assertFalse(DrupalPasswordHash::check('nowaytraderjose', '$H$DxTIL/YfZCdJtFYNh1Ef9ERbMBkuQ91'), 'Password check fails on invalid MD5 password.');
     }
 }
