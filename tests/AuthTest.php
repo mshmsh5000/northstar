@@ -133,6 +133,23 @@ class AuthTest extends TestCase
     }
 
     /**
+     * Test that you can't register a duplicate user.
+     * POST /auth/register
+     *
+     * @return void
+     */
+    public function testRegisterDuplicate()
+    {
+        // Try to register an account that already exists, but with different capitalization
+        $this->withScopes(['user'])->json('POST', 'v1/auth/register', [
+            'email' => 'TEST@dosomething.org',
+            'password' => 'secret',
+        ]);
+
+        $this->assertResponseStatus(422);
+    }
+
+    /**
      * Test for logging out a user
      * POST /logout
      *
