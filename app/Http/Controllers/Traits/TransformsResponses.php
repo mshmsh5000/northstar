@@ -85,13 +85,15 @@ trait TransformsResponses
             $transformer = $this->transformer;
         }
 
-        $paginator = $query->paginate((int) $request->query('limit', 20));
-
-        $resource = new FractalCollection($paginator->getCollection(), $transformer);
-        $resource->setMeta($meta);
+        $pages = (int) $request->query('limit', 20);
+        $paginator = $query->paginate(min($pages, 100));
 
         $queryParams = array_diff_key($request->query(), array_flip(['page']));
         $paginator->appends($queryParams);
+
+        $resource = new FractalCollection($paginator->getCollection(), $transformer);
+
+        $resource->setMeta($meta);
         $resource->setPaginator(new IlluminatePaginatorAdapter($paginator));
 
         return $this->transform($resource, $code);

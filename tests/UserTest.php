@@ -70,6 +70,32 @@ class UserTest extends TestCase
     }
 
     /**
+     * Test retrieving multiple users.
+     * GET /users
+     *
+     * @return void
+     */
+    public function testIndexPagination()
+    {
+        $this->get('v1/users?limit=200'); // set a "per page" above the allowed max
+        $this->assertResponseStatus(200);
+        $this->assertSame(100, $this->decodeResponseJson()['meta']['pagination']['per_page']);
+
+        $this->seeJsonStructure([
+            'data' => [
+                '*' => [
+                    'id',
+                ],
+            ],
+            'meta' => [
+                'pagination' => [
+                    'total', 'count', 'per_page', 'current_page', 'links',
+                ],
+            ],
+        ]);
+    }
+
+    /**
      * Test for retrieving a nonexistent User
      * GET /users/_id/FAKE
      *
