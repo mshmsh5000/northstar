@@ -120,6 +120,7 @@ class AuthController extends Controller
      */
     public function register(Request $request)
     {
+        $request = $this->registrar->normalize($request);
         $this->validate($request, [
             'email' => 'email|max:60|unique:users|required_without:mobile',
             'mobile' => 'unique:users|required_without:email',
