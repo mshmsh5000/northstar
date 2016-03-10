@@ -138,6 +138,7 @@ curl -X POST \
 
 {
   "success": {
+    "code": 200,
     "message": "User logged out successfully."
   }
 }

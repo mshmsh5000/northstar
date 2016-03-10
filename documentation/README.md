@@ -102,8 +102,8 @@ Pagination & other meta-information may be provided in a `meta` key on the respo
 
 ### Errors & Status Codes
 Northstar returns standard HTTP status codes to indicate how a request turned out. In general, `2xx` codes are returned
-on successful requests, `4xx` requests indicate an error due to improper user input, and `5xx` error codes indicate an
-unexpected problem on the API end.
+on successful requests, `4xx` codes indicate an error in the request, and `5xx` error codes indicate an unexpected 
+problem on the API end.
 
 Code | Meaning
 ---- | -------
@@ -112,6 +112,7 @@ Code | Meaning
 403  | __Forbidden__ – The authenticated user doesn't have the proper privileges.
 404  | __Not Found__ – The specified resource could not be found.
 418  | __I'm a teapot__ – The user [needs more caffeine](https://www.ietf.org/rfc/rfc2324.txt).
+422  | __Unprocessable Entity__ – The request couldn't be completed due to validation errors. See the `error.fields` property on the response.
 500  | __Internal Server Error__ – Northstar has encountered an internal error. Please [make a bug report](https://github.com/DoSomething/northstar/issues/new) with as much detail as possible about what led to the error!
 503  | __Service Unavailable__ – Northstar is temporarily unavailable.
 
@@ -123,6 +124,12 @@ of the problem:
     "error": {
         "code": 418,
         "message": "Tea. Earl Grey. Hot."
+        
+        // For 422 Unprocessable Entity, the "fields" object has specific validation errors:
+        "fields": {
+          "email": ["The email must be a valid email address."],
+          "mobile": ["The mobile has already been taken."]
+        }
     },
     // When running locally, debug information will be included in the response:
     "debug": {

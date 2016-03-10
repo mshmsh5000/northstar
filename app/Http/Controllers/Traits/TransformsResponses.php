@@ -109,6 +109,7 @@ trait TransformsResponses
     {
         $response = [
             $status => [
+                'code' => $code,
                 'message' => $message,
             ],
         ];

@@ -24,9 +24,11 @@ abstract class Controller extends BaseController
     protected function buildFailedValidationResponse(Request $request, array $errors)
     {
         $response = [
-            'code' => 422,
-            'message' => 'Failed validation.',
-            'errors' => $errors,
+            'error' => [
+                'code' => 422,
+                'message' => 'Failed validation.',
+                'fields' => $errors,
+            ],
         ];
 
         return response()->json($response, 422);

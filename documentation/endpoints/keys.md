@@ -196,6 +196,7 @@ curl -X DELETE \
 
 {
   "success": {
+    "code": 200,
     "message": "Deleted key."
   }
 }
