@@ -49,8 +49,44 @@ class AuthTest extends TestCase
     }
 
     /**
+     * Test for logging in a user by mobile.
+     * POST /auth/token
+     *
+     * @return void
+     */
+    public function testLoginByMobile()
+    {
+        // Create user to attempt to log in as.
+        User::create([
+            'mobile' => '5551234455',
+            'password' => 'secret',
+        ]);
+
+        $this->withScopes(['user'])->json('POST', 'v1/auth/token', [
+            'mobile' => '(555) 123-4455',
+            'password' => 'secret',
+        ]);
+
+        $this->assertResponseStatus(201);
+        $this->seeJsonStructure([
+            'data' => [
+                'key',
+                'user' => [
+                    'data' => [
+                        'id',
+                    ],
+                ],
+            ],
+        ]);
+
+        // Assert token given in the response also exists in database
+        $this->seeInDatabase('tokens', [
+            'key' => $this->decodeResponseJson()['data']['key'],
+        ]);
+    }
+
+    /**
      * Test for logging in a user
-     * POST /login
      * POST /auth/verify
      *
      * @return void
