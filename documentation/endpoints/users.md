@@ -8,7 +8,7 @@ GET /users
 
 **Additional Query Parameters:**
 
-- `limit`: Set the number of results you want to receive per page. Default is 20.
+- `limit`: Set the number of results to include per page. Default is 20. Maximum is 100.
 - `page`: Set the page number to get results from.
 - `filter`: Filter the collection to include _only_ users matching the following comma-separated values. For example, `/v1/users?filter[drupal_id]=10123,10124,10125` would return users whose Drupal ID is either 10123, 10124, or 10125. You can filter by one or more indexed fields.
 - `search`: Search the collection for users with fields whose value match the query. For example, `/v1/users?search[_id]=test@example.com&search[email]=test@example.org` would return all users with either an ID or email address matching `test@example.org`. You can search by one or more indexed fields. This is limited to admin-scoped API keys!
