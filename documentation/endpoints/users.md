@@ -313,6 +313,7 @@ curl -X DELETE \
 
 {
     "success": {
+        "code": 200,
         "message": "No Content."
     }
 }
