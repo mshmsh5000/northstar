@@ -51,6 +51,26 @@ class Registrar
     }
 
     /**
+     * Normalize the given credentials in the array or request (for example, before
+     * validating, or before saving to the database).
+     *
+     * @param \ArrayAccess|array $credentials
+     * @return mixed
+     */
+    public function normalize($credentials)
+    {
+        if (! empty($credentials['email'])) {
+            $credentials['email'] = strtolower($credentials['email']);
+        }
+
+        if (! empty($credentials['mobile'])) {
+            $credentials ['mobile'] = preg_replace('/[^0-9]/', '', $credentials['mobile']);
+        }
+
+        return $credentials;
+    }
+
+    /**
      * Resolve a user account from the given credentials.
      *
      * @param array $credentials
@@ -58,13 +78,13 @@ class Registrar
      */
     public function resolve($credentials)
     {
-        if ($credentials['email']) {
-            $email = strtolower($credentials['email']);
+        $credentials = $this->normalize($credentials);
 
-            return User::where('email', $email)->first();
+        if (! empty($credentials['email'])) {
+            return User::where('email', $credentials['email'])->first();
         }
 
-        if ($credentials['mobile']) {
+        if (! empty($credentials['mobile'])) {
             return User::where('mobile', $credentials['mobile'])->first();
         }
     }

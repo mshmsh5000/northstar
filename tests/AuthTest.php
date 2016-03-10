@@ -6,19 +6,29 @@ use Northstar\Models\User;
 class AuthTest extends TestCase
 {
     /**
-     * Test for logging in a user
-     * POST /login
+     * Test for logging in a user by email.
+     * POST /auth/token
      *
      * @return void
      */
-    public function testLogin()
+    public function testLoginByEmail()
     {
-        // User login info
         $credentials = [
-            'email' => 'test@dosomething.org',
+            'email' => 'login-test@dosomething.org',
             'password' => 'secret',
         ];
 
+        // Create user to attempt to log in as.
+        User::create($credentials);
+
+        // Test logging in with bogus info
+        $this->withScopes(['user'])->json('POST', 'v1/auth/token', [
+            'email' => 'login-test@dosomething.org',
+            'password' => 'letmein',
+        ]);
+        $this->assertResponseStatus(401);
+
+        // Test with the right credentials
         $this->withScopes(['user'])->json('POST', 'v1/auth/token', $credentials);
         $this->assertResponseStatus(201);
         $this->seeJsonStructure([
@@ -39,8 +49,45 @@ class AuthTest extends TestCase
     }
 
     /**
+     * Test for logging in a user by mobile.
+     * POST /auth/token
+     *
+     * @return void
+     */
+    public function testLoginByMobile()
+    {
+        // Create user to attempt to log in as.
+        User::create([
+            'mobile' => '5551234455',
+            'password' => 'secret',
+        ]);
+
+        $this->withScopes(['user'])->json('POST', 'v1/auth/token', [
+            'mobile' => '(555) 123-4455',
+            'password' => 'secret',
+        ]);
+
+        $this->assertResponseStatus(201);
+        $this->seeJsonStructure([
+            'data' => [
+                'key',
+                'user' => [
+                    'data' => [
+                        'id',
+                    ],
+                ],
+            ],
+        ]);
+
+        // Assert token given in the response also exists in database
+        $this->seeInDatabase('tokens', [
+            'key' => $this->decodeResponseJson()['data']['key'],
+        ]);
+    }
+
+    /**
      * Test for logging in a user
-     * POST /login
+     * POST /auth/verify
      *
      * @return void
      */
@@ -57,6 +104,49 @@ class AuthTest extends TestCase
                 'id',
             ],
         ]);
+    }
+
+    /**
+     * Test for registering in a user
+     * POST /auth/register
+     *
+     * @return void
+     */
+    public function testRegister()
+    {
+        $this->withScopes(['user'])->json('POST', 'v1/auth/register', [
+            'email' => 'test-registration@dosomething.org',
+            'password' => 'secret',
+        ]);
+
+        $this->assertResponseStatus(200);
+        $this->seeJsonStructure([
+            'data' => [
+                'key',
+                'user' => [
+                    'data' => [
+                        'id',
+                    ],
+                ],
+            ],
+        ]);
+    }
+
+    /**
+     * Test that you can't register a duplicate user.
+     * POST /auth/register
+     *
+     * @return void
+     */
+    public function testRegisterDuplicate()
+    {
+        // Try to register an account that already exists, but with different capitalization
+        $this->withScopes(['user'])->json('POST', 'v1/auth/register', [
+            'email' => 'TEST@dosomething.org',
+            'password' => 'secret',
+        ]);
+
+        $this->assertResponseStatus(422);
     }
 
     /**
