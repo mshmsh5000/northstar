@@ -51,10 +51,10 @@ class Registrar
     }
 
     /**
-     * Normalize the given credentials (either before validating, or
-     * before saving to the database).
+     * Normalize the given credentials in the array or request (for example, before
+     * validating, or before saving to the database).
      *
-     * @param $credentials
+     * @param \ArrayAccess|array $credentials
      * @return mixed
      */
     public function normalize($credentials)
