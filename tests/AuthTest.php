@@ -8,6 +8,7 @@ class AuthTest extends TestCase
     /**
      * Test for logging in a user
      * POST /login
+     * POST /auth/token
      *
      * @return void
      */
@@ -41,6 +42,7 @@ class AuthTest extends TestCase
     /**
      * Test for logging in a user
      * POST /login
+     * POST /auth/verify
      *
      * @return void
      */
@@ -55,6 +57,32 @@ class AuthTest extends TestCase
         $this->seeJsonStructure([
             'data' => [
                 'id',
+            ],
+        ]);
+    }
+
+    /**
+     * Test for registering in a user
+     * POST /auth/register
+     *
+     * @return void
+     */
+    public function testRegister()
+    {
+        $this->withScopes(['user'])->json('POST', 'v1/auth/register', [
+            'email' => 'test-registration@dosomething.org',
+            'password' => 'secret',
+        ]);
+
+        $this->assertResponseStatus(200);
+        $this->seeJsonStructure([
+            'data' => [
+                'key',
+                'user' => [
+                    'data' => [
+                        'id',
+                    ],
+                ],
             ],
         ]);
     }
