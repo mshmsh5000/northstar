@@ -213,6 +213,28 @@ class UserTest extends TestCase
     }
 
     /**
+     * Test that we can't create a duplicate user by saving a user
+     * with a different capitalization in their email.
+     * POST /users
+     *
+     * @return void
+     */
+    public function testCantCreateDuplicateUserByIndexCapitalization()
+    {
+        $user = User::create([
+            'email' => 'existing-user@dosomething.org',
+        ]);
+
+        $this->withScopes(['admin'])->json('POST', 'v1/users', [
+            'email' => 'EXISTING-USER@dosomething.org',
+            'source' => 'phpunit',
+        ]);
+
+        $this->assertResponseStatus(200);
+        $this->assertSame($this->decodeResponseJson()['data']['id'], $user->_id);
+    }
+
+    /**
      * Test for creating a new user.
      * POST /users
      *
