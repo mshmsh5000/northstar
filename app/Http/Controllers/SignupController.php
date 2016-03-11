@@ -74,7 +74,7 @@ class SignupController extends Controller
         $options = $request->query();
         $options['user'] = $user->drupal_id;
 
-        return $this->phoenix->getSignupIndex($options;
+        return $this->phoenix->getSignupIndex($options);
     }
 
     /**
