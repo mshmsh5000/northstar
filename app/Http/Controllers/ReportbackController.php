@@ -58,9 +58,10 @@ class ReportbackController extends Controller
      * @see Phoenix /api/v1/reportbacks endpoint
      * <https://github.com/DoSomething/phoenix/wiki/API#retrieve-a-reportback-collection>
      *
+     * @param Request $request
      * @return \Illuminate\Http\Response
      */
-    public function profile()
+    public function profile(Request $request)
     {
         // Get the currently authenticated Northstar user.
         $user = Auth::user();
@@ -70,7 +71,10 @@ class ReportbackController extends Controller
             throw new HttpException(401, 'The user must have a Drupal ID to sign up for a campaign.');
         }
 
-        return $this->phoenix->getReportbackIndex(['user' => $user->drupal_id]);
+        $options = $request->query();
+        $options['user'] = $user->drupal_id;
+
+        return $this->phoenix->getReportbackIndex($options);
     }
 
     /**
