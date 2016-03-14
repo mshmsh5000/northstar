@@ -60,7 +60,7 @@ class Registrar
     public function normalize($credentials)
     {
         if (! empty($credentials['email'])) {
-            $credentials['email'] = strtolower($credentials['email']);
+            $credentials['email'] = trim(strtolower($credentials['email']));
         }
 
         if (! empty($credentials['mobile'])) {
