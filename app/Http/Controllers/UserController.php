@@ -46,7 +46,6 @@ class UserController extends Controller
     /**
      * Display a listing of the resource.
      * GET /users
-     * GET /users?attr1=value1&attr2=value2&...
      *
      * @param Request $request
      * @return \Illuminate\Http\Response
@@ -73,8 +72,8 @@ class UserController extends Controller
     public function store(Request $request)
     {
         // This is an "upsert" endpoint (so it will either create a new user, or
-        // update a user if one with a matching email or mobile number is found.
-        // So... does this user exist already?
+        // update a user if one with a matching email or mobile number is found).
+        // So, does this user exist already?
         $user = $this->registrar->resolve($request->only('email', 'mobile'));
 
         // Validate format & index uniqueness (excluding the profile being updated, if one exists)
@@ -105,10 +104,8 @@ class UserController extends Controller
      * Display the specified resource.
      * GET /users/:term/:id
      *
-     * @param $term - string
-     *   term to search by (eg. mobile, drupal_id, id, email, etc)
-     * @param $id - string
-     *  the actual value to search for
+     * @param string $term - term to search by (eg. mobile, drupal_id, id, email, etc)
+     * @param string $id - the actual value to search for
      *
      * @return \Illuminate\Http\Response
      * @throws NotFoundHttpException
@@ -129,10 +126,8 @@ class UserController extends Controller
      * Update the specified resource in storage.
      * PUT /users/:term/:id
      *
-     * @param $term - string
-     *   term to search by (eg. drupal_id, _id)
-     * @param $id - string
-     *   the actual value to search for
+     * @param string $term - term to search by (eg. mobile, drupal_id, id, email, etc)
+     * @param string $id - the actual value to search for
      * @param Request $request
      *
      * @return \Illuminate\Http\Response
