@@ -107,6 +107,27 @@ class AuthTest extends TestCase
     }
 
     /**
+     * Test for logging in a user, but wildly!
+     * POST /auth/verify
+     *
+     * @return void
+     */
+    public function testNormalizedVerify()
+    {
+        $this->withScopes(['user'])->json('POST', 'v1/auth/verify', [
+            'email' => 'Test@dosomething.org ', // <-- a trailing space!? the nerve!
+            'password' => 'secret',
+        ]);
+
+        $this->assertResponseStatus(200);
+        $this->seeJsonStructure([
+            'data' => [
+                'id',
+            ],
+        ]);
+    }
+
+    /**
      * Test for registering in a user
      * POST /auth/register
      *
