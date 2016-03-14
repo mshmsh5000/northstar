@@ -345,6 +345,23 @@ class UserTest extends TestCase
     }
 
     /**
+     * Test that we can't update a user's profile to have duplicate
+     * identifiers with someone else.
+     * PUT /users/_id/:id
+     */
+    public function testUpdateWithConflict()
+    {
+        $user = User::create(['email' => 'admiral.ackbar@example.com']);
+        $this->withScopes(['admin'])->json('PUT', 'v1/users/_id/'.$user->id, [
+            'mobile' => '(555) 555-0101', // a different existing user account
+            'first_name' => 'Gial',
+            'last_name' => 'Ackbar',
+        ]);
+
+        $this->assertResponseStatus(422);
+    }
+
+    /**
      * Test for creating a user's profile image with a file
      * POST /users/:user_id/avatar
      *
