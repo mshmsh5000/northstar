@@ -213,6 +213,29 @@ class UserTest extends TestCase
     }
 
     /**
+     * Test that we can't create a duplicate user.
+     * POST /users
+     *
+     * @return void
+     */
+    public function testCreateDuplicateUser()
+    {
+        User::create(['mobile' => '1235557878']);
+        User::create(['email' => 'existing-person@example.com']);
+
+        // Create a new user object
+        $payload = [
+            'email' => 'Existing-Person@example.com',
+            'mobile' => '(123) 555-7878',
+            'source' => 'phpunit',
+        ];
+
+        // This should upsert the existing user.
+        $this->withScopes(['admin'])->json('POST', 'v1/users', $payload);
+        $this->assertResponseStatus(422);
+    }
+
+    /**
      * Test that we can't create a duplicate user by saving a user
      * with a different capitalization in their email.
      * POST /users
