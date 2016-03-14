@@ -168,12 +168,12 @@ class UserController extends Controller
     {
         $user = User::where('_id', $id)->first();
 
-        if ($user instanceof User) {
-            $user->delete();
-
-            return $this->respond('No Content.');
-        } else {
+        if (! $user) {
             throw new NotFoundHttpException('The resource does not exist.');
         }
+
+        $user->delete();
+
+        return $this->respond('No Content.');
     }
 }
