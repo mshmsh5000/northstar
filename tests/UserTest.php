@@ -236,6 +236,70 @@ class UserTest extends TestCase
     }
 
     /**
+     * Test that we can't create a duplicate user.
+     * POST /users
+     *
+     * @return void
+     */
+    public function testCreateDuplicateUser()
+    {
+        User::create(['mobile' => '1235557878']);
+        User::create(['email' => 'existing-person@example.com']);
+
+        // Create a new user object
+        $payload = [
+            'email' => 'Existing-Person@example.com',
+            'mobile' => '(123) 555-7878',
+            'source' => 'phpunit',
+        ];
+
+        // This should upsert the existing user.
+        $this->withScopes(['admin'])->json('POST', 'v1/users', $payload);
+        $this->assertResponseStatus(422);
+    }
+
+    /**
+     * Test that we can't create a duplicate user by saving a user
+     * with a different capitalization in their email.
+     * POST /users
+     */
+    public function testCantCreateDuplicateUserByIndexCapitalization()
+    {
+        $user = User::create([
+            'email' => 'existing-user@dosomething.org',
+        ]);
+
+        $this->withScopes(['admin'])->json('POST', 'v1/users', [
+            'email' => 'EXISTING-USER@dosomething.org',
+            'source' => 'phpunit',
+        ]);
+
+        $this->assertResponseStatus(200);
+        $this->assertSame($this->decodeResponseJson()['data']['id'], $user->_id);
+    }
+
+    /**
+     * Test that we can't create a duplicate user by "upserting" an existing
+     * user and adding a new index in that operation.
+     * POST /users
+     */
+    public function testCanUpsertWithAnAdditionalIndex()
+    {
+        $user = User::create([
+            'mobile' => '2035551238',
+        ]);
+
+        $this->withScopes(['admin'])->json('POST', 'v1/users', [
+            'email' => 'lalalala@dosomething.org',
+            'mobile' => '2035551238',
+            'source' => 'phpunit',
+        ]);
+
+        $this->assertResponseStatus(200);
+        $this->assertSame($this->decodeResponseJson()['data']['id'], $user->_id);
+    }
+
+    /**
      * Test for "upserting" an existing user.
      * POST /users
      *
@@ -281,7 +345,7 @@ class UserTest extends TestCase
     {
         // Create a new user object
         $this->withScopes(['admin'])->json('PUT', 'v1/users/_id/5480c950bffebc651c8b456f', [
-            'email' => 'newemail@dosomething.org',
+            'email' => 'NewEmail@dosomething.org',
             'parse_installation_ids' => 'parse-abc123',
         ]);
 
@@ -301,6 +365,23 @@ class UserTest extends TestCase
             'parse_installation_ids' => ['parse-abc123'],
             'mobile' => '5555550101',
         ]);
+    }
+
+    /**
+     * Test that we can't update a user's profile to have duplicate
+     * identifiers with someone else.
+     * PUT /users/_id/:id
+     */
+    public function testUpdateWithConflict()
+    {
+        $user = User::create(['email' => 'admiral.ackbar@example.com']);
+        $this->withScopes(['admin'])->json('PUT', 'v1/users/_id/'.$user->id, [
+            'mobile' => '(555) 555-0101', // a different existing user account
+            'first_name' => 'Gial',
+            'last_name' => 'Ackbar',
+        ]);
+
+        $this->assertResponseStatus(422);
     }
 
     /**

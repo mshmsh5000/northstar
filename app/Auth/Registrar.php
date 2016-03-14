@@ -80,13 +80,26 @@ class Registrar
     {
         $credentials = $this->normalize($credentials);
 
-        if (! empty($credentials['email'])) {
-            return User::where('email', $credentials['email'])->first();
+        $matches = (new User)->query();
+
+        // For the first `where` query, we want to limit results... from then on,
+        // we want to append (e.g. `SELECT * WHERE _ OR WHERE _ OR WHERE _`)
+        $firstWhere = true;
+        foreach (['email', 'mobile'] as $type) {
+            if (isset($credentials[$type])) {
+                $matches = $matches->where($type, '=', $credentials[$type], ($firstWhere ? 'and' : 'or'));
+                $firstWhere = false;
+            }
         }
 
-        if (! empty($credentials['mobile'])) {
-            return User::where('mobile', $credentials['mobile'])->first();
+        // If we found one user, return it.
+        $matches = $matches->get();
+        if (count($matches) == 1) {
+            return $matches[0];
         }
+
+        // If we can't conclusively resolve one user so return null.
+        return null;
     }
 
     /**
