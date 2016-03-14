@@ -322,7 +322,7 @@ class UserTest extends TestCase
     {
         // Create a new user object
         $this->withScopes(['admin'])->json('PUT', 'v1/users/_id/5480c950bffebc651c8b456f', [
-            'email' => 'newemail@dosomething.org',
+            'email' => 'NewEmail@dosomething.org',
             'parse_installation_ids' => 'parse-abc123',
         ]);
 
