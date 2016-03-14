@@ -78,6 +78,7 @@ class UserController extends Controller
 
         // Validate format & index uniqueness (excluding the profile being updated, if one exists)
         $existingId = isset($user->id) ? $user->id : 'null';
+        $request = $this->registrar->normalize($request);
         $this->validate($request, [
             'email' => 'email|max:60|unique:users,email,'.$existingId.',_id|required_without:mobile',
             'mobile' => 'unique:users,mobile,'.$existingId.',_id|required_without:email',
