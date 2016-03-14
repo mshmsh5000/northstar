@@ -213,6 +213,29 @@ class UserTest extends TestCase
     }
 
     /**
+     * Test for creating a new user.
+     * POST /users
+     *
+     * @return void
+     */
+    public function testCreateUser()
+    {
+        // Create a new user object
+        $payload = [
+            'email' => 'new@dosomething.org',
+            'source' => 'phpunit',
+        ];
+
+        $this->withScopes(['admin'])->json('POST', 'v1/users', $payload);
+        $this->assertResponseStatus(200);
+        $this->seeJsonStructure([
+            'data' => [
+                'id', 'email', 'source', 'created_at',
+            ],
+        ]);
+    }
+
+    /**
      * Test that we can't create a duplicate user.
      * POST /users
      *
@@ -274,29 +297,6 @@ class UserTest extends TestCase
 
         $this->assertResponseStatus(200);
         $this->assertSame($this->decodeResponseJson()['data']['id'], $user->_id);
-    }
-
-    /**
-     * Test for creating a new user.
-     * POST /users
-     *
-     * @return void
-     */
-    public function testCreateUser()
-    {
-        // Create a new user object
-        $payload = [
-            'email' => 'new@dosomething.org',
-            'source' => 'phpunit',
-        ];
-
-        $this->withScopes(['admin'])->json('POST', 'v1/users', $payload);
-        $this->assertResponseStatus(200);
-        $this->seeJsonStructure([
-            'data' => [
-                'id', 'email', 'source', 'created_at',
-            ],
-        ]);
     }
 
     /**
