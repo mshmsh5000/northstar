@@ -65,6 +65,7 @@ class AuthController extends Controller
      */
     public function verify(Request $request)
     {
+        $request = $this->registrar->normalize($request);
         $this->validate($request, [
             'email' => 'email|required_without:mobile',
             'mobile' => 'required_without:email',
