@@ -144,6 +144,7 @@ class UserController extends Controller
             throw new NotFoundHttpException('The resource does not exist.');
         }
 
+        $request = $this->registrar->normalize($request);
         $this->validate($request, [
             'email' => 'email|max:60|unique:users,email,'.$user->id.',_id',
             'mobile' => 'unique:users,mobile,'.$user->id.',_id',
