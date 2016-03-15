@@ -114,8 +114,12 @@ class UserTest extends TestCase
      */
     public function testFilterUsersById()
     {
+        $user1 = User::create(['email' => '123142512@example.com', 'drupal_id' => '123411']);
+        $user2 = User::create(['email' => '123513511@example.com', 'drupal_id' => '123412']);
+        $user3 = User::create(['drupal_id' => '123413']);
+
         // Retrieve multiple users by _id
-        $this->get('v1/users?filter[_id]=5430e850dt8hbc541c37tt3d,5480c950bffebc651c8b456f,FAKE_ID');
+        $this->get('v1/users?filter[_id]='.$user1->id.','.$user2->id.',FAKE_ID');
         $this->assertCount(2, $this->decodeResponseJson()['data']);
         $this->seeJsonStructure([
             'data' => [
@@ -129,11 +133,11 @@ class UserTest extends TestCase
         ]);
 
         // Retrieve multiple users by drupal_id
-        $this->get('v1/users?filter[drupal_id]=FAKE_ID,100001,100002,100003');
+        $this->get('v1/users?filter[drupal_id]=FAKE_ID,'.$user1->drupal_id.','.$user2->drupal_id.','.$user3->drupal_id);
         $this->assertCount(3, $this->decodeResponseJson()['data']);
 
         // Test compound queries
-        $this->get('v1/users?filter[drupal_id]=FAKE_ID,100001,100002,100003&filter[mobile]=5555550100');
+        $this->get('v1/users?filter[drupal_id]=FAKE_ID,'.$user1->drupal_id.','.$user2->drupal_id.','.$user3->drupal_id.'&filter[_id]='.$user1->id);
         $this->assertCount(1, $this->decodeResponseJson()['data']);
     }
 
@@ -442,11 +446,13 @@ class UserTest extends TestCase
      */
     public function testDelete()
     {
+        $user = User::create(['email' => 'delete-me@example.com']);
+
         // Only 'admin' scoped keys should be able to delete users.
-        $this->delete('v1/users/5480c950bffebc651c8b4570');
+        $this->delete('v1/users/'.$user->id);
         $this->assertResponseStatus(403);
 
-        $this->withScopes(['admin'])->delete('v1/users/5480c950bffebc651c8b4570');
+        $this->withScopes(['admin'])->delete('v1/users/'.$user->id);
         $this->assertResponseStatus(200);
     }
 
