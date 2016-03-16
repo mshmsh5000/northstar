@@ -26,9 +26,9 @@ class TestCase extends Illuminate\Foundation\Testing\TestCase
     {
         parent::setUp();
 
-        // Migrate & seed a fresh copy of the database before each test case.
+        // Reset the testing database & run migrations.
+        $this->app->make('db')->getMongoDB()->drop();
         $this->artisan('migrate');
-        $this->seed();
     }
 
     /**
