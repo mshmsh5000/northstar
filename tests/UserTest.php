@@ -12,12 +12,18 @@ class UserTest extends TestCase
      */
     public function testGetPublicDataFromUser()
     {
-        // Test that we can view public profile of a seeded user.
-        $this->withScopes(['user'])->get('v1/users/email/test@dosomething.org');
+        $user = User::create([
+            'email' => $this->faker->unique()->email,
+            'first_name' => $this->faker->firstName,
+            'last_name' => $this->faker->lastName,
+        ]);
+
+        // Test that we can view public profile of the user.
+        $this->withScopes(['user'])->get('v1/users/_id/'.$user->id);
         $this->assertResponseStatus(200);
         $this->seeJsonStructure([
             'data' => [
-                'id', 'email',
+                'id', 'email', 'first_name',
             ],
         ]);
 
@@ -33,13 +39,19 @@ class UserTest extends TestCase
      */
     public function testGetAllDataFromUser()
     {
-        $this->withScopes(['user', 'admin'])->get('v1/users/email/test@dosomething.org');
+        $user = User::create([
+            'email' => $this->faker->unique()->email,
+            'first_name' => $this->faker->firstName,
+            'last_name' => $this->faker->lastName,
+        ]);
+
+        $this->withScopes(['user', 'admin'])->get('v1/users/_id/'.$user->id);
         $this->assertResponseStatus(200);
 
         // Check that public & private profile fields are visible
         $this->seeJsonStructure([
             'data' => [
-                'id', 'email', 'last_name',
+                'id', 'email', 'first_name', 'last_name',
             ],
         ]);
     }
@@ -52,9 +64,11 @@ class UserTest extends TestCase
      */
     public function testIndex()
     {
+        // Make some test users to see in the index.
+        factory(User::class, 5)->create();
+
         $this->get('v1/users');
         $this->assertResponseStatus(200);
-
         $this->seeJsonStructure([
             'data' => [
                 '*' => [
@@ -77,6 +91,9 @@ class UserTest extends TestCase
      */
     public function testIndexPagination()
     {
+        // Make some test users to see in the index.
+        factory(User::class, 5)->create();
+
         $this->get('v1/users?limit=200'); // set a "per page" above the allowed max
         $this->assertResponseStatus(200);
         $this->assertSame(100, $this->decodeResponseJson()['meta']['pagination']['per_page']);
@@ -114,8 +131,12 @@ class UserTest extends TestCase
      */
     public function testFilterUsersById()
     {
+        $user1 = User::create(['email' => $this->faker->unique()->email, 'drupal_id' => '123411']);
+        $user2 = User::create(['email' => $this->faker->unique()->email, 'drupal_id' => '123412']);
+        $user3 = User::create(['mobile' => $this->faker->unique()->phoneNumber, 'drupal_id' => '123413']);
+
         // Retrieve multiple users by _id
-        $this->get('v1/users?filter[_id]=5430e850dt8hbc541c37tt3d,5480c950bffebc651c8b456f,FAKE_ID');
+        $this->get('v1/users?filter[_id]='.$user1->id.','.$user2->id.',FAKE_ID');
         $this->assertCount(2, $this->decodeResponseJson()['data']);
         $this->seeJsonStructure([
             'data' => [
@@ -129,11 +150,11 @@ class UserTest extends TestCase
         ]);
 
         // Retrieve multiple users by drupal_id
-        $this->get('v1/users?filter[drupal_id]=FAKE_ID,100001,100002,100003');
+        $this->get('v1/users?filter[drupal_id]=FAKE_ID,'.$user1->drupal_id.','.$user2->drupal_id.','.$user3->drupal_id);
         $this->assertCount(3, $this->decodeResponseJson()['data']);
 
         // Test compound queries
-        $this->get('v1/users?filter[drupal_id]=FAKE_ID,100001,100002,100003&filter[mobile]=5555550100');
+        $this->get('v1/users?filter[drupal_id]=FAKE_ID,'.$user1->drupal_id.','.$user2->drupal_id.','.$user3->drupal_id.'&filter[_id]='.$user1->id);
         $this->assertCount(1, $this->decodeResponseJson()['data']);
     }
 
@@ -143,13 +164,18 @@ class UserTest extends TestCase
      */
     public function testSearchUsers()
     {
+        // Make a test user to search for.
+        User::create([
+            'email' => 'search-result@dosomething.org',
+        ]);
+
         // Search should be limited to `admin` scoped keys.
-        $this->get('v1/users?search[email]=test@dosomething.org');
+        $this->get('v1/users?search[email]=search-result@dosomething.org');
         $this->assertResponseStatus(403);
 
         // Query by a "known" search term
         $this->withScopes(['admin'])
-            ->get('v1/users?search[_id]=test@dosomething.org&search[email]=test@dosomething.org');
+            ->get('v1/users?search[_id]=search-result@dosomething.org&search[email]=search-result@dosomething.org');
         $this->assertResponseStatus(200);
 
         // There should be one match (a user with the provided email)
@@ -343,8 +369,10 @@ class UserTest extends TestCase
      */
     public function testUpdateUser()
     {
-        // Create a new user object
-        $this->withScopes(['admin'])->json('PUT', 'v1/users/_id/5480c950bffebc651c8b456f', [
+        $user = User::create(['mobile' => $this->faker->unique()->phoneNumber]);
+
+        // Update an existing user
+        $this->withScopes(['admin'])->json('PUT', 'v1/users/_id/'.$user->id, [
             'email' => 'NewEmail@dosomething.org',
             'parse_installation_ids' => 'parse-abc123',
         ]);
@@ -354,16 +382,16 @@ class UserTest extends TestCase
             'data' => [
                 'email' => 'newemail@dosomething.org',
                 'parse_installation_ids' => ['parse-abc123'],
-                'mobile' => '5555550101', // unchanged user values should remain unchanged
+                'mobile' => $user->mobile, // unchanged user values should remain unchanged
             ],
         ]);
 
         // Verify user data got updated
         $this->seeInDatabase('users', [
-            '_id' => '5480c950bffebc651c8b456f',
+            '_id' => $user->id,
+            'mobile' => $user->mobile,
             'email' => 'newemail@dosomething.org',
             'parse_installation_ids' => ['parse-abc123'],
-            'mobile' => '5555550101',
         ]);
     }
 
@@ -374,9 +402,12 @@ class UserTest extends TestCase
      */
     public function testUpdateWithConflict()
     {
+        User::create(['mobile' => '5555550101']);
+
         $user = User::create(['email' => 'admiral.ackbar@example.com']);
+
         $this->withScopes(['admin'])->json('PUT', 'v1/users/_id/'.$user->id, [
-            'mobile' => '(555) 555-0101', // a different existing user account
+            'mobile' => '(555) 555-0101', // the existing user account
             'first_name' => 'Gial',
             'last_name' => 'Ackbar',
         ]);
@@ -392,19 +423,19 @@ class UserTest extends TestCase
      */
     public function testCreateUserAvatarWithFile()
     {
-        $user = User::find('5480c950bffebc651c8b456f');
+        $user = User::create();
 
         // Mock successful response from AWS API
-        $this->mock('Northstar\Services\AWS')->shouldReceive('storeImage')->once()->andReturn('http://bucket.s3.amazonaws.com/5480c950bffebc651c8b456f-1234567.jpg');
+        $this->mock('Northstar\Services\AWS')->shouldReceive('storeImage')->once()->andReturn('http://bucket.s3.amazonaws.com/'.$user->id.'-1234567.jpg');
 
-        $this->asUser($user)->withScopes(['user'])->json('POST', 'v1/users/5480c950bffebc651c8b456f/avatar', [
+        $this->asUser($user)->withScopes(['user'])->json('POST', 'v1/users/'.$user->id.'/avatar', [
             'photo' => 'example.jpeg',
         ]);
 
         $this->assertResponseStatus(200);
         $this->seeJsonSubset([
             'data' => [
-                'photo' => 'http://bucket.s3.amazonaws.com/5480c950bffebc651c8b456f-1234567.jpg',
+                'photo' => 'http://bucket.s3.amazonaws.com/'.$user->id.'-1234567.jpg',
             ],
         ]);
     }
@@ -417,19 +448,19 @@ class UserTest extends TestCase
      */
     public function testCreateUserAvatarWithBase64()
     {
-        $user = User::find('5480c950bffebc651c8b456f');
+        $user = User::create();
 
         // Mock successful response from AWS API
-        $this->mock('Northstar\Services\AWS')->shouldReceive('storeImage')->once()->andReturn('http://bucket.s3.amazonaws.com/5480c950bffebc651c8b456f-123415.jpg');
+        $this->mock('Northstar\Services\AWS')->shouldReceive('storeImage')->once()->andReturn('http://bucket.s3.amazonaws.com/'.$user->id.'-123415.jpg');
 
-        $this->asUser($user)->withScopes(['user'])->json('POST', 'v1/users/5480c950bffebc651c8b456f/avatar', [
+        $this->asUser($user)->withScopes(['user'])->json('POST', 'v1/users/'.$user->id.'/avatar', [
             'photo' => '123456789',
         ]);
 
         $this->assertResponseStatus(200);
         $this->seeJsonSubset([
             'data' => [
-                'photo' => 'http://bucket.s3.amazonaws.com/5480c950bffebc651c8b456f-123415.jpg',
+                'photo' => 'http://bucket.s3.amazonaws.com/'.$user->id.'-123415.jpg',
             ],
         ]);
     }
@@ -442,11 +473,13 @@ class UserTest extends TestCase
      */
     public function testDelete()
     {
+        $user = User::create(['email' => 'delete-me@example.com']);
+
         // Only 'admin' scoped keys should be able to delete users.
-        $this->delete('v1/users/5480c950bffebc651c8b4570');
+        $this->delete('v1/users/'.$user->id);
         $this->assertResponseStatus(403);
 
-        $this->withScopes(['admin'])->delete('v1/users/5480c950bffebc651c8b4570');
+        $this->withScopes(['admin'])->delete('v1/users/'.$user->id);
         $this->assertResponseStatus(200);
     }
 

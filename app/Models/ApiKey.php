@@ -6,6 +6,16 @@ use Illuminate\Support\Str;
 use Jenssegers\Mongodb\Model;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 
+/**
+ * The API key model. These identify the "client application" making
+ * a request, and their associated privileges.
+ *
+ * @property string $id
+ * @property string $_id
+ * @property string $app_id
+ * @property string $api_key
+ * @property array $scope
+ */
 class ApiKey extends Model
 {
     /**

@@ -22,13 +22,29 @@ class TestCase extends Illuminate\Foundation\Testing\TestCase
         'HTTP_Accept' => 'application/json',
     ];
 
+    /**
+     * The Faker generator, for creating test data.
+     *
+     * @var \Faker\Generator
+     */
+    protected $faker;
+
+    /**
+     * Setup the test environment. This is run before *every* single
+     * test method, so avoid doing anything that takes too much time!
+     *
+     * @return void
+     */
     public function setUp()
     {
         parent::setUp();
 
-        // Migrate & seed a fresh copy of the database before each test case.
+        // Get a new Faker generator from Laravel.
+        $this->faker = app(\Faker\Generator::class);
+
+        // Reset the testing database & run migrations.
+        $this->app->make('db')->getMongoDB()->drop();
         $this->artisan('migrate');
-        $this->seed();
     }
 
     /**
@@ -55,7 +71,7 @@ class TestCase extends Illuminate\Foundation\Testing\TestCase
     public function withScopes(array $scopes)
     {
         $key = ApiKey::create([
-            'app_id' => 'testing'.time(),
+            'app_id' => 'testing'.$this->faker->uuid,
             'scope' => $scopes,
         ]);
 

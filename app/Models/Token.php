@@ -5,6 +5,15 @@ namespace Northstar\Models;
 use Illuminate\Support\Str;
 use Jenssegers\Mongodb\Model;
 
+/**
+ * The Authentication Token model. These are used to make
+ * requests on behalf of an authenticated user account.
+ *
+ * @property string $id
+ * @property string $_id
+ * @property string $key
+ * @property string $user_id
+ */
 class Token extends Model
 {
     /**
