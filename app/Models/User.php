@@ -207,6 +207,21 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
     }
 
     /**
+     * Mutator to remove any existing password if we migrate a hashed password.
+     * This is a one-time thing for syncing users from Phoenix and ensuring that
+     * we *only* keep their latest hashed Drupal password.
+     */
+    public function setDrupalPasswordAttribute($value)
+    {
+        if (isset($this->password)) {
+            $this->unset('password');
+        }
+
+        // The Drupal password is already hashed, don't do it again!
+        $this->attributes['drupal_password'] = $value;
+    }
+
+    /**
      * Mutator to automatically hash any value saved to the password field,
      * and remove the hashed Drupal password if one exists.
      */
