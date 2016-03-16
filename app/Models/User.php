@@ -2,6 +2,7 @@
 
 namespace Northstar\Models;
 
+use Carbon\Carbon;
 use Illuminate\Foundation\Auth\Access\Authorizable;
 use Jenssegers\Mongodb\Model;
 use Illuminate\Auth\Authenticatable;
@@ -9,6 +10,54 @@ use Illuminate\Contracts\Auth\Authenticatable as AuthenticatableContract;
 use Illuminate\Contracts\Auth\Access\Authorizable as AuthorizableContract;
 use Hash;
 
+/**
+ * The User model. (Fight for the user!)
+ *
+ * @property string $_id - The MongoDB ObjectID
+ * @property string $id - Aliased to _id by laravel-mongodb
+ * @property string $email
+ * @property string $mobile
+ * @property string $password
+ * @property string $drupal_password - Hashed password imported from Phoenix
+ * @property string $first_name
+ * @property string $last_name
+ * @property string $birthdate
+ * @property string $photo
+ * @property array  $interests
+ * @property string $source
+ *
+ * @property string $addr_street1
+ * @property string $addr_street2
+ * @property string $addr_city
+ * @property string $addr_state
+ * @property string $addr_zip
+ * @property string $country
+ * @property string $language
+ *
+ * We also collect a bunch of fields from Niche.com users:
+ * @property string $race
+ * @property string $religion
+ * @property string $school_id
+ * @property string $college_name
+ * @property string $degree_type
+ * @property string $major_name
+ * @property string $hs_gradyear
+ * @property string $hs_name
+ * @property int $sat_math
+ * @property int $sat_verbal
+ * @property int $sat_writing
+ *
+ * And we store some external service IDs for hooking things together:
+ * @property string $mobilecommons_id
+ * @property string $mobilecommons_status
+ * @property string $cgg_id
+ * @property string $drupal_id
+ * @property string $agg_id
+ * @property array  $parse_installation_ids
+ *
+ * @property Carbon $created_at
+ * @property Carbon $updated_at
+ */
 class User extends Model implements AuthenticatableContract, AuthorizableContract
 {
     use Authenticatable, Authorizable;
@@ -46,7 +95,7 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
      * Attributes that can be queried as unique identifiers.
      *
      * This array is manually maintained. It does not necessarily mean that
-     * they are actual indexes on the database.
+     * any of these are actual indexes on the database... but they should be!
      *
      * @var array
      */
@@ -55,7 +104,7 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
     ];
 
     /**
-     * The attributes excluded from the model's JSON form.
+     * The attributes that should be hidden for arrays.
      *
      * @var array
      */
