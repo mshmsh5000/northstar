@@ -1,6 +1,5 @@
 <?php
 
-use Northstar\Models\Token;
 use Northstar\Models\User;
 
 class AuthTest extends TestCase
@@ -93,8 +92,13 @@ class AuthTest extends TestCase
      */
     public function testVerify()
     {
+        User::create([
+            'email' => 'verify-test@dosomething.org',
+            'password' => 'secret',
+        ]);
+
         $this->withScopes(['user'])->json('POST', 'v1/auth/verify', [
-            'email' => 'test@dosomething.org',
+            'email' => 'verify-test@dosomething.org',
             'password' => 'secret',
         ]);
 
@@ -114,8 +118,13 @@ class AuthTest extends TestCase
      */
     public function testNormalizedVerify()
     {
+        User::create([
+            'email' => 'normalized-verify@dosomething.org',
+            'password' => 'secret',
+        ]);
+
         $this->withScopes(['user'])->json('POST', 'v1/auth/verify', [
-            'email' => 'Test@dosomething.org ', // <-- a trailing space!? the nerve!
+            'email' => 'Normalized-Verify@dosomething.org ', // <-- a trailing space!? the nerve!
             'password' => 'secret',
         ]);
 
@@ -161,9 +170,13 @@ class AuthTest extends TestCase
      */
     public function testRegisterDuplicate()
     {
+        User::create([
+            'email' => 'fn-2187@first-order.mil',
+        ]);
+
         // Try to register an account that already exists, but with different capitalization
         $this->withScopes(['user'])->json('POST', 'v1/auth/register', [
-            'email' => 'TEST@dosomething.org',
+            'email' => 'FN-2187@First-Order.mil',
             'password' => 'secret',
         ]);
 

@@ -1,5 +1,7 @@
 <?php
 
+use Northstar\Models\ApiKey;
+
 class ApiKeyTest extends TestCase
 {
     /**
@@ -8,6 +10,9 @@ class ApiKeyTest extends TestCase
      */
     public function testIndex()
     {
+        ApiKey::create(['app_id' => 'test']);
+        ApiKey::create(['app_id' => 'testingz']);
+
         // Verify an admin key is able to view all keys
         $this->withScopes(['admin'])->get('v1/keys');
         $this->assertResponseStatus(200);
@@ -55,8 +60,10 @@ class ApiKeyTest extends TestCase
      */
     public function testShow()
     {
+        $key = ApiKey::create(['app_id' => 'phpunit_key']);
+
         // Verify a "user" scoped key is not able to see keys details
-        $this->withScopes(['user'])->get('v1/keys/abc4324');
+        $this->withScopes(['user'])->get('v1/keys/'.$key->api_key);
         $this->assertResponseStatus(403);
 
         // Verify a "user" scoped key is not able to see whether a key exists or not
@@ -64,7 +71,7 @@ class ApiKeyTest extends TestCase
         $this->assertResponseStatus(403);
 
         // Verify an admin key is able to view key details
-        $this->withScopes(['admin'])->get('v1/keys/abc4324');
+        $this->withScopes(['admin'])->get('v1/keys/'.$key->api_key);
         $this->assertResponseStatus(200);
         $this->seeJsonStructure([
             'data' => [
@@ -79,6 +86,8 @@ class ApiKeyTest extends TestCase
      */
     public function testUpdate()
     {
+        $key = ApiKey::create(['app_id' => 'update_key']);
+
         $modifications = [
             'scope' => [
                 'admin',
@@ -87,14 +96,14 @@ class ApiKeyTest extends TestCase
         ];
 
         // Verify a "user" scoped key is not able to update keys
-        $this->withScopes(['user'])->json('PUT', 'v1/keys/5464utyrs', $modifications);
+        $this->withScopes(['user'])->json('PUT', 'v1/keys/'.$key->api_key, $modifications);
         $this->assertResponseStatus(403);
 
         // Verify an admin key is able to update a key
-        $this->withScopes(['admin'])->json('PUT', 'v1/keys/5464utyrs', $modifications);
+        $this->withScopes(['admin'])->json('PUT', 'v1/keys/'.$key->api_key, $modifications);
         $this->assertResponseStatus(200);
         $this->seeInDatabase('api_keys', [
-            'api_key' => '5464utyrs',
+            'app_id' => 'update_key',
             'scope' => ['admin', 'user'],
         ]);
     }
@@ -105,13 +114,15 @@ class ApiKeyTest extends TestCase
      */
     public function testDestroy()
     {
+        $key = ApiKey::create(['app_id' => 'delete_me']);
+
         // Verify a "user" scoped key is not able to delete keys
-        $this->withScopes(['user'])->json('DELETE', 'v1/keys/5464utyrs');
+        $this->withScopes(['user'])->json('DELETE', 'v1/keys/'.$key->api_key);
         $this->assertResponseStatus(403);
 
         // Verify an admin key is able to delete a key
-        $this->withScopes(['admin'])->json('DELETE', 'v1/keys/5464utyrs');
+        $this->withScopes(['admin'])->json('DELETE', 'v1/keys/'.$key->api_key);
         $this->assertResponseStatus(200);
-        $this->dontSeeInDatabase('api_keys', ['api_key' => '5464utyrs']);
+        $this->dontSeeInDatabase('api_keys', ['app_id' => 'delete_me']);
     }
 }
