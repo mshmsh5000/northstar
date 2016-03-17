@@ -262,6 +262,34 @@ class UserTest extends TestCase
     }
 
     /**
+     * Test that creating multiple users won't trigger unique
+     * database constraint errors.
+     * POST /users
+     *
+     * @return void
+     */
+    public function testCreateMultipleUsers()
+    {
+        // Create some new users
+        for ($i = 0; $i < 5; $i++) {
+            $this->withScopes(['admin'])->json('POST', 'v1/users', [
+                'email' => $this->faker->unique()->email,
+                'mobile' => '', // this should not save a `mobile` field on these users
+                'source' => 'phpunit',
+            ]);
+
+            $this->withScopes(['admin'])->json('POST', 'v1/users', [
+                'email' => '  ', // this should not save a `email` field on these users
+                'mobile' => $this->faker->unique()->phoneNumber,
+                'source' => 'phpunit',
+            ]);
+        }
+
+        $this->get('v1/users');
+        $this->assertCount(10, $this->decodeResponseJson()['data']);
+    }
+
+    /**
      * Test that we can't create a duplicate user.
      * POST /users
      *
