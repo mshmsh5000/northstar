@@ -3,9 +3,9 @@
 namespace Northstar\Auth;
 
 use Hash;
-use Illuminate\Contracts\Auth\Guard;
-use Illuminate\Http\JsonResponse;
+use Illuminate\Contracts\Auth\Guard as Auth;
 use Illuminate\Validation\Factory as Validation;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Validation\ValidationException;
 use Northstar\Models\Token;
@@ -16,29 +16,32 @@ use Symfony\Component\HttpKernel\Exception\UnauthorizedHttpException;
 class Registrar
 {
     /**
-     * @var Guard
+     * The authentication guard.
+     * @var Auth
      */
-    protected $guard;
+    protected $auth;
 
     /**
+     * Phoenix Drupal API wrapper.
      * @var Phoenix
      */
     protected $phoenix;
 
     /**
+     * Laravel's validation factory.
      * @var Validation
      */
     protected $validation;
 
     /**
      * Registrar constructor.
-     * @param Guard $guard
+     * @param Auth $auth
      * @param Phoenix $phoenix
      * @param Validation $validation
      */
-    public function __construct(Guard $guard, Phoenix $phoenix, Validation $validation)
+    public function __construct(Auth $auth, Phoenix $phoenix, Validation $validation)
     {
-        $this->guard = $guard;
+        $this->auth = $auth;
         $this->phoenix = $phoenix;
         $this->validation = $validation;
     }
@@ -193,7 +196,7 @@ class Registrar
     {
         $token = $user->login();
 
-        $this->guard->setUser($user);
+        $this->auth->setUser($user);
 
         return $token;
     }

@@ -2,8 +2,7 @@
 
 namespace Northstar\Http\Controllers;
 
-use Auth;
-use Illuminate\Contracts\Auth\Guard;
+use Illuminate\Contracts\Auth\Guard as Auth;
 use Northstar\Auth\Registrar;
 use Northstar\Http\Transformers\UserTransformer;
 use Illuminate\Http\Request;
@@ -11,23 +10,25 @@ use Illuminate\Http\Request;
 class ProfileController extends Controller
 {
     /**
+     * The registrar.
      * @var Registrar
      */
     protected $registrar;
 
     /**
-     * @var Guard
+     * The authentication guard.
+     * @var Auth
      */
-    protected $guard;
+    protected $auth;
 
     /**
      * @var UserTransformer
      */
     protected $transformer;
 
-    public function __construct(Guard $guard, Registrar $registrar)
+    public function __construct(Auth $auth, Registrar $registrar)
     {
-        $this->guard = $guard;
+        $this->auth = $auth;
         $this->registrar = $registrar;
 
         $this->transformer = new UserTransformer();
@@ -45,7 +46,7 @@ class ProfileController extends Controller
     public function show()
     {
         /** @var \Northstar\Models\User $user */
-        $user = $this->guard->user();
+        $user = $this->auth->user();
 
         return $this->item($user);
     }
@@ -60,7 +61,7 @@ class ProfileController extends Controller
     public function update(Request $request)
     {
         /** @var \Northstar\Models\User $user */
-        $user = $this->guard->user();
+        $user = $this->auth->user();
 
         // Normalize & validate the given request.
         $request = $this->registrar->normalize($request);
