@@ -293,7 +293,7 @@ class UserTest extends TestCase
      * Test that you set an indexed field to an empty string. This would cause
      * unique constraint violations if multiple users had an empty string set
      * for a unique indexed field.
-     * POST /users
+     * PUT /users/:id
      *
      * @return void
      */
@@ -313,6 +313,47 @@ class UserTest extends TestCase
 
         $document = $this->getMongoDocument('users', $user->id);
         $this->assertArrayNotHasKey('mobile', $document);
+    }
+
+    /**
+     * Test that you can't remove the only index (email or mobile) from a field.
+     * PUT /users/:id
+     *
+     * @return void
+     */
+    public function testCantRemoveOnlyIndex()
+    {
+        $user = User::create([
+            'email' => $this->faker->email,
+            'first_name' => $this->faker->firstName,
+        ]);
+
+        $this->withScopes(['admin'])->json('PUT', 'v1/users/_id/'.$user->id, [
+            'email' => '',
+        ]);
+
+        $this->assertResponseStatus(422);
+    }
+
+    /**
+     * Test that you can't remove *both* the email and mobile fields from a user.
+     * PUT /users/:id
+     *
+     * @return void
+     */
+    public function testCantRemoveBothEmailAndMobile()
+    {
+        $user = User::create([
+            'email' => $this->faker->email,
+            'mobile' => $this->faker->phoneNumber,
+            'first_name' => $this->faker->firstName,
+        ]);
+
+        $this->withScopes(['admin'])->json('PUT', 'v1/users/_id/'.$user->id, [
+            'email' => '',
+            'mobile' => '',
+        ]);
+        $this->assertResponseStatus(422);
     }
 
     /**
