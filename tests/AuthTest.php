@@ -137,6 +137,21 @@ class AuthTest extends TestCase
     }
 
     /**
+     * Test that you can't register a user without an email or mobile.
+     * POST /auth/register
+     *
+     * @return void
+     */
+    public function testIncompleteRegistration()
+    {
+        $this->withScopes(['user'])->json('POST', 'v1/auth/register', [
+            'password' => 'secret',
+        ]);
+
+        $this->assertResponseStatus(422);
+    }
+
+    /**
      * Test for registering in a user
      * POST /auth/register
      *
