@@ -141,9 +141,18 @@ class UserController extends Controller
         }
 
         $request = $this->registrar->normalize($request);
-        $this->validate($request, [
-            'email' => 'email|max:60|unique:users,email,'.$user->id.',_id',
-            'mobile' => 'unique:users,mobile,'.$user->id.',_id',
+
+        // HACK: Get the iterable properties on the user and merge them into the request for validation.
+        $filledRequest = $request;
+        foreach ($user->toArray() as $key => $value) {
+            if (! isset($request[$key])) {
+                $filledRequest[$key] = $value;
+            }
+        }
+
+        $this->validate($filledRequest, [
+            'email' => 'email|max:60|unique:users,email,'.$user->id.',_id|required_without:mobile',
+            'mobile' => 'unique:users,mobile,'.$user->id.',_id|required_without:email',
         ]);
 
         $user = $this->registrar->register($request->all(), $user);
