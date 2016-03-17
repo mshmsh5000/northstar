@@ -8,7 +8,6 @@ use Jenssegers\Mongodb\Model;
 use Illuminate\Auth\Authenticatable;
 use Illuminate\Contracts\Auth\Authenticatable as AuthenticatableContract;
 use Illuminate\Contracts\Auth\Access\Authorizable as AuthorizableContract;
-use Hash;
 
 /**
  * The User model. (Fight for the user!)
@@ -218,7 +217,7 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
     public function setDrupalPasswordAttribute($value)
     {
         if (isset($this->password)) {
-            $this->unset('password');
+            $this->drop('password');
         }
 
         // The Drupal password is already hashed, don't do it again!
@@ -232,10 +231,10 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
     public function setPasswordAttribute($value)
     {
         if (isset($this->drupal_password)) {
-            $this->unset('drupal_password');
+            $this->drop('drupal_password');
         }
 
-        $this->attributes['password'] = Hash::make($value);
+        $this->attributes['password'] = bcrypt($value);
     }
 
     /**
