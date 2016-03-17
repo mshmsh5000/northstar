@@ -290,6 +290,32 @@ class UserTest extends TestCase
     }
 
     /**
+     * Test that you set an indexed field to an empty string. This would cause
+     * unique constraint violations if multiple users had an empty string set
+     * for a unique indexed field.
+     * POST /users
+     *
+     * @return void
+     */
+    public function testCantMakeIndexEmptyString()
+    {
+        $user = User::create([
+            'email' => $this->faker->email,
+            'mobile' => $this->faker->phoneNumber,
+            'first_name' => $this->faker->firstName,
+        ]);
+
+        $this->withScopes(['admin'])->json('PUT', 'v1/users/_id/'.$user->id, [
+            'mobile' => '', // this should remove the `mobile` field from the document
+        ]);
+
+        $this->seeInDatabase('users', ['_id' => $user->id]);
+
+        $document = $this->getMongoDocument('users', $user->id);
+        $this->assertArrayNotHasKey('mobile', $document);
+    }
+
+    /**
      * Test that we can't create a duplicate user.
      * POST /users
      *
