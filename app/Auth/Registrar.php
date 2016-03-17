@@ -4,6 +4,10 @@ namespace Northstar\Auth;
 
 use Hash;
 use Illuminate\Contracts\Auth\Guard;
+use Illuminate\Http\JsonResponse;
+use Illuminate\Validation\Factory as Validation;
+use Illuminate\Http\Request;
+use Illuminate\Validation\ValidationException;
 use Northstar\Models\Token;
 use Northstar\Models\User;
 use Northstar\Services\Phoenix;
@@ -22,14 +26,21 @@ class Registrar
     protected $phoenix;
 
     /**
+     * @var Validation
+     */
+    protected $validation;
+
+    /**
      * Registrar constructor.
      * @param Guard $guard
      * @param Phoenix $phoenix
+     * @param Validation $validation
      */
-    public function __construct(Guard $guard, Phoenix $phoenix)
+    public function __construct(Guard $guard, Phoenix $phoenix, Validation $validation)
     {
         $this->guard = $guard;
         $this->phoenix = $phoenix;
+        $this->validation = $validation;
     }
 
     /**
@@ -68,6 +79,45 @@ class Registrar
         }
 
         return $credentials;
+    }
+
+    /**
+     * Validate the given user and request.
+     *
+     * @param Request $request
+     * @param User $user
+     * @param array $additionalRules
+     * @throws ValidationException
+     */
+    public function validate(Request $request, User $user = null, array $additionalRules = [])
+    {
+        $fields = $request->all();
+
+        $existingId = isset($user->id) ? $user->id : 'null';
+        $rules = [
+            'email' => 'email|max:60|unique:users,email,'.$existingId.',_id|required_without:mobile',
+            'mobile' => 'unique:users,mobile,'.$existingId.',_id|required_without:email',
+        ];
+
+        // If a user is provided, merge it into the request so we can validate
+        // the state of the "updated" document, rather than just the changes.
+        if ($user) {
+            $fields = array_merge($user->toArray(), $fields);
+        }
+
+        $validator = $this->validation->make($fields, array_merge($rules, $additionalRules));
+
+        if ($validator->fails()) {
+            $response = [
+                'error' => [
+                    'code' => 422,
+                    'message' => 'Failed validation.',
+                    'fields' => $validator->errors()->getMessages(),
+                ],
+            ];
+
+            throw new ValidationException($validator, new JsonResponse($response, 422));
+        }
     }
 
     /**
