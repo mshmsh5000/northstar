@@ -99,6 +99,24 @@ class TestCase extends Illuminate\Foundation\Testing\TestCase
     }
 
     /**
+     * Get the raw Mongo document for inspection.
+     *
+     * @param $collection - Mongo Collection name
+     * @param $id - The _id of the document to fetch
+     * @return array
+     */
+    public function getMongoDocument($collection, $id)
+    {
+        $document = $this->app->make('db')->collection($collection)->where(['_id' => $id])->first();
+
+        $this->assertNotNull($document, sprintf(
+            'Unable to find document in collection [%s] with _id [%s].', $collection, $id
+        ));
+
+        return $document;
+    }
+
+    /**
      * Creates the application.
      *
      * @return \Illuminate\Foundation\Application
