@@ -144,7 +144,7 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
      */
     public function setEmailAttribute($value)
     {
-        // Drop field if attribute is empty string null.
+        // Drop field if attribute is empty string or null.
         if (empty($value)) {
             $this->drop('email');
 
@@ -174,7 +174,7 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
      */
     public function setMobileAttribute($value)
     {
-        // Drop field if attribute is empty string null.
+        // Drop field if attribute is empty string or null.
         if (empty($value)) {
             $this->drop('mobile');
 
