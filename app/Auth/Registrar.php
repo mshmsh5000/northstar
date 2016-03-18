@@ -144,7 +144,7 @@ class Registrar
         // For the first `where` query, we want to limit results... from then on,
         // we want to append (e.g. `SELECT * WHERE _ OR WHERE _ OR WHERE _`)
         $firstWhere = true;
-        foreach (['id', '_id', 'email', 'mobile', 'drupal_id'] as $type) {
+        foreach (User::$indexes as $type) {
             if (isset($credentials[$type])) {
                 $matches = $matches->where($type, '=', $credentials[$type], ($firstWhere ? 'and' : 'or'));
                 $firstWhere = false;
