@@ -73,6 +73,12 @@ class Registrar
      */
     public function normalize($credentials)
     {
+        // Map id to Mongo's _id ObjectID field
+        if (! empty($credentials['id'])) {
+            $credentials['_id'] = $credentials['id'];
+            unset($credentials['id']);
+        }
+
         if (! empty($credentials['email'])) {
             $credentials['email'] = trim(strtolower($credentials['email']));
         }
@@ -140,10 +146,7 @@ class Registrar
         $firstWhere = true;
         foreach (['id', '_id', 'email', 'mobile', 'drupal_id'] as $type) {
             if (isset($credentials[$type])) {
-                // Use 'id' as an alias for Mongo's _id field.
-                $databaseColumn = ($type == 'id') ? '_id' : $type;
-
-                $matches = $matches->where($databaseColumn, '=', $credentials[$type], ($firstWhere ? 'and' : 'or'));
+                $matches = $matches->where($type, '=', $credentials[$type], ($firstWhere ? 'and' : 'or'));
                 $firstWhere = false;
             }
         }
