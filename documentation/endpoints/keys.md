@@ -21,23 +21,28 @@ curl -X GET \
 {
   "data": [
     {
-      "_id": "555b5afcbffebc150b8b45ab",
       "app_id": "appid1",
       "api_key": "apikey1",
+      "scope": [
+        "admin",
+        "user"
+      ],
       "updated_at": "2015-05-19 15:47:08",
       "created_at": "2015-05-19 15:47:08"
     },
     {
-      "_id": "555b5afcbffebc150b8b45ac",
       "app_id": "appid2",
       "api_key": "apikey2",
+      "scope": [
+        "user"
+      ],
       "updated_at": "2015-05-19 15:47:08",
       "created_at": "2015-05-19 15:47:08"
     },
     {
-      "_id": "555b6e8dbffebc30068b456a",
       "app_id": "appid3",
       "api_key": "apikey3",
+      "scope": [],
       "updated_at": "2015-05-19 17:10:37",
       "created_at": "2015-05-19 17:10:37"
     }
@@ -83,9 +88,9 @@ curl -X POST \
   "data": {
     "app_id": "testapplication",
     "api_key": "1laEQhhKtQEaPK0qpESdXHm2EbdLu5sRIRLcRtF8",
+    "scope": [],
     "updated_at": "2015-05-19 17:10:37",
     "created_at": "2015-05-19 17:10:37",
-    "_id": "555b6e8dbffebc30068b456a"
   }
 }
 ```
@@ -115,9 +120,12 @@ curl -X GET\
   "data": {
     "app_id": "testapplication",
     "api_key": "1laEQhhKtQEaPK0qpESdXHm2EbdLu5sRIRLcRtF8",
+    "scope": [
+      "admin",
+      "user"
+    ],
     "updated_at": "2015-05-19 17:10:37",
     "created_at": "2015-05-19 17:10:37",
-    "_id": "555b6e8dbffebc30068b456a"
   }
 }
 ```
@@ -166,7 +174,6 @@ curl -X PUT \
     ],
     "updated_at": "2015-05-19 17:10:37",
     "created_at": "2015-05-19 17:10:37",
-    "_id": "555b6e8dbffebc30068b456a"
   }
 }
 ```

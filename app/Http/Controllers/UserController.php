@@ -56,8 +56,11 @@ class UserController extends Controller
         // or paginate to retrieve all user records.
         $query = $this->newQuery(User::class);
 
-        $query = $this->filter($query, $request->query('filter'), User::$indexes);
-        $query = $this->search($query, $request->query('search'), User::$indexes);
+        $filters = $request->query('filter');
+        $query = $this->filter($query, $this->registrar->normalize($filters), User::$indexes);
+
+        $searches = $request->query('search');
+        $query = $this->search($query, $this->registrar->normalize($searches), User::$indexes);
 
         return $this->paginatedCollection($query, $request);
     }
@@ -110,7 +113,7 @@ class UserController extends Controller
     public function show($term, $id)
     {
         // Find the user.
-        $user = User::where($term, $id)->first();
+        $user = $this->registrar->resolve([$term => $id]);
 
         if (! $user) {
             throw new NotFoundHttpException('The resource does not exist.');

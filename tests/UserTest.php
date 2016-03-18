@@ -5,6 +5,133 @@ use Northstar\Models\User;
 class UserTest extends TestCase
 {
     /**
+     * Test for retrieving a user by their ID.
+     * GET /users/id/:id
+     *
+     * @return void
+     */
+    public function testGetUserById()
+    {
+        $user = User::create([
+            'email' => 'jbeaubier@xavier.edu',
+            'first_name' => 'Jean-Paul',
+        ]);
+
+        $this->withScopes(['user'])->get('v1/users/id/'.$user->id);
+        $this->assertResponseStatus(200);
+        $this->seeJsonSubset([
+            'data' => [
+                'id' => $user->id,
+            ],
+        ]);
+    }
+
+    /**
+     * Test for retrieving a user by their Mongo _id, for backwards compatibility.
+     * GET /users/_id/:id
+     *
+     * @return void
+     */
+    public function testGetUserByMongoId()
+    {
+        $user = User::create([
+            'email' => 'jbeaubier@xavier.edu',
+            'first_name' => 'Jean-Paul',
+        ]);
+
+        $this->withScopes(['user'])->get('v1/users/_id/'.$user->id);
+        $this->assertResponseStatus(200);
+        $this->seeJsonSubset([
+            'data' => [
+                'id' => $user->id,
+            ],
+        ]);
+    }
+
+    /**
+     * Test for retrieving a user by their email.
+     * GET /users/email/:email
+     *
+     * @return void
+     */
+    public function testGetUserByEmail()
+    {
+        $user = User::create([
+            'email' => 'jbeaubier@xavier.edu',
+            'first_name' => 'Jean-Paul',
+        ]);
+
+        $this->withScopes(['user'])->get('v1/users/email/JBeaubier@Xavier.edu');
+        $this->assertResponseStatus(200);
+        $this->seeJsonSubset([
+            'data' => [
+                'id' => $user->id,
+            ],
+        ]);
+    }
+
+    /**
+     * Test for retrieving a user by their mobile number.
+     * GET /users/email/:email
+     *
+     * @return void
+     */
+    public function testGetUserByMobile()
+    {
+        $user = User::create([
+            'mobile' => $this->faker->phoneNumber,
+            'first_name' => $this->faker->firstName,
+        ]);
+
+        $this->withScopes(['user'])->get('v1/users/mobile/'.$user->mobile);
+        $this->assertResponseStatus(200);
+        $this->seeJsonSubset([
+            'data' => [
+                'id' => $user->id,
+            ],
+        ]);
+    }
+
+    /**
+     * Test we can't retrieve a user by a non-indexed field.
+     * GET /users/email/:email
+     *
+     * @return void
+     */
+    public function testCantGetUserByNonIndexedField()
+    {
+        User::create([
+            'mobile' => $this->faker->phoneNumber,
+            'first_name' => 'Bobby',
+        ]);
+
+        // Test that we return 404 when retrieving by a non-indexed field.
+        $this->withScopes(['user'])->get('v1/users/first_name/Bobby');
+        $this->assertResponseStatus(404);
+    }
+
+    /**
+     * Tests retrieving a user by their Drupal ID.
+     * GET /users/drupal_id/{id}
+     */
+    public function testRetrieveUser()
+    {
+        $user = User::create([
+            'drupal_id' => '100010',
+        ]);
+
+        // GET /users/drupal_id/<drupal_id>
+        $this->get('v1/users/drupal_id/100010');
+        $this->assertResponseStatus(200);
+        $this->seeJsonSubset([
+            'data' => [
+                'id' => $user->id,
+                'drupal_id' => $user->drupal_id,
+            ],
+        ]);
+    }
+
+    /**
      * Test for retrieving a user with a non-admin key.
      * GET /users/:term/:id
      *
@@ -126,7 +253,7 @@ class UserTest extends TestCase
 
     /**
      * Tests retrieving multiple users by their id
-     * GET /users?filter[_id]=:id_1,...,:id_N
+     * GET /users?filter[id]=:id_1,...,:id_N
      * GET /users?filter[drupal_id]=:id_1,...,:id_N
      */
     public function testFilterUsersById()
@@ -136,7 +263,7 @@ class UserTest extends TestCase
         $user3 = User::create(['mobile' => $this->faker->unique()->phoneNumber, 'drupal_id' => '123413']);
 
         // Retrieve multiple users by _id
-        $this->get('v1/users?filter[_id]='.$user1->id.','.$user2->id.',FAKE_ID');
+        $this->get('v1/users?filter[id]='.$user1->id.','.$user2->id.',FAKE_ID');
         $this->assertCount(2, $this->decodeResponseJson()['data']);
         $this->seeJsonStructure([
             'data' => [
@@ -180,62 +307,6 @@ class UserTest extends TestCase
 
         // There should be one match (a user with the provided email)
         $this->assertCount(1, $this->decodeResponseJson()['data']);
-    }
-
-    /**
-     * Tests retrieving a user
-     * GET /users/{term}/{id}
-     */
-    public function testRetrieveUser()
-    {
-        // User info
-        $user = User::create([
-            'email' => 'sterling.archer@example.com',
-            'mobile' => '5551231245',
-            'drupal_id' => '4567890',
-        ]);
-
-        // GET /users/_id/<user_id>
-        $this->get('v1/users/_id/'.$user->_id);
-
-        // Assert response is 200 and has expected data
-        $this->assertResponseStatus(200);
-        $this->seeJsonSubset([
-            'data' => [
-                'id' => $user->_id,
-                'email' => $user->email,
-            ],
-        ]);
-
-        // GET /users/mobile/<mobile>
-        $this->get('v1/users/mobile/'.$user->mobile);
-        $this->assertResponseStatus(200);
-        $this->seeJsonSubset([
-            'data' => [
-                'id' => $user->_id,
-                'mobile' => $user->mobile,
-            ],
-        ]);
-
-        // GET /users/email/<email>
-        $this->get('v1/users/email/'.$user->email);
-        $this->assertResponseStatus(200);
-        $this->seeJsonSubset([
-            'data' => [
-                'id' => $user->_id,
-                'email' => $user->email,
-            ],
-        ]);
-
-        // GET /users/drupal_id/<drupal_id>
-        $this->get('v1/users/drupal_id/'.$user->drupal_id);
-        $this->assertResponseStatus(200);
-        $this->seeJsonSubset([
-            'data' => [
-                'id' => $user->_id,
-                'drupal_id' => $user->drupal_id,
-            ],
-        ]);
     }
 
     /**
