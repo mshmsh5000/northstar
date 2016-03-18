@@ -138,11 +138,19 @@ class Registrar
         // For the first `where` query, we want to limit results... from then on,
         // we want to append (e.g. `SELECT * WHERE _ OR WHERE _ OR WHERE _`)
         $firstWhere = true;
-        foreach (['email', 'mobile'] as $type) {
+        foreach (['id', '_id', 'email', 'mobile', 'drupal_id'] as $type) {
             if (isset($credentials[$type])) {
-                $matches = $matches->where($type, '=', $credentials[$type], ($firstWhere ? 'and' : 'or'));
+                // Use 'id' as an alias for Mongo's _id field.
+                $databaseColumn = ($type == 'id') ? '_id' : $type;
+
+                $matches = $matches->where($databaseColumn, '=', $credentials[$type], ($firstWhere ? 'and' : 'or'));
                 $firstWhere = false;
             }
+        }
+
+        // If we did not query by any fields, return null.
+        if ($firstWhere) {
+            return null;
         }
 
         // If we found one user, return it.

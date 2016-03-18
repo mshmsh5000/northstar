@@ -110,7 +110,7 @@ class UserController extends Controller
     public function show($term, $id)
     {
         // Find the user.
-        $user = User::where($term, $id)->first();
+        $user = $this->registrar->resolve([$term => $id]);
 
         if (! $user) {
             throw new NotFoundHttpException('The resource does not exist.');
