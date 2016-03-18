@@ -253,7 +253,7 @@ class UserTest extends TestCase
 
     /**
      * Tests retrieving multiple users by their id
-     * GET /users?filter[_id]=:id_1,...,:id_N
+     * GET /users?filter[id]=:id_1,...,:id_N
      * GET /users?filter[drupal_id]=:id_1,...,:id_N
      */
     public function testFilterUsersById()
@@ -263,7 +263,7 @@ class UserTest extends TestCase
         $user3 = User::create(['mobile' => $this->faker->unique()->phoneNumber, 'drupal_id' => '123413']);
 
         // Retrieve multiple users by _id
-        $this->get('v1/users?filter[_id]='.$user1->id.','.$user2->id.',FAKE_ID');
+        $this->get('v1/users?filter[id]='.$user1->id.','.$user2->id.',FAKE_ID');
         $this->assertCount(2, $this->decodeResponseJson()['data']);
         $this->seeJsonStructure([
             'data' => [
