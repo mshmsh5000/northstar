@@ -76,13 +76,9 @@ class UserController extends Controller
         // So, does this user exist already?
         $user = $this->registrar->resolve($request->only('email', 'mobile'));
 
-        // Validate format & index uniqueness (excluding the profile being updated, if one exists)
-        $existingId = isset($user->id) ? $user->id : 'null';
+        // Normalize input and validate the request
         $request = $this->registrar->normalize($request);
-        $this->validate($request, [
-            'email' => 'email|max:60|unique:users,email,'.$existingId.',_id|required_without:mobile',
-            'mobile' => 'unique:users,mobile,'.$existingId.',_id|required_without:email',
-        ]);
+        $this->registrar->validate($request, $user);
 
         $user = $this->registrar->register($request->all(), $user);
 
@@ -140,11 +136,9 @@ class UserController extends Controller
             throw new NotFoundHttpException('The resource does not exist.');
         }
 
+        // Normalize input and validate the request
         $request = $this->registrar->normalize($request);
-        $this->validate($request, [
-            'email' => 'email|max:60|unique:users,email,'.$user->id.',_id',
-            'mobile' => 'unique:users,mobile,'.$user->id.',_id',
-        ]);
+        $this->registrar->validate($request, $user);
 
         $user = $this->registrar->register($request->all(), $user);
 

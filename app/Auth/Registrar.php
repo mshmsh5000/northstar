@@ -3,7 +3,11 @@
 namespace Northstar\Auth;
 
 use Hash;
-use Illuminate\Contracts\Auth\Guard;
+use Illuminate\Contracts\Auth\Guard as Auth;
+use Illuminate\Validation\Factory as Validation;
+use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Request;
+use Illuminate\Validation\ValidationException;
 use Northstar\Models\Token;
 use Northstar\Models\User;
 use Northstar\Services\Phoenix;
@@ -12,24 +16,34 @@ use Symfony\Component\HttpKernel\Exception\UnauthorizedHttpException;
 class Registrar
 {
     /**
-     * @var Guard
+     * The authentication guard.
+     * @var Auth
      */
-    protected $guard;
+    protected $auth;
 
     /**
+     * Phoenix Drupal API wrapper.
      * @var Phoenix
      */
     protected $phoenix;
 
     /**
-     * Registrar constructor.
-     * @param Guard $guard
-     * @param Phoenix $phoenix
+     * Laravel's validation factory.
+     * @var Validation
      */
-    public function __construct(Guard $guard, Phoenix $phoenix)
+    protected $validation;
+
+    /**
+     * Registrar constructor.
+     * @param Auth $auth
+     * @param Phoenix $phoenix
+     * @param Validation $validation
+     */
+    public function __construct(Auth $auth, Phoenix $phoenix, Validation $validation)
     {
-        $this->guard = $guard;
+        $this->auth = $auth;
         $this->phoenix = $phoenix;
+        $this->validation = $validation;
     }
 
     /**
@@ -68,6 +82,45 @@ class Registrar
         }
 
         return $credentials;
+    }
+
+    /**
+     * Validate the given user and request.
+     *
+     * @param Request $request
+     * @param User $user
+     * @param array $additionalRules
+     * @throws ValidationException
+     */
+    public function validate(Request $request, User $user = null, array $additionalRules = [])
+    {
+        $fields = $request->all();
+
+        $existingId = isset($user->id) ? $user->id : 'null';
+        $rules = [
+            'email' => 'email|max:60|unique:users,email,'.$existingId.',_id|required_without:mobile',
+            'mobile' => 'unique:users,mobile,'.$existingId.',_id|required_without:email',
+        ];
+
+        // If a user is provided, merge it into the request so we can validate
+        // the state of the "updated" document, rather than just the changes.
+        if ($user) {
+            $fields = array_merge($user->toArray(), $fields);
+        }
+
+        $validator = $this->validation->make($fields, array_merge($rules, $additionalRules));
+
+        if ($validator->fails()) {
+            $response = [
+                'error' => [
+                    'code' => 422,
+                    'message' => 'Failed validation.',
+                    'fields' => $validator->errors()->getMessages(),
+                ],
+            ];
+
+            throw new ValidationException($validator, new JsonResponse($response, 422));
+        }
     }
 
     /**
@@ -143,7 +196,7 @@ class Registrar
     {
         $token = $user->login();
 
-        $this->guard->setUser($user);
+        $this->auth->setUser($user);
 
         return $token;
     }

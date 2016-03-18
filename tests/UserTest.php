@@ -262,6 +262,101 @@ class UserTest extends TestCase
     }
 
     /**
+     * Test that creating multiple users won't trigger unique
+     * database constraint errors.
+     * POST /users
+     *
+     * @return void
+     */
+    public function testCreateMultipleUsers()
+    {
+        // Create some new users
+        for ($i = 0; $i < 5; $i++) {
+            $this->withScopes(['admin'])->json('POST', 'v1/users', [
+                'email' => $this->faker->unique()->email,
+                'mobile' => '', // this should not save a `mobile` field on these users
+                'source' => 'phpunit',
+            ]);
+
+            $this->withScopes(['admin'])->json('POST', 'v1/users', [
+                'email' => '  ', // this should not save a `email` field on these users
+                'mobile' => $this->faker->unique()->phoneNumber,
+                'source' => 'phpunit',
+            ]);
+        }
+
+        $this->get('v1/users');
+        $this->assertCount(10, $this->decodeResponseJson()['data']);
+    }
+
+    /**
+     * Test that you set an indexed field to an empty string. This would cause
+     * unique constraint violations if multiple users had an empty string set
+     * for a unique indexed field.
+     * PUT /users/:id
+     *
+     * @return void
+     */
+    public function testCantMakeIndexEmptyString()
+    {
+        $user = User::create([
+            'email' => $this->faker->email,
+            'mobile' => $this->faker->phoneNumber,
+            'first_name' => $this->faker->firstName,
+        ]);
+
+        $this->withScopes(['admin'])->json('PUT', 'v1/users/_id/'.$user->id, [
+            'mobile' => '', // this should remove the `mobile` field from the document
+        ]);
+
+        $this->seeInDatabase('users', ['_id' => $user->id]);
+
+        $document = $this->getMongoDocument('users', $user->id);
+        $this->assertArrayNotHasKey('mobile', $document);
+    }
+
+    /**
+     * Test that you can't remove the only index (email or mobile) from a field.
+     * PUT /users/:id
+     *
+     * @return void
+     */
+    public function testCantRemoveOnlyIndex()
+    {
+        $user = User::create([
+            'email' => $this->faker->email,
+            'first_name' => $this->faker->firstName,
+        ]);
+
+        $this->withScopes(['admin'])->json('PUT', 'v1/users/_id/'.$user->id, [
+            'email' => '',
+        ]);
+
+        $this->assertResponseStatus(422);
+    }
+
+    /**
+     * Test that you can't remove *both* the email and mobile fields from a user.
+     * PUT /users/:id
+     *
+     * @return void
+     */
+    public function testCantRemoveBothEmailAndMobile()
+    {
+        $user = User::create([
+            'email' => $this->faker->email,
+            'mobile' => $this->faker->phoneNumber,
+            'first_name' => $this->faker->firstName,
+        ]);
+
+        $this->withScopes(['admin'])->json('PUT', 'v1/users/_id/'.$user->id, [
+            'email' => '',
+            'mobile' => '',
+        ]);
+        $this->assertResponseStatus(422);
+    }
+
+    /**
      * Test that we can't create a duplicate user.
      * POST /users
      *

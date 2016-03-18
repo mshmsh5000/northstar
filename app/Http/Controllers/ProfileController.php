@@ -2,19 +2,35 @@
 
 namespace Northstar\Http\Controllers;
 
-use Auth;
+use Illuminate\Contracts\Auth\Guard as Auth;
+use Northstar\Auth\Registrar;
 use Northstar\Http\Transformers\UserTransformer;
 use Illuminate\Http\Request;
 
 class ProfileController extends Controller
 {
     /**
+     * The registrar.
+     * @var Registrar
+     */
+    protected $registrar;
+
+    /**
+     * The authentication guard.
+     * @var Auth
+     */
+    protected $auth;
+
+    /**
      * @var UserTransformer
      */
     protected $transformer;
 
-    public function __construct()
+    public function __construct(Auth $auth, Registrar $registrar)
     {
+        $this->auth = $auth;
+        $this->registrar = $registrar;
+
         $this->transformer = new UserTransformer();
 
         $this->middleware('key:user');
@@ -29,8 +45,8 @@ class ProfileController extends Controller
      */
     public function show()
     {
-        // Find the user.
-        $user = Auth::user();
+        /** @var \Northstar\Models\User $user */
+        $user = $this->auth->user();
 
         return $this->item($user);
     }
@@ -44,12 +60,12 @@ class ProfileController extends Controller
      */
     public function update(Request $request)
     {
-        $user = Auth::user();
+        /** @var \Northstar\Models\User $user */
+        $user = $this->auth->user();
 
-        $this->validate($request, [
-            'email' => 'email|max:60|unique:users,email,'.$user->id.',_id',
-            'mobile' => 'unique:users,mobile,'.$user->id.',_id',
-        ]);
+        // Normalize & validate the given request.
+        $request = $this->registrar->normalize($request);
+        $this->registrar->validate($request, $user);
 
         $user->fill($request->all());
         $user->save();
