@@ -23,21 +23,26 @@ curl -X GET \
     {
       "app_id": "appid1",
       "api_key": "apikey1",
-      "scope": ["admin", "user"],
+      "scope": [
+        "admin",
+        "user"
+      ],
       "updated_at": "2015-05-19 15:47:08",
       "created_at": "2015-05-19 15:47:08"
     },
     {
       "app_id": "appid2",
       "api_key": "apikey2",
-      "scope": ["user"],
+      "scope": [
+        "user"
+      ],
       "updated_at": "2015-05-19 15:47:08",
       "created_at": "2015-05-19 15:47:08"
     },
     {
       "app_id": "appid3",
       "api_key": "apikey3",
-      scope: [],
+      "scope": [],
       "updated_at": "2015-05-19 17:10:37",
       "created_at": "2015-05-19 17:10:37"
     }
