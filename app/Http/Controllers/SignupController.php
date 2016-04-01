@@ -47,14 +47,13 @@ class SignupController extends Controller
         if (! empty($options['user'])) {
             if (strpos($options['user'], ',') > 0) {
                 $usersQuery = explode(',', $options['user']);
-                $options['user'] = [];
-                foreach ($usersQuery as $user) {
-                    array_push($options['user'], User::drupalIDForNorthstarId($user));
-                }
+                $options['user'] = User::drupalIDForNorthstarId($usersQuery);
             } else {
                 $options['user'] = User::drupalIDForNorthstarId($options['user']);
             }
         }
+
+        dd($options['user']);
 
         return $this->phoenix->getSignupIndex($options);
     }

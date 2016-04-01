@@ -260,9 +260,13 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
      */
     public static function drupalIDForNorthstarId($northstar_id)
     {
-        $user = self::find($northstar_id);
+        $user = User::find($northstar_id);
 
         if ($user) {
+            if (is_array($northstar_id)) {
+                return $user->pluck('drupal_id');
+            }
+
             return $user->drupal_id;
         }
 
