@@ -52,9 +52,7 @@ class SignupController extends Controller
                 $options['user'] = User::drupalIDForNorthstarId($options['user']);
             }
         }
-
-        dd($options['user']);
-
+        
         return $this->phoenix->getSignupIndex($options);
     }
 
