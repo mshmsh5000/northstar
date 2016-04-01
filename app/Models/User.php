@@ -264,7 +264,7 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
 
         if ($user) {
             if (is_array($northstar_id)) {
-                return $user->pluck('drupal_id');
+                return array_column($user->toArray(), 'drupal_id');
             }
 
             return $user->drupal_id;
