@@ -17,7 +17,7 @@ class SignupTest extends TestCase
         $user2 = User::create(['drupal_id' => '100002']);
 
         // For testing, we'll mock a successful Phoenix API response.
-        $this->mock(Phoenix::class)->shouldReceive('getSignupIndex')->with(['users' => ['100001','100002']])->once()->andReturn([
+        $this->mock(Phoenix::class)->shouldReceive('getSignupIndex')->with(['users' => ['100001', '100002']])->once()->andReturn([
             'data' => [
                 [
                     'id' => '243',
@@ -30,7 +30,7 @@ class SignupTest extends TestCase
             ],
         ]);
 
-        $this->asUser($user)->withScopes(['user'])->get('v1/signups?users=' . $user->_id . ',' . $user2->_id);
+        $this->asUser($user)->withScopes(['user'])->get('v1/signups?users='.$user->_id.','.$user2->_id);
         $this->assertResponseStatus(200);
         $this->seeJson();
     }
