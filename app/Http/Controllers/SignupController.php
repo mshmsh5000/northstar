@@ -43,9 +43,15 @@ class SignupController extends Controller
     {
         $options = $request->query();
 
-        // If a user is specified, turn Northstar ID into Drupal ID
+        // Transform user into users.
         if (! empty($options['user'])) {
-            $options['user'] = User::drupalIDForNorthstarId($options['user']);
+            $options['users'] = $options['user'];
+        }
+
+        // If a user is specified, turn Northstar ID into Drupal ID
+        if (! empty($options['users'])) {
+            $usersQuery = explode(',', $options['users']);
+            $options['users'] = User::drupalIDForNorthstarId($usersQuery);
         }
 
         return $this->phoenix->getSignupIndex($options);

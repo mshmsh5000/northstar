@@ -263,6 +263,10 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
         $user = self::find($northstar_id);
 
         if ($user) {
+            if (is_array($northstar_id)) {
+                return array_column($user->toArray(), 'drupal_id');
+            }
+
             return $user->drupal_id;
         }
 
