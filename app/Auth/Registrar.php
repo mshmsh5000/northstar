@@ -80,40 +80,14 @@ class Registrar
         }
 
         if (! empty($credentials['email'])) {
-            $credentials['email'] = $this->normalizeEmail($credentials['email']);
+            $credentials['email'] = trim(strtolower($credentials['email']));
         }
 
         if (! empty($credentials['mobile'])) {
-            $credentials ['mobile'] = $this->normalizeMobile($credentials['mobile']);
+            $credentials ['mobile'] = preg_replace('/[^0-9]/', '', $credentials['mobile']);
         }
 
         return $credentials;
-    }
-
-    /**
-     * Sanitize an email address before verifying or saving to the database.
-     * This method will likely be called multiple times per user, so it *must*
-     * provide the same result if so.
-     *
-     * @param string $email
-     * @return string
-     */
-    public function normalizeEmail($email)
-    {
-        return trim(strtolower($email));
-    }
-
-    /**
-     * Sanitize a mobile number before verifying or saving to the database.
-     * This method will likely be called multiple times per user, so it *must*
-     * provide the same result if so.
-     *
-     * @param string $mobile
-     * @return string
-     */
-    public function normalizeMobile($mobile)
-    {
-        return preg_replace('/[^0-9]/', '', $mobile);
     }
 
     /**
