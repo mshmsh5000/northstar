@@ -8,6 +8,7 @@ use Jenssegers\Mongodb\Model;
 use Illuminate\Auth\Authenticatable;
 use Illuminate\Contracts\Auth\Authenticatable as AuthenticatableContract;
 use Illuminate\Contracts\Auth\Access\Authorizable as AuthorizableContract;
+use Northstar\Auth\Registrar;
 
 /**
  * The User model. (Fight for the user!)
@@ -151,7 +152,12 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
             return;
         }
 
-        $this->attributes['email'] = strtolower($value);
+        /**
+         * Otherwise, we'll ask the Registrar to normalize this field for us.
+         * @var $registrar \Northstar\Auth\Registrar
+         */
+        $registrar = app(Registrar::class);
+        $this->attributes['email'] = $registrar->normalizeEmail($value);
     }
 
     /**
@@ -181,8 +187,12 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
             return;
         }
 
-        // Otherwise, remove all non-numeric characters.
-        $this->attributes['mobile'] = preg_replace('/[^0-9]/', '', $value);
+        /**
+         * Otherwise, we'll ask the Registrar to normalize this field for us.
+         * @var $registrar \Northstar\Auth\Registrar
+         */
+        $registrar = app(Registrar::class);
+        $this->attributes['mobile'] = $registrar->normalizeMobile($value);
     }
 
     /**
