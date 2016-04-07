@@ -23,6 +23,16 @@ class AuthController extends Controller
      */
     protected $transformer;
 
+    protected $loginRules = [
+        'email' => 'email|required_without:mobile',
+        'mobile' => 'required_without:email',
+        'password' => 'required',
+    ];
+    
+    /**
+     * AuthController constructor.
+     * @param Registrar $registrar
+     */
     public function __construct(Registrar $registrar)
     {
         $this->registrar = $registrar;
@@ -44,11 +54,7 @@ class AuthController extends Controller
      */
     public function createToken(Request $request)
     {
-        $this->validate($request, [
-            'email' => 'email|required_without:mobile',
-            'mobile' => 'required_without:email',
-            'password' => 'required',
-        ]);
+        $this->validate($request, $this->loginRules);
 
         $credentials = $request->only('email', 'mobile', 'password');
         $token = $this->registrar->login($credentials);
@@ -66,11 +72,7 @@ class AuthController extends Controller
     public function verify(Request $request)
     {
         $request = $this->registrar->normalize($request);
-        $this->validate($request, [
-            'email' => 'email|required_without:mobile',
-            'mobile' => 'required_without:email',
-            'password' => 'required',
-        ]);
+        $this->validate($request, $this->loginRules);
 
         $credentials = $request->only('email', 'mobile', 'password');
         $user = $this->registrar->resolve($credentials);
