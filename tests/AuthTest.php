@@ -47,7 +47,7 @@ class AuthTest extends TestCase
             'key' => $this->decodeResponseJson()['data']['key'],
         ]);
     }
-    
+
     /**
      * Test for logging in a user by email.
      * POST /auth/token

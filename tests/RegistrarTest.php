@@ -75,7 +75,7 @@ class RegistrarTest extends TestCase
 
         $this->assertArrayNotHasKey('username', $normalized);
         $this->assertArrayNotHasKey('mobile', $normalized);
-        
+
         $this->assertSame('kamala.khan@marvel.com', $normalized['email']);
     }
 
