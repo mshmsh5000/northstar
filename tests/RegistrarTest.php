@@ -63,6 +63,40 @@ class RegistrarTest extends TestCase
     }
 
     /**
+     * Test that we can normalize an email provided in the 'username' field.
+     */
+    public function testNormalizeEmailAsUsername()
+    {
+        $credentials = [
+            'username' => 'Kamala.Khan@marvel.com ',
+        ];
+
+        $normalized = $this->registrar->normalize($credentials);
+
+        $this->assertArrayNotHasKey('username', $normalized);
+        $this->assertArrayNotHasKey('mobile', $normalized);
+        
+        $this->assertSame('kamala.khan@marvel.com', $normalized['email']);
+    }
+
+    /**
+     * Test that we can normalize an email provided in the 'username' field.
+     */
+    public function testNormalizeMobileAsUsername()
+    {
+        $credentials = [
+            'username' => '1 (555) 123-4567',
+        ];
+
+        $normalized = $this->registrar->normalize($credentials);
+
+        $this->assertArrayNotHasKey('username', $normalized);
+        $this->assertArrayNotHasKey('email', $normalized);
+
+        $this->assertSame('15551234567', $normalized['mobile']);
+    }
+
+    /**
      * Test that we can normalize multiple fields.
      */
     public function testNormalizeMultipleFields()
