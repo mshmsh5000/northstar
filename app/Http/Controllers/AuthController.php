@@ -7,11 +7,17 @@ use Northstar\Http\Transformers\TokenTransformer;
 use Northstar\Http\Transformers\UserTransformer;
 use Symfony\Component\HttpKernel\Exception\HttpException;
 use Symfony\Component\HttpKernel\Exception\UnauthorizedHttpException;
+use Illuminate\Contracts\Auth\Guard as Auth;
 use Northstar\Auth\Registrar;
-use Auth;
 
 class AuthController extends Controller
 {
+    /**
+     * The authentication guard.
+     * @var \Northstar\Auth\NorthstarTokenGuard
+     */
+    protected $auth;
+
     /**
      * The registrar.
      * @var Registrar
@@ -23,8 +29,24 @@ class AuthController extends Controller
      */
     protected $transformer;
 
-    public function __construct(Registrar $registrar)
+    /**
+     * Validation rules for login routes.
+     * @var array
+     */
+    protected $loginRules = [
+        'email' => 'email|required_without:mobile',
+        'mobile' => 'required_without:email',
+        'password' => 'required',
+    ];
+
+    /**
+     * AuthController constructor.
+     * @param Auth $auth
+     * @param Registrar $registrar
+     */
+    public function __construct(Auth $auth, Registrar $registrar)
     {
+        $this->auth = $auth;
         $this->registrar = $registrar;
 
         $this->transformer = new TokenTransformer();
@@ -44,11 +66,8 @@ class AuthController extends Controller
      */
     public function createToken(Request $request)
     {
-        $this->validate($request, [
-            'email' => 'email|required_without:mobile',
-            'mobile' => 'required_without:email',
-            'password' => 'required',
-        ]);
+        $request = $this->registrar->normalize($request);
+        $this->validate($request, $this->loginRules);
 
         $credentials = $request->only('email', 'mobile', 'password');
         $token = $this->registrar->login($credentials);
@@ -66,11 +85,7 @@ class AuthController extends Controller
     public function verify(Request $request)
     {
         $request = $this->registrar->normalize($request);
-        $this->validate($request, [
-            'email' => 'email|required_without:mobile',
-            'mobile' => 'required_without:email',
-            'password' => 'required',
-        ]);
+        $this->validate($request, $this->loginRules);
 
         $credentials = $request->only('email', 'mobile', 'password');
         $user = $this->registrar->resolve($credentials);
@@ -92,7 +107,7 @@ class AuthController extends Controller
      */
     public function invalidateToken(Request $request)
     {
-        $token = Auth::token();
+        $token = $this->auth->token();
 
         // Attempt to delete token.
         $deleted = $token->delete();

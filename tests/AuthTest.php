@@ -5,6 +5,50 @@ use Northstar\Models\User;
 class AuthTest extends TestCase
 {
     /**
+     * Test for logging in a user by username.
+     * POST /auth/token
+     *
+     * @return void
+     */
+    public function testLoginByUsername()
+    {
+        // Create user to attempt to log in as.
+        User::create([
+            'email' => 'login-test@dosomething.org',
+            'password' => 'secret',
+        ]);
+
+        // Test logging in with bogus info
+        $this->withScopes(['user'])->json('POST', 'v1/auth/token', [
+            'username' => 'login-test@dosomething.org',
+            'password' => 'letmein',
+        ]);
+        $this->assertResponseStatus(401);
+
+        // Test with the right credentials
+        $this->withScopes(['user'])->json('POST', 'v1/auth/token', [
+            'username' => 'login-test@dosomething.org',
+            'password' => 'secret',
+        ]);
+        $this->assertResponseStatus(201);
+        $this->seeJsonStructure([
+            'data' => [
+                'key',
+                'user' => [
+                    'data' => [
+                        'id',
+                    ],
+                ],
+            ],
+        ]);
+
+        // Assert token given in the response also exists in database
+        $this->seeInDatabase('tokens', [
+            'key' => $this->decodeResponseJson()['data']['key'],
+        ]);
+    }
+
+    /**
      * Test for logging in a user by email.
      * POST /auth/token
      *

@@ -73,21 +73,65 @@ class Registrar
      */
     public function normalize($credentials)
     {
-        // Map id to Mongo's _id ObjectID field
+        // If a username is given, figure out whether it's an email or mobile number.
+        if (! empty($credentials['username'])) {
+            $type = $this->isEmail($credentials['username']) ? 'email' : 'mobile';
+            $credentials[$type] = $credentials['username'];
+            unset($credentials['username']);
+        }
+
+        // Map id to Mongo's _id ObjectID field.
         if (! empty($credentials['id'])) {
             $credentials['_id'] = $credentials['id'];
             unset($credentials['id']);
         }
 
         if (! empty($credentials['email'])) {
-            $credentials['email'] = trim(strtolower($credentials['email']));
+            $credentials['email'] = $this->normalizeEmail($credentials['email']);
         }
 
         if (! empty($credentials['mobile'])) {
-            $credentials ['mobile'] = preg_replace('/[^0-9]/', '', $credentials['mobile']);
+            $credentials ['mobile'] = $this->normalizeMobile($credentials['mobile']);
         }
 
         return $credentials;
+    }
+
+    /**
+     * Sanitize an email address before verifying or saving to the database.
+     * This method will likely be called multiple times per user, so it *must*
+     * provide the same result if so.
+     *
+     * @param string $email
+     * @return string
+     */
+    public function normalizeEmail($email)
+    {
+        return trim(strtolower($email));
+    }
+
+    /**
+     * Sanitize a mobile number before verifying or saving to the database.
+     * This method will likely be called multiple times per user, so it *must*
+     * provide the same result if so.
+     *
+     * @param string $mobile
+     * @return string
+     */
+    public function normalizeMobile($mobile)
+    {
+        return preg_replace('/[^0-9]/', '', $mobile);
+    }
+
+    /**
+     * Confirm that the given value is an e-mail address.
+     *
+     * @param string $value
+     * @return bool
+     */
+    protected function isEmail($value)
+    {
+        return filter_var(trim($value), FILTER_VALIDATE_EMAIL) !== false;
     }
 
     /**
