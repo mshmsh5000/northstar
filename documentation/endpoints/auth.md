@@ -15,10 +15,13 @@ In addition to the password, either mobile number or email is required.
 // Content-Type: application/json
  
 {
-  /* Required if 'mobile' is not provided */
+  /* Shortcut for either 'email' or 'mobile', inferred by format */
+  username: String,
+
+  /* Required if 'username' or 'mobile' are not provided */
   email: String,
 
-  /* Required if 'email' is not provided */
+  /* Required if 'username' or 'email' are not provided */
   mobile: String,
 
   /* Required */
@@ -32,7 +35,7 @@ curl -X POST \
   -H "X-DS-REST-API-Key: ${REST_API_KEY}" \
   -H "Content-Type: application/json" \
   -H "Accept: application/json" \
-  -d '{"email": "test@example.com", "password": "${PASSWORD}"}' \
+  -d '{"username": "test@example.com", "password": "${PASSWORD}"}' \
   https://northstar.dosomething.org/v1/auth/token
 ```
 
@@ -73,10 +76,13 @@ In addition to the password, either mobile number or email is required.
 // Content-Type: application/json
  
 {
-  /* Required if 'mobile' is not provided */
+  /* Shortcut for either 'email' or 'mobile', inferred by format */
+  username: String,
+
+  /* Required if 'username' or 'mobile' are not provided */
   email: String,
 
-  /* Required if 'email' is not provided */
+  /* Required if 'username' or 'email' are not provided */
   mobile: String,
 
   /* Required */
