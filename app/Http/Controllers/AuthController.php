@@ -54,6 +54,7 @@ class AuthController extends Controller
      */
     public function createToken(Request $request)
     {
+        $request = $this->registrar->normalize($request);
         $this->validate($request, $this->loginRules);
 
         $credentials = $request->only('email', 'mobile', 'password');
