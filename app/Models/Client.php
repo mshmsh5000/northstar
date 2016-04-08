@@ -9,7 +9,7 @@ use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 /**
  * The Client model. These identify the "client application" making
  * a request, and their maximum allowed scopes.
- * 
+ *
  * @property string client_id
  * @property string client_secret
  * @property array $scope
@@ -35,7 +35,7 @@ class Client extends Model
      * @var bool
      */
     public $incrementing = false;
-    
+
     /**
      * The database collection used by the model.
      *
@@ -75,7 +75,7 @@ class Client extends Model
      * Create a new API key.
      *
      * @param $attributes
-     * @return Client 
+     * @return Client
      */
     public function __construct(array $attributes = [])
     {

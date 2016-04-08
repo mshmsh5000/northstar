@@ -44,7 +44,7 @@ $router->group(['prefix' => 'v1'], function () use ($router) {
     // API Clients
     $router->resource('clients', 'ClientController');
     $router->resource('keys', 'ClientController');
-    
+
     $router->get('scopes', function () {
         return \Northstar\Models\Client::scopes();
     });
