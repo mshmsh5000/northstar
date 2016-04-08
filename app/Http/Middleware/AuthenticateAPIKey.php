@@ -2,7 +2,7 @@
 
 namespace Northstar\Http\Middleware;
 
-use Northstar\Models\ApiKey;
+use Northstar\Models\Client;
 use Closure;
 
 class AuthenticateAPIKey
@@ -17,7 +17,7 @@ class AuthenticateAPIKey
      */
     public function handle($request, Closure $next, $scope = 'user')
     {
-        ApiKey::gate($scope);
+        Client::gate($scope);
 
         return $next($request);
     }

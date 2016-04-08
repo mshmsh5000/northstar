@@ -41,9 +41,11 @@ $router->group(['prefix' => 'v1'], function () use ($router) {
     $router->resource('signups', 'SignupController', ['only' => ['index', 'show', 'store']]);
     $router->resource('reportbacks', 'ReportbackController', ['only' => ['index', 'show', 'store']]);
 
-    // API Keys
-    $router->resource('keys', 'KeyController');
+    // API Clients
+    $router->resource('clients', 'ClientController');
+    $router->resource('keys', 'ClientController');
+    
     $router->get('scopes', function () {
-        return \Northstar\Models\ApiKey::scopes();
+        return \Northstar\Models\Client::scopes();
     });
 });

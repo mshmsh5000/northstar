@@ -3,21 +3,21 @@
 namespace Northstar\Http\Controllers;
 
 use Illuminate\Http\Request;
-use Northstar\Http\Transformers\ApiKeyTransformer;
-use Northstar\Models\ApiKey;
+use Northstar\Http\Transformers\ClientTransformer;
+use Northstar\Models\Client;
 use Symfony\Component\HttpKernel\Exception\HttpException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
-class KeyController extends Controller
+class ClientController extends Controller
 {
     /**
-     * @var ApiKeyTransformer
+     * @var ClientTransformer
      */
     protected $transformer;
 
-    public function __construct(ApiKeyTransformer $transformer)
+    public function __construct(ClientTransformer $transformer)
     {
-        $this->transformer = new ApiKeyTransformer();
+        $this->transformer = new ClientTransformer();
 
         $this->middleware('key:admin');
     }
@@ -30,7 +30,7 @@ class KeyController extends Controller
      */
     public function index()
     {
-        $keys = ApiKey::all();
+        $keys = Client::all();
 
         return $this->collection($keys);
     }
@@ -50,7 +50,7 @@ class KeyController extends Controller
             'scope' => 'array|scope', // @see ApiKey::validateScopes
         ]);
 
-        $key = ApiKey::create($request->all());
+        $key = Client::create($request->all());
 
         return $this->item($key, 201);
     }
@@ -65,7 +65,7 @@ class KeyController extends Controller
     public function show($id)
     {
         // Find the user.
-        $key = ApiKey::where('api_key', $id)->first();
+        $key = Client::where('api_key', $id)->first();
         if (! $key) {
             throw new NotFoundHttpException('The resource does not exist.');
         }
@@ -87,7 +87,7 @@ class KeyController extends Controller
             'scope' => 'array|scope', // @see ApiKey::validateScopes
         ]);
 
-        $key = ApiKey::where('api_key', $key)->firstOrFail();
+        $key = Client::where('api_key', $key)->firstOrFail();
         $key->update($request->all());
 
         return $this->item($key);
@@ -100,7 +100,7 @@ class KeyController extends Controller
      */
     public function destroy($key)
     {
-        $key = ApiKey::where('api_key', $key)->firstOrFail();
+        $key = Client::where('api_key', $key)->firstOrFail();
         $key->delete();
 
         return $this->respond('Deleted key.', 200);

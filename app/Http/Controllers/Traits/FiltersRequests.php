@@ -2,7 +2,7 @@
 
 namespace Northstar\Http\Controllers\Traits;
 
-use Northstar\Models\ApiKey;
+use Northstar\Models\Client;
 
 trait FiltersRequests
 {
@@ -67,7 +67,7 @@ trait FiltersRequests
         }
 
         // Only "admin" keys should be able to search
-        ApiKey::gate('admin');
+        Client::gate('admin');
 
         // Searches may only be performed on indexed fields.
         $searches = array_intersect_key($searches, array_flip($indexes));
