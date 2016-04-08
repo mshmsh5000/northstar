@@ -25,6 +25,9 @@ $router->group(['prefix' => 'v1'], function () use ($router) {
     $router->post('auth/verify', 'AuthController@verify');
     $router->post('auth/register', 'AuthController@register');
 
+    $router->post('oauth/token', 'OAuthController@createToken');
+    $router->delete('oauth/token', 'OAuthController@invalidateToken');
+
     // Users
     $router->resource('users', 'UserController', ['except' => ['show', 'update']]);
     $router->get('users/{term}/{id}', 'UserController@show');
