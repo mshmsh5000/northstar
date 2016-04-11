@@ -52,13 +52,29 @@ class OAuthTest extends TestCase
     /**
      * Test that the client credentials grant rejects invalid credentials.
      */
+    public function testClientCredentialsGrantWithFakeClient()
+    {
+        Client::create(['app_id' => 'phpunit']);
+
+        $this->post('v2/auth/token', [
+            'grant_type' => 'client_credentials',
+            'client_id' => 'totally_legit_client',
+            'client_secret' => 'banana',
+        ]);
+
+        $this->assertResponseStatus(401);
+    }
+
+    /**
+     * Test that the client credentials grant rejects invalid credentials.
+     */
     public function testClientCredentialsGrantWithInvalidCredentials()
     {
         Client::create(['app_id' => 'phpunit']);
 
         $this->post('v2/auth/token', [
             'grant_type' => 'client_credentials',
-            'client_id' => 'totally_legit_app',
+            'client_id' => 'phpunit',
             'client_secret' => 'banana',
         ]);
 
