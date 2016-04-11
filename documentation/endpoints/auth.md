@@ -1,5 +1,8 @@
 # Authentication Endpoints
 
+> :construction: New [OAuth endpoints](endpoints/oauth.md) are under construction and will be the preferred way to authenticate clients
+> across all services once they're shipped. Stay tuned!
+
 ## Create Token
 
 This will verify a user's credentials and create an authentication token, which can be used to sign future requests on the user's behalf. If invalid credentials are provided, this endpoint will return a `401 Unauthorized` error.

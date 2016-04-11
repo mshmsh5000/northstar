@@ -6,10 +6,11 @@ header. API keys can be managed in [Aurora](https://aurora.dosomething.org/keys)
 
 Sorry, there's no public API access... yet!
 
-### API Key Scopes
-API keys are granted scopes to limit their privileges. This allows us to differentiate "trusted" clients
+### Client Scopes
+Clients are granted scopes to limit their privileges. This allows us to differentiate "trusted" clients
 (internal applications like [Phoenix](https://www.dosomething.org) or [Aurora](https://aurora.dosomething.org))
-from "untrusted" clients that operate over a public network like the [mobile app](https://app.dosomething.org).
+from "untrusted" clients that operate over a public network like the [mobile app](https://app.dosomething.org), and
+limit the amount of damage that can be done if a client is compromised.
 
 Scope   | Description
 ------- | -----------
@@ -22,6 +23,9 @@ A machine-friendly list of scopes and their descriptions can be retrieved from t
 ### Authorization
 The [authorization endpoints](endpoints/auth.md) may be used to request an authorization token so that requests can be
 made on behalf of a particular user. Endpoints which act on a user's behalf are restricted to `user` scoped API keys.
+
+> :construction: New [OAuth endpoints](endpoints/oauth.md) are under construction and will be the preferred way to authenticate clients
+> across all services once they're shipped. Stay tuned!
 
 Authorization can be provided as the `Authorization` header of a request, or optionally as a query parameter:
 ```sh
