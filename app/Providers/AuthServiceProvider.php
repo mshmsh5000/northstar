@@ -7,6 +7,12 @@ use Illuminate\Contracts\Auth\Access\Gate as GateContract;
 use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
 use League\OAuth2\Server\Grant\ClientCredentialsGrant;
 use League\OAuth2\Server\Grant\PasswordGrant;
+use League\OAuth2\Server\Grant\RefreshTokenGrant;
+use League\OAuth2\Server\Repositories\AccessTokenRepositoryInterface;
+use League\OAuth2\Server\Repositories\ClientRepositoryInterface;
+use League\OAuth2\Server\Repositories\RefreshTokenRepositoryInterface;
+use League\OAuth2\Server\Repositories\ScopeRepositoryInterface;
+use League\OAuth2\Server\Repositories\UserRepositoryInterface;
 use League\OAuth2\Server\Server as OAuthServer;
 use Northstar\Auth\NorthstarTokenGuard;
 use Northstar\Auth\Storage\AccessTokenRepository;
@@ -46,32 +52,30 @@ class AuthServiceProvider extends ServiceProvider
         $auth->extend('northstar-token', function ($app, $name, array $config) use ($auth) {
             return new NorthstarTokenGuard($auth->createUserProvider($config['provider']), request());
         });
-        
+
+        $this->app->bind(UserRepositoryInterface::class, UserRepository::class);
+        $this->app->bind(ClientRepositoryInterface::class, ClientRepository::class);
+        $this->app->bind(ScopeRepositoryInterface::class, ScopeRepository::class);
+        $this->app->bind(RefreshTokenRepositoryInterface::class, RefreshTokenRepository::class);
+        $this->app->bind(AccessTokenRepositoryInterface::class, AccessTokenRepository::class);
+
         // Configure the OAuth authorization server
         $this->app->singleton(OAuthServer::class, function() {
-            $userRepository = new UserRepository();
-            $refreshTokenRepository = new RefreshTokenRepository();
-
             $server = new OAuthServer(
-                new ClientRepository(),
-                new AccessTokenRepository(),
-                new ScopeRepository(),
-                app_path('storage/keys/private.key'),
-                app_path('storage/keys/public.key')
+                app(ClientRepositoryInterface::class),
+                app(AccessTokenRepositoryInterface::class),
+                app(ScopeRepositoryInterface::class),
+                base_path('storage/keys/private.key'),
+                base_path('storage/keys/public.key')
             );
 
-            // Enable the password grant on the server with an access token TTL of 1 hour
-            $server->enableGrantType(
-                new PasswordGrant($userRepository, $refreshTokenRepository),
-                new DateInterval('PT1H')
-            );
+            // Enable the password & client credentials grants w/ an access token TTL of 1 hour.
+            $passwordGrant = app(PasswordGrant::class);
+            $server->enableGrantType($passwordGrant, new DateInterval('PT1H'));
 
-            // Enable the client credentials grant on the server with a token TTL of 1 hour
-            $server->enableGrantType(
-                new ClientCredentialsGrant(),
-                new DateInterval('PT1H')
-            );
-            
+            $clientCredentialsGrant = app(ClientCredentialsGrant::class);
+            $server->enableGrantType($clientCredentialsGrant, new DateInterval('PT1H'));
+
             return $server;
         });
 
