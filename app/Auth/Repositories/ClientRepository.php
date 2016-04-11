@@ -24,11 +24,11 @@ class ClientRepository implements ClientRepositoryInterface
             'app_id' => $clientIdentifier,
             'api_key' => $clientSecret,
         ])->first();
-        
-        if(! $model) {
+
+        if (! $model) {
             return null;
         }
-        
+
         return new ClientEntity($model);
     }
 }
