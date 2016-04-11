@@ -35,7 +35,7 @@ class OAuthController extends Controller
     public function createToken(ServerRequestInterface $request, ResponseInterface $response)
     {
         try {
-            return $this->oauth->respondToRequest($request, $response);
+            return $this->oauth->respondToAccessTokenRequest($request, $response);
         } catch (OAuthServerException $exception) {
             // @TODO: Move to Handler.php!
             return $exception->generateHttpResponse($response);

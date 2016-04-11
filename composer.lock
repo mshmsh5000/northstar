@@ -4,8 +4,8 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "7cf0d3a087ecc61c81aba11f2427c325",
-    "content-hash": "b34e92a1d90b69e266a3fd69a017f289",
+    "hash": "37d6badccf1b398193d8eddba6453256",
+    "content-hash": "ba4f466fa5f4b2740619137a2091fb01",
     "packages": [
         {
             "name": "aws/aws-sdk-php",
@@ -1183,19 +1183,20 @@
         },
         {
             "name": "league/oauth2-server",
-            "version": "5.0.0-RC1",
+            "version": "5.0.0-RC2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/thephpleague/oauth2-server.git",
-                "reference": "95335953947bac33f1a725d65d1b81d0401afb2a"
+                "reference": "f9bde237998a83e67ead86f033f9a76bad3a2f57"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/thephpleague/oauth2-server/zipball/95335953947bac33f1a725d65d1b81d0401afb2a",
-                "reference": "95335953947bac33f1a725d65d1b81d0401afb2a",
+                "url": "https://api.github.com/repos/thephpleague/oauth2-server/zipball/f9bde237998a83e67ead86f033f9a76bad3a2f57",
+                "reference": "f9bde237998a83e67ead86f033f9a76bad3a2f57",
                 "shasum": ""
             },
             "require": {
+                "ext-openssl": "*",
                 "lcobucci/jwt": "^3.1",
                 "league/event": "^2.1",
                 "paragonie/random_compat": "^1.1",
@@ -1207,15 +1208,8 @@
                 "lncd/oauth2": "*"
             },
             "require-dev": {
-                "league/plates": "^3.1",
                 "phpunit/phpunit": "^4.8",
                 "zendframework/zend-diactoros": "^1.0"
-            },
-            "suggest": {
-                "league/plates": "Used for parsing authorization code templates",
-                "mustache/mustache": "Used for parsing authorization code templates",
-                "smarty/smarty": "Used for parsing authorization code templates",
-                "twig/twig": "Used for parsing authorization code templates"
             },
             "type": "library",
             "extra": {
@@ -1241,7 +1235,7 @@
                 }
             ],
             "description": "A lightweight and powerful OAuth 2.0 authorization and resource server library with support for all the core specification grants. This library will allow you to secure your API with OAuth and allow your applications users to approve apps that want to access their data from your API.",
-            "homepage": "http://oauth2.thephpleague.com/",
+            "homepage": "https://oauth2.thephpleague.com/",
             "keywords": [
                 "Authentication",
                 "api",
@@ -1257,7 +1251,7 @@
                 "secure",
                 "server"
             ],
-            "time": "2016-03-24 19:37:07"
+            "time": "2016-04-10 16:18:01"
         },
         {
             "name": "monolog/monolog",
