@@ -7,7 +7,6 @@ use League\OAuth2\Server\Repositories\RefreshTokenRepositoryInterface;
 
 class RefreshTokenRepository implements RefreshTokenRepositoryInterface
 {
-
     /**
      * Create a new refresh token_name.
      *

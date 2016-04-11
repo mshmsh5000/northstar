@@ -20,17 +20,17 @@ $router->get('/status', function () {
 // https://nortstar.dosomething.org/v2/
 $router->group(['prefix' => 'v2'], function () use ($router) {
     // **Only enable these endpoints in development, for now!**
-    if((config('app.debug') === false)) {
+    if ((config('app.debug') === false)) {
         return;
     }
-    
+
     // Authentication
     $router->post('auth/token', 'OAuthController@createToken');
     $router->delete('auth/token', 'OAuthController@invalidateToken');
-    
+
     // Users
     // ...
-    
+
     // Profile
     // ...
 
@@ -45,7 +45,7 @@ $router->group(['prefix' => 'v1'], function () use ($router) {
     $router->post('auth/invalidate', 'AuthController@invalidateToken');
     $router->post('auth/verify', 'AuthController@verify');
     $router->post('auth/register', 'AuthController@register');
-    
+
     // Users
     $router->resource('users', 'UserController', ['except' => ['show', 'update']]);
     $router->get('users/{term}/{id}', 'UserController@show');

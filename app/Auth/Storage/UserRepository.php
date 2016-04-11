@@ -7,7 +7,6 @@ use League\OAuth2\Server\Repositories\UserRepositoryInterface;
 
 class UserRepository implements UserRepositoryInterface
 {
-
     /**
      * Get a user entity.
      *
@@ -18,12 +17,7 @@ class UserRepository implements UserRepositoryInterface
      *
      * @return \League\OAuth2\Server\Entities\Interfaces\UserEntityInterface
      */
-    public function getUserEntityByUserCredentials(
-        $username,
-        $password,
-        $grantType,
-        ClientEntityInterface $clientEntity
-    )
+    public function getUserEntityByUserCredentials($username, $password, $grantType, ClientEntityInterface $clientEntity)
     {
         // TODO: Implement getUserEntityByUserCredentials() method.
     }

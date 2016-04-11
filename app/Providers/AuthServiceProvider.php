@@ -7,7 +7,6 @@ use Illuminate\Contracts\Auth\Access\Gate as GateContract;
 use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
 use League\OAuth2\Server\Grant\ClientCredentialsGrant;
 use League\OAuth2\Server\Grant\PasswordGrant;
-use League\OAuth2\Server\Grant\RefreshTokenGrant;
 use League\OAuth2\Server\Repositories\AccessTokenRepositoryInterface;
 use League\OAuth2\Server\Repositories\ClientRepositoryInterface;
 use League\OAuth2\Server\Repositories\RefreshTokenRepositoryInterface;
@@ -60,7 +59,7 @@ class AuthServiceProvider extends ServiceProvider
         $this->app->bind(AccessTokenRepositoryInterface::class, AccessTokenRepository::class);
 
         // Configure the OAuth authorization server
-        $this->app->singleton(OAuthServer::class, function() {
+        $this->app->singleton(OAuthServer::class, function () {
             $server = new OAuthServer(
                 app(ClientRepositoryInterface::class),
                 app(AccessTokenRepositoryInterface::class),

@@ -6,7 +6,6 @@ use League\OAuth2\Server\Repositories\ClientRepositoryInterface;
 
 class ClientRepository implements ClientRepositoryInterface
 {
-
     /**
      * Get a client.
      *

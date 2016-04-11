@@ -8,7 +8,6 @@ use League\OAuth2\Server\Repositories\ScopeRepositoryInterface;
 
 class ScopeRepository implements ScopeRepositoryInterface
 {
-
     /**
      * Return information about a scope.
      *
@@ -32,12 +31,7 @@ class ScopeRepository implements ScopeRepositoryInterface
      *
      * @return \League\OAuth2\Server\Entities\Interfaces\ScopeEntityInterface[]
      */
-    public function finalizeScopes(
-        array $scopes,
-        $grantType,
-        ClientEntityInterface $clientEntity,
-        $userIdentifier = null
-    )
+    public function finalizeScopes(array $scopes, $grantType, ClientEntityInterface $clientEntity, $userIdentifier = null)
     {
         // TODO: Implement finalizeScopes() method.
     }

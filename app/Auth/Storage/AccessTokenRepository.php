@@ -7,7 +7,6 @@ use League\OAuth2\Server\Repositories\AccessTokenRepositoryInterface;
 
 class AccessTokenRepository implements AccessTokenRepositoryInterface
 {
-
     /**
      * Persists a new access token to permanent storage.
      *
