@@ -17,7 +17,7 @@ class ClientController extends Controller
 
     public function __construct(ClientTransformer $transformer)
     {
-        $this->transformer = new ClientTransformer();
+        $this->transformer = $transformer;
 
         $this->middleware('key:admin');
     }
