@@ -1,6 +1,6 @@
 <?php
 
-use Northstar\Models\ApiKey;
+use Northstar\Models\Client;
 use Northstar\Models\User;
 
 class TestCase extends Illuminate\Foundation\Testing\TestCase
@@ -50,13 +50,13 @@ class TestCase extends Illuminate\Foundation\Testing\TestCase
     /**
      * Use the given API key for this request.
      *
-     * @param ApiKey $key
+     * @param Client $client
      * @return $this
      */
-    public function withApiKey(ApiKey $key)
+    public function withApiKey(Client $client)
     {
         $this->serverVariables = array_replace($this->serverVariables, [
-            'HTTP_X-DS-REST-API-Key' => $key->api_key,
+            'HTTP_X-DS-REST-API-Key' => $client->client_secret,
         ]);
 
         return $this;
@@ -70,12 +70,12 @@ class TestCase extends Illuminate\Foundation\Testing\TestCase
      */
     public function withScopes(array $scopes)
     {
-        $key = ApiKey::create([
+        $client = Client::create([
             'app_id' => 'testing'.$this->faker->uuid,
             'scope' => $scopes,
         ]);
 
-        $this->withApiKey($key);
+        $this->withApiKey($client);
 
         return $this;
     }

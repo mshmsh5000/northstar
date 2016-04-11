@@ -7,17 +7,35 @@ use Jenssegers\Mongodb\Model;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 
 /**
- * The API key model. These identify the "client application" making
- * a request, and their associated privileges.
+ * The Client model. These identify the "client application" making
+ * a request, and their maximum allowed scopes.
  *
- * @property string $id
+ * @property string client_id
+ * @property string client_secret
+ * @property array $scope
+ *
+ * Deprecated properties:
  * @property string $_id
+ * @property string $id
  * @property string $app_id
  * @property string $api_key
- * @property array $scope
  */
-class ApiKey extends Model
+class Client extends Model
 {
+    /**
+     * The primary key for the model.
+     *
+     * @var string
+     */
+    protected $primaryKey = 'api_key';
+
+    /**
+     * Indicates if the IDs are auto-incrementing.
+     *
+     * @var bool
+     */
+    public $incrementing = false;
+
     /**
      * The database collection used by the model.
      *
@@ -57,7 +75,7 @@ class ApiKey extends Model
      * Create a new API key.
      *
      * @param $attributes
-     * @return ApiKey
+     * @return Client
      */
     public function __construct(array $attributes = [])
     {
@@ -65,15 +83,33 @@ class ApiKey extends Model
 
         // Automatically set random API key. This field *may* be manually
         // set when seeding the database, so we first check if empty.
-        static::creating(function (ApiKey $apiKey) {
-            if (empty($apiKey->api_key)) {
+        static::creating(function (Client $client) {
+            if (empty($client->api_key)) {
                 do {
                     $key = Str::random(32);
                 } while (static::where('api_key', $key)->exists());
 
-                $apiKey->api_key = $key;
+                $client->api_key = $key;
             }
         });
+    }
+
+    /**
+     * Map 'app_id' to it's OAuth equivalent.
+     * @return string
+     */
+    public function getClientIdAttribute()
+    {
+        return $this->attributes['app_id'];
+    }
+
+    /**
+     * Map 'api_key' to it's OAuth equivalent.
+     * @return string
+     */
+    public function getClientSecretAttribute()
+    {
+        return $this->attributes['api_key'];
     }
 
     /**
