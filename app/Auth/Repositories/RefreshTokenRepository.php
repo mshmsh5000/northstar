@@ -1,16 +1,27 @@
 <?php
 
-namespace Northstar\Auth\Storage;
+namespace Northstar\Auth\Repositories;
 
-use League\OAuth2\Server\Entities\Interfaces\RefreshTokenEntityInterface;
+use League\OAuth2\Server\Entities\RefreshTokenEntityInterface;
 use League\OAuth2\Server\Repositories\RefreshTokenRepositoryInterface;
+use Northstar\Auth\Entities\RefreshTokenEntity;
 
 class RefreshTokenRepository implements RefreshTokenRepositoryInterface
 {
     /**
+     * Creates a new refresh token
+     *
+     * @return RefreshTokenEntityInterface
+     */
+    public function getNewRefreshToken()
+    {
+        return new RefreshTokenEntity();
+    }
+
+    /**
      * Create a new refresh token_name.
      *
-     * @param \League\OAuth2\Server\Entities\Interfaces\RefreshTokenEntityInterface $refreshTokenEntity
+     * @param \League\OAuth2\Server\Entities\RefreshTokenEntityInterface $refreshTokenEntity
      */
     public function persistNewRefreshToken(RefreshTokenEntityInterface $refreshTokenEntity)
     {
@@ -24,7 +35,7 @@ class RefreshTokenRepository implements RefreshTokenRepositoryInterface
      */
     public function revokeRefreshToken($tokenId)
     {
-        // TODO: Implement revokeRefreshToken() method.
+        // We do not allow refresh tokens to be revoked.
     }
 
     /**
@@ -36,6 +47,6 @@ class RefreshTokenRepository implements RefreshTokenRepositoryInterface
      */
     public function isRefreshTokenRevoked($tokenId)
     {
-        // TODO: Implement isRefreshTokenRevoked() method.
+        return false;
     }
 }

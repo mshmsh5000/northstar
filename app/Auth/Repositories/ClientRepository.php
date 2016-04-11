@@ -1,8 +1,10 @@
 <?php
 
-namespace Northstar\Auth\Storage;
+namespace Northstar\Auth\Repositories;
 
 use League\OAuth2\Server\Repositories\ClientRepositoryInterface;
+use Northstar\Auth\Entities\ClientEntity;
+use Northstar\Models\Client;
 
 class ClientRepository implements ClientRepositoryInterface
 {
@@ -13,10 +15,14 @@ class ClientRepository implements ClientRepositoryInterface
      * @param string $grantType The grant type used
      * @param null|string $clientSecret The client's secret (if sent)
      *
-     * @return \League\OAuth2\Server\Entities\Interfaces\ClientEntityInterface
+     * @return \League\OAuth2\Server\Entities\ClientEntityInterface
      */
     public function getClientEntity($clientIdentifier, $grantType, $clientSecret = null)
     {
-        // TODO: Implement getClientEntity() method.
+        // Fetch client from the database & make OAuth2 entity
+        $model = Client::where('app_id', $clientIdentifier)->first();
+        $client = new ClientEntity($model);
+
+        return $client;
     }
 }

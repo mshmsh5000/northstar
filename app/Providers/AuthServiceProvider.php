@@ -14,11 +14,11 @@ use League\OAuth2\Server\Repositories\ScopeRepositoryInterface;
 use League\OAuth2\Server\Repositories\UserRepositoryInterface;
 use League\OAuth2\Server\Server as OAuthServer;
 use Northstar\Auth\NorthstarTokenGuard;
-use Northstar\Auth\Storage\AccessTokenRepository;
-use Northstar\Auth\Storage\ClientRepository;
-use Northstar\Auth\Storage\RefreshTokenRepository;
-use Northstar\Auth\Storage\ScopeRepository;
-use Northstar\Auth\Storage\UserRepository;
+use Northstar\Auth\Repositories\AccessTokenRepository;
+use Northstar\Auth\Repositories\ClientRepository;
+use Northstar\Auth\Repositories\RefreshTokenRepository;
+use Northstar\Auth\Repositories\ScopeRepository;
+use Northstar\Auth\Repositories\UserRepository;
 use Northstar\Models\User;
 use Northstar\Policies\UserPolicy;
 
