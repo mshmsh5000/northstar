@@ -39,7 +39,8 @@ class AccessTokenRepository implements AccessTokenRepositoryInterface
      */
     public function persistNewAccessToken(AccessTokenEntityInterface $accessTokenEntity)
     {
-        // TODO: Implement persistNewAccessToken() method.
+        // Since access tokens are not checked against the database, but instead
+        // verified by their hash, we won't bother persisting them.
     }
 
     /**
@@ -49,18 +50,19 @@ class AccessTokenRepository implements AccessTokenRepositoryInterface
      */
     public function revokeAccessToken($tokenId)
     {
-        // TODO: Implement revokeAccessToken() method.
+        // Access tokens cannot be revoked, since their authenticity is never
+        // verified against the database. Instead, revoke the corresponding
+        // refresh token so another JWT cannot be created.
     }
 
     /**
-     * Check if the access token has been revoked.
+     * Access tokens cannot be revoked.
      *
      * @param string $tokenId
-     *
      * @return bool Return true if this token has been revoked
      */
     public function isAccessTokenRevoked($tokenId)
     {
-        // TODO: Implement isAccessTokenRevoked() method.
+        return false;
     }
 }
