@@ -31,25 +31,6 @@ class ClientEntity implements ClientEntityInterface
     }
 
     /**
-     * Set the client secret.
-     * @param string $secret
-     */
-    public function setSecret($secret)
-    {
-        $this->secret = $secret;
-    }
-
-    /**
-     * Get the hashed client secret
-     *
-     * @return string
-     */
-    public function getSecret()
-    {
-        return $this->secret;
-    }
-
-    /**
      * Get the scopes that are allowed for this client.
      *
      * @return array
@@ -57,15 +38,5 @@ class ClientEntity implements ClientEntityInterface
     public function getAllowedScopes()
     {
         return $this->allowedScopes;
-    }
-
-    /**
-     * Is the client is capable of keeping it's secrets secret?
-     *
-     * @return bool
-     */
-    public function canKeepASecret()
-    {
-        return $this->secret !== null;
     }
 }
