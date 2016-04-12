@@ -32,8 +32,8 @@ class ScopeRepository implements ScopeRepositoryInterface
     }
 
     /**
-     * Given a client, grant type and optional user identifier validate the set of scopes requested are valid and optionally
-     * append additional scopes or remove requested scopes.
+     * Given a client, grant type, and optional user identifier validate the set of requested scopes
+     * are valid and optionally append additional scopes or remove requested scopes.
      *
      * @param ScopeEntityInterface[] $scopes
      * @param string $grantType
@@ -44,21 +44,11 @@ class ScopeRepository implements ScopeRepositoryInterface
      */
     public function finalizeScopes(array $scopes, $grantType, ClientEntityInterface $clientEntity, $userIdentifier = null)
     {
-        // Get a plain array of the requested scopes to compare.
-        $scopes = array_map(function (ScopeEntity $scope) {
-            return $scope->getIdentifier();
-        }, $scopes);
-
-        // Intersect with the list of allowed scopes for that client.
         $allowedScopes = $clientEntity->getAllowedScopes();
-        $filteredScopes = array_intersect($scopes, $allowedScopes);
+        $filteredScopes = array_filter($scopes, function (ScopeEntity $scope) use ($allowedScopes) {
+            return in_array($scope->getIdentifier(), $allowedScopes);
+        });
 
-        // Return an array of filtered ClientEntities
-        return array_map(function ($scope) {
-            $entity = new ScopeEntity();
-            $entity->setIdentifier($scope);
-
-            return $entity;
-        }, $filteredScopes);
+        return $filteredScopes;
     }
 }
