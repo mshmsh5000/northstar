@@ -9,11 +9,6 @@ class ScopeEntity implements ScopeEntityInterface
 {
     use EntityTrait;
 
-    public function __construct($identifier)
-    {
-        $this->setIdentifier($identifier);
-    }
-
     /**
      * Specify data which should be serialized to JSON
      * @link http://php.net/manual/en/jsonserializable.jsonserialize.php

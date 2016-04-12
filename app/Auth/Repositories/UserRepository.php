@@ -35,6 +35,9 @@ class UserRepository implements UserRepositoryInterface
             return null;
         }
 
-        return new UserEntity($user);
+        $entity = new UserEntity();
+        $entity->setIdentifier($user->id);
+
+        return $entity;
     }
 }

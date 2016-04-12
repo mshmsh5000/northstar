@@ -25,7 +25,10 @@ class ScopeRepository implements ScopeRepositoryInterface
             return null;
         }
 
-        return new ScopeEntity($identifier);
+        $entity = new ScopeEntity();
+        $entity->setIdentifier($identifier);
+
+        return $entity;
     }
 
     /**
@@ -52,7 +55,10 @@ class ScopeRepository implements ScopeRepositoryInterface
 
         // Return an array of filtered ClientEntities
         return array_map(function ($scope) {
-            return new ScopeEntity($scope);
+            $entity = new ScopeEntity();
+            $entity->setIdentifier($scope);
+
+            return $entity;
         }, $filteredScopes);
     }
 }

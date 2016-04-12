@@ -5,28 +5,30 @@ namespace Northstar\Auth\Entities;
 use League\OAuth2\Server\Entities\ClientEntityInterface;
 use League\OAuth2\Server\Entities\Traits\ClientTrait;
 use League\OAuth2\Server\Entities\Traits\EntityTrait;
-use Northstar\Models\Client;
 
 class ClientEntity implements ClientEntityInterface
 {
     use EntityTrait, ClientTrait;
 
-    protected $secret;
-
+    /**
+     * The scopes that this client is allowed to claim.
+     * @var array
+     */
     protected $allowedScopes;
 
     /**
      * Make a new OAuth Client entity.
      *
-     * @param Client $client
+     * @param $client_id
+     * @param $scopes
      */
-    public function __construct(Client $client)
+    public function __construct($client_id, $scopes)
     {
-        $this->name = $client->client_id;
-        $this->secret = $client->client_secret;
-        $this->allowedScopes = $client->scope;
+        $this->name = $client_id;
+        $this->allowedScopes = $scopes;
+        $this->identifier = 'dosomething.org';
 
-        // @TODO: Save this per client!
+        // @TODO: Will need this for authentication code flow. Save this per client!
         $this->redirectUri = '';
     }
 
@@ -38,5 +40,15 @@ class ClientEntity implements ClientEntityInterface
     public function getAllowedScopes()
     {
         return $this->allowedScopes;
+    }
+
+    /**
+     * Set the allowed scopes for this client.
+     *
+     * @param $scopes
+     */
+    public function setAllowedScopes($scopes)
+    {
+        $this->allowedScopes = $scopes;
     }
 }
