@@ -9,8 +9,16 @@ use Northstar\Auth\Registrar;
 
 class UserRepository implements UserRepositoryInterface
 {
+    /**
+     * Northstar's user registrar.
+     * @var Registrar
+     */
     protected $registrar;
 
+    /**
+     * Create a new UserRepository.
+     * @param Registrar $registrar
+     */
     public function __construct(Registrar $registrar)
     {
         $this->registrar = $registrar;

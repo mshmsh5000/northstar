@@ -76,6 +76,7 @@ class AuthServiceProvider extends ServiceProvider
             $clientCredentialsGrant = app(ClientCredentialsGrant::class);
             $server->enableGrantType($clientCredentialsGrant, new DateInterval('PT1H'));
 
+            // Enable the refresh token grant w/ an infinite refresh token TTL.
             $refreshTokenGrant = app(RefreshTokenGrant::class);
             $server->enableGrantType($refreshTokenGrant);
 
