@@ -5,6 +5,7 @@ namespace Northstar\Auth\Repositories;
 use League\OAuth2\Server\Entities\RefreshTokenEntityInterface;
 use League\OAuth2\Server\Repositories\RefreshTokenRepositoryInterface;
 use Northstar\Auth\Entities\RefreshTokenEntity;
+use Northstar\Models\RefreshToken;
 
 class RefreshTokenRepository implements RefreshTokenRepositoryInterface
 {
@@ -25,7 +26,12 @@ class RefreshTokenRepository implements RefreshTokenRepositoryInterface
      */
     public function persistNewRefreshToken(RefreshTokenEntityInterface $refreshTokenEntity)
     {
-        // TODO: Implement persistNewRefreshToken() method.
+        RefreshToken::create([
+            'token' => $refreshTokenEntity->getIdentifier(),
+            'scopes' => $refreshTokenEntity->getAccessToken()->getScopes(),
+            'user_id' => $refreshTokenEntity->getAccessToken()->getUserIdentifier(),
+            'client_id' => $refreshTokenEntity->getAccessToken()->getClient()->getIdentifier(),
+        ]);
     }
 
     /**
@@ -35,18 +41,23 @@ class RefreshTokenRepository implements RefreshTokenRepositoryInterface
      */
     public function revokeRefreshToken($tokenId)
     {
-        // We do not allow refresh tokens to be revoked.
+        $model = RefreshToken::where('token', $tokenId)->first();
+
+        if ($model) {
+            $model->delete();
+        }
     }
 
     /**
      * Check if the refresh token has been revoked.
      *
      * @param string $tokenId
-     *
-     * @return bool Return true if this token has been revoked
+     * @return bool
      */
     public function isRefreshTokenRevoked($tokenId)
     {
-        return false;
+        $exists = RefreshToken::where('token', $tokenId)->exists();
+
+        return ! $exists;
     }
 }

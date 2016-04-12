@@ -7,6 +7,7 @@ use Illuminate\Contracts\Auth\Access\Gate as GateContract;
 use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
 use League\OAuth2\Server\Grant\ClientCredentialsGrant;
 use League\OAuth2\Server\Grant\PasswordGrant;
+use League\OAuth2\Server\Grant\RefreshTokenGrant;
 use League\OAuth2\Server\Repositories\AccessTokenRepositoryInterface;
 use League\OAuth2\Server\Repositories\ClientRepositoryInterface;
 use League\OAuth2\Server\Repositories\RefreshTokenRepositoryInterface;
@@ -74,6 +75,9 @@ class AuthServiceProvider extends ServiceProvider
 
             $clientCredentialsGrant = app(ClientCredentialsGrant::class);
             $server->enableGrantType($clientCredentialsGrant, new DateInterval('PT1H'));
+
+            $refreshTokenGrant = app(RefreshTokenGrant::class);
+            $server->enableGrantType($refreshTokenGrant);
 
             return $server;
         });
