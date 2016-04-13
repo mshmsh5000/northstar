@@ -68,7 +68,7 @@ class OAuthTest extends TestCase
         $this->post('v2/auth/token', [
             'grant_type' => 'client_credentials',
             'client_id' => 'totally_legit_client',
-            'client_secret' => 'banana',
+            'client_secret' => 'banana', // <-- not the real client secret
         ]);
 
         $this->assertResponseStatus(401);
@@ -104,6 +104,62 @@ class OAuthTest extends TestCase
         ]);
 
         $this->assertResponseStatus(401);
+    }
+
+    /**
+     * Test that clients can be granted a subset of their allowed scopes.
+     */
+    public function testRequestSubsetOfClientScopes()
+    {
+        $client = Client::create(['app_id' => 'phpunit', 'scope' => ['admin', 'user']]);
+
+        $this->post('v2/auth/token', [
+            'grant_type' => 'client_credentials',
+            'client_id' => 'phpunit',
+            'client_secret' => $client->client_secret,
+            'scope' => 'user',
+        ]);
+
+        // We should receive a token with only the requested scopes.
+        $jwt = (new \Lcobucci\JWT\Parser())->parse($this->decodeResponseJson()['access_token']);
+        $this->assertSame(['user'], $jwt->getClaim('scopes'));
+    }
+
+    /**
+     * Test that clients cannot be granted a scope that hasn't been
+     * whitelisted for that client.
+     */
+    public function testCantRequestDisallowedClientScope()
+    {
+        $client = Client::create(['app_id' => 'phpunit', 'scope' => ['user']]);
+
+        $this->post('v2/auth/token', [
+            'grant_type' => 'client_credentials',
+            'client_id' => 'phpunit',
+            'client_secret' => $client->client_secret,
+            'scope' => 'user admin',
+        ]);
+
+        // We should receive a token, but *not* with the disallowed scope
+        $jwt = (new \Lcobucci\JWT\Parser())->parse($this->decodeResponseJson()['access_token']);
+        $this->assertSame(['user'], $jwt->getClaim('scopes'));
+    }
+
+    /**
+     * Test that clients cannot be granted a scope that doesn't exist.
+     */
+    public function testCantRequestFakeClientScope()
+    {
+        $client = Client::create(['app_id' => 'phpunit', 'scope' => ['user']]);
+
+        $this->post('v2/auth/token', [
+            'grant_type' => 'client_credentials',
+            'client_id' => 'phpunit',
+            'client_secret' => $client->client_secret,
+            'scope' => 'dog',
+        ]);
+
+        $this->assertResponseStatus(400);
     }
 
     /**
