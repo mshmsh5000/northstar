@@ -2,7 +2,6 @@
 
 namespace Northstar\Http\Controllers;
 
-use League\OAuth2\Server\Exception\OAuthServerException;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use League\OAuth2\Server\Server as OAuthServer;
@@ -25,8 +24,8 @@ class OAuthController extends Controller
     }
 
     /**
-     * Authenticate a registered user based on the given credentials,
-     * and return an authentication token.
+     * Authenticate a registered user using one of the supported OAuth
+     * grants and return token details.
      *
      * @param ServerRequestInterface $request
      * @param ResponseInterface $response
@@ -34,23 +33,17 @@ class OAuthController extends Controller
      */
     public function createToken(ServerRequestInterface $request, ResponseInterface $response)
     {
-        try {
-            return $this->oauth->respondToAccessTokenRequest($request, $response);
-        } catch (OAuthServerException $exception) {
-            // @TODO: Move to Handler.php!
-            return $exception->generateHttpResponse($response);
-        }
+        return $this->oauth->respondToAccessTokenRequest($request, $response);
     }
 
     /**
-     * Logout the current user by invalidating their session token.
+     * Logout the current user by invalidating their refresh token.
      *
-     * @param ServerRequestInterface $request
-     * @param ResponseInterface $response
      * @return \Illuminate\Http\Response
      */
-    public function invalidateToken(ServerRequestInterface $request, ResponseInterface $response)
+    public function invalidateToken()
     {
-        // ...
+        // @TODO: Implement this!
+        return response('Not yet implemented.', 501);
     }
 }
