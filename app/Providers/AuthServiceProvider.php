@@ -69,16 +69,17 @@ class AuthServiceProvider extends ServiceProvider
                 base_path('storage/keys/public.key')
             );
 
-            // Enable the password & client credentials grants w/ an access token TTL of 1 hour.
-            $passwordGrant = app(PasswordGrant::class);
-            $server->enableGrantType($passwordGrant, new DateInterval('PT1H'));
+            // Define which OAuth grants we'll accept.
+            $grants = [
+                PasswordGrant::class,
+                ClientCredentialsGrant::class,
+                RefreshTokenGrant::class,
+            ];
 
-            $clientCredentialsGrant = app(ClientCredentialsGrant::class);
-            $server->enableGrantType($clientCredentialsGrant, new DateInterval('PT1H'));
-
-            // Enable the refresh token grant w/ an infinite refresh token TTL.
-            $refreshTokenGrant = app(RefreshTokenGrant::class);
-            $server->enableGrantType($refreshTokenGrant);
+            // Enable each grant w/ an access token TTL of 1 hour.
+            foreach ($grants as $grant) {
+                $server->enableGrantType(app($grant), new DateInterval('PT1H'));
+            }
 
             return $server;
         });
