@@ -36,6 +36,11 @@ $router->group(['prefix' => 'v2'], function () use ($router) {
 
     // OAuth Clients
     $router->resource('clients', 'ClientController');
+
+    // Scopes
+    $router->get('scopes', function () {
+        return \Northstar\Models\Client::scopes();
+    });
 });
 
 // https://northstar.dosomething.org/v1/
@@ -66,6 +71,11 @@ $router->group(['prefix' => 'v1'], function () use ($router) {
     $router->resource('keys', 'ClientController');
 
     $router->get('scopes', function () {
-        return \Northstar\Models\Client::scopes();
+        $scopes = \Northstar\Models\Client::scopes();
+
+        // Format as a single key-value array to keep compatibility.
+        return collect($scopes)->map(function ($scope) {
+            return $scope['description'];
+        });
     });
 });
