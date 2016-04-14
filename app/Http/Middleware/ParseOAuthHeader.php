@@ -2,7 +2,6 @@
 
 namespace Northstar\Http\Middleware;
 
-use League\OAuth2\Server\Exception\OAuthServerException;
 use League\OAuth2\Server\Server as OAuthServer;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;

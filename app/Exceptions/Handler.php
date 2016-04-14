@@ -55,6 +55,7 @@ class Handler extends ExceptionHandler
         // convert it to a standard Symfony HttpFoundation response and return.
         if ($e instanceof OAuthServerException) {
             $psrResponse = $e->generateHttpResponse(app(ResponseInterface::class));
+
             return (new HttpFoundationFactory())->createResponse($psrResponse);
         }
 
