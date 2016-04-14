@@ -15,7 +15,9 @@ class OAuthController extends Controller
     protected $oauth;
 
     /**
-     * AuthController constructor.
+     * Make a new OAuthController, inject dependencies,
+     * and set middleware for this controller's methods.
+     *
      * @param OAuthServer $oauth
      */
     public function __construct(OAuthServer $oauth)

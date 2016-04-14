@@ -14,7 +14,6 @@ class ScopeRepository implements ScopeRepositoryInterface
      * Return information about a scope.
      *
      * @param string $identifier The scope identifier
-     *
      * @return \League\OAuth2\Server\Entities\ScopeEntityInterface
      */
     public function getScopeEntityByIdentifier($identifier)
@@ -39,7 +38,6 @@ class ScopeRepository implements ScopeRepositoryInterface
      * @param string $grantType
      * @param \League\OAuth2\Server\Entities\ClientEntityInterface $clientEntity
      * @param null|string $userIdentifier
-     *
      * @return \League\OAuth2\Server\Entities\ScopeEntityInterface[]
      */
     public function finalizeScopes(array $scopes, $grantType, ClientEntityInterface $clientEntity, $userIdentifier = null)

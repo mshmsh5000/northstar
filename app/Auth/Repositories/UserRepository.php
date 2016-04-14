@@ -17,6 +17,7 @@ class UserRepository implements UserRepositoryInterface
 
     /**
      * Create a new UserRepository.
+     *
      * @param Registrar $registrar
      */
     public function __construct(Registrar $registrar)
@@ -31,7 +32,6 @@ class UserRepository implements UserRepositoryInterface
      * @param string $password
      * @param string $grantType The grant type used
      * @param \League\OAuth2\Server\Entities\ClientEntityInterface $clientEntity
-     *
      * @return \League\OAuth2\Server\Entities\UserEntityInterface
      */
     public function getUserEntityByUserCredentials($username, $password, $grantType, ClientEntityInterface $clientEntity)
