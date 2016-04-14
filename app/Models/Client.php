@@ -57,8 +57,12 @@ class Client extends Model
      * @var array
      */
     protected static $scopes = [
-        'admin' => 'Allows "administrative" actions that should not be user-accessible, like deleting user records.',
-        'user' => 'Allows actions to be made on a user\'s behalf.',
+        'admin' => [
+            'description' => 'Allows "administrative" actions that should not be user-accessible, like deleting user records.',
+        ],
+        'user' => [
+            'description' => 'Allows actions to be made on a user\'s behalf.',
+        ],
     ];
 
     /**

@@ -16,6 +16,9 @@ Endpoint                  | Functionality                                       
 `POST /auth/invalidate`   | [Invalidate Auth Token](endpoints/auth.md#invalidate-token)  | `user`
 `POST /auth/register`     | [Register User](endpoints/auth.md#register-user)             | `user`
 
+> :construction: New [OAuth endpoints](endpoints/oauth.md) are under construction and will be the preferred way to authenticate clients
+> across all services once they're shipped. Stay tuned!
+
 #### Users
 Endpoint                                     | Functionality                                            | Required Scope
 -------------------------------------------- | -------------------------------------------------------- | --------------

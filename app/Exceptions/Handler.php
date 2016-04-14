@@ -5,9 +5,11 @@ namespace Northstar\Exceptions;
 use Illuminate\Validation\ValidationException;
 use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
+use League\OAuth2\Server\Exception\OAuthServerException;
 use Symfony\Component\HttpKernel\Exception\HttpException;
 use Illuminate\Foundation\Validation\ValidationException as LegacyValidationException;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
+use Psr\Http\Message\ResponseInterface;
 use Exception;
 
 class Handler extends ExceptionHandler
@@ -20,6 +22,7 @@ class Handler extends ExceptionHandler
     protected $dontReport = [
         AuthorizationException::class,
         HttpException::class,
+        OAuthServerException::class,
         ModelNotFoundException::class,
         ValidationException::class,
         LegacyValidationException::class,
@@ -47,6 +50,12 @@ class Handler extends ExceptionHandler
      */
     public function render($request, Exception $e)
     {
+        $psrResponse = app(ResponseInterface::class);
+
+        if ($e instanceof OAuthServerException) {
+            return $e->generateHttpResponse($psrResponse);
+        }
+
         // If client requests it, render exception as JSON object
         if ($request->ajax() || $request->wantsJson()) {
 

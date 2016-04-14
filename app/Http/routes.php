@@ -17,6 +17,27 @@ $router->get('/status', function () {
     return ['status' => 'good'];
 });
 
+// https://nortstar.dosomething.org/v2/
+$router->group(['prefix' => 'v2'], function () use ($router) {
+    // **Only enable these endpoints in development, for now!**
+    if ((config('app.debug') === false)) {
+        return;
+    }
+
+    // Authentication
+    $router->post('auth/token', 'OAuthController@createToken');
+    $router->delete('auth/token', 'OAuthController@invalidateToken');
+
+    // Users
+    // ...
+
+    // Profile
+    // ...
+
+    // OAuth Clients
+    $router->resource('clients', 'ClientController');
+});
+
 // https://northstar.dosomething.org/v1/
 $router->group(['prefix' => 'v1'], function () use ($router) {
     // Authentication
@@ -41,8 +62,7 @@ $router->group(['prefix' => 'v1'], function () use ($router) {
     $router->resource('signups', 'SignupController', ['only' => ['index', 'show', 'store']]);
     $router->resource('reportbacks', 'ReportbackController', ['only' => ['index', 'show', 'store']]);
 
-    // API Clients
-    $router->resource('clients', 'ClientController');
+    // API Clients (the artist formerly known as keys)
     $router->resource('keys', 'ClientController');
 
     $router->get('scopes', function () {
