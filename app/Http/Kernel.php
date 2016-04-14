@@ -13,6 +13,7 @@ class Kernel extends HttpKernel
      */
     protected $middleware = [
         \Illuminate\Foundation\Http\Middleware\CheckForMaintenanceMode::class,
+        \Northstar\Http\Middleware\ParseOAuthHeader::class,
     ];
 
     /**
