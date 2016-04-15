@@ -3,7 +3,6 @@
 namespace Northstar\Http\Middleware;
 
 use League\OAuth2\Server\Server as OAuthServer;
-use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 
 class ParseOAuthHeader
@@ -12,13 +11,11 @@ class ParseOAuthHeader
      * Authenticate constructor.
      * @param OAuthServer $oauth
      * @param ServerRequestInterface $request
-     * @param ResponseInterface $response
      */
-    public function __construct(OAuthServer $oauth, ServerRequestInterface $request, ResponseInterface $response)
+    public function __construct(OAuthServer $oauth, ServerRequestInterface $request)
     {
         $this->oauth = $oauth;
         $this->request = $request;
-        $this->response = $response;
     }
 
     /**
