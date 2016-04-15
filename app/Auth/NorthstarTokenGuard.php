@@ -59,13 +59,48 @@ class NorthstarTokenGuard extends TokenGuard implements Guard
      */
     public function getUserForToken($tokenKey)
     {
+        // If the provided token is 32 characters long, it's a legacy
+        // database token. Otherwise, it must be a JWT access token.
+        if (strlen($tokenKey) === 32) {
+            return $this->getUserFromLegacyToken($tokenKey);
+        }
+
+        return $this->getUserFromJWTAccessToken();
+    }
+
+    /**
+     * Fetch a legacy authentication token from the database to
+     * get it's corresponding user.
+     *
+     * @param $tokenKey
+     * @return User|null
+     */
+    public function getUserFromLegacyToken($tokenKey)
+    {
         $token = Token::where($this->storageKey, $tokenKey)->first();
 
         if (empty($token)) {
-            return;
+            return null;
         }
 
         return User::find($token->user_id);
+    }
+
+    /**
+     * Retrieve the user from a parsed JWT access token that
+     * was provided with the current request.
+     *
+     * @return User|null
+     */
+    public function getUserFromJWTAccessToken()
+    {
+        $id = request()->attributes->get('oauth_user_id');
+
+        if (empty($id)) {
+            return null;
+        }
+
+        return User::find($id);
     }
 
     /**
@@ -101,15 +136,22 @@ class NorthstarTokenGuard extends TokenGuard implements Guard
     }
 
     /**
-     * Get the Token instance for the current request.
+     * Get the legacy Token instance for the current request.
      *
-     * @return Token
+     * @return Token|null
      */
     public function token()
     {
         $tokenKey = $this->getTokenForRequest();
 
-        return Token::where($this->storageKey, $tokenKey)->first();
+        // If the provided token is 32 characters long, it's a legacy
+        // database token. Otherwise, it must be a JWT access token,
+        // which does not have a corresponding database record.
+        if (strlen($tokenKey) === 32) {
+            return Token::where($this->storageKey, $tokenKey)->first();
+        }
+
+        return null;
     }
 
     /**
