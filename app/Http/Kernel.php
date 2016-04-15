@@ -13,7 +13,9 @@ class Kernel extends HttpKernel
      */
     protected $middleware = [
         \Illuminate\Foundation\Http\Middleware\CheckForMaintenanceMode::class,
-        \Northstar\Http\Middleware\ParseOAuthHeader::class,
+
+        // @TODO: Enable this once we've updated PHP version.
+        //  \Northstar\Http\Middleware\ParseOAuthHeader::class,
     ];
 
     /**
