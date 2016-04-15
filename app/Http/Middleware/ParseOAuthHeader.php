@@ -2,6 +2,7 @@
 
 namespace Northstar\Http\Middleware;
 
+use Illuminate\Support\Str;
 use League\OAuth2\Server\Server as OAuthServer;
 use Psr\Http\Message\ServerRequestInterface;
 
@@ -27,11 +28,10 @@ class ParseOAuthHeader
      */
     public function handle($request, \Closure $next)
     {
-        $header = $request->header('Authorization');
+        $header = $request->header('Authorization', '');
 
-        // If the 'Authorization' header is set, and it's not the legacy
-        // 32 character key (with the "Bearer " prefix = 39 characters)...
-        if (! empty($header) && strlen($header) !== 39) {
+        // Only attempt to parse as a JWT if Bearer token & not a legacy database token.
+        if ($this->isBearerToken($header) && ! $this->isLegacyToken($header)) {
             $this->request = $this->oauth->validateAuthenticatedRequest($this->request);
 
             // Add the parsed attributes (oauth_access_token_id, oauth_client_id,
@@ -40,5 +40,28 @@ class ParseOAuthHeader
         }
 
         return $next($request);
+    }
+
+    /**
+     * Is the given token a Bearer token?
+     *
+     * @return bool
+     */
+    public function isBearerToken($header)
+    {
+        return Str::startsWith($header, 'Bearer ');
+    }
+
+    /**
+     * Is this a legacy database token? If so, we don't want to try to
+     * parse it as a JWT access token.
+     *
+     * @param $header
+     * @return bool
+     */
+    public function isLegacyToken($header)
+    {
+        // A legacy key is always 32 characters (with the "Bearer " prefix = 39 characters)...
+        return strlen($header) === 39;
     }
 }
