@@ -2,7 +2,7 @@
 
 namespace Northstar\Http\Middleware;
 
-use Northstar\Models\Client;
+use Northstar\Auth\Scope;
 use Closure;
 
 class RequireScope
@@ -17,7 +17,7 @@ class RequireScope
      */
     public function handle($request, Closure $next, $scope = 'user')
     {
-        Client::gate($scope);
+        Scope::gate($scope);
 
         return $next($request);
     }

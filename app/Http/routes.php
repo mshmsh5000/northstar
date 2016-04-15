@@ -39,7 +39,7 @@ $router->group(['prefix' => 'v2'], function () use ($router) {
 
     // Scopes
     $router->get('scopes', function () {
-        return \Northstar\Models\Client::scopes();
+        return \Northstar\Auth\Scope::all();
     });
 });
 
@@ -71,7 +71,7 @@ $router->group(['prefix' => 'v1'], function () use ($router) {
     $router->resource('keys', 'ClientController');
 
     $router->get('scopes', function () {
-        $scopes = \Northstar\Models\Client::scopes();
+        $scopes = \Northstar\Auth\Scope::all();
 
         // Format as a single key-value array to keep compatibility.
         return collect($scopes)->map(function ($scope) {

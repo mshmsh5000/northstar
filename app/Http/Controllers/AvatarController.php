@@ -3,7 +3,7 @@
 namespace Northstar\Http\Controllers;
 
 use Northstar\Http\Transformers\UserTransformer;
-use Northstar\Models\Client;
+use Northstar\Auth\Scope;
 use Northstar\Services\AWS;
 use Northstar\Models\User;
 use Illuminate\Http\Request;
@@ -56,7 +56,7 @@ class AvatarController extends Controller
 
         // Only the currently authorized user to edit their own profile
         // or, if using an `admin` scoped API key, any profile.
-        $allowed = Client::allows('admin') || Gate::allows('edit-profile', $user);
+        $allowed = Scope::allows('admin') || Gate::allows('edit-profile', $user);
         if (! $allowed) {
             throw new UnauthorizedHttpException('auth/token', 'You are not authorized to edit that user\'s avatar.');
         }

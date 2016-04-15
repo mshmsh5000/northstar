@@ -6,7 +6,7 @@ use League\OAuth2\Server\Entities\ClientEntityInterface;
 use League\OAuth2\Server\Entities\ScopeEntityInterface;
 use League\OAuth2\Server\Repositories\ScopeRepositoryInterface;
 use Northstar\Auth\Entities\ScopeEntity;
-use Northstar\Models\Client;
+use Northstar\Auth\Scope;
 
 class ScopeRepository implements ScopeRepositoryInterface
 {
@@ -18,7 +18,7 @@ class ScopeRepository implements ScopeRepositoryInterface
      */
     public function getScopeEntityByIdentifier($identifier)
     {
-        $scopes = Client::scopes();
+        $scopes = Scope::all();
 
         if (array_key_exists($identifier, $scopes) === false) {
             return null;
