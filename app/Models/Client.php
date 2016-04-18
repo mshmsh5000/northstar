@@ -40,7 +40,7 @@ class Client extends Model
      *
      * @var string
      */
-    protected $collection = 'clients';
+    protected $collection = 'api_keys';
 
     /**
      * The model's default attributes.

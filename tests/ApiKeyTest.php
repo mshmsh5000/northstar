@@ -123,6 +123,6 @@ class ApiKeyTest extends TestCase
         // Verify an admin key is able to delete a key
         $this->withScopes(['admin'])->json('DELETE', 'v1/keys/'.$client->api_key);
         $this->assertResponseStatus(200);
-        $this->dontSeeInDatabase('clients', ['app_id' => 'delete_me']);
+        $this->dontSeeInDatabase('api_keys', ['app_id' => 'delete_me']);
     }
 }
