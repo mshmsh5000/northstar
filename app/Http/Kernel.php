@@ -27,8 +27,5 @@ class Kernel extends HttpKernel
         'auth' => \Northstar\Http\Middleware\Authenticate::class,
         'guest' => \Northstar\Http\Middleware\RedirectIfAuthenticated::class,
         'scope' => \Northstar\Http\Middleware\RequireScope::class,
-
-        // @TODO: Remove this old alias for the scope middleware.
-        'key' => \Northstar\Http\Middleware\RequireScope::class,
     ];
 }

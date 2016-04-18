@@ -19,7 +19,7 @@ class ClientController extends Controller
     {
         $this->transformer = $transformer;
 
-        $this->middleware('key:admin');
+        $this->middleware('scope:admin');
     }
 
     /**

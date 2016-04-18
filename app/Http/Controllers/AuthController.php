@@ -51,7 +51,7 @@ class AuthController extends Controller
 
         $this->transformer = new TokenTransformer();
 
-        $this->middleware('key:user');
+        $this->middleware('scope:user');
         $this->middleware('auth', ['only' => 'invalidateToken']);
         $this->middleware('guest', ['except' => 'invalidateToken']);
     }

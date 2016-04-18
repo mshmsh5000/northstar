@@ -25,7 +25,7 @@ class ReportbackController extends Controller
     {
         $this->phoenix = $phoenix;
 
-        $this->middleware('key:user', ['only' => ['profile', 'store']]);
+        $this->middleware('scope:user', ['only' => ['profile', 'store']]);
         $this->middleware('auth', ['only' => ['profile', 'store']]);
     }
 

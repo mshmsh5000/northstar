@@ -40,7 +40,7 @@ class UserController extends Controller
 
         $this->transformer = new UserTransformer();
 
-        $this->middleware('key:admin', ['except' => ['index', 'show']]);
+        $this->middleware('scope:admin', ['except' => ['index', 'show']]);
     }
 
     /**
