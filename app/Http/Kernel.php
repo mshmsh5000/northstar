@@ -13,6 +13,9 @@ class Kernel extends HttpKernel
      */
     protected $middleware = [
         \Illuminate\Foundation\Http\Middleware\CheckForMaintenanceMode::class,
+
+        // @TODO: Enable this once we've updated PHP version.
+        //  \Northstar\Http\Middleware\ParseOAuthHeader::class,
     ];
 
     /**
@@ -23,6 +26,9 @@ class Kernel extends HttpKernel
     protected $routeMiddleware = [
         'auth' => \Northstar\Http\Middleware\Authenticate::class,
         'guest' => \Northstar\Http\Middleware\RedirectIfAuthenticated::class,
-        'key' => \Northstar\Http\Middleware\AuthenticateAPIKey::class,
+        'scope' => \Northstar\Http\Middleware\RequireScope::class,
+
+        // @TODO: Remove this old alias for the scope middleware.
+        'key' => \Northstar\Http\Middleware\RequireScope::class,
     ];
 }

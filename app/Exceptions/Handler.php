@@ -9,6 +9,7 @@ use League\OAuth2\Server\Exception\OAuthServerException;
 use Symfony\Component\HttpKernel\Exception\HttpException;
 use Illuminate\Foundation\Validation\ValidationException as LegacyValidationException;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
+use Symfony\Bridge\PsrHttpMessage\Factory\HttpFoundationFactory;
 use Psr\Http\Message\ResponseInterface;
 use Exception;
 
@@ -50,10 +51,12 @@ class Handler extends ExceptionHandler
      */
     public function render($request, Exception $e)
     {
-        $psrResponse = app(ResponseInterface::class);
-
+        // If we receive a OAuth exception, get the included PSR-7 response,
+        // convert it to a standard Symfony HttpFoundation response and return.
         if ($e instanceof OAuthServerException) {
-            return $e->generateHttpResponse($psrResponse);
+            $psrResponse = $e->generateHttpResponse(app(ResponseInterface::class));
+
+            return (new HttpFoundationFactory())->createResponse($psrResponse);
         }
 
         // If client requests it, render exception as JSON object
