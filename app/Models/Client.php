@@ -13,12 +13,6 @@ use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
  * @property string client_id
  * @property string client_secret
  * @property array $scope
- *
- * Deprecated properties:
- * @property string $_id
- * @property string $id
- * @property string $app_id
- * @property string $api_key
  */
 class Client extends Model
 {
@@ -27,7 +21,7 @@ class Client extends Model
      *
      * @var string
      */
-    protected $primaryKey = 'api_key';
+    protected $primaryKey = 'client_id';
 
     /**
      * Indicates if the IDs are auto-incrementing.
@@ -71,8 +65,12 @@ class Client extends Model
      * @var array
      */
     protected $fillable = [
-        'app_id',
+        'client_id',
         'scope',
+
+        // For backwards compatibility...
+        'app_id',
+        'api_key',
     ];
 
     /**
@@ -88,41 +86,28 @@ class Client extends Model
         // Automatically set random API key. This field *may* be manually
         // set when seeding the database, so we first check if empty.
         static::creating(function (Client $client) {
-            if (empty($client->api_key)) {
-                do {
-                    $key = Str::random(32);
-                } while (static::where('api_key', $key)->exists());
-
-                $client->api_key = $key;
+            if (empty($client->client_secret)) {
+                $client->client_secret = Str::random(32);
             }
         });
     }
 
     /**
-     * Map 'app_id' to it's OAuth equivalent.
+     * Map legacy 'app_id' to it's OAuth equivalent.
      * @return string
      */
-    public function getClientIdAttribute()
+    public function setAppIdAttribute($value)
     {
-        return $this->attributes['app_id'];
+        $this->attributes['client_id'] = snake_case(str_replace(' ', '', $value));
     }
 
     /**
-     * Map 'api_key' to it's OAuth equivalent.
+     * Mutator for 'client_id' attribute.
      * @return string
      */
-    public function getClientSecretAttribute()
+    public function setClientIdAttribute($value)
     {
-        return $this->attributes['api_key'];
-    }
-
-    /**
-     * Mutator for 'app_id' attribute.
-     * @return string
-     */
-    public function setAppIdAttribute($app_id)
-    {
-        $this->attributes['app_id'] = snake_case(str_replace(' ', '', $app_id));
+        $this->attributes['client_id'] = snake_case(str_replace(' ', '', $value));
     }
 
     /**
@@ -181,9 +166,9 @@ class Client extends Model
      */
     public static function current()
     {
-        $api_key = request()->header('X-DS-REST-API-Key');
+        $client_secret = request()->header('X-DS-REST-API-Key');
 
-        return static::where('api_key', $api_key)->first();
+        return static::where('client_secret', $client_secret)->first();
     }
 
     /**

@@ -10,8 +10,8 @@ class ApiKeyTest extends TestCase
      */
     public function testIndex()
     {
-        Client::create(['app_id' => 'test']);
-        Client::create(['app_id' => 'testingz']);
+        Client::create(['client_id' => 'test']);
+        Client::create(['client_id' => 'testingz']);
 
         // Verify an admin key is able to view all keys
         $this->withScopes(['admin'])->get('v1/keys');
@@ -60,7 +60,7 @@ class ApiKeyTest extends TestCase
      */
     public function testShow()
     {
-        $client = Client::create(['app_id' => 'phpunit_key']);
+        $client = Client::create(['client_id' => 'phpunit_key']);
 
         // Verify a "user" scoped key is not able to see keys details
         $this->withScopes(['user'])->get('v1/keys/'.$client->client_secret);
@@ -71,13 +71,8 @@ class ApiKeyTest extends TestCase
         $this->assertResponseStatus(403);
 
         // Verify an admin key is able to view key details
-        $this->withScopes(['admin'])->get('v1/keys/'.$client->api_key);
+        $this->withScopes(['admin'])->get('v1/keys/'.$client->client_secret);
         $this->assertResponseStatus(200);
-        $this->seeJsonStructure([
-            'data' => [
-                'app_id', 'api_key', 'scope',
-            ],
-        ]);
     }
 
     /**
@@ -86,7 +81,7 @@ class ApiKeyTest extends TestCase
      */
     public function testUpdate()
     {
-        $client = Client::create(['app_id' => 'update_key']);
+        $client = Client::create(['client_id' => 'update_key']);
 
         $modifications = [
             'scope' => [
@@ -102,8 +97,8 @@ class ApiKeyTest extends TestCase
         // Verify an admin key is able to update a key
         $this->withScopes(['admin'])->json('PUT', 'v1/keys/'.$client->client_secret, $modifications);
         $this->assertResponseStatus(200);
-        $this->seeInDatabase('api_keys', [
-            'app_id' => 'update_key',
+        $this->seeInDatabase('clients', [
+            'client_id' => 'update_key',
             'scope' => ['admin', 'user'],
         ]);
     }
@@ -114,15 +109,16 @@ class ApiKeyTest extends TestCase
      */
     public function testDestroy()
     {
-        $client = Client::create(['app_id' => 'delete_me']);
+        $client = Client::create(['client_id' => 'delete_me']);
 
         // Verify a "user" scoped key is not able to delete keys
         $this->withScopes(['user'])->json('DELETE', 'v1/keys/'.$client->client_secret);
         $this->assertResponseStatus(403);
+        $this->seeInDatabase('clients', ['client_id' => 'delete_me']);
 
         // Verify an admin key is able to delete a key
-        $this->withScopes(['admin'])->json('DELETE', 'v1/keys/'.$client->api_key);
+        $this->withScopes(['admin'])->json('DELETE', 'v1/keys/'.$client->client_secret);
         $this->assertResponseStatus(200);
-        $this->dontSeeInDatabase('clients', ['app_id' => 'delete_me']);
+        $this->dontSeeInDatabase('clients', ['client_id' => 'delete_me']);
     }
 }
