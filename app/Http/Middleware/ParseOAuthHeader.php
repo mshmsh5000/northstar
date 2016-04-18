@@ -9,7 +9,8 @@ use Psr\Http\Message\ServerRequestInterface;
 class ParseOAuthHeader
 {
     /**
-     * Authenticate constructor.
+     * Inject dependencies for the ParseOAuthHeader middleware.
+     *
      * @param OAuthServer $oauth
      * @param ServerRequestInterface $request
      */
