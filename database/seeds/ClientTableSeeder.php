@@ -15,14 +15,14 @@ class ApiKeyTableSeeder extends Seeder
         DB::table('client')->delete();
 
         Client::create([
-            'client_id' => '456',
-            'client_secret' => 'abc4324',
+            'app_id' => '456',
+            'api_key' => 'abc4324',
             'scope' => ['admin', 'user'],
         ]);
 
         Client::create([
-            'client_id' => '123',
-            'client_secret' => '5464utyrs',
+            'app_id' => '123',
+            'api_key' => '5464utyrs',
             'scope' => ['user'],
         ]);
     }

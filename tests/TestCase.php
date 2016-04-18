@@ -71,7 +71,7 @@ class TestCase extends Illuminate\Foundation\Testing\TestCase
     public function withScopes(array $scopes)
     {
         $client = Client::create([
-            'client_id' => 'testing'.$this->faker->uuid,
+            'app_id' => 'testing'.$this->faker->uuid,
             'scope' => $scopes,
         ]);
 

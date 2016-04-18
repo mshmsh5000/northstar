@@ -22,8 +22,8 @@ class ClientTransformer extends TransformerAbstract
             'created_at' => $client->created_at->toISO8601String(),
 
             // DEPRECATED:
-            'app_id' => $client->client_id,
-            'api_key' => $client->client_secret,
+            'app_id' => $client->app_id,
+            'api_key' => $client->api_key,
         ];
     }
 }
