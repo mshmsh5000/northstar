@@ -56,21 +56,16 @@ class SignupController extends Controller
 
         $results = $this->phoenix->getSignupIndex($options);
 
-        foreach (array_slice($results, 1) as $result) {
-            $northstar_id = $result[0]['user']['id'];
-            $user = User::where('_id', $northstar_id)->first();
-            $last_initial = substr(($user->last_name), 0, 1);
+        foreach ($results['data'] as $key => $result) {
+            $drupal_id = $result['user']['drupal_id'];
+            $user = User::where('drupal_id', $drupal_id)->first();
 
-            if ($last_initial === false) {
-                $last_initial = null;
-            }
-
-            $result[0]['user'] = [
-                'first_name' => $user->first_name,
-                'last_initial' => $last_initial,
-                'photo' => isset($user) ? $user->photo : null,
-                'country' => $user->country,
-                'test' => 'test',
+            $results['data'][$key]['user'] = [
+                'id' => $user ? $user->id : null,
+                'first_name' => $user ? $user->first_name : null,
+                'last_initial' => $user ? $user->last_initial : null,
+                'photo' => $user ? $user->photo : null,
+                'country' => $user ? $user->country : null,
             ];
         }
 
