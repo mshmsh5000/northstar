@@ -1,7 +1,7 @@
 <?php
 
 use Illuminate\Database\Seeder;
-use Northstar\Models\ApiKey;
+use Northstar\Models\Client;
 
 class ApiKeyTableSeeder extends Seeder
 {
@@ -12,17 +12,17 @@ class ApiKeyTableSeeder extends Seeder
      */
     public function run()
     {
-        DB::table('api_keys')->delete();
+        DB::table('client')->delete();
 
-        ApiKey::create([
-            'app_id' => '456',
-            'api_key' => 'abc4324',
+        Client::create([
+            'client_id' => '456',
+            'client_secret' => 'abc4324',
             'scope' => ['admin', 'user'],
         ]);
 
-        ApiKey::create([
-            'app_id' => '123',
-            'api_key' => '5464utyrs',
+        Client::create([
+            'client_id' => '123',
+            'client_secret' => '5464utyrs',
             'scope' => ['user'],
         ]);
     }
