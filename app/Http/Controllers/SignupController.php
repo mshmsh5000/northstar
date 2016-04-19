@@ -54,7 +54,27 @@ class SignupController extends Controller
             $options['users'] = User::drupalIDForNorthstarId($usersQuery);
         }
 
-        return $this->phoenix->getSignupIndex($options);
+        $results = $this->phoenix->getSignupIndex($options);
+
+        foreach (array_slice($results, 1) as $result) {
+            $northstar_id = $result[0]['user']['id'];
+            $user = User::where('_id', $northstar_id)->first();
+            $last_initial = substr(($user->last_name), 0, 1);
+
+            if ($last_initial === false) {
+                $last_initial = null;
+            }
+
+            $result[0]['user'] = [
+                'first_name' => $user->first_name,
+                'last_initial' => $last_initial,
+                'photo' => isset($user) ? $user->photo : null,
+                'country' => $user->country,
+                'test' => 'test',
+            ];
+        }
+
+        return $results;
     }
 
     /**
