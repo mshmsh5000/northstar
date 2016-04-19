@@ -46,8 +46,8 @@ class ClientController extends Controller
     public function store(Request $request)
     {
         $this->validate($request, [
-            'app_id' => 'required|unique:clients,client_id',
-            'scope' => 'array|scope', // @see Scope::validateScopes
+            'app_id' => 'required|unique:api_keys,app_id',
+            'scope' => 'array|scope', // @see ApiKey::validateScopes
         ]);
 
         $key = Client::create($request->all());
@@ -57,52 +57,51 @@ class ClientController extends Controller
 
     /**
      * Display the specified resource.
-     * GET /keys/:client_secret
+     * GET /keys/:api_key
      *
      * @return \Illuminate\Http\Response
      * @throws NotFoundHttpException
      */
-    public function show($client_secret)
+    public function show($id)
     {
-        $client = Client::where('client_secret', $client_secret)->first();
-
-        if (! $client) {
+        // Find the user.
+        $key = Client::where('api_key', $id)->first();
+        if (! $key) {
             throw new NotFoundHttpException('The resource does not exist.');
         }
 
-        return $this->item($client);
+        return $this->item($key);
     }
 
     /**
      * Update the specified resource.
-     * PUT /keys/:client_secret
+     * PUT /keys/:api_key
      *
      * @param Request $request
      * @return \Illuminate\Http\Response
      * @throws HttpException
      */
-    public function update($client_secret, Request $request)
+    public function update($key, Request $request)
     {
         $this->validate($request, [
-            'scope' => 'array|scope', // @see Scope::validateScopes
+            'scope' => 'array|scope', // @see ApiKey::validateScopes
         ]);
 
-        $client = Client::where('client_secret', $client_secret)->firstOrFail();
-        $client->update($request->all());
+        $key = Client::where('api_key', $key)->firstOrFail();
+        $key->update($request->all());
 
-        return $this->item($client);
+        return $this->item($key);
     }
 
     /**
      * Delete an API key resource.
-     * DELETE /keys/:client_secret
      *
      * @return \Illuminate\Http\Response
      */
-    public function destroy($client_secret)
+    public function destroy($key)
     {
-        $client = Client::where('client_secret', $client_secret)->firstOrFail();
-        $client->delete();
+        $key = Client::where('api_key', $key)->firstOrFail();
+        $key->delete();
 
         return $this->respond('Deleted key.', 200);
     }

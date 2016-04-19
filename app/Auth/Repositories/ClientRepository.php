@@ -20,8 +20,8 @@ class ClientRepository implements ClientRepositoryInterface
     {
         // Fetch client from the database & make OAuth2 entity
         $model = Client::where([
-            'client_id' => $clientIdentifier,
-            'client_secret' => $clientSecret,
+            'app_id' => $clientIdentifier,
+            'api_key' => $clientSecret,
         ])->first();
 
         if (! $model) {
