@@ -23,7 +23,7 @@ class RenameClientTable extends Migration
     public function up()
     {
         // The 'jenssegers/laravel-mongodb' package doesn't support Schema::rename so...
-        $this->mongodb->execute('db.api_keys.renameCollection("clients");');
+        $this->mongodb->execute('db.api_keys.renameCollection("clients", true);');
     }
 
     /**
@@ -33,6 +33,6 @@ class RenameClientTable extends Migration
      */
     public function down()
     {
-        $this->mongodb->execute('db.clients.renameCollection("api_keys");');
+        $this->mongodb->execute('db.clients.renameCollection("api_keys", true);');
     }
 }
