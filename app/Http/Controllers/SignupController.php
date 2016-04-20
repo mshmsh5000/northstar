@@ -58,7 +58,7 @@ class SignupController extends Controller
 
         foreach ($results['data'] as $key => $result) {
             $drupal_id = array_get($result, 'user.drupal_id');
-            $user = User::where('drupal_id', $drupal_id)->first();    
+            $user = User::where('drupal_id', $drupal_id)->first();
 
             $results['data'][$key]['user'] = [
                 'id' => $user ? $user->id : null,

@@ -20,19 +20,20 @@ class SignupTest extends TestCase
         $this->mock(Phoenix::class)->shouldReceive('getSignupIndex')->with(['users' => ['100001', '100002']])->once()->andReturn([
             'data' => [
                 [
-                    'id' => '1',
+                    'id' => '243',
+                    // ...
                 ],
                 [
-                    'id' => '2',
+                    'id' => '44',
+                    // ...
                 ],
             ],
         ]);
 
-
         $this->asUser($user)->withScopes(['user'])->get('v1/signups?users='.$user->_id.','.$user2->_id);
         $this->assertResponseStatus(200);
         $this->seeJson();
-        
+
         $this->seeJsonStructure([
             'data' => [
                 '*' => [
@@ -42,6 +43,35 @@ class SignupTest extends TestCase
                 ],
             ],
         ]);
+    }
+
+    /**
+     * Test to make sure user information is populated and returned correctly on index.
+     * GET /:signups
+     *
+     * @return void
+     */
+    public function testSignupIndexUserInfo()
+    {
+        $user = User::create(['drupal_id' => '100003', 'first_name' => 'Name']);
+
+        // For testing, we'll mock a successful Phoenix API response.
+        $this->mock(Phoenix::class)->shouldReceive('getSignupIndex')->with(['users' => ['100003']])->once()->andReturn([
+            'data' => [
+                [
+                    'user' => [
+                        'drupal_id' => '100003',
+                    ],
+                ],
+            ],
+        ]);
+
+        $response = $this->asUser($user)->withScopes(['user'])->get('v1/signups?users='.$user->_id);
+        $this->assertResponseStatus(200);
+        $this->seeJson();
+        $json_decoded_response = $this->decodeResponseJson();
+
+        $this->assertEquals('Name', $json_decoded_response['data'][0]['user']['first_name']);
     }
 
     /**
