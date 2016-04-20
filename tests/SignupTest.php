@@ -20,19 +20,28 @@ class SignupTest extends TestCase
         $this->mock(Phoenix::class)->shouldReceive('getSignupIndex')->with(['users' => ['100001', '100002']])->once()->andReturn([
             'data' => [
                 [
-                    'id' => '243',
-                    // ...
+                    'id' => '1',
                 ],
                 [
-                    'id' => '44',
-                    // ...
+                    'id' => '2',
                 ],
             ],
         ]);
 
+
         $this->asUser($user)->withScopes(['user'])->get('v1/signups?users='.$user->_id.','.$user2->_id);
         $this->assertResponseStatus(200);
         $this->seeJson();
+        
+        $this->seeJsonStructure([
+            'data' => [
+                '*' => [
+                    'user' => [
+                        'id', 'first_name', 'last_initial', 'photo', 'country',
+                    ],
+                ],
+            ],
+        ]);
     }
 
     /**

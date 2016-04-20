@@ -57,8 +57,8 @@ class SignupController extends Controller
         $results = $this->phoenix->getSignupIndex($options);
 
         foreach ($results['data'] as $key => $result) {
-            $drupal_id = $result['user']['drupal_id'];
-            $user = User::where('drupal_id', $drupal_id)->first();
+            $drupal_id = array_get($result, 'user.drupal_id');
+            $user = User::where('drupal_id', $drupal_id)->first();    
 
             $results['data'][$key]['user'] = [
                 'id' => $user ? $user->id : null,
