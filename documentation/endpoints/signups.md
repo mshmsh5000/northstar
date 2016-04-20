@@ -8,7 +8,7 @@ GET /signups?user=:northstar_id,:northstar_id&campaigns=:campaign_id,:campaign_i
 ```
 
 This is a lightweight proxy for the `/signups` Phoenix endpoint. If a user ID is specified, it will be transformed into 
-the appropriate `drupal_id` before the request is forwarded to Phoenix.
+the appropriate `drupal_id` before the request is forwarded to Phoenix. The endpoint builds a full user response and appends the user information to the "raw" Phoenix API response.
 
 For more details, see the relevant [Phoenix API documentation](https://github.com/DoSomething/phoenix/wiki/API#retrieve-a-signup-collection).
 
