@@ -150,6 +150,7 @@ class Registrar
         $rules = [
             'email' => 'email|max:60|unique:users,email,'.$existingId.',_id|required_without:mobile',
             'mobile' => 'unique:users,mobile,'.$existingId.',_id|required_without:email',
+            'drupal_id' => 'unique:users,drupal_id,'.$existingId.',_id',
         ];
 
         // If a user is provided, merge it into the request so we can validate
