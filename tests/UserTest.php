@@ -445,7 +445,7 @@ class UserTest extends TestCase
             'source' => 'phpunit',
         ];
 
-        // This should upsert the existing user.
+        // This should cause a validation error.
         $this->withScopes(['admin'])->json('POST', 'v1/users', $payload);
         $this->assertResponseStatus(422);
     }
@@ -468,6 +468,30 @@ class UserTest extends TestCase
 
         $this->assertResponseStatus(200);
         $this->assertSame($this->decodeResponseJson()['data']['id'], $user->_id);
+    }
+
+    /**
+     * Test that we can't create a duplicate user.
+     * POST /users
+     *
+     * @return void
+     */
+    public function testCreateDuplicateDrupalUser()
+    {
+        User::create([
+            'email' => 'existing-person@example.com',
+            'drupal_id' => '123123',
+        ]);
+
+        // Create a new user object
+        $payload = [
+            'email' => 'new-email@example.com',
+            'drupal_id' => '123123',
+        ];
+
+        // This should cause a validation error.
+        $this->withScopes(['admin'])->json('POST', 'v1/users', $payload);
+        $this->assertResponseStatus(422);
     }
 
     /**
