@@ -44,9 +44,9 @@ class RemoveDuplicateUsersCommand extends Command
                 [
                     [
                         '$match' => [
-                                'email' => [
-                                    '$ne' => '',
-                                ],
+                            'email' => [
+                                '$ne' => '',
+                            ],
                         ],
                     ],
                     [
@@ -120,6 +120,49 @@ class RemoveDuplicateUsersCommand extends Command
 
         // Delete mobile duplicates.
         $this->deduplicate($mobile_duplicates, 'mobile');
+
+        // Find all duplicate users by Drupal ID.
+        $drupal_duplicates = User::raw(function ($collection) {
+            return $collection->aggregate(
+                [
+                    [
+                        '$match' => [
+                            'drupal_id' => [
+                                '$ne' => '',
+                                '$exists' => true,
+                            ],
+                        ],
+                    ],
+                    [
+                        '$group' => [
+                            '_id' => [
+                                'drupal_id' => '$drupal_id',
+                            ],
+                            'uniqueIds' => [
+                                '$addToSet' => '$_id',
+                            ],
+                            'count' => [
+                                '$sum' => 1,
+                            ],
+                        ],
+                    ],
+                    [
+                        '$match' => [
+                            'count' => [
+                                '$gt' => 1,
+                            ],
+                        ],
+                    ],
+                ],
+                [
+                    'allowDiskUse' => true,
+                ]
+            );
+        });
+
+        // Delete mobile duplicates.
+        $this->deduplicate($drupal_duplicates, 'drupal_id');
+
         $this->info('Script successful. Re-run script until no users are deleted and yields only this message. If only this message, deduplication complete!');
     }
 
@@ -150,7 +193,8 @@ class RemoveDuplicateUsersCommand extends Command
 
                 // Ensure the doc actually has value that matches the $type we're running this for.
                 if (($type == 'mobile' && empty($master_doc['mobile'])) ||
-                    ($type == 'email' && empty($master_doc['email']))) {
+                    ($type == 'email' && empty($master_doc['email'])) ||
+                    ($type == 'drupal_id' && empty($master_doc['drupal_id']))) {
                     continue;
                 }
 
