@@ -631,7 +631,7 @@ class UserTest extends TestCase
 
         $this->assertResponseStatus(422);
     }
-    
+
     /**
      * Test that we can't update a user's profile to have duplicate
      * identifiers with someone else.
@@ -649,7 +649,6 @@ class UserTest extends TestCase
 
         $this->assertResponseStatus(422);
     }
-    
 
     /**
      * Test for creating a user's profile image with a file
