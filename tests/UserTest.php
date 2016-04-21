@@ -631,6 +631,25 @@ class UserTest extends TestCase
 
         $this->assertResponseStatus(422);
     }
+    
+    /**
+     * Test that we can't update a user's profile to have duplicate
+     * identifiers with someone else.
+     * PUT /users/_id/:id
+     */
+    public function testUpdateWithDrupalIDConflict()
+    {
+        User::create(['drupal_id' => '123456']);
+
+        $user = User::create(['email' => 'admiral.ackbar@example.com']);
+
+        $this->withScopes(['admin'])->json('PUT', 'v1/users/_id/'.$user->id, [
+            'drupal_id' => '123456', // the existing user account
+        ]);
+
+        $this->assertResponseStatus(422);
+    }
+    
 
     /**
      * Test for creating a user's profile image with a file
