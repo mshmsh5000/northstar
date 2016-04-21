@@ -204,7 +204,7 @@ class UserTest extends TestCase
             ],
             'meta' => [
                 'pagination' => [
-                   'total', 'count', 'per_page', 'current_page', 'links',
+                    'total', 'count', 'per_page', 'current_page', 'links',
                 ],
             ],
         ]);
@@ -445,7 +445,7 @@ class UserTest extends TestCase
             'source' => 'phpunit',
         ];
 
-        // This should upsert the existing user.
+        // This should cause a validation error.
         $this->withScopes(['admin'])->json('POST', 'v1/users', $payload);
         $this->assertResponseStatus(422);
     }
@@ -468,6 +468,57 @@ class UserTest extends TestCase
 
         $this->assertResponseStatus(200);
         $this->assertSame($this->decodeResponseJson()['data']['id'], $user->_id);
+    }
+
+    /**
+     * Test that we can upsert based on a Drupal ID.
+     * POST /users
+     *
+     * @return void
+     */
+    public function testCanUpsertByDrupalId()
+    {
+        $user = User::create([
+            'email' => 'existing-person@example.com',
+            'drupal_id' => '123123',
+        ]);
+
+        // Try to make a conflict up by upserting something that would match 2 accounts.
+        $this->withScopes(['admin'])->json('POST', 'v1/users', [
+            'drupal_id' => '123123',
+            'first_name' => 'Bob',
+        ]);
+
+        $this->assertResponseStatus(200);
+
+        $user = $user->fresh();
+        $this->assertEquals('Bob', $user->first_name);
+    }
+
+    /**
+     * Test that we can't create a duplicate user.
+     * POST /users
+     *
+     * @return void
+     */
+    public function testCantCreateDuplicateDrupalUser()
+    {
+        User::create([
+            'email' => 'existing-person@example.com',
+            'drupal_id' => '123123',
+        ]);
+
+        User::create([
+            'email' => 'other-existing-user@example.com',
+        ]);
+
+        // Try to make a conflict up by upserting something that would match 2 accounts.
+        $this->withScopes(['admin'])->json('POST', 'v1/users', [
+            'email' => 'other-existing-user@example.com',
+            'drupal_id' => '123123',
+        ]);
+
+        $this->assertResponseStatus(422);
     }
 
     /**
@@ -576,6 +627,24 @@ class UserTest extends TestCase
             'mobile' => '(555) 555-0101', // the existing user account
             'first_name' => 'Gial',
             'last_name' => 'Ackbar',
+        ]);
+
+        $this->assertResponseStatus(422);
+    }
+
+    /**
+     * Test that we can't update a user's profile to have duplicate
+     * identifiers with someone else.
+     * PUT /users/_id/:id
+     */
+    public function testUpdateWithDrupalIDConflict()
+    {
+        User::create(['drupal_id' => '123456']);
+
+        $user = User::create(['email' => 'admiral.ackbar@example.com']);
+
+        $this->withScopes(['admin'])->json('PUT', 'v1/users/_id/'.$user->id, [
+            'drupal_id' => '123456', // the existing user account
         ]);
 
         $this->assertResponseStatus(422);

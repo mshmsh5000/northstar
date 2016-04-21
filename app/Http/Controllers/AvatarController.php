@@ -30,7 +30,7 @@ class AvatarController extends Controller
 
         $this->transformer = new UserTransformer();
 
-        $this->middleware('key:user');
+        $this->middleware('scope:user');
         $this->middleware('auth');
     }
 
