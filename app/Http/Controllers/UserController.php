@@ -77,7 +77,7 @@ class UserController extends Controller
         // This is an "upsert" endpoint (so it will either create a new user, or
         // update a user if one with a matching email or mobile number is found).
         // So, does this user exist already?
-        $user = $this->registrar->resolve($request->only('email', 'mobile'));
+        $user = $this->registrar->resolve($request->only('id', 'email', 'mobile', 'drupal_id'));
 
         // Normalize input and validate the request
         $request = $this->registrar->normalize($request);
