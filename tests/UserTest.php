@@ -204,7 +204,7 @@ class UserTest extends TestCase
             ],
             'meta' => [
                 'pagination' => [
-                   'total', 'count', 'per_page', 'current_page', 'links',
+                    'total', 'count', 'per_page', 'current_page', 'links',
                 ],
             ],
         ]);
@@ -471,26 +471,53 @@ class UserTest extends TestCase
     }
 
     /**
+     * Test that we can upsert based on a Drupal ID.
+     * POST /users
+     *
+     * @return void
+     */
+    public function testCanUpsertByDrupalId()
+    {
+        $user = User::create([
+            'email' => 'existing-person@example.com',
+            'drupal_id' => '123123',
+        ]);
+
+        // Try to make a conflict up by upserting something that would match 2 accounts.
+        $this->withScopes(['admin'])->json('POST', 'v1/users', [
+            'drupal_id' => '123123',
+            'first_name' => 'Bob',
+        ]);
+
+        $this->assertResponseStatus(200);
+
+        $user = $user->fresh();
+        $this->assertEquals('Bob', $user->first_name);
+    }
+
+    /**
      * Test that we can't create a duplicate user.
      * POST /users
      *
      * @return void
      */
-    public function testCreateDuplicateDrupalUser()
+    public function testCantCreateDuplicateDrupalUser()
     {
         User::create([
             'email' => 'existing-person@example.com',
             'drupal_id' => '123123',
         ]);
 
-        // Create a new user object
-        $payload = [
-            'email' => 'new-email@example.com',
-            'drupal_id' => '123123',
-        ];
+        User::create([
+            'email' => 'other-existing-user@example.com',
+        ]);
 
-        // This should cause a validation error.
-        $this->withScopes(['admin'])->json('POST', 'v1/users', $payload);
+        // Try to make a conflict up by upserting something that would match 2 accounts.
+        $this->withScopes(['admin'])->json('POST', 'v1/users', [
+            'email' => 'other-existing-user@example.com',
+            'drupal_id' => '123123',
+        ]);
+
         $this->assertResponseStatus(422);
     }
 
