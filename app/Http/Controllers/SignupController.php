@@ -48,25 +48,45 @@ class SignupController extends Controller
             $options['users'] = $options['user'];
         }
 
+        $users = [];
+
         // If a user is specified, turn Northstar ID into Drupal ID
         if (! empty($options['users'])) {
+            // Update the '?users=xxx,xxx,xxx' option to be based on Drupal ID, rather than Northstar ID
             $usersQuery = explode(',', $options['users']);
             $options['users'] = User::drupalIDForNorthstarId($usersQuery);
+
+            $query = $this->newQuery(User::class);
+            
+            // For the first `where` query, we want to limit results... from then on,
+            // we want to append (e.g. `SELECT * WHERE _ OR WHERE _ OR WHERE _`)
+            $firstWhere = true;
+            foreach ($options['users'] as $drupal_id) {
+                $query->where('drupal_id', '=', $drupal_id, ($firstWhere ? 'and' : 'or'));
+                $firstWhere = false;
+            }
+
+            // Make an array keyed by the Drupal ID... e.g. ['100010' => {User}, '10002' => {User}]
+            $users = $query->get()->keyBy('drupal_id');
         }
 
         $results = $this->phoenix->getSignupIndex($options);
-
+        
         foreach ($results['data'] as $key => $result) {
             $drupal_id = array_get($result, 'user.drupal_id');
-            $user = User::where('drupal_id', $drupal_id)->first();
-
-            $results['data'][$key]['user'] = [
-                'id' => $user ? $user->id : null,
-                'first_name' => $user ? $user->first_name : null,
-                'last_initial' => $user ? $user->last_initial : null,
-                'photo' => $user ? $user->photo : null,
-                'country' => $user ? $user->country : null,
-            ];
+            $user = $users->get($drupal_id);
+            
+            // If Phoenix gave the expected drupal_id in the user response, replace it with our own data.
+            if (! empty($user)) {
+                $results['data'][$key]['user'] = [
+                    'id' => $user->id,
+                    'first_name' => $user->first_name,
+                    'last_initial' => $user->last_initial,
+                    'photo' => $user->photo,
+                    'country' => $user->country,
+                ];
+            }
+            
         }
 
         return $results;

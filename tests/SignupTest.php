@@ -13,24 +13,29 @@ class SignupTest extends TestCase
      */
     public function testSignupIndex()
     {
-        $user = User::create(['drupal_id' => '100001']);
-        $user2 = User::create(['drupal_id' => '100002']);
+        $user = User::create(['drupal_id' => '100001', 'first_name' => 'Chloe']);
+        $user2 = User::create(['drupal_id' => '100002', 'first_name' => 'Dave']);
 
         // For testing, we'll mock a successful Phoenix API response.
         $this->mock(Phoenix::class)->shouldReceive('getSignupIndex')->with(['users' => ['100001', '100002']])->once()->andReturn([
             'data' => [
                 [
                     'id' => '243',
-                    // ...
+                    'user' => [
+                        'drupal_id' => '100001',
+                    ]
                 ],
                 [
                     'id' => '44',
-                    // ...
+                    'user' => [
+                        'drupal_id' => '100002',
+                    ]
                 ],
             ],
         ]);
 
         $this->asUser($user)->withScopes(['user'])->get('v1/signups?users='.$user->_id.','.$user2->_id);
+
         $this->assertResponseStatus(200);
         $this->seeJson();
 
@@ -43,6 +48,35 @@ class SignupTest extends TestCase
                 ],
             ],
         ]);
+    }
+
+    /**
+     * Test for retrieving a user's campaigns
+     * GET /:signups
+     *
+     * @return void
+     */
+    public function testSignupIndexWherePhoenixDoesntGiveDrupalId()
+    {
+        $user = User::create(['drupal_id' => '100001', 'first_name' => 'Chloe']);
+        $user2 = User::create(['drupal_id' => '100002', 'first_name' => 'Dave']);
+
+        // For testing, we'll mock a successful Phoenix API response.
+        $this->mock(Phoenix::class)->shouldReceive('getSignupIndex')->with(['users' => ['100001', '100002']])->once()->andReturn([
+            'data' => [
+                [
+                    'id' => '243',
+                    // See! It doesn't give us that thing we expected it to! >:(
+                ],
+                [
+                    'id' => '44',
+                ],
+            ],
+        ]);
+
+        // Let's just ensure it doesn't crash.
+        $this->asUser($user)->withScopes(['user'])->get('v1/signups?users='.$user->_id.','.$user2->_id);
+        $this->assertResponseStatus(200);
     }
 
     /**
