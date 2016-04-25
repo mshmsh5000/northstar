@@ -1,5 +1,7 @@
 # Authentication
 
+> :construction: Updated [OAuth2 authentication](authentication_oauth.md) is under construction and will be the preferred way to authenticate clients across all services in the future. Stay tuned!
+
 ### API Keys
 A valid API key must be included with any requests to Northstar, in the `X-DS-REST-API-Key` HTTP
 header. API keys can be managed in [Aurora](https://aurora.dosomething.org/keys) or [Aurora QA](https://qa-aurora.dosomething.org/keys)
