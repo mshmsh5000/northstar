@@ -83,7 +83,12 @@ curl -X GET \
 
 ## Create a User
 Create a new user. This is performed as an "[upsert](https://docs.mongodb.org/v2.6/reference/glossary/#term-upsert)", so
-if a user with a matching identifier is found, new/changed properties will be merged into the existing document. This means making the same request multiple times will _not_ create duplicate accounts.
+if a user with a matching identifier is found, new/changed properties will be merged into the existing document. This means
+making the same request multiple times will _not_ create duplicate accounts.
+
+Index fields (such as `email`, `mobile`, `drupal_id`) can _only_ be "upserted" if they are not already saved on the user's
+account. To change an existing value for one of these fields, you must explicitly update that user via the
+[update](#update-a-user) endpoint.
 
 This endpoint requires an API key with `admin` scope. For registering a user, consider using the
 [`auth/register`](#register-user) endpoint, which will also create and return a new authentication token.
