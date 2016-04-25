@@ -528,7 +528,7 @@ class UserTest extends TestCase
     }
 
     /**
-     * Test for "upserting" an existing user can't change an existing
+     * Test that "upserting" an existing user can't change an existing
      * user's account if *all* given credentials don't match.
      * POST /users
      *
@@ -548,15 +548,15 @@ class UserTest extends TestCase
             'first_name' => 'Puppet',
         ]);
 
-        // The response should indicate a validation conflict!
-        $this->assertResponseStatus(422);
-
         // The existing record should be unchanged.
         $this->seeInDatabase('users', [
             '_id' => $user->id,
             'email' => 'upsert-me@dosomething.org',
             'mobile' => '5556667777',
         ]);
+
+        // The response should indicate a validation conflict!
+        $this->assertResponseStatus(422);
     }
 
     /**

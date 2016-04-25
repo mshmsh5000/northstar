@@ -11,6 +11,7 @@ use Illuminate\Validation\ValidationException;
 use Northstar\Models\Token;
 use Northstar\Models\User;
 use Northstar\Services\Phoenix;
+use Symfony\Component\HttpKernel\Exception\HttpException;
 use Symfony\Component\HttpKernel\Exception\UnauthorizedHttpException;
 
 class Registrar
@@ -156,6 +157,15 @@ class Registrar
         // the state of the "updated" document, rather than just the changes.
         if ($user) {
             $fields = array_merge($user->toArray(), $fields);
+
+            // Makes sure we can't "upsert" a record to have a changed email if set.
+            if ($request->has('email') && ! empty($user->email) && $fields['email'] !== $user->email) {
+                throw new HttpException(422, 'Cannot upsert a user to have a different email if already set.');
+            }
+
+            if ($request->has('mobile') && ! empty($user->mobile) && $fields['mobile'] !== $user->mobile) {
+                throw new HttpException(422, 'Cannot upsert a user to have a different email if already set.');
+            }
         }
 
         $validator = $this->validation->make($fields, array_merge($rules, $additionalRules));
