@@ -68,17 +68,17 @@ class SignupController extends Controller
 
             // Make an array keyed by the Drupal ID... e.g. ['100010' => {User}, '10002' => {User}]
             $users = $query->get()->keyBy('drupal_id');
+        } else {
+            // Get all drupal ids at once for index
+            $query = $this->newQuery(User::class);
+            $users = $query->select('drupal_id')->get()->keyBy('drupal_id');
         }
 
         $results = $this->phoenix->getSignupIndex($options);
 
         foreach ($results['data'] as $key => $result) {
-            if ($users) {
-                $user = $users->get($drupal_id);
-            } else {
-                $drupal_id = array_get($result, 'user.drupal_id');
-                $user = User::where('drupal_id', $drupal_id)->first();
-            }
+            $drupal_id = array_get($result, 'user.drupal_id');
+            $user = $users->get($drupal_id);
 
             // If Phoenix gave the expected drupal_id in the user response, replace it with our own data.
             if (! empty($user)) {
