@@ -158,13 +158,12 @@ class Registrar
         if ($user) {
             $fields = array_merge($user->toArray(), $fields);
 
-            // Makes sure we can't "upsert" a record to have a changed email if set.
-            if ($request->has('email') && ! empty($user->email) && $fields['email'] !== $user->email) {
-                throw new HttpException(422, 'Cannot upsert a user to have a different email if already set.');
-            }
-
-            if ($request->has('mobile') && ! empty($user->mobile) && $fields['mobile'] !== $user->mobile) {
-                throw new HttpException(422, 'Cannot upsert a user to have a different email if already set.');
+            // Makes sure we can't "upsert" a record to have a changed index if set.
+            // @TODO: There must be a better way to do this...
+            foreach (User::$indexes as $index) {
+                if ($request->has($index) && ! empty($user->{$index}) && $fields[$index] !== $user->{$index}) {
+                    throw new HttpException(422, 'Cannot upsert a user to have a different email if already set.');
+                }
             }
         }
 
