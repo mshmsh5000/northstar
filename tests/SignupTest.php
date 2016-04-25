@@ -23,13 +23,13 @@ class SignupTest extends TestCase
                     'id' => '243',
                     'user' => [
                         'drupal_id' => '100001',
-                    ]
+                    ],
                 ],
                 [
                     'id' => '44',
                     'user' => [
                         'drupal_id' => '100002',
-                    ]
+                    ],
                 ],
             ],
         ]);

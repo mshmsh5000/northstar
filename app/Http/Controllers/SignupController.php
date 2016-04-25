@@ -57,7 +57,7 @@ class SignupController extends Controller
             $options['users'] = User::drupalIDForNorthstarId($usersQuery);
 
             $query = $this->newQuery(User::class);
-            
+
             // For the first `where` query, we want to limit results... from then on,
             // we want to append (e.g. `SELECT * WHERE _ OR WHERE _ OR WHERE _`)
             $firstWhere = true;
@@ -71,11 +71,11 @@ class SignupController extends Controller
         }
 
         $results = $this->phoenix->getSignupIndex($options);
-        
+
         foreach ($results['data'] as $key => $result) {
             $drupal_id = array_get($result, 'user.drupal_id');
             $user = $users->get($drupal_id);
-            
+
             // If Phoenix gave the expected drupal_id in the user response, replace it with our own data.
             if (! empty($user)) {
                 $results['data'][$key]['user'] = [
@@ -86,7 +86,6 @@ class SignupController extends Controller
                     'country' => $user->country,
                 ];
             }
-            
         }
 
         return $results;
