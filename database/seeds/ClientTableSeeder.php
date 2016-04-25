@@ -12,7 +12,7 @@ class ApiKeyTableSeeder extends Seeder
      */
     public function run()
     {
-        DB::table('client')->delete();
+        DB::table('clients')->delete();
 
         Client::create([
             'client_id' => '456',
