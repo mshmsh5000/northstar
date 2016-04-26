@@ -48,8 +48,6 @@ class SignupController extends Controller
             $options['users'] = $options['user'];
         }
 
-        $users = [];
-
         // If a user is specified, turn Northstar ID into Drupal ID
         if (! empty($options['users'])) {
             // Update the '?users=xxx,xxx,xxx' option to be based on Drupal ID, rather than Northstar ID
@@ -66,15 +64,19 @@ class SignupController extends Controller
                 $firstWhere = false;
             }
 
-            // Make an array keyed by the Drupal ID... e.g. ['100010' => {User}, '10002' => {User}]
-            $users = $query->get()->keyBy('drupal_id');
+            $results = $this->phoenix->getSignupIndex($options);
         } else {
-            // Get all drupal ids at once for index
+            $results = $this->phoenix->getSignupIndex($options);
             $query = $this->newQuery(User::class);
-            $users = $query->select('drupal_id')->get()->keyBy('drupal_id');
+            $users = collect($results['data'])->pluck('user.drupal_id');
+
+            foreach ($users as $key => $drupal_id) {
+                $query->where('drupal_id', '=', $drupal_id);
+            }
         }
 
-        $results = $this->phoenix->getSignupIndex($options);
+        // Make an array keyed by the Drupal ID... e.g. ['100010' => {User}, '10002' => {User}]
+        $users = $query->get()->keyBy('drupal_id');
 
         foreach ($results['data'] as $key => $result) {
             $drupal_id = array_get($result, 'user.drupal_id');
