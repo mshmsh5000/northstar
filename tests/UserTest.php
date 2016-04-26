@@ -608,6 +608,15 @@ class UserTest extends TestCase
 
         // The response should indicate a validation conflict!
         $this->assertResponseStatus(422);
+        $this->seeJsonSubset([
+            'error' => [
+                'code' => 422,
+                'message' => 'Failed validation.',
+                'fields' => [
+                    'email' => ['Cannot upsert an existing index.'],
+                ],
+            ],
+        ]);
     }
 
     /**
@@ -641,6 +650,30 @@ class UserTest extends TestCase
             'mobile' => $user->mobile,
             'email' => 'newemail@dosomething.org',
             'parse_installation_ids' => ['parse-abc123'],
+        ]);
+    }
+
+    /**
+     * Test for updating an existing user's index.
+     * PUT /users/_id/:id
+     *
+     * @return void
+     */
+    public function testUpdateUserIndex()
+    {
+        $user = User::create(['email' => 'email@dosomething.org']);
+
+        // Update an existing user
+        $this->withScopes(['admin'])->json('PUT', 'v1/users/_id/'.$user->id, [
+            'email' => 'new-email@dosomething.org',
+        ]);
+
+        $this->assertResponseStatus(200);
+
+        // Verify user data got updated
+        $this->seeInDatabase('users', [
+            '_id' => $user->id,
+            'email' => 'new-email@dosomething.org',
         ]);
     }
 

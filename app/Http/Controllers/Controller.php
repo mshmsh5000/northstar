@@ -5,6 +5,7 @@ namespace Northstar\Http\Controllers;
 use Illuminate\Routing\Controller as BaseController;
 use Illuminate\Foundation\Bus\DispatchesJobs;
 use Illuminate\Foundation\Validation\ValidatesRequests;
+use Northstar\Exceptions\NorthstarValidationException;
 use Northstar\Http\Controllers\Traits\FiltersRequests;
 use Northstar\Http\Controllers\Traits\TransformsResponses;
 use Illuminate\Http\Request;
@@ -14,23 +15,15 @@ abstract class Controller extends BaseController
     use DispatchesJobs, ValidatesRequests, FiltersRequests, TransformsResponses;
 
     /**
-     * Create the response for when a request fails validation. Overrides the
-     * `buildFailedValidationResponse` method from the `ValidatesRequests` trait.
+     * Throw the failed validation exception with our custom formatting. Overrides the
+     * `throwValidationException` method from the `ValidatesRequests` trait.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  array  $errors
-     * @return \Illuminate\Http\Response
+     * @param  \Illuminate\Http\Request $request
+     * @param  \Illuminate\Contracts\Validation\Validator $validator
+     * @throws NorthstarValidationException
      */
-    protected function buildFailedValidationResponse(Request $request, array $errors)
+    protected function throwValidationException(Request $request, $validator)
     {
-        $response = [
-            'error' => [
-                'code' => 422,
-                'message' => 'Failed validation.',
-                'fields' => $errors,
-            ],
-        ];
-
-        return response()->json($response, 422);
+        throw new NorthstarValidationException($this->formatValidationErrors($validator));
     }
 }

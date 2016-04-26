@@ -4,6 +4,7 @@ namespace Northstar\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Northstar\Auth\Registrar;
+use Northstar\Exceptions\NorthstarValidationException;
 use Northstar\Http\Transformers\UserTransformer;
 use Northstar\Services\Phoenix;
 use Northstar\Models\User;
@@ -71,6 +72,7 @@ class UserController extends Controller
      *
      * @param Request $request
      * @return \Illuminate\Http\Response
+     * @throws NorthstarValidationException
      */
     public function store(Request $request)
     {
@@ -82,6 +84,21 @@ class UserController extends Controller
         // Normalize input and validate the request
         $request = $this->registrar->normalize($request);
         $this->registrar->validate($request, $user);
+
+        // Makes sure we can't "upsert" a record to have a changed index if already set.
+        // @TODO: There must be a better way to do this...
+        foreach (User::$indexes as $index) {
+            if ($request->has($index) && ! empty($user->{$index}) && $request->input($index) !== $user->{$index}) {
+                app('stathat')->ezCount('upsert conflict');
+                logger('attempted to upsert an existing index', [
+                    'index' => $index,
+                    'new' => $request->input($index),
+                    'existing' => $user->{$index},
+                ]);
+
+                throw new NorthstarValidationException([$index => ['Cannot upsert an existing index.']]);
+            }
+        }
 
         $user = $this->registrar->register($request->all(), $user);
 
