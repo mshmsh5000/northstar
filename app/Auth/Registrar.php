@@ -5,9 +5,8 @@ namespace Northstar\Auth;
 use Hash;
 use Illuminate\Contracts\Auth\Guard as Auth;
 use Illuminate\Validation\Factory as Validation;
-use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
-use Illuminate\Validation\ValidationException;
+use Northstar\Exceptions\NorthstarValidationException;
 use Northstar\Models\Token;
 use Northstar\Models\User;
 use Northstar\Services\Phoenix;
@@ -140,7 +139,7 @@ class Registrar
      * @param Request $request
      * @param User $user
      * @param array $additionalRules
-     * @throws ValidationException
+     * @throws NorthstarValidationException
      */
     public function validate(Request $request, User $user = null, array $additionalRules = [])
     {
@@ -162,15 +161,7 @@ class Registrar
         $validator = $this->validation->make($fields, array_merge($rules, $additionalRules));
 
         if ($validator->fails()) {
-            $response = [
-                'error' => [
-                    'code' => 422,
-                    'message' => 'Failed validation.',
-                    'fields' => $validator->errors()->getMessages(),
-                ],
-            ];
-
-            throw new ValidationException($validator, new JsonResponse($response, 422));
+            throw new NorthstarValidationException($validator->errors()->getMessages());
         }
     }
 

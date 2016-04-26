@@ -64,15 +64,11 @@ class Handler extends ExceptionHandler
 
             // If reporting a validation exception, use the prepared response
             // @see \Northstar\Http\Controller@buildFailedValidationResponse
-            if ($e instanceof ValidationException) {
-                return $e->response;
+            if ($e instanceof ValidationException || $e instanceof NorthstarValidationException) {
+                return $e->getResponse();
             }
 
-            $code = 500;
-            if ($this->isHttpException($e)) {
-                $code = $e->getStatusCode();
-            }
-
+            $code = $e instanceof HttpException ? $e->getStatusCode() : 500;
             $response = [
                 'error' => [
                     'code' => $code,

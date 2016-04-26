@@ -2,9 +2,9 @@
 
 namespace Northstar\Http\Controllers;
 
-use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Northstar\Auth\Registrar;
+use Northstar\Exceptions\NorthstarValidationException;
 use Northstar\Http\Transformers\UserTransformer;
 use Northstar\Services\Phoenix;
 use Northstar\Models\User;
@@ -72,6 +72,7 @@ class UserController extends Controller
      *
      * @param Request $request
      * @return \Illuminate\Http\Response
+     * @throws NorthstarValidationException
      */
     public function store(Request $request)
     {
@@ -95,13 +96,7 @@ class UserController extends Controller
                     'existing' => $user->{$index},
                 ]);
 
-                return new JsonResponse([
-                    'error' => [
-                        'code' => 422,
-                        'message' => 'Failed validation.',
-                        'fields' => [$index => 'Cannot upsert an existing index.'],
-                    ],
-                ], 422);
+                throw new NorthstarValidationException([$index => 'Cannot upsert an existing index.']);
             }
         }
 
