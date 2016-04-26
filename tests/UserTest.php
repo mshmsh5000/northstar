@@ -613,7 +613,7 @@ class UserTest extends TestCase
                 'code' => 422,
                 'message' => 'Failed validation.',
                 'fields' => [
-                    'email' => 'Cannot upsert an existing index.',
+                    'email' => ['Cannot upsert an existing index.'],
                 ],
             ],
         ]);
