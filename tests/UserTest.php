@@ -645,6 +645,30 @@ class UserTest extends TestCase
     }
 
     /**
+     * Test for updating an existing user's index.
+     * PUT /users/_id/:id
+     *
+     * @return void
+     */
+    public function testUpdateUserIndex()
+    {
+        $user = User::create(['email' => 'email@dosomething.org']);
+
+        // Update an existing user
+        $this->withScopes(['admin'])->json('PUT', 'v1/users/_id/'.$user->id, [
+            'email' => 'new-email@dosomething.org',
+        ]);
+
+        $this->assertResponseStatus(200);
+
+        // Verify user data got updated
+        $this->seeInDatabase('users', [
+            '_id' => $user->id,
+            'email' => 'new-email@dosomething.org',
+        ]);
+    }
+
+    /**
      * Test that we can't update a user's profile to have duplicate
      * identifiers with someone else.
      * PUT /users/_id/:id
