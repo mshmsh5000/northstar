@@ -608,6 +608,15 @@ class UserTest extends TestCase
 
         // The response should indicate a validation conflict!
         $this->assertResponseStatus(422);
+        $this->seeJsonSubset([
+            'error' => [
+                'code' => 422,
+                'message' => 'Failed validation.',
+                'fields' => [
+                    'email' => 'Cannot upsert an existing index.',
+                ],
+            ],
+        ]);
     }
 
     /**

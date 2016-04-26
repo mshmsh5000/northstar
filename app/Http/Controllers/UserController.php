@@ -2,12 +2,12 @@
 
 namespace Northstar\Http\Controllers;
 
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Northstar\Auth\Registrar;
 use Northstar\Http\Transformers\UserTransformer;
 use Northstar\Services\Phoenix;
 use Northstar\Models\User;
-use Symfony\Component\HttpKernel\Exception\HttpException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class UserController extends Controller
@@ -95,7 +95,13 @@ class UserController extends Controller
                     'existing' => $user->{$index},
                 ]);
 
-                throw new HttpException(422, 'Cannot upsert a user to have a different email if already set.');
+                return new JsonResponse([
+                    'error' => [
+                        'code' => 422,
+                        'message' => 'Failed validation.',
+                        'fields' => [$index => 'Cannot upsert an existing index.'],
+                    ],
+                ], 422);
             }
         }
 
