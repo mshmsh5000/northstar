@@ -48,40 +48,30 @@ class SignupController extends Controller
             $options['users'] = $options['user'];
         }
 
+        
+
         // If a user is specified, turn Northstar ID into Drupal ID
         if (! empty($options['users'])) {
             // Update the '?users=xxx,xxx,xxx' option to be based on Drupal ID, rather than Northstar ID
             $usersQuery = explode(',', $options['users']);
             $options['users'] = User::drupalIDForNorthstarId($usersQuery);
 
-            $query = $this->newQuery(User::class);
-
-            // For the first `where` query, we want to limit results... from then on,
-            // we want to append (e.g. `SELECT * WHERE _ OR WHERE _ OR WHERE _`)
-            $firstWhere = true;
-            foreach ($options['users'] as $drupal_id) {
-                $query->where('drupal_id', '=', $drupal_id, ($firstWhere ? 'and' : 'or'));
-                $firstWhere = false;
-            }
+            $users = $this->usersForDrupalIds($options['users']);
 
             $results = $this->phoenix->getSignupIndex($options);
         } else {
             // Since we are not specifying a NS user, grab results from Phoenix first and get Drupal ID from response to use in query below to find user. 
             $results = $this->phoenix->getSignupIndex($options);
-            $query = $this->newQuery(User::class);
-            $users = collect($results['data'])->pluck('user.drupal_id');
 
-            foreach ($users as $key => $drupal_id) {
-                $query->where('drupal_id', '=', $drupal_id);
-            }
+            $drupalIds = collect($results['data'])->pluck('user.drupal_id');
+
+            $users = $this->usersForDrupalIds($drupalIds);
         }
 
-        // Make an array keyed by the Drupal ID... e.g. ['100010' => {User}, '10002' => {User}]
-        $users = $query->get()->keyBy('drupal_id');
-
+        // Now, fill in the 'user' object on the response before returning it.
         foreach ($results['data'] as $key => $result) {
             $drupal_id = array_get($result, 'user.drupal_id');
-            $user = User::where('drupal_id', $drupal_id)->first();
+            $user = $users->where('drupal_id', $drupal_id)->first();
 
             // If Phoenix gave the expected drupal_id in the user response, replace it with our own data.
             if (! empty($user)) {
@@ -187,5 +177,24 @@ class SignupController extends Controller
 
         // If we successfully created signup, return "show" response w/ 201
         return response()->json($signupResponse, 201);
+    }
+
+    /**
+     *
+     * @param array $drupalIds
+     * @return User
+     */
+    protected function usersForDrupalIds($drupalIds) {
+            $query = $this->newQuery(User::class);
+
+            // For the first `where` query, we want to limit results... from then on,
+            // we want to append (e.g. `SELECT * WHERE _ OR WHERE _ OR WHERE _`)
+            $firstWhere = true;
+            foreach ($drupalIds as $drupalId) {
+                $query->where('drupal_id', '=', $drupalId, ($firstWhere ? 'and' : 'or'));
+                $firstWhere = false;
+            }
+
+            return $query->get();
     }
 }
