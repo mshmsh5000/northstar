@@ -126,7 +126,22 @@ class SignupController extends Controller
      */
     public function show($signup_id)
     {
-        return $this->phoenix->getSignup($signup_id);
+        $result = $this->phoenix->getSignup($signup_id);
+
+        $user = User::where('drupal_id', $result['data']['user']['drupal_id'])->first();
+
+        // If Phoenix gave the expected drupal_id in the user response, replace it with our own data.
+        if (! empty($user)) {
+            $result['data']['user'] = [
+                'id' => $user->id,
+                'first_name' => $user->first_name,
+                'last_initial' => $user->last_initial,
+                'photo' => $user->photo,
+                'country' => $user->country,
+            ];
+        }
+
+        return $result;
     }
 
     /**
