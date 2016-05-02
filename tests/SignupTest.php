@@ -103,9 +103,8 @@ class SignupTest extends TestCase
         $response = $this->asUser($user)->withScopes(['user'])->get('v1/signups?users='.$user->_id);
         $this->assertResponseStatus(200);
         $this->seeJson();
-        $json_decoded_response = $this->decodeResponseJson();
 
-        $this->assertEquals('Name', $json_decoded_response['data'][0]['user']['first_name']);
+        $this->assertEquals('Name', $this->decodeResponseJson()['data'][0]['user']['first_name']);
     }
 
     /**
