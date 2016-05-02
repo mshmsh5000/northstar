@@ -48,8 +48,6 @@ class SignupController extends Controller
             $options['users'] = $options['user'];
         }
 
-        
-
         // If a user is specified, turn Northstar ID into Drupal ID
         if (! empty($options['users'])) {
             // Update the '?users=xxx,xxx,xxx' option to be based on Drupal ID, rather than Northstar ID
@@ -60,7 +58,7 @@ class SignupController extends Controller
 
             $results = $this->phoenix->getSignupIndex($options);
         } else {
-            // Since we are not specifying a NS user, grab results from Phoenix first and get Drupal ID from response to use in query below to find user. 
+            // Since we are not specifying a NS user, grab results from Phoenix first and get Drupal ID from response to use in query below to find user.
             $results = $this->phoenix->getSignupIndex($options);
 
             $drupalIds = collect($results['data'])->pluck('user.drupal_id');
@@ -195,21 +193,21 @@ class SignupController extends Controller
     }
 
     /**
-     *
      * @param array $drupalIds
      * @return User
      */
-    protected function usersForDrupalIds($drupalIds) {
-            $query = $this->newQuery(User::class);
+    protected function usersForDrupalIds($drupalIds)
+    {
+        $query = $this->newQuery(User::class);
 
-            // For the first `where` query, we want to limit results... from then on,
-            // we want to append (e.g. `SELECT * WHERE _ OR WHERE _ OR WHERE _`)
-            $firstWhere = true;
-            foreach ($drupalIds as $drupalId) {
-                $query->where('drupal_id', '=', $drupalId, ($firstWhere ? 'and' : 'or'));
-                $firstWhere = false;
-            }
+        // For the first `where` query, we want to limit results... from then on,
+        // we want to append (e.g. `SELECT * WHERE _ OR WHERE _ OR WHERE _`)
+        $firstWhere = true;
+        foreach ($drupalIds as $drupalId) {
+            $query->where('drupal_id', '=', $drupalId, ($firstWhere ? 'and' : 'or'));
+            $firstWhere = false;
+        }
 
-            return $query->get();
+        return $query->get();
     }
 }
