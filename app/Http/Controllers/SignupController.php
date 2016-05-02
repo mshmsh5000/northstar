@@ -66,6 +66,7 @@ class SignupController extends Controller
 
             $results = $this->phoenix->getSignupIndex($options);
         } else {
+            // Since we are not specifying a NS user, grab results from Phoenix first and get Drupal ID from response to use in query below to find user. 
             $results = $this->phoenix->getSignupIndex($options);
             $query = $this->newQuery(User::class);
             $users = collect($results['data'])->pluck('user.drupal_id');
