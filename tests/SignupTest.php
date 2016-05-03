@@ -119,7 +119,9 @@ class SignupTest extends TestCase
         $this->mock(Phoenix::class)->shouldReceive('getSignup')->once()->andReturn([
             'data' => [
                 'id' => '42',
-                // ...
+                'user' => [
+                    'drupal_id' => '100001',
+                ],
             ],
         ]);
 
