@@ -193,6 +193,8 @@ class SignupController extends Controller
     }
 
     /**
+     * Queries for all specified drupal users at once.
+     *
      * @param array $drupalIds
      * @return User
      */
