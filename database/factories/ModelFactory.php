@@ -21,7 +21,6 @@ $factory->define(Northstar\Models\User::class, function (Faker\Generator $faker)
         'addr_zip' => $faker->postcode,
         'country' => $faker->countryCode,
         'language' => $faker->languageCode,
-        'drupal_id' => $faker->numberBetween(1, 400000),
-        'source' => $faker->randomElement(['phoenix', 'cgg', 'agg', 'sms']),
+        'source' => 'factory',
     ];
 });
