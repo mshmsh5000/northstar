@@ -4,6 +4,7 @@ namespace Northstar\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Northstar\Auth\Registrar;
+use Northstar\Auth\Scope;
 use Northstar\Exceptions\NorthstarValidationException;
 use Northstar\Http\Transformers\UserTransformer;
 use Northstar\Services\Phoenix;
@@ -41,7 +42,7 @@ class UserController extends Controller
 
         $this->transformer = new UserTransformer();
 
-        $this->middleware('scope:admin', ['except' => ['index', 'show']]);
+        $this->middleware('scope:admin', ['except' => ['show']]);
     }
 
     /**
@@ -129,6 +130,11 @@ class UserController extends Controller
      */
     public function show($term, $id)
     {
+        // Restrict email/mobile profile lookup to admin keys.
+        if (in_array($term, ['email', 'mobile'])) {
+            Scope::gate('admin');
+        }
+
         // Find the user.
         $user = $this->registrar->resolve([$term => $id]);
 

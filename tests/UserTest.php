@@ -61,7 +61,7 @@ class UserTest extends TestCase
             'first_name' => 'Jean-Paul',
         ]);
 
-        $this->withScopes(['user'])->get('v1/users/email/JBeaubier@Xavier.edu');
+        $this->withScopes(['user', 'admin'])->get('v1/users/email/JBeaubier@Xavier.edu');
         $this->assertResponseStatus(200);
         $this->seeJsonSubset([
             'data' => [
@@ -83,7 +83,7 @@ class UserTest extends TestCase
             'first_name' => $this->faker->firstName,
         ]);
 
-        $this->withScopes(['user'])->get('v1/users/mobile/'.$user->mobile);
+        $this->withScopes(['user', 'admin'])->get('v1/users/mobile/'.$user->mobile);
         $this->assertResponseStatus(200);
         $this->seeJsonSubset([
             'data' => [
@@ -140,7 +140,8 @@ class UserTest extends TestCase
     public function testGetPublicDataFromUser()
     {
         $user = User::create([
-            'email' => $this->faker->unique()->email,
+            'email' => $this->faker->email,
+            'mobile' => $this->faker->phoneNumber,
             'first_name' => $this->faker->firstName,
             'last_name' => $this->faker->lastName,
         ]);
@@ -150,12 +151,15 @@ class UserTest extends TestCase
         $this->assertResponseStatus(200);
         $this->seeJsonStructure([
             'data' => [
-                'id', 'email', 'first_name',
+                'id', 'first_name',
             ],
         ]);
 
         // And test that private profile fields are hidden for 'user' scope.
-        $this->assertArrayNotHasKey('last_name', $this->decodeResponseJson()['data']);
+        $data = $this->decodeResponseJson()['data'];
+        $this->assertArrayNotHasKey('email', $data);
+        $this->assertArrayNotHasKey('mobile', $data);
+        $this->assertArrayNotHasKey('last_name', $data);
     }
 
     /**
@@ -195,6 +199,9 @@ class UserTest extends TestCase
         factory(User::class, 5)->create();
 
         $this->get('v1/users');
+        $this->assertResponseStatus(403);
+
+        $this->withScopes(['admin'])->get('v1/users');
         $this->assertResponseStatus(200);
         $this->seeJsonStructure([
             'data' => [
@@ -221,7 +228,7 @@ class UserTest extends TestCase
         // Make some test users to see in the index.
         factory(User::class, 5)->create();
 
-        $this->get('v1/users?limit=200'); // set a "per page" above the allowed max
+        $this->withScopes(['admin'])->get('v1/users?limit=200'); // set a "per page" above the allowed max
         $this->assertResponseStatus(200);
         $this->assertSame(100, $this->decodeResponseJson()['meta']['pagination']['per_page']);
 
@@ -263,7 +270,7 @@ class UserTest extends TestCase
         $user3 = User::create(['mobile' => $this->faker->unique()->phoneNumber, 'drupal_id' => '123413']);
 
         // Retrieve multiple users by _id
-        $this->get('v1/users?filter[id]='.$user1->id.','.$user2->id.',FAKE_ID');
+        $this->withScopes(['admin'])->get('v1/users?filter[id]='.$user1->id.','.$user2->id.',FAKE_ID');
         $this->assertCount(2, $this->decodeResponseJson()['data']);
         $this->seeJsonStructure([
             'data' => [
@@ -277,11 +284,11 @@ class UserTest extends TestCase
         ]);
 
         // Retrieve multiple users by drupal_id
-        $this->get('v1/users?filter[drupal_id]=FAKE_ID,'.$user1->drupal_id.','.$user2->drupal_id.','.$user3->drupal_id);
+        $this->withScopes(['admin'])->get('v1/users?filter[drupal_id]=FAKE_ID,'.$user1->drupal_id.','.$user2->drupal_id.','.$user3->drupal_id);
         $this->assertCount(3, $this->decodeResponseJson()['data']);
 
         // Test compound queries
-        $this->get('v1/users?filter[drupal_id]=FAKE_ID,'.$user1->drupal_id.','.$user2->drupal_id.','.$user3->drupal_id.'&filter[_id]='.$user1->id);
+        $this->withScopes(['admin'])->get('v1/users?filter[drupal_id]=FAKE_ID,'.$user1->drupal_id.','.$user2->drupal_id.','.$user3->drupal_id.'&filter[_id]='.$user1->id);
         $this->assertCount(1, $this->decodeResponseJson()['data']);
     }
 

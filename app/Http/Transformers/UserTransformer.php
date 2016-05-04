@@ -18,8 +18,6 @@ class UserTransformer extends TransformerAbstract
         $response = [
             'id' => $user->_id,
             '_id' => $user->_id, // @DEPRECATED: Will be removed.
-            'email' => $user->email,
-            'mobile' => $user->mobile,
 
             'first_name' => $user->first_name,
         ];
@@ -29,11 +27,13 @@ class UserTransformer extends TransformerAbstract
         }
 
         $response['last_initial'] = $user->last_initial;
-
         $response['photo'] = $user->photo;
-        $response['interests'] = $user->interests;
 
         if (Scope::allows('admin') || Gate::allows('view-full-profile', $user)) {
+            $response['email'] = $user->email;
+            $response['mobile'] = $user->mobile;
+
+            $response['interests'] = $user->interests;
             $response['birthdate'] = $user->birthdate;
 
             $response['addr_street1'] = $user->addr_street1;
