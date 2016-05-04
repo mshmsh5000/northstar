@@ -25,7 +25,6 @@ class PasswordTest extends TestCase
         $this->seeJsonSubset([
             'data' => [
                 'id' => $user->_id,
-                'email' => $user->email,
             ],
         ]);
 

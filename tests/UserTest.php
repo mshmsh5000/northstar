@@ -140,7 +140,8 @@ class UserTest extends TestCase
     public function testGetPublicDataFromUser()
     {
         $user = User::create([
-            'email' => $this->faker->unique()->email,
+            'email' => $this->faker->email,
+            'mobile' => $this->faker->phoneNumber,
             'first_name' => $this->faker->firstName,
             'last_name' => $this->faker->lastName,
         ]);
@@ -150,12 +151,15 @@ class UserTest extends TestCase
         $this->assertResponseStatus(200);
         $this->seeJsonStructure([
             'data' => [
-                'id', 'email', 'first_name',
+                'id', 'first_name',
             ],
         ]);
 
         // And test that private profile fields are hidden for 'user' scope.
-        $this->assertArrayNotHasKey('last_name', $this->decodeResponseJson()['data']);
+        $data = $this->decodeResponseJson()['data'];
+        $this->assertArrayNotHasKey('email', $data);
+        $this->assertArrayNotHasKey('mobile', $data);
+        $this->assertArrayNotHasKey('last_name', $data);
     }
 
     /**
