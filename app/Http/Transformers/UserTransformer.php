@@ -57,8 +57,8 @@ class UserTransformer extends TransformerAbstract
         // Drupal ID for this user. Used in the mobile app.
         $response['drupal_id'] = $user->drupal_id;
 
-        $response['updated_at'] = $user->updated_at->toISO8601String();
-        $response['created_at'] = $user->created_at->toISO8601String();
+        $response['updated_at'] = $user->updated_at->toIso8601String();
+        $response['created_at'] = $user->created_at->toIso8601String();
 
         return $response;
     }
