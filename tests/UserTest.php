@@ -61,7 +61,7 @@ class UserTest extends TestCase
             'first_name' => 'Jean-Paul',
         ]);
 
-        $this->withScopes(['user'])->get('v1/users/email/JBeaubier@Xavier.edu');
+        $this->withScopes(['user', 'admin'])->get('v1/users/email/JBeaubier@Xavier.edu');
         $this->assertResponseStatus(200);
         $this->seeJsonSubset([
             'data' => [
@@ -83,7 +83,7 @@ class UserTest extends TestCase
             'first_name' => $this->faker->firstName,
         ]);
 
-        $this->withScopes(['user'])->get('v1/users/mobile/'.$user->mobile);
+        $this->withScopes(['user', 'admin'])->get('v1/users/mobile/'.$user->mobile);
         $this->assertResponseStatus(200);
         $this->seeJsonSubset([
             'data' => [
