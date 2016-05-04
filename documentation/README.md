@@ -22,7 +22,7 @@ Endpoint                  | Functionality                                       
 #### Users
 Endpoint                                     | Functionality                                            | Required Scope
 -------------------------------------------- | -------------------------------------------------------- | --------------
-`GET /users`                             | [Retrieve All Users](endpoints/users.md#retrieve-all-users) |
+`GET /users`                             | [Retrieve All Users](endpoints/users.md#retrieve-all-users) | `admin`
 `POST /users`                            | [Create a User](endpoints/users.md#create-a-user) | `admin`
 `GET /users/:term/:identifier`           | [Retrieve a User](endpoints/users.md#retrieve-a-user) 
 `PUT /users/:term/:id`                   | [Update a User](endpoints/users.md#update-a-user) | `admin`

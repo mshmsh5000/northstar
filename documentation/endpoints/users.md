@@ -1,6 +1,6 @@
 # User Endpoints
 ## Retrieve All Users
-Get data for all users in a paginated format.
+Get data for all users in a paginated format. This requires `admin` scope.
 
 ```
 GET /users
@@ -185,6 +185,8 @@ curl -X POST \
 ## Retrieve a User
 Get profile data for a specific user. This can be retrieved with either the user's Northstar ID (which is automatically
 generated when a new database record is created), a mobile phone number, an email address, or the user's Drupal ID.
+
+Fetching a user via email or mobile requires `admin` scope.
 
 ```
 GET /users/id/<user_id>
