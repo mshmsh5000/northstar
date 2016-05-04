@@ -32,7 +32,7 @@ class UserTransformer extends TransformerAbstract
         if (Scope::allows('admin') || Gate::allows('view-full-profile', $user)) {
             $response['email'] = $user->email;
             $response['mobile'] = $user->mobile;
-            
+
             $response['interests'] = $user->interests;
             $response['birthdate'] = $user->birthdate;
 

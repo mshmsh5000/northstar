@@ -134,7 +134,7 @@ class UserController extends Controller
         if (in_array($term, ['email', 'mobile'])) {
             Scope::gate('admin');
         }
-        
+
         // Find the user.
         $user = $this->registrar->resolve([$term => $id]);
 
