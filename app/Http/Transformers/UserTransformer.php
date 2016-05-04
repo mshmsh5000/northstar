@@ -41,23 +41,24 @@ class UserTransformer extends TransformerAbstract
             $response['addr_city'] = $user->addr_city;
             $response['addr_state'] = $user->addr_state;
             $response['addr_zip'] = $user->addr_zip;
+
+            // Signup source (e.g. drupal, cgg, mobile...)
+            $response['source'] = $user->source;
+
+            // Internal & third-party service IDs:
+            $response['mobilecommons_id'] = $user->mobilecommons_id;
+            $response['parse_installation_ids'] = $user->parse_installation_ids;
+            $response['mobilecommons_status'] = $user->mobilecommons_status;
         }
 
         $response['language'] = $user->language;
         $response['country'] = $user->country;
 
-        // Signup source (e.g. drupal, cgg, mobile...)
-        $response['source'] = $user->source;
-
-        // Internal & third-party service IDs:
+        // Drupal ID for this user. Used in the mobile app.
         $response['drupal_id'] = $user->drupal_id;
-        $response['mobilecommons_id'] = $user->mobilecommons_id;
-        $response['parse_installation_ids'] = $user->parse_installation_ids;
 
-        $response['mobilecommons_status'] = $user->mobilecommons_status;
-
-        $response['updated_at'] = $user->updated_at->toISO8601String();
-        $response['created_at'] = $user->created_at->toISO8601String();
+        $response['updated_at'] = $user->updated_at->toIso8601String();
+        $response['created_at'] = $user->created_at->toIso8601String();
 
         return $response;
     }
