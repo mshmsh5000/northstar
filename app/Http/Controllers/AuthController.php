@@ -137,9 +137,18 @@ class AuthController extends Controller
     public function register(Request $request)
     {
         $request = $this->registrar->normalize($request);
-        $this->registrar->validate($request, null, ['password' => 'required']);
 
-        $user = $this->registrar->register($request->all());
+        // If a user exists but has not set a password yet, allow them to
+        // "register" to set a new password on their account.
+        $credentials = $request->only('email', 'mobile');
+        $existing = $this->registrar->resolve($credentials);
+        if ($existing && $existing->hasPassword()) {
+            throw new HttpException(422, 'A user with that email or mobile has already been registered.');
+        }
+
+        $this->registrar->validate($request, $existing, ['password' => 'required']);
+
+        $user = $this->registrar->register($request->all(), $existing);
 
         // Should we try to make a Drupal account for this user?
         if ($request->has('create_drupal_user') && $request->has('password') && ! $user->drupal_id) {

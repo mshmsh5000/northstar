@@ -252,6 +252,16 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
     }
 
     /**
+     * Does this user have a password set?
+     *
+     * @return bool
+     */
+    public function hasPassword()
+    {
+        return ! (empty($this->password) && empty($this->drupal_password));
+    }
+
+    /**
      * Get the corresponding Drupal ID for the given Northstar ID,
      * if it exists.
      *
