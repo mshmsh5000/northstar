@@ -155,7 +155,9 @@ curl -X POST \
 
 ## Register User
 
-This will register a new user account and create an authentication token, which can be used to sign future requests on the user's behalf.
+This will register a new user account and create an authentication token, which can be used to sign future requests
+on the user's behalf. If an account exists but _doesn't_ have a password, a user can complete their registration by
+setting a password via this endpoint.
 
 ```
 POST /auth/register
