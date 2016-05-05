@@ -222,18 +222,55 @@ class AuthTest extends TestCase
     }
 
     /**
+     * Test that you can "register" to complete the registration
+     * flow for a user who has an email/mobile account but no
+     * password stored.
+     * POST /auth/register
+     *
+     * @return void
+     */
+    public function testRegisterExistingUserWithoutPassword()
+    {
+        // Given an account that doesn't have a password (for example,
+        // someone who voted in Celebs Gone Good).
+        $user = User::create([
+            'email' => 'poe.dameron@resistance.org',
+            'first_name' => 'Poe',
+            'source' => 'cgg',
+        ]);
+
+        // Try to register to "complete" their profile.
+        $this->withScopes(['user'])->json('POST', 'v1/auth/register', [
+            'email' => 'Poe.Dameron@Resistance.org',
+            'password' => 'finn&p0e4ever',
+            'source' => 'phpunit',
+        ]);
+
+        $this->assertResponseStatus(200);
+
+        $user = $user->fresh();
+
+        // Ensure that we've stored new fields on the existing user record.
+        $this->assertEquals($user->first_name, 'Poe');
+        $this->assertEquals($user->source, 'cgg'); // Should be immutable.
+        $this->assertNotEmpty($user->password, 'Hashed password should be stored.');
+    }
+
+    /**
      * Test that you can't register a duplicate user.
      * POST /auth/register
      *
      * @return void
      */
-    public function testRegisterDuplicate()
+    public function testCantRegisterDuplicate()
     {
         User::create([
             'email' => 'fn-2187@first-order.mil',
+            'password' => 'CptPh4smaSux',
         ]);
 
-        // Try to register an account that already exists, but with different capitalization
+        // Try to "register" that existing account we just made (which already
+        // has a password, so we know we're not trying to "complete" their profile).
         $this->withScopes(['user'])->json('POST', 'v1/auth/register', [
             'email' => 'FN-2187@First-Order.mil',
             'password' => 'secret',
