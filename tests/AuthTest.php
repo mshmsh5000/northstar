@@ -243,6 +243,19 @@ class AuthTest extends TestCase
     }
 
     /**
+     * Test that we can register a user with a crazy long email.
+     */
+    public function testRegisterLongEmail()
+    {
+        $this->withScopes(['user'])->json('POST', 'v1/auth/register', [
+            'email' => 'loremipsumdolorsitametconsecteturadipiscingelitduisut1234567890b@example.com',
+            'password' => 'secret',
+        ]);
+
+        $this->assertResponseStatus(200);
+    }
+
+    /**
      * Test for logging out a user
      * POST /logout
      *
