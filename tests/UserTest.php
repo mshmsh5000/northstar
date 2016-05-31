@@ -331,7 +331,7 @@ class UserTest extends TestCase
         ];
 
         $this->withScopes(['admin'])->json('POST', 'v1/users', $payload);
-        $this->assertResponseStatus(200);
+        $this->assertResponseStatus(201);
         $this->seeJsonStructure([
             'data' => [
                 'id', 'email', 'source', 'created_at',

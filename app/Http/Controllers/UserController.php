@@ -81,6 +81,7 @@ class UserController extends Controller
         // update a user if one with a matching index field is found).
         // So, does this user exist already?
         $user = $this->registrar->resolve($request->only('id', 'email', 'mobile', 'drupal_id'));
+        $upserting = ! is_null($user);
 
         // Normalize input and validate the request
         $request = $this->registrar->normalize($request);
@@ -115,7 +116,9 @@ class UserController extends Controller
             $user->save();
         }
 
-        return $this->item($user);
+        $code = $upserting ? 200 : 201;
+
+        return $this->item($user, $code);
     }
 
     /**
