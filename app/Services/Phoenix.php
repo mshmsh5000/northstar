@@ -119,6 +119,9 @@ class Phoenix
         $payload['password'] = $password;
 
         $response = $this->client->post('users', [
+            'query' => [
+                'forward' => false,
+            ],
             'body' => json_encode($payload),
         ]);
 
