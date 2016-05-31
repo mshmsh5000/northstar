@@ -163,7 +163,7 @@ curl -X POST \
 **Example Response:**
 
 ```js
-// 200 Okay
+// 200 Okay (or) 201 Created
 
 {
     "data": {
