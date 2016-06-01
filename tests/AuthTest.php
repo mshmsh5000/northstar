@@ -222,6 +222,26 @@ class AuthTest extends TestCase
     }
 
     /**
+     * Test that a user can't set "internal" fields when registering.
+     * POST /auth/register
+     *
+     * @return void
+     */
+    public function testRegisterIgnoresInternalFields()
+    {
+        $this->withScopes(['user'])->json('POST', 'v1/auth/register', [
+            'email' => 'test-registration@dosomething.org',
+            'drupal_id' => '123456', // <-- we should ignore this!
+            'password' => 'secret',
+        ]);
+
+        $this->assertResponseStatus(200);
+
+        // The provided `drupal_id` should have been ignored.
+        $this->assertEquals(null, $this->decodeResponseJson()['data']['user']['data']['drupal_id']);
+    }
+
+    /**
      * Test that you can "register" to complete the registration
      * flow for a user who has an email/mobile account but no
      * password stored.
@@ -332,7 +352,7 @@ class AuthTest extends TestCase
         $this->assertResponseStatus(200);
 
         // Verify parse_installation_ids got removed from the user
-        $this->notSeeIndatabase('users', [
+        $this->notSeeInDatabase('users', [
             '_id' => $user->_id,
             'parse_installation_ids' => ['parse-abc123'],
         ]);

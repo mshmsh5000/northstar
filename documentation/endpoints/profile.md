@@ -67,9 +67,6 @@ POST /profile
   addr_zip: String
   country: String // two character country code
   language: String
-  agg_id: Number
-  cgg_id: Number
-  drupal_id: String
   parse_installation_ids: String // CSV values or array will be appended to existing interests
   interests: String, Array // CSV values or array will be appended to existing interests
   source: String // Immutable (can only be set if existing value is `null`)
