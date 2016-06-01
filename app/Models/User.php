@@ -91,6 +91,16 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
     ];
 
     /**
+     * These fields are reserved for "internal" use only, and should not be
+     * editable directly by end-users (e.g. from the profile endpoint).
+     *
+     * @var array
+     */
+    public static $internal = [
+        'mobilecommons_id', 'mobilecommons_status', 'cgg_id', 'drupal_id', 'agg_id', 'drupal_password',
+    ];
+
+    /**
      * Attributes that can be queried as unique identifiers.
      *
      * This array is manually maintained. It does not necessarily mean that

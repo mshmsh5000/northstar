@@ -6,6 +6,7 @@ use Illuminate\Contracts\Auth\Guard as Auth;
 use Northstar\Auth\Registrar;
 use Northstar\Http\Transformers\UserTransformer;
 use Illuminate\Http\Request;
+use Northstar\Models\User;
 
 class ProfileController extends Controller
 {
@@ -67,7 +68,7 @@ class ProfileController extends Controller
         $request = $this->registrar->normalize($request);
         $this->registrar->validate($request, $user);
 
-        $user->fill($request->all());
+        $user->fill($request->except(User::$internal));
         $user->save();
 
         return $this->item($user);
