@@ -5,6 +5,7 @@ namespace Northstar\Http\Controllers;
 use Illuminate\Http\Request;
 use Northstar\Http\Transformers\TokenTransformer;
 use Northstar\Http\Transformers\UserTransformer;
+use Northstar\Models\User;
 use Symfony\Component\HttpKernel\Exception\HttpException;
 use Symfony\Component\HttpKernel\Exception\UnauthorizedHttpException;
 use Illuminate\Contracts\Auth\Guard as Auth;
@@ -148,7 +149,7 @@ class AuthController extends Controller
 
         $this->registrar->validate($request, $existing, ['password' => 'required']);
 
-        $user = $this->registrar->register($request->all(), $existing);
+        $user = $this->registrar->register($request->except(User::$internal), $existing);
 
         // Should we try to make a Drupal account for this user?
         if ($request->has('create_drupal_user') && $request->has('password') && ! $user->drupal_id) {
