@@ -4,6 +4,14 @@ build:
   # The steps that will be executed on build
   steps:
     - script:
+        name: Update PHP 5.6
+        code: |-
+          sudo apt-get update
+          sudo apt-get -y install software-properties-common
+          sudo LC_ALL=C.UTF-8 add-apt-repository -y ppa:ondrej/php
+          sudo apt-get update
+          sudo apt-get install php5.6
+    - script:
         name: Install MongoDB
         code: |-
           sudo apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv 7F0CEB10
@@ -12,12 +20,12 @@ build:
           sudo apt-get install -y mongodb-org
           sudo service mongod status
     - script:
+        name: install php extensions
+        code: sudo apt-get install php5.6-mongo php5.6-curl php5.6-mbstring php5.6-mcrypt php5.6-mysql php5.6-xml php5.6-zip
+    - script:
         name: Update Composer
         code: sudo composer self-update
     - leipert/composer-install@0.0.1
-    - script:
-        name: install php mongo extension
-        code: sudo apt-get install php5-mongo
     - script:
         name: create test RSA keys
         code: |-
