@@ -352,7 +352,7 @@ class AuthTest extends TestCase
         $this->assertResponseStatus(200);
 
         // Verify parse_installation_ids got removed from the user
-        $this->notSeeIndatabase('users', [
+        $this->notSeeInDatabase('users', [
             '_id' => $user->_id,
             'parse_installation_ids' => ['parse-abc123'],
         ]);
