@@ -235,4 +235,27 @@ class OAuthTest extends TestCase
 
         $this->assertResponseStatus(400);
     }
+
+    /**
+     * Test that an access token can be used to access a protected route.
+     */
+    public function testAccessToken()
+    {
+        $user = User::create(['email' => 'login-test@dosomething.org', 'password' => 'secret']);
+        $client = Client::create(['app_id' => 'phpunit', 'scope' => ['admin', 'user']]);
+
+        $this->post('v2/auth/token', [
+            'grant_type' => 'password',
+            'client_id' => $client->client_id,
+            'client_secret' => $client->client_secret,
+            'username' => $user->email,
+            'password' => 'secret',
+            'scope' => 'admin user',
+        ]);
+
+        $token = $this->decodeResponseJson()['access_token'];
+
+        $this->get('v1/users', ['Authorization' => 'Bearer '.$token]);
+        $this->assertResponseStatus(200);
+    }
 }
