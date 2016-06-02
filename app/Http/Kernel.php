@@ -4,20 +4,17 @@ namespace Northstar\Http;
 
 use Illuminate\Foundation\Http\Kernel as HttpKernel;
 use Northstar\Http\Middleware\ParseOAuthHeader;
-use Illuminate\Contracts\Foundation\Application;
-use Illuminate\Routing\Router;
 
 class Kernel extends HttpKernel
 {
     /**
-     * Create a new HTTP kernel instance.
+     * Bootstrap the application for HTTP requests.
      *
-     * @param  \Illuminate\Contracts\Foundation\Application  $app
-     * @param  \Illuminate\Routing\Router  $router
+     * @return void
      */
-    public function __construct(Application $app, Router $router)
+    public function bootstrap()
     {
-        parent::__construct($app, $router);
+        parent::bootstrap();
 
         // Conditionally apply OAuth middleware if feature flag is set.
         if (config('features.oauth')) {
