@@ -4,13 +4,13 @@ namespace Northstar\Http\Controllers;
 
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
-use League\OAuth2\Server\Server as OAuthServer;
+use League\OAuth2\Server\AuthorizationServer;
 
 class OAuthController extends Controller
 {
     /**
      * The OAuth authorization server.
-     * @var OAuthServer
+     * @var AuthorizationServer
      */
     protected $oauth;
 
@@ -18,9 +18,9 @@ class OAuthController extends Controller
      * Make a new OAuthController, inject dependencies,
      * and set middleware for this controller's methods.
      *
-     * @param OAuthServer $oauth
+     * @param AuthorizationServer $oauth
      */
-    public function __construct(OAuthServer $oauth)
+    public function __construct(AuthorizationServer $oauth)
     {
         $this->oauth = $oauth;
     }

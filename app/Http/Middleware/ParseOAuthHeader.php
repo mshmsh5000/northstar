@@ -3,7 +3,7 @@
 namespace Northstar\Http\Middleware;
 
 use Illuminate\Support\Str;
-use League\OAuth2\Server\Server as OAuthServer;
+use League\OAuth2\Server\ResourceServer;
 use Psr\Http\Message\ServerRequestInterface;
 
 class ParseOAuthHeader
@@ -11,10 +11,10 @@ class ParseOAuthHeader
     /**
      * Inject dependencies for the ParseOAuthHeader middleware.
      *
-     * @param OAuthServer $oauth
+     * @param ResourceServer $oauth
      * @param ServerRequestInterface $request
      */
-    public function __construct(OAuthServer $oauth, ServerRequestInterface $request)
+    public function __construct(ResourceServer $oauth, ServerRequestInterface $request)
     {
         $this->oauth = $oauth;
         $this->request = $request;
