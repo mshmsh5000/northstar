@@ -2,8 +2,6 @@
 
 namespace Northstar\Models;
 
-use Jenssegers\Mongodb\Model;
-
 /**
  * The OAuth refresh token model.
  *
@@ -11,6 +9,8 @@ use Jenssegers\Mongodb\Model;
  * @property string $_id
  * @property string $token
  * @property string $user_id
+ *
+ * @method static \Illuminate\Database\Eloquent\Builder where(string $field, string $comparison = '=', string $value)
  */
 class RefreshToken extends Model
 {
@@ -22,12 +22,10 @@ class RefreshToken extends Model
     protected $collection = 'refresh_tokens';
 
     /**
-     * Indicates if the IDs are auto-incrementing.
+     * The attributes that should be cast to native types.
      *
-     * @var bool
+     * @var array
      */
-    public $incrementing = false;
-
     protected $casts = [
         'scopes' => 'array',
     ];
