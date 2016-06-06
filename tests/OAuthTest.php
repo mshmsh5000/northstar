@@ -297,4 +297,46 @@ class OAuthTest extends TestCase
         ]);
         $this->assertResponseStatus(400);
     }
+
+    /**
+     * Test that a made up refresh token does not cause an error.
+     */
+    public function testCantRevokeAnotherUsersRefreshToken()
+    {
+        $user1 = User::create(['email' => 'login-test@dosomething.org', 'password' => 'secret']);
+        $user2 = User::create(['email' => 'evil-user@dosomething.org', 'password' => 'secret']);
+        $client = Client::create(['app_id' => 'phpunit', 'scope' => ['admin', 'user']]);
+
+        // Make token for user #1.
+        $jwt1 = $this->post('v2/auth/token', [
+            'grant_type' => 'password',
+            'client_id' => $client->client_id,
+            'client_secret' => $client->client_secret,
+            'username' => $user1->email,
+            'password' => 'secret',
+            'scope' => 'admin user',
+        ])->decodeResponseJson();
+
+        // Hacks. OAuth server seems to get mad if more than one request is made per request.
+        $this->refreshApplication();
+
+        // Make token for user #2.
+        $jwt2 = $this->post('v2/auth/token', [
+            'grant_type' => 'password',
+            'client_id' => $client->client_id,
+            'client_secret' => $client->client_secret,
+            'username' => $user2->email,
+            'password' => 'secret',
+            'scope' => 'admin user',
+        ])->decodeResponseJson();
+
+        // Now, try to delete User #1's refresh token w/ User #2's access token.
+        $this->delete('v2/auth/token', [
+            'token' => $jwt1['refresh_token'], // <--- User #1's refresh token
+        ], [
+            'Content-Type' => 'application/x-www-form-urlencoded',
+            'Authorization' => 'Bearer '.$jwt2['access_token'], // <-- but User #2's access token!
+        ]);
+        $this->assertResponseStatus(401);
+    }
 }
