@@ -13,7 +13,8 @@ use League\OAuth2\Server\Repositories\ClientRepositoryInterface;
 use League\OAuth2\Server\Repositories\RefreshTokenRepositoryInterface;
 use League\OAuth2\Server\Repositories\ScopeRepositoryInterface;
 use League\OAuth2\Server\Repositories\UserRepositoryInterface;
-use League\OAuth2\Server\Server as OAuthServer;
+use League\OAuth2\Server\AuthorizationServer;
+use League\OAuth2\Server\ResourceServer;
 use Northstar\Auth\NorthstarTokenGuard;
 use Northstar\Auth\Repositories\AccessTokenRepository;
 use Northstar\Auth\Repositories\ClientRepository;
@@ -60,8 +61,8 @@ class AuthServiceProvider extends ServiceProvider
         $this->app->bind(AccessTokenRepositoryInterface::class, AccessTokenRepository::class);
 
         // Configure the OAuth authorization server
-        $this->app->singleton(OAuthServer::class, function () {
-            $server = new OAuthServer(
+        $this->app->singleton(AuthorizationServer::class, function () {
+            $server = new AuthorizationServer(
                 app(ClientRepositoryInterface::class),
                 app(AccessTokenRepositoryInterface::class),
                 app(ScopeRepositoryInterface::class),
@@ -82,6 +83,13 @@ class AuthServiceProvider extends ServiceProvider
             }
 
             return $server;
+        });
+
+        $this->app->singleton(ResourceServer::class, function () {
+            return new ResourceServer(
+                app(AccessTokenRepositoryInterface::class),
+                base_path('storage/keys/public.key')
+            );
         });
 
         parent::registerPolicies($gate);
