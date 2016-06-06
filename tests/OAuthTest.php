@@ -258,4 +258,43 @@ class OAuthTest extends TestCase
         $this->get('v1/users', ['Authorization' => 'Bearer '.$token]);
         $this->assertResponseStatus(200);
     }
+
+    /**
+     * Test that a refresh token can be revoked.
+     */
+    public function testRevokeRefreshToken()
+    {
+        $user = User::create(['email' => 'login-test@dosomething.org', 'password' => 'secret']);
+        $client = Client::create(['app_id' => 'phpunit', 'scope' => ['admin', 'user']]);
+
+        $this->post('v2/auth/token', [
+            'grant_type' => 'password',
+            'client_id' => $client->client_id,
+            'client_secret' => $client->client_secret,
+            'username' => $user->email,
+            'password' => 'secret',
+            'scope' => 'admin user',
+        ]);
+
+        $jwt = $this->decodeResponseJson();
+
+        // Now, delete that refresh token.
+        $this->delete('v2/auth/token', [
+            'token' => $jwt['refresh_token'],
+        ], [
+            'Content-Type' => 'application/x-www-form-urlencoded',
+            'Authorization' => 'Bearer '.$jwt['access_token'],
+        ]);
+        $this->assertResponseStatus(200);
+
+        // And that token should now be rejected if provided:
+        $this->post('v2/auth/token', [
+            'grant_type' => 'refresh_token',
+            'client_id' => $client->client_id,
+            'client_secret' => $client->client_secret,
+            'scope' => 'admin user',
+            'refresh_token' => $jwt['refresh_token'],
+        ]);
+        $this->assertResponseStatus(400);
+    }
 }
