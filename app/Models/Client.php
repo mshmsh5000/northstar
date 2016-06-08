@@ -3,7 +3,6 @@
 namespace Northstar\Models;
 
 use Illuminate\Support\Str;
-use Jenssegers\Mongodb\Model;
 
 /**
  * The Client model. These identify the "client application" making

@@ -43,10 +43,7 @@ class NorthstarTokenGuard extends TokenGuard implements Guard
         $user = null;
 
         $token = $this->getTokenForRequest();
-
-        if (! empty($token)) {
-            $user = $this->getUserForToken($token);
-        }
+        $user = $this->getUserForToken($token);
 
         return $this->user = $user;
     }
@@ -57,7 +54,7 @@ class NorthstarTokenGuard extends TokenGuard implements Guard
      * @param string $tokenKey
      * @return \Northstar\Models\User|null
      */
-    public function getUserForToken($tokenKey)
+    public function getUserForToken($tokenKey = '')
     {
         // If the provided token is 32 characters long, it's a legacy
         // database token. Otherwise, it must be a JWT access token.
