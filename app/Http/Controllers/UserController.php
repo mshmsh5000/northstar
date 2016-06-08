@@ -77,10 +77,14 @@ class UserController extends Controller
      */
     public function store(Request $request)
     {
-        // This is an "upsert" endpoint (so it will either create a new user, or
+        // This endpoint will upsert by default (so it will either create a new user, or
         // update a user if one with a matching index field is found).
-        // So, does this user exist already?
         $existing = $this->registrar->resolve($request->only('id', 'email', 'mobile', 'drupal_id'));
+
+        // If `?upsert=false` and a record already exists, return a custom validation error.
+        if (! filter_var($request->query('upsert', 'true'), FILTER_VALIDATE_BOOLEAN) && $existing) {
+            throw new NorthstarValidationException(['id' => ['A record matching one of the given indexes already exists.']], $existing);
+        }
 
         // Normalize input and validate the request
         $request = $this->registrar->normalize($request);

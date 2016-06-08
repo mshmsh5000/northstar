@@ -2,8 +2,11 @@
 
 namespace Northstar\Exceptions;
 
+use Illuminate\Contracts\Support\Arrayable;
 use Illuminate\Http\JsonResponse;
 use Exception;
+use Northstar\Http\Transformers\UserTransformer;
+use Northstar\Models\User;
 
 class NorthstarValidationException extends Exception
 {
@@ -26,7 +29,7 @@ class NorthstarValidationException extends Exception
      *
      * @param array $errors
      */
-    public function __construct($errors)
+    public function __construct($errors, $context = null)
     {
         parent::__construct('The given data failed to pass validation.');
 
@@ -38,6 +41,13 @@ class NorthstarValidationException extends Exception
                 'fields' => $errors,
             ],
         ];
+
+        // @TODO: We should have a central place to handle transformations like this...
+        if ($context instanceof User) {
+            $this->response['error']['context'] = (new UserTransformer())->transform($context);
+        } elseif (is_array($context) || $context instanceof Arrayable) {
+            $this->response['error']['context'] = $context;
+        }
     }
 
     /**
