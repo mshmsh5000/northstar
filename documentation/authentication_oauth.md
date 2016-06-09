@@ -12,9 +12,9 @@ When requesting an authentication token, credentials for a valid **client applic
 (for example, `phoenix` or `letsdothis-ios`) and a client secret, which is like a long "password" for that application.
 
 ### Scopes
-Authentication tokens are granted **scopes** to limit their privileges. This allows us to minimize damage if a token is
-compromised, and also limit the abilities of "untrusted" lcients that operate over a public network like the [mobile app](https://app.dosomething.org), and
-limit the amount of damage that can be done if a client is compromised.
+Authentication tokens are granted **scopes** to limit their privileges. This allows us to limit the abilities of "untrusted" clients
+that operate over a public network like the [mobile app](https://app.dosomething.org), and limit the amount of damage that can be
+done if a client is compromised.
 
 While you may request any scopes when creating a token, each client has a list of allowed scopes and so scopes that are
 not "whitelisted" for the given client will be refused. So, for example, a malicious user with the mobile app client
@@ -28,9 +28,37 @@ The [Password Grant](endpoints/oauth.md#create-token-password-grant) may be used
 made on behalf of a particular user.
 
 We authenticate requests to our APIs using [JSON Web Tokens](https://jwt.io), another [open standard](https://tools.ietf.org/html/rfc7519)
-that allows us to issue cryptographically signed tokens. Each token includes information like the user's ID,
-granted scopes, and the token expiration date. Because the tokens are signed, this data can't be tampered with without invalidating
+that allows us to issue cryptographically signed tokens. Because the tokens are signed, this data can't be tampered with without invalidating
 the signature, and any (trusted) service can validate a token using Northstar's public key _without_ making an HTTP request!
+
+Here's an annotated payload from an example access token:
+
+```js
+{
+  // Audience: the client which requested this token. 
+  "aud": "phoenix",
+  
+  // JWT ID: a unique identifier for the JWT
+  "jti": "6feda42e0d11ef7c3924ca711017645b3bab01d2ed80e63d7f6a84b2c31fcfdaaf77d33aed6755d6",
+  
+  // Issued At: the time at which the JWT was issued.
+  "iat": 1465487055,
+  
+  // Not Before: the time before which the token MUST NOT be accepted.
+  "nbf": 1465487055,
+  
+  // Expiration Time: the time on or after which the token MUST NOT be accepted.
+  "exp": 1465490655,
+  
+  // Subject: the Northstar ID of the user that is authorized by this JWT.
+  "sub": "5430e850dt8hbc541c37tt3d",
+  
+  // Scopes: the privileges this key authorizes the client to act with.
+  "scopes": [
+    "user"
+  ]
+}
+```
 
 If you're curious about more of the nerdy details on JWTs, check out the [official introduction](https://jwt.io/introduction/).
 
