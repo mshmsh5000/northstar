@@ -320,4 +320,25 @@ class Phoenix
 
         return $response->json();
     }
+
+    /**
+     * Get a magic login link for the given user ID.
+     * @see: https://github.com/DoSomething/phoenix/blob/dev/documentation/endpoints/users.md#create-magic-login-url
+     *
+     * @param string $user_id - UID of user on the Drupal site
+     *
+     * @return array - API response
+     * @throws Exception
+     */
+    public function createMagicLogin($user_id)
+    {
+        $response = $this->client->post('users/'.$user_id.'/magic_login_url', [
+            'cookies' => $this->getAuthenticationCookie(),
+            'headers' => [
+                'X-CSRF-Token' => $this->getAuthenticationToken(),
+            ],
+        ]);
+
+        return $response->json();
+    }
 }

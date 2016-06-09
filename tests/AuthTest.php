@@ -1,6 +1,7 @@
 <?php
 
 use Northstar\Models\User;
+use Northstar\Services\Phoenix;
 
 class AuthTest extends TestCase
 {
@@ -378,6 +379,49 @@ class AuthTest extends TestCase
             'Authorization' => 'Bearer any_token_anytime_anywhere',
         ]);
 
+        $this->assertResponseStatus(401);
+    }
+
+    /**
+     * Tests that a user can use the Phoenix "magic login" endpoint.
+     */
+    public function testMagicLogin()
+    {
+        $user = User::create(['email' => $this->faker->email, 'drupal_id' => '12345']);
+
+        $this->mock(Phoenix::class)
+            ->shouldReceive('createMagicLogin')
+            ->with('12345')->once()
+            ->andReturn([
+                'url' => 'https://www.dosomething.org/user/magic/real_login_link_here',
+                'expires' => '2016-06-08T16:54:09+00:00',
+            ]);
+
+        $this->asUser($user)->withScopes(['user'])->post('v1/auth/phoenix');
+
+        $this->assertResponseStatus(200);
+        $this->seeJsonStructure([
+            'url', 'expires',
+        ]);
+    }
+
+    /**
+     * Tests that the "magic login" endpoint handles a user without a Phoenix account.
+     */
+    public function testMagicLoginWithoutPhoenixAccount()
+    {
+        $user = User::create(['email' => $this->faker->email]);
+
+        $this->asUser($user)->withScopes(['user'])->post('v1/auth/phoenix');
+        $this->assertResponseStatus(403);
+    }
+
+    /**
+     * Tests that an anonymous user can't use the Phoenix "magic login" endpoint.
+     */
+    public function testMagicLoginAnonymous()
+    {
+        $this->withScopes(['user'])->post('v1/auth/phoenix');
         $this->assertResponseStatus(401);
     }
 }

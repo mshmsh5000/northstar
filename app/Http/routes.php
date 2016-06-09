@@ -47,6 +47,7 @@ $router->group(['prefix' => 'v1'], function () use ($router) {
     $router->post('auth/invalidate', 'AuthController@invalidateToken');
     $router->post('auth/verify', 'AuthController@verify');
     $router->post('auth/register', 'AuthController@register');
+    $router->post('auth/phoenix', 'AuthController@phoenix');
 
     // Users
     $router->resource('users', 'UserController', ['except' => ['show', 'update']]);

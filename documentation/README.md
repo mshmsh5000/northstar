@@ -9,12 +9,13 @@ See [Authentication](authentication.md) for details on authorizing your requests
 
 ## Endpoints 
 #### Authentication
-Endpoint                  | Functionality                                                | Required Scope
-------------------------- | ------------------------------------------------------------ | --------------
-`POST /auth/token`        | [Create Auth Token](endpoints/auth.md#create-token)          | `user`
-`POST /auth/verify`       | [Verify Credentials](endpoints/auth.md#verify-credentials)   | `user`
-`POST /auth/invalidate`   | [Invalidate Auth Token](endpoints/auth.md#invalidate-token)  | `user`
-`POST /auth/register`     | [Register User](endpoints/auth.md#register-user)             | `user`
+Endpoint                  | Functionality                                                      | Required Scope
+------------------------- | ------------------------------------------------------------------ | --------------
+`POST /auth/token`        | [Create Auth Token](endpoints/auth.md#create-token)                | `user`
+`POST /auth/verify`       | [Verify Credentials](endpoints/auth.md#verify-credentials)         | `user`
+`POST /auth/invalidate`   | [Invalidate Auth Token](endpoints/auth.md#invalidate-token)        | `user`
+`POST /auth/register`     | [Register User](endpoints/auth.md#register-user)                   | `user`
+`POST /auth/phoenix`      | [Create Phoenix Session](endpoints/auth.md#create-phoenix-session) | `user`
 
 > :construction: New [OAuth endpoints](endpoints/oauth.md) are under construction and will be the preferred way to authenticate clients
 > across all services once they're shipped. Stay tuned!
