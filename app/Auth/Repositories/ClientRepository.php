@@ -21,13 +21,14 @@ class ClientRepository implements ClientRepositoryInterface
      */
     public function getClientEntity($clientIdentifier, $grantType, $clientSecret = null, $mustValidateSecret = true)
     {
-        // Fetch client from the database & make OAuth2 entity
-        $model = Client::where([
-            'client_id' => $clientIdentifier,
-            'client_secret' => $clientSecret,
-        ])->first();
-
+        // Fetch client from the database.
+        $model = Client::where('client_id', $clientIdentifier)->first();
         if (! $model) {
+            return null;
+        }
+        
+        // If the grant requires us to check the client secret, do that.
+        if($mustValidateSecret && $model->client_secret !== $clientSecret) {
             return null;
         }
 
