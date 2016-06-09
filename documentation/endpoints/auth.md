@@ -210,3 +210,32 @@ curl -X POST \
   }
 }
 ```
+
+## Create Phoenix Session
+
+This will create a "magic login" link to create a Phoenix session for the authenticated user.
+The user must already have a connected Phoenix account to use this endpoint.
+
+```
+POST /auth/phoenix
+```
+
+**Example Request:**
+```
+curl -X POST \
+  -H "X-DS-REST-API-Key: ${REST_API_KEY}" \
+  -H "Authorization: Bearer ${AUTHORIZATION_TOKEN}" \
+  -H "Content-Type: application/json" \
+  -H "Accept: application/json" \
+  https://northstar.dosomething.org/v1/auth/phoenix
+```
+
+**Example Response:**
+```js
+// 200 OK
+
+{
+  "url": "https://www.dosomething.org/user/magic/12345/1465404849/jPA1_ohenxutorZQ6b8OoAi4VsbJapRs-M2FJwJrhPY",
+  "expires": "2016-06-08T16:54:09+00:00"
+}
+```

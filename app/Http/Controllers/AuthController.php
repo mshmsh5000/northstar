@@ -6,6 +6,8 @@ use Illuminate\Http\Request;
 use Northstar\Http\Transformers\TokenTransformer;
 use Northstar\Http\Transformers\UserTransformer;
 use Northstar\Models\User;
+use Northstar\Services\Phoenix;
+use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 use Symfony\Component\HttpKernel\Exception\HttpException;
 use Symfony\Component\HttpKernel\Exception\UnauthorizedHttpException;
 use Illuminate\Contracts\Auth\Guard as Auth;
@@ -26,6 +28,12 @@ class AuthController extends Controller
     protected $registrar;
 
     /**
+     * The Phoenix API client.
+     * @var Phoenix
+     */
+    protected $phoenix;
+
+    /**
      * @var TokenTransformer
      */
     protected $transformer;
@@ -44,17 +52,19 @@ class AuthController extends Controller
      * AuthController constructor.
      * @param Auth $auth
      * @param Registrar $registrar
+     * @param Phoenix $phoenix
      */
-    public function __construct(Auth $auth, Registrar $registrar)
+    public function __construct(Auth $auth, Registrar $registrar, Phoenix $phoenix)
     {
         $this->auth = $auth;
         $this->registrar = $registrar;
+        $this->phoenix = $phoenix;
 
         $this->transformer = new TokenTransformer();
 
         $this->middleware('scope:user');
-        $this->middleware('auth', ['only' => 'invalidateToken']);
-        $this->middleware('guest', ['except' => 'invalidateToken']);
+        $this->middleware('auth', ['only' => ['invalidateToken', 'phoenix']]);
+        $this->middleware('guest', ['except' => ['invalidateToken', 'phoenix']]);
     }
 
     /**
@@ -160,5 +170,23 @@ class AuthController extends Controller
         $token = $this->registrar->createToken($user);
 
         return $this->item($token);
+    }
+
+    /**
+     * Create a Phoenix magic login link for the authenticated user.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function phoenix()
+    {
+        /** @var $user User */
+        $user = $this->auth->user();
+
+        // If the user doesn't have a Phoenix account, we certainly can't log them in.
+        if (! $user->drupal_id) {
+            throw new AccessDeniedHttpException('This user does not have a Phoenix account.');
+        }
+
+        return $this->phoenix->createMagicLogin($user->drupal_id);
     }
 }
