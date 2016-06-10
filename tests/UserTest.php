@@ -586,6 +586,48 @@ class UserTest extends TestCase
     }
 
     /**
+     * Test for opting out of upsert functionality via a query string.
+     * POST /users?upsert=false
+     *
+     * @return void
+     */
+    public function testOptOutOfUpsertingUser()
+    {
+        $user = User::create([
+            'email' => 'do-not-upsert-me@dosomething.org',
+            'source' => 'database',
+        ]);
+
+        // Post a "new" user object to merge into existing record
+        $this->withScopes(['admin'])->json('POST', 'v1/users?upsert=false', [
+            'email' => $user->email,
+            'first_name' => 'Puppet',
+        ]);
+
+        // The response should return 422 Unprocessable Entity with the existing item.
+        $this->assertResponseStatus(422);
+        $this->assertEquals($user->id, $this->decodeResponseJson()['error']['context']['id']);
+    }
+
+    /**
+     * Test that we can still create a new user when we've opted out of upserting.
+     * POST /users?upsert=false
+     *
+     * @return void
+     */
+    public function testCreateUserWhileOptingOutOfUpsert()
+    {
+        // Post a "new" user object to merge into existing record
+        $this->withScopes(['admin'])->json('POST', 'v1/users?upsert=false', [
+            'email' => $this->faker->email,
+            'first_name' => 'Puppet',
+        ]);
+
+        // This should still be allowed, since the account doesn't exist.
+        $this->assertResponseStatus(201);
+    }
+
+    /**
      * Test that "upserting" an existing user can't change an existing
      * user's account if *all* given credentials don't match.
      * POST /users

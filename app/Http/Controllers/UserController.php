@@ -77,32 +77,36 @@ class UserController extends Controller
      */
     public function store(Request $request)
     {
-        // This is an "upsert" endpoint (so it will either create a new user, or
+        // This endpoint will upsert by default (so it will either create a new user, or
         // update a user if one with a matching index field is found).
-        // So, does this user exist already?
-        $user = $this->registrar->resolve($request->only('id', 'email', 'mobile', 'drupal_id'));
-        $upserting = ! is_null($user);
+        $existingUser = $this->registrar->resolve($request->only('id', 'email', 'mobile', 'drupal_id'));
+
+        // If `?upsert=false` and a record already exists, return a custom validation error.
+        if (! filter_var($request->query('upsert', 'true'), FILTER_VALIDATE_BOOLEAN) && $existingUser) {
+            throw new NorthstarValidationException(['id' => ['A record matching one of the given indexes already exists.']], $existingUser);
+        }
 
         // Normalize input and validate the request
         $request = $this->registrar->normalize($request);
-        $this->registrar->validate($request, $user);
+        $this->registrar->validate($request, $existingUser);
 
         // Makes sure we can't "upsert" a record to have a changed index if already set.
         // @TODO: There must be a better way to do this...
         foreach (User::$indexes as $index) {
-            if ($request->has($index) && ! empty($user->{$index}) && $request->input($index) !== $user->{$index}) {
+            if ($request->has($index) && ! empty($existingUser->{$index}) && $request->input($index) !== $existingUser->{$index}) {
                 app('stathat')->ezCount('upsert conflict');
                 logger('attempted to upsert an existing index', [
                     'index' => $index,
                     'new' => $request->input($index),
-                    'existing' => $user->{$index},
+                    'existing' => $existingUser->{$index},
                 ]);
 
                 throw new NorthstarValidationException([$index => ['Cannot upsert an existing index.']]);
             }
         }
 
-        $user = $this->registrar->register($request->all(), $user);
+        $upserting = ! is_null($existingUser);
+        $user = $this->registrar->register($request->all(), $existingUser);
 
         // Optionally, allow setting a custom "created_at" (useful for back-filling from other services).
         if ($request->has('created_at')) {

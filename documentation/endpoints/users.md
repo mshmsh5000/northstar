@@ -82,8 +82,8 @@ curl -X GET \
 ```
 
 ## Create a User
-Create a new user. This is performed as an "[upsert](https://docs.mongodb.org/v2.6/reference/glossary/#term-upsert)", so
-if a user with a matching identifier is found, new/changed properties will be merged into the existing document. This means
+Create a new user. This is performed as an "[upsert](https://docs.mongodb.org/v2.6/reference/glossary/#term-upsert)" by default,
+so if a user with a matching identifier is found, new/changed properties will be merged into the existing document. This means
 making the same request multiple times will _not_ create duplicate accounts.
 
 Index fields (such as `email`, `mobile`, `drupal_id`) can _only_ be "upserted" if they are not already saved on the user's
@@ -148,6 +148,7 @@ Either a mobile number or email is required.
 **Additional Query Parameters:**
 
 - `create_drupal_user`: Will send a request to create a drupal user in the main DS app.
+- `upsert`: Should this request upsert an existing account, if matched? Defaults to `true`.
 
 **Example Request:**  
 
