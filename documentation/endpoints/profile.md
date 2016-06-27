@@ -4,7 +4,7 @@
 Get profile data for the [currently authenticated user](../authentication.md). This must be done using an API key with `user` scope.
 
 ```
-GET /profile
+GET /v1/profile
 ```
 
 **Example Request:**  
@@ -45,7 +45,7 @@ curl -X GET \
 Update the profile data for the [currently authenticated user](../authentication.md). This must be done using an API key with `user` scope.
 
 ```
-POST /profile
+POST /v1/profile
 ```
 
 **Body Parameters:**

@@ -1,14 +1,23 @@
 # Authentication Endpoints
 
-> :construction: New [OAuth endpoints](endpoints/oauth.md) are under construction and will be the preferred way to authenticate clients
-> across all services once they're shipped. Stay tuned!
+Northstar acts as the authorization server for all of our internal services at DoSomething.org. Individual services may
+send a user's credentials to Northstar in exchange for a signed access token which can be used throughout our ecosystem.
 
-## Create Token
+Access tokens are digitally signed [JSON Web Tokens](http://jwt.io), which can then be passed between other services
+and verified _without_ requiring each service to continually ping Northstar for each request. Because access tokens have
+a short lifetime, a user can be "logged out" of all services by revoking their refresh token.
+ 
+Each access token includes the authorized user's ID, expiration timestamp, and scopes. Tokens are signed to prevent
+tampering, and can be verified using a shared public key.
 
-This will verify a user's credentials and create an authentication token, which can be used to sign future requests on the user's behalf. If invalid credentials are provided, this endpoint will return a `401 Unauthorized` error.
+## Create Token (Password Grant)
+
+This will verify a user's credentials and create a JWT authentication token, which can be used to sign future requests
+on the user's behalf, and a refresh token, which can be used to fetch a new access token after the one expires.
+If invalid credentials are provided, this endpoint will return a `401 Unauthorized` error.
 
 ```
-POST /auth/token
+POST /v2/auth/token
 ```
 
 **Parameters:**
@@ -18,14 +27,16 @@ In addition to the password, either mobile number or email is required.
 // Content-Type: application/json
  
 {
-  /* Shortcut for either 'email' or 'mobile', inferred by format */
+  grant_type: 'password',
+  
+  // The client application's Client ID (required)
+  client_id: String,
+  
+  // The client application's Client Secret (required for "trusted" applications)
+  client_secret: String,
+
+  /* Can be either the user's 'email' or 'mobile' */
   username: String,
-
-  /* Required if 'username' or 'mobile' are not provided */
-  email: String,
-
-  /* Required if 'username' or 'email' are not provided */
-  mobile: String,
 
   /* Required */
   password: String,
@@ -35,11 +46,11 @@ In addition to the password, either mobile number or email is required.
 **Example Request:**
 ```
 curl -X POST \
-  -H "X-DS-REST-API-Key: ${REST_API_KEY}" \
   -H "Content-Type: application/json" \
   -H "Accept: application/json" \
-  -d '{"username": "test@example.com", "password": "${PASSWORD}"}' \
-  https://northstar.dosomething.org/v1/auth/token
+  -d '{"grant_type": "password", "client_id": "${CLIENT_ID}", "client_secret": "${CLIENT_SECRET}", \
+  "username": "test@example.com", "password": "${PASSWORD}"}' \
+  https://northstar.dosomething.org/v2/auth/token
 ```
 
 **Example Response:**
@@ -47,29 +58,21 @@ curl -X POST \
 // 200 OK
 
 {
-  "data": {
-    "key": "FOf9C0lkY3wAQBCwdCqxPJrCX3XZDQ87",
-    "user": {
-      "data": {
-         "id": "5430e850dt8hbc541c37tt3d",
-         "email": "test@example.com",
-         "mobile": "5555555555",
-         "drupal_id": "123456",
-         "birthdate": "12/17/91",
-         "first_name": "First",
-         "last_name": "Last",
-      }
-    }
-  }
+  "token_type": "Bearer",
+  "expires_in": 3600,
+  "access_token": "eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiIsImp0aSI6IjU1ZDEwNjk4MTAzNDliMDVhNjdjODI1NDQ2NzIxYmFhNTcyMDM2MTg1MDNhOTlhYjA5ZWYxODVmMGJhZTI2MmJhY2VjZWVhMTY2YjIwYmE5In0.eyJhdWQiOiIiLCJqdGkiOiI1NWQxMDY5ODEwMzQ5YjA1YTY3YzgyNTQ0NjcyMWJhYTU3MjAzNjE4NTAzYTk5YWIwOWVmMTg1ZjBiYWUyNjJiYWNlY2VlYTE2NmIyMGJhOSIsImlhdCI6MTQ2MDQwMDU0NCwibmJmIjoxNDYwNDAwNTQ0LCJleHAiOjE0NjA0MDQxNDQsInN1YiI6IjU0MzBlODUwZHQ4aGJjNTQxYzM3dHQzZCIsInNjb3BlcyI6WyJhZG1pbiJdfQ.Q9SvBEjbJlDEBbBzzvxiL_Dg_nC29Zz34Slrs5WdDdxPKrIwHI6SqnjPvMo4gwoWTr2s9dWye--3Dv0hNNn3xIo7MF6b6DDS96XKplzFRGx2043AzPIVmxxDPz4QdeF18Lnx5W2Aj-_YdRGc-S2n-du2rVYTaGpEzVII4W4Wh7Q",
+  "refresh_token": "EytNzc1CJrA0fn1ymUutcg8FzOM7yUER5F+31oP/eRJdXwwaII6Lw4yS/PrC/orThdot4+7o81d/VXdUDBre6NDsMbEtTjk9fJVPDFSU74focg3N0zXKiPziBRvegv4DLrM2RkAfYYfxTK5nM1uMT2pCNBobrA8qHahgmw2XgoSE4J/xco/lmHKP393KMwn0nziKDr0YeqPRi+PAvtdsNPKpydyc0JbAFEevZ2UYXz4bRIaS4nUP+IyB6cYSdnok3OCJr8lDUp/OHA0JlOk9ra7YBFXNB8ZvlR1GEL2qQBlIWCqxPL9xrUBTIWUst7/+imx8LmBqevmGY1UFBXAm7n0p1Ih3Qxj0dx9u5woBdCwLYxAlEL70LaSDbx3qdhF+6uhrZTCnpOPE/tZSImpbmashh/SLtFEMpVP+ifISnLYSnQTvyL4XvWU/8azrFGmDmxYB63kuR4D+4QcqptPyA8JC5sOnn1CpDwzTcn93WMbhtWdIUCBTgF2R8rYNVki5"
 }
 ```
 
-## Verify Credentials
 
-This will verify the given credentials _without_ creating a new authentication token. This is useful for applications which manage their own sessions. If invalid credentials are provided, this endpoint will return a `401 Unauthorized` error.
+## Create Token (Client Credentials Grant)
+
+This will verify a client application's credentials and create a JWT authentication token, which can be used to sign future
+requests by the application. If invalid credentials are provided, this endpoint will return a `401 Unauthorized` error.
 
 ```
-POST /auth/verify
+POST /v2/auth/token
 ```
 
 **Parameters:**
@@ -79,28 +82,23 @@ In addition to the password, either mobile number or email is required.
 // Content-Type: application/json
  
 {
-  /* Shortcut for either 'email' or 'mobile', inferred by format */
-  username: String,
-
-  /* Required if 'username' or 'mobile' are not provided */
-  email: String,
-
-  /* Required if 'username' or 'email' are not provided */
-  mobile: String,
-
-  /* Required */
-  password: String,
+  grant_type: 'client_credentials',
+  
+  // The client application's Client ID (required)
+  client_id: String,
+  
+  // The client application's Client Secret (required for "trusted" applications)
+  client_secret: String,
 }
 ```
 
 **Example Request:**
 ```
 curl -X POST \
-  -H "X-DS-REST-API-Key: ${REST_API_KEY}" \
   -H "Content-Type: application/json" \
   -H "Accept: application/json" \
-  -d '{"email": "test@example.com", "password": "${PASSWORD}"}' \
-  https://northstar.dosomething.org/v1/auth/verify
+  -d '{"grant_type": "client_credentials", "client_id": "${CLIENT_ID}", "client_secret": "${CLIENT_SECRET}"'
+  https://northstar.dosomething.org/v2/auth/token
 ```
 
 **Example Response:**
@@ -108,134 +106,101 @@ curl -X POST \
 // 200 OK
 
 {
-  "data": {
-    "id": "5430e850dt8hbc541c37tt3d",
-    "email": "test@example.com",
-    "mobile": "5555555555",
-    "drupal_id": "123456",
-    "birthdate": "12/17/91",
-    "first_name": "First",
-    "last_name": "Last",
-  }
+  "token_type": "Bearer",
+  "expires_in": 3600,
+  "access_token": "eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiIsImp0aSI6IjU1ZDEwNjk4MTAzNDliMDVhNjdjODI1NDQ2NzIxYmFhNTcyMDM2MTg1MDNhOTlhYjA5ZWYxODVmMGJhZTI2MmJhY2VjZWVhMTY2YjIwYmE5In0.eyJhdWQiOiIiLCJqdGkiOiI1NWQxMDY5ODEwMzQ5YjA1YTY3YzgyNTQ0NjcyMWJhYTU3MjAzNjE4NTAzYTk5YWIwOWVmMTg1ZjBiYWUyNjJiYWNlY2VlYTE2NmIyMGJhOSIsImlhdCI6MTQ2MDQwMDU0NCwibmJmIjoxNDYwNDAwNTQ0LCJleHAiOjE0NjA0MDQxNDQsInN1YiI6IjU0MzBlODUwZHQ4aGJjNTQxYzM3dHQzZCIsInNjb3BlcyI6WyJhZG1pbiJdfQ.Q9SvBEjbJlDEBbBzzvxiL_Dg_nC29Zz34Slrs5WdDdxPKrIwHI6SqnjPvMo4gwoWTr2s9dWye--3Dv0hNNn3xIo7MF6b6DDS96XKplzFRGx2043AzPIVmxxDPz4QdeF18Lnx5W2Aj-_YdRGc-S2n-du2rVYTaGpEzVII4W4Wh7Q"
 }
 ```
 
+## Create Token (Refresh Token Grant)
 
-## Invalidate Token
+This will verify a user's refresh token (given from the [password grant](#create-token-password-grant)) and create a new JWT authentication token. The provided refresh token will be "consumed" and a new refresh token will be returned.
+
+If an invalid refresh token is provided, a `400 Bad Request` error will be returned.
 
 ```
-POST /auth/invalidate
+POST /v2/auth/token
 ```
 
-The `Authorization` header must include the authorization token received at login.
+**Parameters:**
+
+In addition to the password, either mobile number or email is required.
+```js
+// Content-Type: application/json
+ 
+{
+  grant_type: 'refresh_token',
+  
+  // The client application's Client ID (required)
+  client_id: String,
+  
+  // The client application's Client Secret (required for "trusted" applications)
+  client_secret: String,
+
+  /* An unused refresh token, returned from the Password Grant */
+  refresh_token: String,
+}
+```
 
 **Example Request:**
 ```
 curl -X POST \
-  -H "X-DS-Application-Id: ${APPLICATION_ID}" \
-  -H "X-DS-REST-API-Key: ${REST_API_KEY}" \
-  -H "Authorization: Bearer ${AUTHENTICATION_TOKEN}"
-  https://northstar.dosomething.org/v1/logout
+  -H "Content-Type: application/json" \
+  -H "Accept: application/json" \
+  -d '{"grant_type": "refresh_token", "client_id": "${CLIENT_ID}", "client_secret": "${CLIENT_SECRET}", \
+  "refresh_token": "${REFRESH_TOKEN}"}' \
+  https://northstar.dosomething.org/v2/auth/token
 ```
-**Additional Query Parameters:**
-
-- `parse_installation_ids`: will remove whichever provided parse installation IDs match up with those IDs stored on the user profile. 
 
 **Example Response:**
+```js
+// 200 OK
+
+{
+  "token_type": "Bearer",
+  "expires_in": 3600,
+  "access_token": "eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiIsImp0aSI6IjU1ZDEwNjk4MTAzNDliMDVhNjdjODI1NDQ2NzIxYmFhNTcyMDM2MTg1MDNhOTlhYjA5ZWYxODVmMGJhZTI2MmJhY2VjZWVhMTY2YjIwYmE5In0.eyJhdWQiOiIiLCJqdGkiOiI1NWQxMDY5ODEwMzQ5YjA1YTY3YzgyNTQ0NjcyMWJhYTU3MjAzNjE4NTAzYTk5YWIwOWVmMTg1ZjBiYWUyNjJiYWNlY2VlYTE2NmIyMGJhOSIsImlhdCI6MTQ2MDQwMDU0NCwibmJmIjoxNDYwNDAwNTQ0LCJleHAiOjE0NjA0MDQxNDQsInN1YiI6IjU0MzBlODUwZHQ4aGJjNTQxYzM3dHQzZCIsInNjb3BlcyI6WyJhZG1pbiJdfQ.Q9SvBEjbJlDEBbBzzvxiL_Dg_nC29Zz34Slrs5WdDdxPKrIwHI6SqnjPvMo4gwoWTr2s9dWye--3Dv0hNNn3xIo7MF6b6DDS96XKplzFRGx2043AzPIVmxxDPz4QdeF18Lnx5W2Aj-_YdRGc-S2n-du2rVYTaGpEzVII4W4Wh7Q",
+  "refresh_token": "EytNzc1CJrA0fn1ymUutcg8FzOM7yUER5F+31oP/eRJdXwwaII6Lw4yS/PrC/orThdot4+7o81d/VXdUDBre6NDsMbEtTjk9fJVPDFSU74focg3N0zXKiPziBRvegv4DLrM2RkAfYYfxTK5nM1uMT2pCNBobrA8qHahgmw2XgoSE4J/xco/lmHKP393KMwn0nziKDr0YeqPRi+PAvtdsNPKpydyc0JbAFEevZ2UYXz4bRIaS4nUP+IyB6cYSdnok3OCJr8lDUp/OHA0JlOk9ra7YBFXNB8ZvlR1GEL2qQBlIWCqxPL9xrUBTIWUst7/+imx8LmBqevmGY1UFBXAm7n0p1Ih3Qxj0dx9u5woBdCwLYxAlEL70LaSDbx3qdhF+6uhrZTCnpOPE/tZSImpbmashh/SLtFEMpVP+ifISnLYSnQTvyL4XvWU/8azrFGmDmxYB63kuR4D+4QcqptPyA8JC5sOnn1CpDwzTcn93WMbhtWdIUCBTgF2R8rYNVki5"
+}
+```
+
+## Revoke Token
+
+This will revoke the provided refresh token, if the user is authorized to do so.
+
+```
+DELETE /v2/auth/token
+```
+
+**Parameters:**
+
+```js
+// Content-Type: application/json
+ 
+{
+  token: String // The refresh token to be revoked.
+}
+```
+
+**Example Request:**
+
+```
+curl -X DELETE \
+  -H "Content-Type: application/json" \
+  -H "Accept: application/json" \
+  -d '{"token": "${REFRESH_TOKEN}"}'
+  https://northstar.dosomething.org/v2/auth/token
+```
+
+**Example Response:**
+
 ```js
 // 200 OK
 
 {
   "success": {
     "code": 200,
-    "message": "User logged out successfully."
+    "message": "That refresh token has been successfully revoked."
   }
-}
-```
-
-## Register User
-
-This will register a new user account and create an authentication token, which can be used to sign future requests
-on the user's behalf. If an account exists but _doesn't_ have a password, a user can complete their registration by
-setting a password via this endpoint.
-
-```
-POST /auth/register
-```
-
-**Parameters:**
-
-In addition to the password, either mobile number or email is required.
-```js
-// Content-Type: application/json
- 
-{
-  /* Required if 'mobile' is not provided */
-  email: String,
-
-  /* Required if 'email' is not provided */
-  mobile: String,
-
-  /* Required */
-  password: String,
-
-  /* ...and optionally, any other user fields. */
-}
-```
-
-**Example Request:**
-```
-curl -X POST \
-  -H "X-DS-REST-API-Key: ${REST_API_KEY}" \
-  -H "Content-Type: application/json" \
-  -H "Accept: application/json" \
-  -d '{"email": "test@example.com", "password": "${PASSWORD}"}' \
-  https://northstar.dosomething.org/v1/auth/register
-```
-
-**Example Response:**
-```js
-// 200 OK
-
-{
-  "data": {
-    "key": "FOf9C0lkY3wAQBCwdCqxPJrCX3XZDQ87",
-    "user": {
-      "data": {
-         "id": "5430e850dt8hbc541c37tt3d",
-         "email": "test@example.com",
-         "mobile": "5555555555",
-      }
-    }
-  }
-}
-```
-
-## Create Phoenix Session
-
-This will create a "magic login" link to create a Phoenix session for the authenticated user.
-The user must already have a connected Phoenix account to use this endpoint.
-
-```
-POST /auth/phoenix
-```
-
-**Example Request:**
-```
-curl -X POST \
-  -H "X-DS-REST-API-Key: ${REST_API_KEY}" \
-  -H "Authorization: Bearer ${AUTHORIZATION_TOKEN}" \
-  -H "Content-Type: application/json" \
-  -H "Accept: application/json" \
-  https://northstar.dosomething.org/v1/auth/phoenix
-```
-
-**Example Response:**
-```js
-// 200 OK
-
-{
-  "url": "https://www.dosomething.org/user/magic/12345/1465404849/jPA1_ohenxutorZQ6b8OoAi4VsbJapRs-M2FJwJrhPY",
-  "expires": "2016-06-08T16:54:09+00:00"
 }
 ```

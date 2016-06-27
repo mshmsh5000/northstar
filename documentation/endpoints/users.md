@@ -3,7 +3,7 @@
 Get data for all users in a paginated format. This requires `admin` scope.
 
 ```
-GET /users
+GET /v1/users
 ```
 
 **Additional Query Parameters:**
@@ -94,7 +94,7 @@ This endpoint requires an API key with `admin` scope. For registering a user, co
 [`auth/register`](#register-user) endpoint, which will also create and return a new authentication token.
 
 ```
-POST /users
+POST /v1/users
 ```
 
 **Body Parameters:**
@@ -189,10 +189,10 @@ generated when a new database record is created), a mobile phone number, an emai
 Fetching a user via email or mobile requires `admin` scope.
 
 ```
-GET /users/id/<user_id>
-GET /users/mobile/<mobile>
-GET /users/email/<email>
-GET /users/drupal_id/<drupal_id>
+GET /v1/users/id/<user_id>
+GET /v1/users/mobile/<mobile>
+GET /v1/users/email/<email>
+GET /v1/users/drupal_id/<drupal_id>
 ```
 
 **Example Request:**  
@@ -233,8 +233,8 @@ curl -X GET \
 Update a user resource. This can be retrieved with the user's Northstar ID or the source ID (`drupal_id`). This endpoint requires an API key with `admin` scope.
 
 ```
-PUT /users/_id/<user_id>
-PUT /users/drupal_id/<drupal_id>
+PUT /v1/users/_id/<user_id>
+PUT /v1/users/drupal_id/<drupal_id>
 ```
 
 **Body Parameters:**
@@ -304,7 +304,7 @@ curl -X PUT \
 Destroy a user resource. The  `user_id` property of the user to delete must be provided in the URL path, and refers to the user's Northstar ID. This endpoint requires an API key with `admin` scope.
 
 ```
-DELETE /users/:user_id
+DELETE /v1/users/:user_id
 ```
 
 **Example Request:**
@@ -331,7 +331,7 @@ Save an avatar to the user's Northstar profile. Accepts a file or Base64 string 
 the updated User profile document, with a `photo` attribute pointing to the newly created image.
 
 ```
-POST /users/:user_id/avatar
+POST /v1/users/:user_id/avatar
 ```
 
 **Parameters:**

@@ -4,7 +4,7 @@
 Retrieves all valid application IDs and API keys. This must be done using an API key with `admin` scope.
 
 ```
-GET /keys
+GET /v1/keys
 ```
 
 **Example Request:**
@@ -54,7 +54,7 @@ curl -X GET \
 Creates an API key. This must be done using an API key with `admin` scope.
 
 ```
-POST /keys
+POST /v1/keys
 ```
 
 **Parameters:**
@@ -99,7 +99,7 @@ curl -X POST \
 View an API key. This must be done using an API key with `admin` scope.
 
 ```
-GET /keys/:api_key
+GET /v1/keys/:api_key
 ```
 
 **Example Request:**
@@ -134,7 +134,7 @@ curl -X GET\
 Updates an existing API key's ID or scope(s). This must be done using an API key with `admin` scope.
 
 ```
-PUT /keys/:api_key
+PUT /v1/keys/:api_key
 ```
 
 **Parameters:**
@@ -183,7 +183,7 @@ curl -X PUT \
 Deletes an API key. This must be done using an API key with `admin` scope.
 
 ```
-DELETE /keys/:api_key
+DELETE /v1/keys/:api_key
 ```
 
 
@@ -213,7 +213,7 @@ curl -X DELETE \
 Retrieves all valid API scopes and a short description of each.
 
 ```
-GET /scopes
+GET /v1/scopes
 ```
 
 **Example Request:**

@@ -4,7 +4,7 @@
 Get paginated signups, optionally filtered by campaign or user.
 
 ```
-GET /signups?user=:northstar_id,:northstar_id&campaigns=:campaign_id,:campaign_id
+GET /v1/signups?user=:northstar_id,:northstar_id&campaigns=:campaign_id,:campaign_id
 ```
 
 This is a lightweight proxy for the `/signups` Phoenix endpoint. If a user ID is specified, it will be transformed into 
@@ -17,7 +17,7 @@ For more details, see the relevant [Phoenix API documentation](https://github.co
 Get details for a specific signup.
 
 ```
-GET /signups/:signup_id
+GET /v1/signups/:signup_id
 ```
 
 This is a lightweight proxy for the `/signups/:signup_id` Phoenix endpoint.
@@ -29,7 +29,7 @@ Create a new signup (or return an existing signup, if one exists for the given c
 This requires an authentication token & an API key with the `user` scope.
 
 ```
-POST /signups
+POST /v1/signups
 ```
 
 This is a lightweight proxy for the `/campaigns/:nid/signup` Phoenix endpoint, which will use the currently authenticated

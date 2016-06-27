@@ -26,9 +26,9 @@ class ClientRepository implements ClientRepositoryInterface
         if (! $model) {
             return null;
         }
-        
+
         // If the grant requires us to check the client secret, do that.
-        if($mustValidateSecret && $model->client_secret !== $clientSecret) {
+        if ($mustValidateSecret && $model->client_secret !== $clientSecret) {
             return null;
         }
 
