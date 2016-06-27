@@ -17,9 +17,6 @@ Endpoint                  | Functionality                                       
 `POST /auth/register`     | [Register User](endpoints/auth.md#register-user)                   | `user`
 `POST /auth/phoenix`      | [Create Phoenix Session](endpoints/auth.md#create-phoenix-session) | `user`
 
-> :construction: New [OAuth endpoints](endpoints/oauth.md) are under construction and will be the preferred way to authenticate clients
-> across all services once they're shipped. Stay tuned!
-
 #### Users
 Endpoint                                     | Functionality                                            | Required Scope
 -------------------------------------------- | -------------------------------------------------------- | --------------

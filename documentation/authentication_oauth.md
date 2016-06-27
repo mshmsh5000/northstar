@@ -1,7 +1,5 @@
 # Authentication
 
-> :construction: This is under construction and not currently enabled on production. Stay tuned!
-
 We handle authentication using __OAuth 2__, an [open standard](https://tools.ietf.org/html/rfc6749) for authorization. OAuth allows us to issue
 access tokens (so a user's credentials don't need to be sent with every request) and refresh tokens (so that a user's credentials do not need to be stored on a device).
 It also allows us to restrict abilities of different clients based on scopes (so that, for example, internal tools like [Aurora](https://aurora.dosomething.org/auth/login)

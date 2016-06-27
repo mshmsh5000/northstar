@@ -10,8 +10,6 @@ a short lifetime, a user can be "logged out" of all services by revoking their r
 Each access token includes the authorized user's ID, expiration timestamp, and scopes. Tokens are signed to prevent
 tampering, and can be verified using a shared public key.
 
-> :construction: __Note:__ These are still under construction and not enabled on production servers! Stay tuned!
-
 ## Create Token (Password Grant)
 
 This will verify a user's credentials and create a JWT authentication token, which can be used to sign future requests
@@ -171,7 +169,7 @@ curl -X POST \
 This will revoke the provided refresh token, if the user is authorized to do so.
 
 ```
-POST /v2/auth/token
+DELETE /v2/auth/token
 ```
 
 **Parameters:**
