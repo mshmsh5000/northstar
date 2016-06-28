@@ -4,7 +4,7 @@
 Get paginated reportbacks, optionally filtered by campaign or user.
 
 ```
-GET /reportbacks?user=:northstar_id,:northstar_id&campaigns=:campaign_id,:campaign_id
+GET /v1/reportbacks?user=:northstar_id,:northstar_id&campaigns=:campaign_id,:campaign_id
 ```
 
 This is a lightweight proxy for the `/reportbacks` Phoenix endpoint. If a user ID is specified, it will be transformed into 
@@ -16,7 +16,7 @@ For more implementation details, see the relevant [Phoenix API documentation](ht
 Get details for a specific reportback.
 
 ```
-GET /reportbacks/:reportback_id
+GET /v1/reportbacks/:reportback_id
 ```
 
 This is a lightweight proxy for the `/reportbacks/:reportback_id` Phoenix endpoint.
@@ -28,7 +28,7 @@ Create a new reportback (or update an existing reportback, if one exists for the
 This requires an authentication token & an API key with the `user` scope.
 
 ```
-POST /reportbacks
+POST /v1/reportbacks
 ```
 
 This is a lightweight proxy for the `/campaigns/:nid/reportback` Phoenix endpoint, which will use the currently authenticated

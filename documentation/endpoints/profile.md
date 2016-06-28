@@ -4,13 +4,13 @@
 Get profile data for the [currently authenticated user](../authentication.md). This must be done using an API key with `user` scope.
 
 ```
-GET /profile
+GET /v1/profile
 ```
 
 **Example Request:**  
 ```sh
 curl -X GET \
-  -H "X-DS-REST-API-Key: ${REST_API_KEY}" \
+  -H "Authorization: ${ACCESS_TOKEN}" \
   -H "Accept: application/json"
   https://northstar.dosomething.org/v1/profile
 ```
@@ -45,7 +45,7 @@ curl -X GET \
 Update the profile data for the [currently authenticated user](../authentication.md). This must be done using an API key with `user` scope.
 
 ```
-POST /profile
+POST /v1/profile
 ```
 
 **Body Parameters:**
@@ -89,7 +89,7 @@ POST /profile
 
 ```sh
 curl -X POST \
-  -H "X-DS-REST-API-Key: ${REST_API_KEY}" \
+  -H "Authorization: ${ACCESS_TOKEN}" \
   -d '{"first_name": "New First name"}' \
   https://northstar.dosomething.org/v1/profile
 ```

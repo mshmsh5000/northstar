@@ -8,65 +8,64 @@ See [Authentication](authentication.md) for details on authorizing your requests
 <br>
 
 ## Endpoints 
+
 #### Authentication
 Endpoint                  | Functionality                                                      | Required Scope
 ------------------------- | ------------------------------------------------------------------ | --------------
-`POST /auth/token`        | [Create Auth Token](endpoints/auth.md#create-token)                | `user`
-`POST /auth/verify`       | [Verify Credentials](endpoints/auth.md#verify-credentials)         | `user`
-`POST /auth/invalidate`   | [Invalidate Auth Token](endpoints/auth.md#invalidate-token)        | `user`
-`POST /auth/register`     | [Register User](endpoints/auth.md#register-user)                   | `user`
-`POST /auth/phoenix`      | [Create Phoenix Session](endpoints/auth.md#create-phoenix-session) | `user`
+`POST v2/auth/token`      | [Create Auth Token (Password Grant)](endpoints/auth.md#create-token-password-grant) | 
+`POST v2/auth/token`      | [Create Auth Token (Client Credentials Grant)](endpoints/auth.md#create-token-client-credentials-grant) | 
+`POST v2/auth/token`      | [Create Auth Token (Refresh Token Grant)](endpoints/auth.md#create-token-refresh-token-grant) | 
+`DELETE v2/auth/token`    | [Invalidate Auth Token](endpoints/auth.md#revoke-token) | 
 
-> :construction: New [OAuth endpoints](endpoints/oauth.md) are under construction and will be the preferred way to authenticate clients
-> across all services once they're shipped. Stay tuned!
+> :memo: There's also the [legacy authentication endpoints](endpoints/legacy/auth.md), but those are deprecated so don't get too attached!
 
 #### Users
 Endpoint                                     | Functionality                                            | Required Scope
 -------------------------------------------- | -------------------------------------------------------- | --------------
-`GET /users`                             | [Retrieve All Users](endpoints/users.md#retrieve-all-users) | `admin`
-`POST /users`                            | [Create a User](endpoints/users.md#create-a-user) | `admin`
-`GET /users/:term/:identifier`           | [Retrieve a User](endpoints/users.md#retrieve-a-user) 
-`PUT /users/:term/:id`                   | [Update a User](endpoints/users.md#update-a-user) | `admin`
-`DELETE /users/:user_id`                 | [Delete a User](endpoints/users.md#delete-a-user) | `admin`
-`POST /users/:user_id/avatar`            | [Set User Avatar](endpoints/users.md#set-user-avatar) | `user`
+`GET v1/users`                               | [Retrieve All Users](endpoints/users.md#retrieve-all-users) | `admin`
+`POST v1/users`                              | [Create a User](endpoints/users.md#create-a-user) | `admin`
+`GET v1/users/:term/:identifier`             | [Retrieve a User](endpoints/users.md#retrieve-a-user) 
+`PUT v1/users/:term/:id`                     | [Update a User](endpoints/users.md#update-a-user) | `admin`
+`DELETE v1/users/:user_id`                   | [Delete a User](endpoints/users.md#delete-a-user) | `admin`
+`POST v1/users/:user_id/avatar`              | [Set User Avatar](endpoints/users.md#set-user-avatar) | `user`
 
 #### Profile
 Endpoint                                     | Functionality                                            | Required Scope
 -------------------------------------------- | -------------------------------------------------------- | --------------
-`GET /profile`                           | [Get Authenticated User's Profile](endpoints/profile.md#get-profile) | `user`
-`POST /profile`                          | [Update Authenticated User's Profile](endpoints/profile.md#post-profile) | `user`
-`GET /profile/signups`                   | [Get Authenticated User's Signups](endpoints/profile.md#get-authenticated-users-signups) | `user`
-`GET /profile/reportbacks`               | [Get Authenticated User's Reportbacks](endpoints/profile.md#get-authenticated-user-reportbacks) | `user`
+`GET v1/profile`                             | [Get Authenticated User's Profile](endpoints/profile.md#get-profile) | `user`
+`POST v1/profile`                            | [Update Authenticated User's Profile](endpoints/profile.md#post-profile) | `user`
+`GET v1/profile/signups`                     | [Get Authenticated User's Signups](endpoints/profile.md#get-authenticated-users-signups) | `user`
+`GET v1/profile/reportbacks`                 | [Get Authenticated User's Reportbacks](endpoints/profile.md#get-authenticated-user-reportbacks) | `user`
 
 > __Note:__ The signups & reportbacks endpoints are lightweight proxies to their Phoenix equivalents.
 
 #### Signups
 Endpoint                                     | Functionality                                            | Required Scope
 -------------------------------------------- | -------------------------------------------------------- | --------------
-`GET /signups`                           | [Retrieve All Signups](endpoints/signups.md#retrieve-all-signups) |
-`GET /signups/:signup_id`                | [Retrieve a Signup](endpoints/signups.md#retrieve-a-signup)  |
-`POST /signups`                          | [Create a Signup](endpoints/signups.md#create-a-signup)      | `user`
+`GET v1/signups`                             | [Retrieve All Signups](endpoints/signups.md#retrieve-all-signups) |
+`GET v1/signups/:signup_id`                  | [Retrieve a Signup](endpoints/signups.md#retrieve-a-signup)  |
+`POST v1/signups`                            | [Create a Signup](endpoints/signups.md#create-a-signup)      | `user`
 
 > __Note:__ These endpoints are lightweight proxies to their Phoenix equivalents.
 
 #### Reportbacks
 Endpoint                                     | Functionality                                            | Required Scope
 -------------------------------------------- | -------------------------------------------------------- | --------------
-`GET /reportbacks`                       | [Retrieve All Reportbacks](endpoints/reportbacks.md#retrieve-all-reportbacks) |
-`GET /reportbacks/:reportback_id`        | [Retrieve a Reportback](endpoints/reportbacks.md#retrieve-a-reportback) |
-`POST /reportbacks`                      | [Create a Reportback](endpoints/reportbacks.md#create-a-reportback) | `user`
+`GET v1/reportbacks`                         | [Retrieve All Reportbacks](endpoints/reportbacks.md#retrieve-all-reportbacks) |
+`GET v1/reportbacks/:reportback_id`          | [Retrieve a Reportback](endpoints/reportbacks.md#retrieve-a-reportback) |
+`POST v1/reportbacks`                        | [Create a Reportback](endpoints/reportbacks.md#create-a-reportback) | `user`
 
 > __Note:__ These endpoints are lightweight proxies to their Phoenix equivalents.
 
 #### Keys
 Endpoint                                     | Functionality                                            | Required Scope
 -------------------------------------------- | -------------------------------------------------------- | --------------
-`GET /keys`                                  | [Retrieve All API Keys](endpoints/keys.md#retrieve-all-api-keys)  | `admin`
-`POST /keys`                                 | [Create an API Key](endpoints/keys.md#create-an-api-key) | `admin`
-`GET /keys/:api_key`                         | [Retrieve An API Key](endpoints/keys.md#retrieve-an-api-key) | `admin`
-`PUT /keys/:api_key`                         | [Update An API Key](endpoints/keys.md#update-an-api-key) | `admin`
-`DELETE /keys/:api_key`                      | [Delete an API Key](endpoints/keys.md#delete-an-api-key) | `admin`
-`GET /scopes`                                | [Retrieve All API Key Scopes](endpoints/keys.md#retrieve-all-api-key-scopes) |
+`GET v1/keys`                                | [Retrieve All API Keys](endpoints/keys.md#retrieve-all-api-keys)  | `admin`
+`POST v1/keys`                               | [Create an API Key](endpoints/keys.md#create-an-api-key) | `admin`
+`GET v1/keys/:api_key`                       | [Retrieve An API Key](endpoints/keys.md#retrieve-an-api-key) | `admin`
+`PUT v1/keys/:api_key`                       | [Update An API Key](endpoints/keys.md#update-an-api-key) | `admin`
+`DELETE v1/keys/:api_key`                    | [Delete an API Key](endpoints/keys.md#delete-an-api-key) | `admin`
+`GET v1/scopes`                                | [Retrieve All API Key Scopes](endpoints/keys.md#retrieve-all-api-key-scopes) |
 
 <br>
 > :bulb: __Did you know?__ We also have a shared [Paw Collection](endpoints.paw) for testing these endpoints against your local environment.  
@@ -112,8 +111,9 @@ problem on the API end.
 Code | Meaning
 ---- | -------
 200  | __Okay__ – Everything is awesome.
-401  | __Unauthorized__ – Your API key is wrong or not authorized for that action.
-403  | __Forbidden__ – The authenticated user doesn't have the proper privileges.
+400  | __Bad Request__ – The request has incorrect syntax.
+401  | __Unauthorized__ – The given credentials are invalid or you are not authorized to view that resource.
+403  | __Forbidden__ – (For legacy authentication _only_.) The authenticated user doesn't have the proper privileges.
 404  | __Not Found__ – The specified resource could not be found.
 418  | __I'm a teapot__ – The user [needs more caffeine](https://www.ietf.org/rfc/rfc2324.txt).
 422  | __Unprocessable Entity__ – The request couldn't be completed due to validation errors. See the `error.fields` property on the response.
@@ -143,6 +143,20 @@ of the problem:
 }
 ```
 
+OAuth authentication errors are formatted slightly differently (to conform to [the OAuth spec](https://tools.ietf.org/html/rfc6749#section-5.2)):
+
+```js
+{
+  // A machine-readable error code.
+  "error": "access_denied", "invalid_request", "invalid_client", "invalid_grant", "unauthorized_client", "unsupported_grant_type", "invalid_scope",
+  
+  // A human readable explanation of the problem.
+  "message": "...",
+  
+  // Optionally, more specific details on the issue.
+  "hint": "..."
+}
+```
 
 ## Libraries
 We have a [PHP API client](https://github.com/DoSomething/northstar-php) for simplified usage of the API in PHP clients.

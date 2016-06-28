@@ -1,44 +1,86 @@
 # Authentication
 
-> :construction: Updated [OAuth2 authentication](authentication_oauth.md) is under construction and will be the preferred way to authenticate clients across all services in the future. Stay tuned!
+We handle authentication using __OAuth 2__, an [open standard](https://tools.ietf.org/html/rfc6749) for authorization.
+OAuth allows us to issue access tokens (so a user's credentials don't need to be sent with every request) and refresh
+tokens (so that a user's credentials do not need to be stored on a device). It also allows us to restrict abilities of
+different clients based on scopes (so that, for example, internal tools like [Aurora](https://aurora.dosomething.org/auth/login)
+can delete users, but an "external" application like the mobile app cannot).
 
-### API Keys
-A valid API key must be included with any requests to Northstar, in the `X-DS-REST-API-Key` HTTP
-header. API keys can be managed in [Aurora](https://aurora.dosomething.org/keys) or [Aurora QA](https://qa-aurora.dosomething.org/keys)
+### Clients
+When requesting an authentication token, credentials for a valid **client application** must be included. This includes a client ID
+(for example, `phoenix` or `letsdothis-ios`) and a client secret, which is like a long "password" for that application.
 
 Sorry, there's no public API access... yet!
 
-### Client Scopes
-Clients are granted scopes to limit their privileges. This allows us to differentiate "trusted" clients
-(internal applications like [Phoenix](https://www.dosomething.org) or [Aurora](https://aurora.dosomething.org))
-from "untrusted" clients that operate over a public network like the [mobile app](https://app.dosomething.org), and
-limit the amount of damage that can be done if a client is compromised.
+### Scopes
+Authentication tokens are granted **scopes** to limit their privileges. This allows us to limit the abilities of "untrusted" clients
+that operate over a public network like the [mobile app](https://app.dosomething.org), and limit the damage that can be
+done if a client is compromised.
 
-Scope   | Description
-------- | -----------
-`user`  | Allows actions to be made on a user's behalf.
-`admin` | Allows "administrative" actions that should not be user-accessible, like deleting user records.
+Each client has a list of whitelisted scopes, and scopes that are not allowed for a client will trigger an error if requested.
+For example, a malicious user with the mobile app client credentials could never request the ability to delete users.
 
-A machine-friendly list of scopes and their descriptions can be retrieved from the public
-[`scopes`](endpoints/keys.md#retrieving-all-api-key-scopes) endpoint.
+The allowed scopes for each client are listed on Aurora. A machine-friendly list of scopes and their descriptions can be
+retrieved from the public [`scopes`](endpoints/keys.md#retrieving-all-api-key-scopes) endpoint.
 
-### Authorization
-The [authorization endpoints](endpoints/auth.md) may be used to request an authorization token so that requests can be
-made on behalf of a particular user. Endpoints which act on a user's behalf are restricted to `user` scoped API keys.
+### Access Tokens
+The [Password Grant](endpoints/oauth.md#create-token-password-grant) may be used to request an **access token** so that requests can be
+made on behalf of a particular user.
 
-> :construction: New [OAuth endpoints](endpoints/oauth.md) are under construction and will be the preferred way to authenticate clients
-> across all services once they're shipped. Stay tuned!
+We authenticate requests to our APIs using [JSON Web Tokens](https://jwt.io), another [open standard](https://tools.ietf.org/html/rfc7519)
+that allows us to issue cryptographically signed tokens. Because the tokens are signed, this data can't be tampered with without invalidating
+the signature, and any resource server can validate a token using Northstar's public key _without_ making an HTTP request!
 
-Authorization can be provided as the `Authorization` header of a request, or optionally as a query parameter:
+Here's an annotated payload from an example access token:
+
+```js
+{
+  // Audience: the client which requested this token. 
+  "aud": "phoenix",
+  
+  // JWT ID: a unique identifier for the JWT
+  "jti": "6feda42e0d11ef7c3924ca711017645b3bab01d2ed80e63d7f6a84b2c31fcfdaaf77d33aed6755d6",
+  
+  // Issued At: the time at which the JWT was issued.
+  "iat": 1465487055,
+  
+  // Not Before: the time before which the token MUST NOT be accepted.
+  "nbf": 1465487055,
+  
+  // Expiration Time: the time on or after which the token MUST NOT be accepted.
+  "exp": 1465490655,
+  
+  // Subject: the Northstar ID of the user that is authorized by this JWT.
+  "sub": "5430e850dt8hbc541c37tt3d",
+  
+  // Scopes: the privileges this key authorizes the client to act with.
+  "scopes": [
+    "user"
+  ]
+}
+```
+
+If you're curious about more of the nerdy details on JWTs, check out the [official introduction](https://jwt.io/introduction/).
+
+### Refresh Tokens
+Access tokens are short-lived and expire after an hour. Since that's not a very long time, clients are also issued
+**refresh tokens** which can be used (once!) to create another access token. Refresh tokens _never_ expire, but can be revoked
+manually - for example, if a user "removes" an application or logs out from their account.
+
+Once a refresh token is used to create a new access token through the [Refresh Token Grant](endpoints/oauth.md#create-token-refresh-token-grant),
+a _new_ access token and refresh token are returned & the old refresh token cannot be used again.
+
+### "Computer" Authentication
+Some services don't authenticate on behalf of a user (for example, an internal batch-processing service). These clients can use the
+[Client Credentials Grant](endpoints/oauth.md#create-token-client-credentials-grant) to request a signed authentication token
+that securely identifies that particular application. Since user credentials are not involved, this does _not_ create a refresh
+token.
+
+### Making Authenticated Requests
+Access tokens can be used to make authorized requests to Northstar and other DoSomething.org services. When making requests,
+the token should be be provided as the `Authorization` header of a request:
+
 ```sh
-# preferred (Authorization header)
 GET /v1/users
 Authorization: Bearer xxxxxxx
-
-# quick n' easy (as a query string)
-GET /v1/users?token=xxxxxxx
-
-# deprecated (don't use me!)
-GET /v1/users
-Session: xxxxx
 ```

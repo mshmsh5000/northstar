@@ -3,7 +3,7 @@
 Get data for all users in a paginated format. This requires `admin` scope.
 
 ```
-GET /users
+GET /v1/users
 ```
 
 **Additional Query Parameters:**
@@ -17,7 +17,7 @@ GET /users
 
 ```sh
 curl -X GET \
-  -H "X-DS-REST-API-Key: ${REST_API_KEY}" \
+  -H "Authorization: ${ACCESS_TOKEN}" \
   https://northstar.dosomething.org/v1/users?limit=15&page=1
 ```
 
@@ -52,8 +52,8 @@ curl -X GET \
 
 ```sh
 curl -X GET \
-  -H "X-DS-REST-API-Key: ${REST_API_KEY}" \
-    https://northstar.dosomething.org/v1/users?filter[drupal_id]=10010
+  -H "Authorization: ${ACCESS_TOKEN}" \
+  https://northstar.dosomething.org/v1/users?filter[drupal_id]=10010
 ```
 
 **Example Response:**
@@ -94,7 +94,7 @@ This endpoint requires an API key with `admin` scope. For registering a user, co
 [`auth/register`](#register-user) endpoint, which will also create and return a new authentication token.
 
 ```
-POST /users
+POST /v1/users
 ```
 
 **Body Parameters:**
@@ -154,7 +154,7 @@ Either a mobile number or email is required.
 
 ```sh
 curl -X POST \
-  -H "X-DS-REST-API-Key: ${REST_API_KEY}" \
+  -H "Authorization: ${ACCESS_TOKEN}" \
   -H "Content-Type: application/json" \
   -H "Accept: application/json" \
   -d '{"email": "test@example.com", "password": "test123", "birthdate": "10/29/1990", "first_name": "test_fname", "interests": "hockeys,kickballs"}' \
@@ -190,16 +190,16 @@ generated when a new database record is created), a mobile phone number, an emai
 Fetching a user via email or mobile requires `admin` scope.
 
 ```
-GET /users/id/<user_id>
-GET /users/mobile/<mobile>
-GET /users/email/<email>
-GET /users/drupal_id/<drupal_id>
+GET /v1/users/id/<user_id>
+GET /v1/users/mobile/<mobile>
+GET /v1/users/email/<email>
+GET /v1/users/drupal_id/<drupal_id>
 ```
 
 **Example Request:**  
 ```sh
 curl -X GET \
-  -H "X-DS-REST-API-Key: ${REST_API_KEY}" \
+  -H "Authorization: ${ACCESS_TOKEN}" \
   -H "Accept: application/json"
   https://northstar.dosomething.org/v1/users/mobile/5555555555
 ```
@@ -234,8 +234,8 @@ curl -X GET \
 Update a user resource. This can be retrieved with the user's Northstar ID or the source ID (`drupal_id`). This endpoint requires an API key with `admin` scope.
 
 ```
-PUT /users/_id/<user_id>
-PUT /users/drupal_id/<drupal_id>
+PUT /v1/users/_id/<user_id>
+PUT /v1/users/drupal_id/<drupal_id>
 ```
 
 **Body Parameters:**
@@ -282,7 +282,7 @@ PUT /users/drupal_id/<drupal_id>
 
 ```sh
 curl -X PUT \
-  -H "X-DS-REST-API-Key: ${REST_API_KEY}" \
+  -H "Authorization: ${ACCESS_TOKEN}" \
   -d '{"first_name": "New First name"}' \
   https://northstar.dosomething.org/v1/_id/5430e850dt8hbc541c37tt3d
 ```
@@ -305,13 +305,13 @@ curl -X PUT \
 Destroy a user resource. The  `user_id` property of the user to delete must be provided in the URL path, and refers to the user's Northstar ID. This endpoint requires an API key with `admin` scope.
 
 ```
-DELETE /users/:user_id
+DELETE /v1/users/:user_id
 ```
 
 **Example Request:**
 ```sh
 curl -X DELETE \
-  -H "X-DS-REST-API-Key: ${REST_API_KEY}" \
+  -H "Authorization: ${ACCESS_TOKEN}" \
   https://northstar.dosomething.org/v1/users/555b9ca8bffebc30068b456e
 ```
 
@@ -332,7 +332,7 @@ Save an avatar to the user's Northstar profile. Accepts a file or Base64 string 
 the updated User profile document, with a `photo` attribute pointing to the newly created image.
 
 ```
-POST /users/:user_id/avatar
+POST /v1/users/:user_id/avatar
 ```
 
 **Parameters:**
@@ -349,7 +349,7 @@ POST /users/:user_id/avatar
 **Example Request:**
 ```sh
 curl -X POST \
-  -H "X-DS-REST-API-Key: ${REST_API_KEY}" \ 
+  -H "Authorization: ${ACCESS_TOKEN}" \
   -H "Content-Type: multipart-form-data: \
   -H "Accept: application/json" \
   -d '{"photo": "profile_pic.jpeg"}' \
