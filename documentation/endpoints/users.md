@@ -17,7 +17,7 @@ GET /v1/users
 
 ```sh
 curl -X GET \
-  -H "X-DS-REST-API-Key: ${REST_API_KEY}" \
+  -H "Authorization: ${ACCESS_TOKEN}" \
   https://northstar.dosomething.org/v1/users?limit=15&page=1
 ```
 
@@ -52,8 +52,8 @@ curl -X GET \
 
 ```sh
 curl -X GET \
-  -H "X-DS-REST-API-Key: ${REST_API_KEY}" \
-    https://northstar.dosomething.org/v1/users?filter[drupal_id]=10010
+  -H "Authorization: ${ACCESS_TOKEN}" \
+  https://northstar.dosomething.org/v1/users?filter[drupal_id]=10010
 ```
 
 **Example Response:**
@@ -153,7 +153,7 @@ Either a mobile number or email is required.
 
 ```sh
 curl -X POST \
-  -H "X-DS-REST-API-Key: ${REST_API_KEY}" \
+  -H "Authorization: ${ACCESS_TOKEN}" \
   -H "Content-Type: application/json" \
   -H "Accept: application/json" \
   -d '{"email": "test@example.com", "password": "test123", "birthdate": "10/29/1990", "first_name": "test_fname", "interests": "hockeys,kickballs"}' \
@@ -198,7 +198,7 @@ GET /v1/users/drupal_id/<drupal_id>
 **Example Request:**  
 ```sh
 curl -X GET \
-  -H "X-DS-REST-API-Key: ${REST_API_KEY}" \
+  -H "Authorization: ${ACCESS_TOKEN}" \
   -H "Accept: application/json"
   https://northstar.dosomething.org/v1/users/mobile/5555555555
 ```
@@ -281,7 +281,7 @@ PUT /v1/users/drupal_id/<drupal_id>
 
 ```sh
 curl -X PUT \
-  -H "X-DS-REST-API-Key: ${REST_API_KEY}" \
+  -H "Authorization: ${ACCESS_TOKEN}" \
   -d '{"first_name": "New First name"}' \
   https://northstar.dosomething.org/v1/_id/5430e850dt8hbc541c37tt3d
 ```
@@ -310,7 +310,7 @@ DELETE /v1/users/:user_id
 **Example Request:**
 ```sh
 curl -X DELETE \
-  -H "X-DS-REST-API-Key: ${REST_API_KEY}" \
+  -H "Authorization: ${ACCESS_TOKEN}" \
   https://northstar.dosomething.org/v1/users/555b9ca8bffebc30068b456e
 ```
 
@@ -348,7 +348,7 @@ POST /v1/users/:user_id/avatar
 **Example Request:**
 ```sh
 curl -X POST \
-  -H "X-DS-REST-API-Key: ${REST_API_KEY}" \ 
+  -H "Authorization: ${ACCESS_TOKEN}" \
   -H "Content-Type: multipart-form-data: \
   -H "Accept: application/json" \
   -d '{"photo": "profile_pic.jpeg"}' \

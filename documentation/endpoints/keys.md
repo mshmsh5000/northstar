@@ -10,7 +10,7 @@ GET /v1/keys
 **Example Request:**
 ```sh
 curl -X GET \
-  -H "X-DS-REST-API-Key: ${REST_API_KEY}" \
+  -H "Authorization: ${ACCESS_TOKEN}" \
   https://northstar.dosomething.org/v1/keys
 ```
 
@@ -72,7 +72,7 @@ POST /v1/keys
 **Example Request:**
 ```sh
 curl -X POST \
-  -H "X-DS-REST-API-Key: ${REST_API_KEY}" \
+  -H "Authorization: ${ACCESS_TOKEN}" \
   -H "Content-Type: application/json" \
   -H "Accept: application/json" \
   -d '{"app_id": "test application"}' \
@@ -105,7 +105,7 @@ GET /v1/keys/:api_key
 **Example Request:**
 ```sh
 curl -X GET\
-  -H "X-DS-REST-API-Key: ${REST_API_KEY}" \
+  -H "Authorization: ${ACCESS_TOKEN}" \
   -H "Content-Type: application/json" \
   -H "Accept: application/json" \
   https://northstar.dosomething.org/v1/keys/1laEQhhKtQEaPK0qpESdXHm2EbdLu5sRIRLcRtF8
@@ -152,7 +152,7 @@ PUT /v1/keys/:api_key
 **Example Request:**
 ```sh
 curl -X PUT \
-  -H "X-DS-REST-API-Key: ${REST_API_KEY}" \
+  -H "Authorization: ${ACCESS_TOKEN}" \
   -H "Content-Type: application/json" \
   -H "Accept: application/json" \
   -d '{"scope": ["admin", "user"]}' \
@@ -190,7 +190,7 @@ DELETE /v1/keys/:api_key
 **Example Request:**
 ```sh
 curl -X DELETE \
-  -H "X-DS-REST-API-Key: ${REST_API_KEY}" \
+  -H "Authorization: ${ACCESS_TOKEN}" \
   -H "Content-Type: application/json" \
   -H "Accept: application/json" \
   https://northstar.dosomething.org/v1/keys/1laEQhhKtQEaPK0qpESdXHm2EbdLu5sRIRLcRtF8
