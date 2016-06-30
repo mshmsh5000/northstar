@@ -35,6 +35,9 @@ Here's an annotated payload from an example access token:
 
 ```js
 {
+  // Issuer: the authorization server URL.
+  "iss": "https://northstar.dosomething.org",
+
   // Audience: the client which requested this token. 
   "aud": "phoenix",
   
@@ -52,6 +55,9 @@ Here's an annotated payload from an example access token:
   
   // Subject: the Northstar ID of the user that is authorized by this JWT.
   "sub": "5430e850dt8hbc541c37tt3d",
+  
+  // Role: the user's role
+  "role": "user",
   
   // Scopes: the privileges this key authorizes the client to act with.
   "scopes": [
