@@ -210,6 +210,11 @@ class AuthTest extends TestCase
         ]);
 
         $this->assertResponseStatus(200);
+        
+        // Newly registered users should have the 'user' role.
+        $this->assertEquals('user', $this->decodeResponseJson()['data']['user']['data']['role']);
+        
+        // Assert expected response format.
         $this->seeJsonStructure([
             'data' => [
                 'key',
@@ -234,12 +239,14 @@ class AuthTest extends TestCase
             'email' => 'test-registration@dosomething.org',
             'drupal_id' => '123456', // <-- we should ignore this!
             'password' => 'secret',
+            'role' => 'admin',
         ]);
 
         $this->assertResponseStatus(200);
 
-        // The provided `drupal_id` should have been ignored.
+        // The provided `drupal_id` and `role` should have been ignored.
         $this->assertEquals(null, $this->decodeResponseJson()['data']['user']['data']['drupal_id']);
+        $this->assertEquals('user', $this->decodeResponseJson()['data']['user']['data']['role']);
     }
 
     /**
