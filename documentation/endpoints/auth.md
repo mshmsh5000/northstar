@@ -22,7 +22,6 @@ POST /v2/auth/token
 
 **Parameters:**
 
-In addition to the password, either mobile number or email is required.
 ```js
 // Content-Type: application/json
  
@@ -44,6 +43,7 @@ In addition to the password, either mobile number or email is required.
 ```
 
 **Example Request:**
+
 ```
 curl -X POST \
   -H "Content-Type: application/json" \
@@ -54,6 +54,7 @@ curl -X POST \
 ```
 
 **Example Response:**
+
 ```js
 // 200 OK
 
@@ -102,6 +103,7 @@ curl -X POST \
 ```
 
 **Example Response:**
+
 ```js
 // 200 OK
 
@@ -124,7 +126,6 @@ POST /v2/auth/token
 
 **Parameters:**
 
-In addition to the password, either mobile number or email is required.
 ```js
 // Content-Type: application/json
  
@@ -153,6 +154,7 @@ curl -X POST \
 ```
 
 **Example Response:**
+
 ```js
 // 200 OK
 
