@@ -17,7 +17,7 @@ class AccessTokenEntity implements AccessTokenEntityInterface
 
     /**
      * The user's role.
-     * 
+     *
      * @var string
      */
     protected $role = '';
