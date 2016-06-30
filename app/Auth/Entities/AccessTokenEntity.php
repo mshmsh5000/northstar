@@ -16,6 +16,33 @@ class AccessTokenEntity implements AccessTokenEntityInterface
     use EntityTrait, AccessTokenTrait, TokenEntityTrait;
 
     /**
+     * The user's role.
+     * 
+     * @var string
+     */
+    protected $role = '';
+
+    /**
+     * Get the role for the user that the token was issued to.
+     *
+     * @return string
+     */
+    public function getRole()
+    {
+        return $this->role;
+    }
+
+    /**
+     * Set the role for the user that the token was issued to.
+     *
+     * @param string $role
+     */
+    public function setRole($role)
+    {
+        $this->role = $role;
+    }
+
+    /**
      * Generate a JWT from the access token. We override this method from
      * AccessTokenTrait so that we can add the `iss` and `role` claims.
      *
@@ -32,7 +59,7 @@ class AccessTokenEntity implements AccessTokenEntityInterface
             ->setNotBefore(time())
             ->setExpiration($this->getExpiryDateTime()->getTimestamp())
             ->setSubject($this->getUserIdentifier())
-            ->set('role', 'user') // @TODO: Get from user.
+            ->set('role', $this->getRole())
             ->set('scopes', $this->getScopes())
             ->sign(new Sha256(), new Key($privateKey->getKeyPath(), $privateKey->getPassPhrase()))
             ->getToken();

@@ -19,7 +19,14 @@ class AccessTokenRepository implements AccessTokenRepositoryInterface
      */
     public function getNewToken(ClientEntityInterface $clientEntity, array $scopes, $userIdentifier = null)
     {
-        return new AccessTokenEntity();
+        $accessToken = new AccessTokenEntity();
+        
+        if($userIdentifier) {
+            // @TODO: Set this from the user model once field is added.
+            $accessToken->setRole('user');
+        }
+
+        return $accessToken;
     }
 
     /**
