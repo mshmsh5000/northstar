@@ -47,6 +47,29 @@ class OAuthTest extends TestCase
     }
 
     /**
+     * Test that the password grant provides a JWT for valid credentials.
+     */
+    public function testRoleClaim()
+    {
+        $admin = User::create(['email' => 'login-test@dosomething.org', 'password' => 'secret', 'role' => 'admin']);
+        $client = Client::create(['app_id' => 'phpunit', 'scope' => ['admin', 'user']]);
+
+        $this->post('v2/auth/token', [
+            'grant_type' => 'password',
+            'client_id' => $client->client_id,
+            'client_secret' => $client->client_secret,
+            'username' => $admin->email,
+            'password' => 'secret',
+            'scope' => 'admin user',
+        ]);
+
+        // Parse the token we received to see it's built correctly.
+        $token = $this->decodeResponseJson()['access_token'];
+        $jwt = (new \Lcobucci\JWT\Parser())->parse($token);
+        $this->assertSame('admin', $jwt->getClaim('role'));
+    }
+
+    /**
      * Test that the password grant rejects invalid credentials.
      */
     public function testPasswordGrantWithInvalidCredentials()
@@ -188,6 +211,13 @@ class OAuthTest extends TestCase
             'expires_in',
             'access_token',
         ]);
+
+        $jwt = (new \Lcobucci\JWT\Parser())->parse($this->decodeResponseJson()['access_token']);
+
+        // Check that the token has the expected user ID and scopes.
+        $this->assertSame('', $jwt->getClaim('sub'));
+        $this->assertSame('', $jwt->getClaim('role'));
+        $this->assertSame([], $jwt->getClaim('scopes'));
     }
 
     /**
