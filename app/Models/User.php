@@ -23,6 +23,7 @@ use Illuminate\Contracts\Auth\Access\Authorizable as AuthorizableContract;
  * @property string $photo
  * @property array  $interests
  * @property string $source
+ * @property string $role - The user's role, e.g. 'user', 'staff', or 'admin'
  *
  * @property string $addr_street1
  * @property string $addr_street2
@@ -66,7 +67,7 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
      * @var array
      */
     protected $fillable = [
-        'email', 'mobile', 'password', 'drupal_password',
+        'email', 'mobile', 'password', 'drupal_password', 'role',
 
         'first_name', 'last_name', 'birthdate', 'photo', 'interests',
         'race', 'religion',
@@ -89,7 +90,7 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
      * @var array
      */
     public static $internal = [
-        'mobilecommons_id', 'mobilecommons_status', 'cgg_id', 'drupal_id', 'agg_id', 'drupal_password',
+        'mobilecommons_id', 'mobilecommons_status', 'cgg_id', 'drupal_id', 'agg_id', 'drupal_password', 'role',
     ];
 
     /**
@@ -198,6 +199,26 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
         if (empty($this->attributes['source'])) {
             $this->attributes['source'] = $value;
         }
+    }
+
+    /**
+     * Mutator for the `role` field.
+     */
+    public function getRoleAttribute()
+    {
+        return ! empty($this->attributes['role']) ? $this->attributes['role'] : 'user';
+    }
+
+    /**
+     * Mutator for the `role` field.
+     */
+    public function setRoleAttribute($value)
+    {
+        if (! in_array($value, ['user', 'staff', 'admin'])) {
+            return;
+        }
+        
+        $this->attributes['role'] = $value;
     }
 
     /**
