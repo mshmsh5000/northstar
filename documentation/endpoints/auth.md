@@ -78,7 +78,6 @@ POST /v2/auth/token
 
 **Parameters:**
 
-In addition to the password, either mobile number or email is required.
 ```js
 // Content-Type: application/json
  
