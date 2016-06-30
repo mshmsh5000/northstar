@@ -130,6 +130,7 @@ Either a mobile number or email is required.
   parse_installation_ids: String // CSV values or array will be appended to existing interests
   interests: String, Array // CSV values or array will be appended to existing interests
   source: String // Immutable (can only be set if existing value is `null`)
+  role: String // Can only be modified by admins. Either 'user' (default), 'staff', or 'admin'.
   
   // Hidden fields (optional):
   race: String
@@ -177,6 +178,7 @@ curl -X POST \
             "hockeys",
             "kickballs"
         ],
+        "role": "user",
         "updated_at": "2016-02-25T19:33:24+0000",
         "created_at": "2016-02-25T18:33:24+0000"
     }
@@ -224,6 +226,7 @@ curl -X GET \
         "birthdate": "12/17/91",
         "first_name": "First",
         "last_name": "Last",
+        "role": "user",
         "updated_at": "2016-02-25T19:33:24+0000",
         "created_at": "2016-02-25T19:33:24+0000"
     }
@@ -263,6 +266,7 @@ PUT /v1/users/drupal_id/<drupal_id>
   parse_installation_ids: String // CSV values or array will be appended to existing interests
   interests: String, Array // CSV values or array will be appended to existing interests
   source: String // Immutable (can only be set if existing value is `null`)
+  role: String // Can only be modified by admins. Either 'user' (default), 'staff', or 'admin'.
   
   // Hidden fields (optional):
   race: String
