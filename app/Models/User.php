@@ -217,7 +217,7 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
         if (! in_array($value, ['user', 'staff', 'admin'])) {
             return;
         }
-        
+
         $this->attributes['role'] = $value;
     }
 

@@ -210,10 +210,10 @@ class AuthTest extends TestCase
         ]);
 
         $this->assertResponseStatus(200);
-        
+
         // Newly registered users should have the 'user' role.
         $this->assertEquals('user', $this->decodeResponseJson()['data']['user']['data']['role']);
-        
+
         // Assert expected response format.
         $this->seeJsonStructure([
             'data' => [
