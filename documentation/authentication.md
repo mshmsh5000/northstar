@@ -56,7 +56,7 @@ Here's an annotated payload from an example access token:
   // Subject: the Northstar ID of the user that is authorized by this JWT.
   "sub": "5430e850dt8hbc541c37tt3d",
   
-  // Role: the user's role
+  // Role: the user's role (e.g. 'user', 'staff', 'admin')
   "role": "user",
   
   // Scopes: the privileges this key authorizes the client to act with.
