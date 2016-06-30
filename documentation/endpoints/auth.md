@@ -39,6 +39,9 @@ POST /v2/auth/token
 
   /* Required */
   password: String,
+  
+  /* Scopes to request, space-delimited. */
+  scope: String,
 }
 ```
 
@@ -78,7 +81,6 @@ POST /v2/auth/token
 
 **Parameters:**
 
-In addition to the password, either mobile number or email is required.
 ```js
 // Content-Type: application/json
  
@@ -90,6 +92,9 @@ In addition to the password, either mobile number or email is required.
   
   // The client application's Client Secret (required for "trusted" applications)
   client_secret: String,
+  
+  /* Scopes to request, space-delimited. */
+  scope: String,
 }
 ```
 
@@ -140,6 +145,9 @@ POST /v2/auth/token
 
   /* An unused refresh token, returned from the Password Grant */
   refresh_token: String,
+  
+  /* Optional: Adjust the scopes for the new access token. */
+  scope: String,
 }
 ```
 

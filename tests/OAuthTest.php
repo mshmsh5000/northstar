@@ -36,6 +36,7 @@ class OAuthTest extends TestCase
 
         // Check that the token has the expected user ID and scopes.
         $this->assertSame($user->id, $jwt->getClaim('sub'));
+        $this->assertSame('user', $jwt->getClaim('role'));
         $this->assertSame(['admin', 'user'], $jwt->getClaim('scopes'));
 
         // Check that a refresh token was saved to the database.
