@@ -53,7 +53,7 @@ class TestCase extends Illuminate\Foundation\Testing\TestCase
      * @param Client $client
      * @return $this
      */
-    public function withApiKey(Client $client)
+    public function withLegacyApiKey(Client $client)
     {
         $this->serverVariables = array_replace($this->serverVariables, [
             'HTTP_X-DS-REST-API-Key' => $client->client_secret,
@@ -68,14 +68,17 @@ class TestCase extends Illuminate\Foundation\Testing\TestCase
      * @param array $scopes
      * @return $this
      */
-    public function withScopes(array $scopes)
+    public function withLegacyApiKeyScopes(array $scopes)
     {
         $client = Client::create([
             'client_id' => 'testing'.$this->faker->uuid,
             'scope' => $scopes,
         ]);
 
-        $this->withApiKey($client);
+        $this->withLegacyApiKey($client);
+
+        return $this;
+    }
 
         return $this;
     }
@@ -88,7 +91,7 @@ class TestCase extends Illuminate\Foundation\Testing\TestCase
      * @param User $user
      * @return $this
      */
-    public function asUser(User $user)
+    public function asUserUsingLegacyAuth(User $user)
     {
         $token = $user->login();
         $this->serverVariables = array_replace($this->serverVariables, [

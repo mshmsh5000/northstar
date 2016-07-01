@@ -34,7 +34,7 @@ class SignupTest extends TestCase
             ],
         ]);
 
-        $this->asUser($user)->withScopes(['user'])->get('v1/signups?users='.$user->_id.','.$user2->_id);
+        $this->asUserUsingLegacyAuth($user)->withLegacyApiKeyScopes(['user'])->get('v1/signups?users='.$user->_id.','.$user2->_id);
 
         $this->assertResponseStatus(200);
         $this->seeJson();
@@ -75,7 +75,7 @@ class SignupTest extends TestCase
         ]);
 
         // Let's just ensure it doesn't crash.
-        $this->asUser($user)->withScopes(['user'])->get('v1/signups?users='.$user->_id.','.$user2->_id);
+        $this->asUserUsingLegacyAuth($user)->withLegacyApiKeyScopes(['user'])->get('v1/signups?users='.$user->_id.','.$user2->_id);
         $this->assertResponseStatus(200);
     }
 
@@ -100,7 +100,7 @@ class SignupTest extends TestCase
             ],
         ]);
 
-        $response = $this->asUser($user)->withScopes(['user'])->get('v1/signups?users='.$user->_id);
+        $response = $this->asUserUsingLegacyAuth($user)->withLegacyApiKeyScopes(['user'])->get('v1/signups?users='.$user->_id);
         $this->assertResponseStatus(200);
         $this->seeJson();
 
@@ -153,7 +153,7 @@ class SignupTest extends TestCase
         ]);
 
         // Make the request
-        $this->asUser($user)->withScopes(['user'])->json('POST', 'v1/signups', [
+        $this->asUserUsingLegacyAuth($user)->withLegacyApiKeyScopes(['user'])->json('POST', 'v1/signups', [
             'campaign_id' => '123',
             'source' => 'test',
         ]);

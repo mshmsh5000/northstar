@@ -25,7 +25,7 @@ class ReportbackTest extends TestCase
             ],
         ]);
 
-        $this->asUser($user)->withScopes(['user'])->json('POST', 'v1/reportbacks', [
+        $this->asUserUsingLegacyAuth($user)->withLegacyApiKeyScopes(['user'])->json('POST', 'v1/reportbacks', [
             'campaign_id' => 123,
             'quantity' => 10,
             'why_participated' => 'I love helping others',

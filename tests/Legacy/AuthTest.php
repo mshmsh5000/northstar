@@ -20,14 +20,14 @@ class AuthTest extends TestCase
         ]);
 
         // Test logging in with bogus info
-        $this->withScopes(['user'])->json('POST', 'v1/auth/token', [
+        $this->withLegacyApiKeyScopes(['user'])->json('POST', 'v1/auth/token', [
             'username' => 'login-test@dosomething.org',
             'password' => 'letmein',
         ]);
         $this->assertResponseStatus(401);
 
         // Test with the right credentials
-        $this->withScopes(['user'])->json('POST', 'v1/auth/token', [
+        $this->withLegacyApiKeyScopes(['user'])->json('POST', 'v1/auth/token', [
             'username' => 'login-test@dosomething.org',
             'password' => 'secret',
         ]);
@@ -66,14 +66,14 @@ class AuthTest extends TestCase
         User::create($credentials);
 
         // Test logging in with bogus info
-        $this->withScopes(['user'])->json('POST', 'v1/auth/token', [
+        $this->withLegacyApiKeyScopes(['user'])->json('POST', 'v1/auth/token', [
             'email' => 'login-test@dosomething.org',
             'password' => 'letmein',
         ]);
         $this->assertResponseStatus(401);
 
         // Test with the right credentials
-        $this->withScopes(['user'])->json('POST', 'v1/auth/token', $credentials);
+        $this->withLegacyApiKeyScopes(['user'])->json('POST', 'v1/auth/token', $credentials);
         $this->assertResponseStatus(201);
         $this->seeJsonStructure([
             'data' => [
@@ -106,7 +106,7 @@ class AuthTest extends TestCase
             'password' => 'secret',
         ]);
 
-        $this->withScopes(['user'])->json('POST', 'v1/auth/token', [
+        $this->withLegacyApiKeyScopes(['user'])->json('POST', 'v1/auth/token', [
             'mobile' => '(555) 123-4455',
             'password' => 'secret',
         ]);
@@ -142,7 +142,7 @@ class AuthTest extends TestCase
             'password' => 'secret',
         ]);
 
-        $this->withScopes(['user'])->json('POST', 'v1/auth/verify', [
+        $this->withLegacyApiKeyScopes(['user'])->json('POST', 'v1/auth/verify', [
             'email' => 'verify-test@dosomething.org',
             'password' => 'secret',
         ]);
@@ -168,7 +168,7 @@ class AuthTest extends TestCase
             'password' => 'secret',
         ]);
 
-        $this->withScopes(['user'])->json('POST', 'v1/auth/verify', [
+        $this->withLegacyApiKeyScopes(['user'])->json('POST', 'v1/auth/verify', [
             'email' => 'Normalized-Verify@dosomething.org ', // <-- a trailing space!? the nerve!
             'password' => 'secret',
         ]);
@@ -189,7 +189,7 @@ class AuthTest extends TestCase
      */
     public function testIncompleteRegistration()
     {
-        $this->withScopes(['user'])->json('POST', 'v1/auth/register', [
+        $this->withLegacyApiKeyScopes(['user'])->json('POST', 'v1/auth/register', [
             'password' => 'secret',
         ]);
 
@@ -204,7 +204,7 @@ class AuthTest extends TestCase
      */
     public function testRegister()
     {
-        $this->withScopes(['user'])->json('POST', 'v1/auth/register', [
+        $this->withLegacyApiKeyScopes(['user'])->json('POST', 'v1/auth/register', [
             'email' => 'test-registration@dosomething.org',
             'password' => 'secret',
         ]);
@@ -235,7 +235,7 @@ class AuthTest extends TestCase
      */
     public function testRegisterIgnoresInternalFields()
     {
-        $this->withScopes(['user'])->json('POST', 'v1/auth/register', [
+        $this->withLegacyApiKeyScopes(['user'])->json('POST', 'v1/auth/register', [
             'email' => 'test-registration@dosomething.org',
             'drupal_id' => '123456', // <-- we should ignore this!
             'password' => 'secret',
@@ -268,7 +268,7 @@ class AuthTest extends TestCase
         ]);
 
         // Try to register to "complete" their profile.
-        $this->withScopes(['user'])->json('POST', 'v1/auth/register', [
+        $this->withLegacyApiKeyScopes(['user'])->json('POST', 'v1/auth/register', [
             'email' => 'Poe.Dameron@Resistance.org',
             'password' => 'finn&p0e4ever',
             'source' => 'phpunit',
@@ -299,7 +299,7 @@ class AuthTest extends TestCase
 
         // Try to "register" that existing account we just made (which already
         // has a password, so we know we're not trying to "complete" their profile).
-        $this->withScopes(['user'])->json('POST', 'v1/auth/register', [
+        $this->withLegacyApiKeyScopes(['user'])->json('POST', 'v1/auth/register', [
             'email' => 'FN-2187@First-Order.mil',
             'password' => 'secret',
         ]);
@@ -312,7 +312,7 @@ class AuthTest extends TestCase
      */
     public function testRegisterLongEmail()
     {
-        $this->withScopes(['user'])->json('POST', 'v1/auth/register', [
+        $this->withLegacyApiKeyScopes(['user'])->json('POST', 'v1/auth/register', [
             'email' => 'loremipsumdolorsitametconsecteturadipiscingelitduisut1234567890b@example.com',
             'password' => 'secret',
         ]);
@@ -329,7 +329,7 @@ class AuthTest extends TestCase
     public function testLogout()
     {
         $user = User::create(['first_name' => 'Puppet']);
-        $this->asUser($user)->withScopes(['user'])->json('POST', 'v1/auth/invalidate');
+        $this->asUserUsingLegacyAuth($user)->withLegacyApiKeyScopes(['user'])->json('POST', 'v1/auth/invalidate');
 
         // Should return 200 with valid JSON status message
         $this->assertResponseStatus(200);
@@ -352,7 +352,7 @@ class AuthTest extends TestCase
             ],
         ]);
 
-        $this->asUser($user)->withScopes(['user'])->json('POST', 'v1/auth/invalidate', [
+        $this->asUserUsingLegacyAuth($user)->withLegacyApiKeyScopes(['user'])->json('POST', 'v1/auth/invalidate', [
             'parse_installation_ids' => 'parse-abc123',
         ]);
 
@@ -372,7 +372,7 @@ class AuthTest extends TestCase
      */
     public function testMissingToken()
     {
-        $this->withScopes(['user'])->get('v1/profile');
+        $this->withLegacyApiKeyScopes(['user'])->get('v1/profile');
         $this->assertResponseStatus(401);
     }
 
@@ -382,7 +382,7 @@ class AuthTest extends TestCase
      */
     public function testFakeToken()
     {
-        $this->withScopes(['user'])->get('v1/profile', [
+        $this->withLegacyApiKeyScopes(['user'])->get('v1/profile', [
             'Authorization' => 'Bearer any_token_anytime_anywhere',
         ]);
 
@@ -404,7 +404,7 @@ class AuthTest extends TestCase
                 'expires' => '2016-06-08T16:54:09+00:00',
             ]);
 
-        $this->asUser($user)->withScopes(['user'])->post('v1/auth/phoenix');
+        $this->asUserUsingLegacyAuth($user)->withLegacyApiKeyScopes(['user'])->post('v1/auth/phoenix');
 
         $this->assertResponseStatus(200);
         $this->seeJsonStructure([
@@ -419,7 +419,7 @@ class AuthTest extends TestCase
     {
         $user = User::create(['email' => $this->faker->email]);
 
-        $this->asUser($user)->withScopes(['user'])->post('v1/auth/phoenix');
+        $this->asUserUsingLegacyAuth($user)->withLegacyApiKeyScopes(['user'])->post('v1/auth/phoenix');
         $this->assertResponseStatus(403);
     }
 
@@ -428,7 +428,7 @@ class AuthTest extends TestCase
      */
     public function testMagicLoginAnonymous()
     {
-        $this->withScopes(['user'])->post('v1/auth/phoenix');
+        $this->withLegacyApiKeyScopes(['user'])->post('v1/auth/phoenix');
         $this->assertResponseStatus(401);
     }
 }
