@@ -102,7 +102,7 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
      * @var array
      */
     public static $indexes = [
-        '_id', 'drupal_id', 'email', 'mobile',
+        '_id', 'drupal_id', 'email', 'mobile', 'source',
     ];
 
     /**
