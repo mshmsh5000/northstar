@@ -1,5 +1,10 @@
 <?php
 
+use League\OAuth2\Server\CryptKey;
+use Northstar\Auth\Entities\AccessTokenEntity;
+use Northstar\Auth\Entities\ClientEntity;
+use Northstar\Auth\Entities\ScopeEntity;
+use Northstar\Auth\Scope;
 use Northstar\Models\Client;
 use Northstar\Models\User;
 
@@ -53,7 +58,7 @@ class TestCase extends Illuminate\Foundation\Testing\TestCase
      * @param Client $client
      * @return $this
      */
-    public function withApiKey(Client $client)
+    public function withLegacyApiKey(Client $client)
     {
         $this->serverVariables = array_replace($this->serverVariables, [
             'HTTP_X-DS-REST-API-Key' => $client->client_secret,
@@ -68,14 +73,49 @@ class TestCase extends Illuminate\Foundation\Testing\TestCase
      * @param array $scopes
      * @return $this
      */
-    public function withScopes(array $scopes)
+    public function withLegacyApiKeyScopes(array $scopes)
     {
         $client = Client::create([
             'client_id' => 'testing'.$this->faker->uuid,
             'scope' => $scopes,
         ]);
 
-        $this->withApiKey($client);
+        $this->withLegacyApiKey($client);
+
+        return $this;
+    }
+
+    /**
+     * Create a signed JWT to authorize resource requests.
+     *
+     * @param User $user
+     * @param array $scopes
+     * @return $this
+     */
+    public function asUser($user, $scopes = [])
+    {
+        $accessToken = new AccessTokenEntity();
+        $accessToken->setClient(new ClientEntity('phpunit', $scopes));
+        $accessToken->setIdentifier(bin2hex(random_bytes(40)));
+        $accessToken->setExpiryDateTime((new \DateTime())->add(new DateInterval('PT1H')));
+
+        $accessToken->setUserIdentifier($user->id);
+        $accessToken->setRole($user->role);
+
+        foreach ($scopes as $identifier) {
+            if (! array_key_exists($identifier, Scope::all())) {
+                continue;
+            }
+
+            $entity = new ScopeEntity();
+            $entity->setIdentifier($identifier);
+            $accessToken->addScope($entity);
+        }
+
+        $header = 'Bearer '.$accessToken->convertToJWT(new CryptKey(base_path('storage/keys/private.key')));
+        $this->serverVariables = array_replace($this->serverVariables, [
+            'HTTP_Authorization' => $header,
+        ]);
 
         return $this;
     }
@@ -88,7 +128,7 @@ class TestCase extends Illuminate\Foundation\Testing\TestCase
      * @param User $user
      * @return $this
      */
-    public function asUser(User $user)
+    public function asUserUsingLegacyAuth(User $user)
     {
         $token = $user->login();
         $this->serverVariables = array_replace($this->serverVariables, [

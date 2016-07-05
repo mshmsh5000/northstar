@@ -15,7 +15,7 @@ class PasswordTest extends TestCase
             'drupal_password' => '$S$DOQoztwlGzTeaobeBZKNzlDttbZscuCkkZPv8yeoEvrn26H/GN5b',
         ]);
 
-        $this->withScopes(['user'])->json('POST', 'v1/auth/verify', [
+        $this->withLegacyApiKeyScopes(['user'])->json('POST', 'v1/auth/verify', [
             'email' => 'dries.buytaert@example.com',
             'password' => 'secret',
         ]);
@@ -34,7 +34,7 @@ class PasswordTest extends TestCase
         $this->assertArrayHasKey('password', $user['attributes']);
 
         // Finally, let's try logging in with the newly hashed password
-        $this->withScopes(['user'])->json('POST', 'v1/auth/verify', [
+        $this->withLegacyApiKeyScopes(['user'])->json('POST', 'v1/auth/verify', [
             'email' => 'dries.buytaert@example.com',
             'password' => 'secret',
         ]);
@@ -51,7 +51,7 @@ class PasswordTest extends TestCase
             'drupal_password' => '$S$DOQoztwlGzTeaobeBZKNzlDttbZscuCkkZPv8yeoEvrn26H/GN5b',
         ]);
 
-        $this->withScopes(['admin'])->json('PUT', 'v1/users/_id/'.$user->_id, [
+        $this->withLegacyApiKeyScopes(['admin'])->json('PUT', 'v1/users/_id/'.$user->_id, [
             'password' => 'secret',
         ]);
 
@@ -63,7 +63,7 @@ class PasswordTest extends TestCase
         $this->assertArrayHasKey('password', $user['attributes']);
 
         // Finally, let's try logging in with the newly hashed password
-        $this->withScopes(['user'])->json('POST', 'v1/auth/verify', [
+        $this->withLegacyApiKeyScopes(['user'])->json('POST', 'v1/auth/verify', [
             'email' => 'acquia.consultant@example.com',
             'password' => 'secret',
         ]);

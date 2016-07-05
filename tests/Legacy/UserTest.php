@@ -2,7 +2,7 @@
 
 use Northstar\Models\User;
 
-class UserTest extends TestCase
+class LegacyUserTest extends TestCase
 {
     /**
      * Test for retrieving a user by their ID.
@@ -17,7 +17,7 @@ class UserTest extends TestCase
             'first_name' => 'Jean-Paul',
         ]);
 
-        $this->withScopes(['user'])->get('v1/users/id/'.$user->id);
+        $this->withLegacyApiKeyScopes(['user'])->get('v1/users/id/'.$user->id);
         $this->assertResponseStatus(200);
         $this->seeJsonSubset([
             'data' => [
@@ -39,7 +39,7 @@ class UserTest extends TestCase
             'first_name' => 'Jean-Paul',
         ]);
 
-        $this->withScopes(['user'])->get('v1/users/_id/'.$user->id);
+        $this->withLegacyApiKeyScopes(['user'])->get('v1/users/_id/'.$user->id);
         $this->assertResponseStatus(200);
         $this->seeJsonSubset([
             'data' => [
@@ -61,7 +61,7 @@ class UserTest extends TestCase
             'first_name' => 'Jean-Paul',
         ]);
 
-        $this->withScopes(['user', 'admin'])->get('v1/users/email/JBeaubier@Xavier.edu');
+        $this->withLegacyApiKeyScopes(['user', 'admin'])->get('v1/users/email/JBeaubier@Xavier.edu');
         $this->assertResponseStatus(200);
         $this->seeJsonSubset([
             'data' => [
@@ -83,7 +83,7 @@ class UserTest extends TestCase
             'first_name' => $this->faker->firstName,
         ]);
 
-        $this->withScopes(['user', 'admin'])->get('v1/users/mobile/'.$user->mobile);
+        $this->withLegacyApiKeyScopes(['user', 'admin'])->get('v1/users/mobile/'.$user->mobile);
         $this->assertResponseStatus(200);
         $this->seeJsonSubset([
             'data' => [
@@ -106,7 +106,7 @@ class UserTest extends TestCase
         ]);
 
         // Test that we return 404 when retrieving by a non-indexed field.
-        $this->withScopes(['user'])->get('v1/users/first_name/Bobby');
+        $this->withLegacyApiKeyScopes(['user'])->get('v1/users/first_name/Bobby');
         $this->assertResponseStatus(404);
     }
 
@@ -147,7 +147,7 @@ class UserTest extends TestCase
         ]);
 
         // Test that we can view public profile of the user.
-        $this->withScopes(['user'])->get('v1/users/_id/'.$user->id);
+        $this->withLegacyApiKeyScopes(['user'])->get('v1/users/_id/'.$user->id);
         $this->assertResponseStatus(200);
         $this->seeJsonStructure([
             'data' => [
@@ -176,7 +176,7 @@ class UserTest extends TestCase
             'last_name' => $this->faker->lastName,
         ]);
 
-        $this->withScopes(['user', 'admin'])->get('v1/users/_id/'.$user->id);
+        $this->withLegacyApiKeyScopes(['user', 'admin'])->get('v1/users/_id/'.$user->id);
         $this->assertResponseStatus(200);
 
         // Check that public & private profile fields are visible
@@ -201,7 +201,7 @@ class UserTest extends TestCase
         $this->get('v1/users');
         $this->assertResponseStatus(403);
 
-        $this->withScopes(['admin'])->get('v1/users');
+        $this->withLegacyApiKeyScopes(['admin'])->get('v1/users');
         $this->assertResponseStatus(200);
         $this->seeJsonStructure([
             'data' => [
@@ -228,7 +228,7 @@ class UserTest extends TestCase
         // Make some test users to see in the index.
         factory(User::class, 5)->create();
 
-        $this->withScopes(['admin'])->get('v1/users?limit=200'); // set a "per page" above the allowed max
+        $this->withLegacyApiKeyScopes(['admin'])->get('v1/users?limit=200'); // set a "per page" above the allowed max
         $this->assertResponseStatus(200);
         $this->assertSame(100, $this->decodeResponseJson()['meta']['pagination']['per_page']);
 
@@ -270,7 +270,7 @@ class UserTest extends TestCase
         $user3 = User::create(['mobile' => $this->faker->unique()->phoneNumber, 'drupal_id' => '123413']);
 
         // Retrieve multiple users by _id
-        $this->withScopes(['admin'])->get('v1/users?filter[id]='.$user1->id.','.$user2->id.',FAKE_ID');
+        $this->withLegacyApiKeyScopes(['admin'])->get('v1/users?filter[id]='.$user1->id.','.$user2->id.',FAKE_ID');
         $this->assertCount(2, $this->decodeResponseJson()['data']);
         $this->seeJsonStructure([
             'data' => [
@@ -284,11 +284,11 @@ class UserTest extends TestCase
         ]);
 
         // Retrieve multiple users by drupal_id
-        $this->withScopes(['admin'])->get('v1/users?filter[drupal_id]=FAKE_ID,'.$user1->drupal_id.','.$user2->drupal_id.','.$user3->drupal_id);
+        $this->withLegacyApiKeyScopes(['admin'])->get('v1/users?filter[drupal_id]=FAKE_ID,'.$user1->drupal_id.','.$user2->drupal_id.','.$user3->drupal_id);
         $this->assertCount(3, $this->decodeResponseJson()['data']);
 
         // Test compound queries
-        $this->withScopes(['admin'])->get('v1/users?filter[drupal_id]=FAKE_ID,'.$user1->drupal_id.','.$user2->drupal_id.','.$user3->drupal_id.'&filter[_id]='.$user1->id);
+        $this->withLegacyApiKeyScopes(['admin'])->get('v1/users?filter[drupal_id]=FAKE_ID,'.$user1->drupal_id.','.$user2->drupal_id.','.$user3->drupal_id.'&filter[_id]='.$user1->id);
         $this->assertCount(1, $this->decodeResponseJson()['data']);
     }
 
@@ -308,7 +308,7 @@ class UserTest extends TestCase
         $this->assertResponseStatus(403);
 
         // Query by a "known" search term
-        $this->withScopes(['admin'])
+        $this->withLegacyApiKeyScopes(['admin'])
             ->get('v1/users?search[_id]=search-result@dosomething.org&search[email]=search-result@dosomething.org');
         $this->assertResponseStatus(200);
 
@@ -330,7 +330,7 @@ class UserTest extends TestCase
             'source' => 'phpunit',
         ];
 
-        $this->withScopes(['admin'])->json('POST', 'v1/users', $payload);
+        $this->withLegacyApiKeyScopes(['admin'])->json('POST', 'v1/users', $payload);
         $this->assertResponseStatus(201);
         $this->seeJsonStructure([
             'data' => [
@@ -350,13 +350,13 @@ class UserTest extends TestCase
     {
         // Create some new users
         for ($i = 0; $i < 5; $i++) {
-            $this->withScopes(['admin'])->json('POST', 'v1/users', [
+            $this->withLegacyApiKeyScopes(['admin'])->json('POST', 'v1/users', [
                 'email' => $this->faker->unique()->email,
                 'mobile' => '', // this should not save a `mobile` field on these users
                 'source' => 'phpunit',
             ]);
 
-            $this->withScopes(['admin'])->json('POST', 'v1/users', [
+            $this->withLegacyApiKeyScopes(['admin'])->json('POST', 'v1/users', [
                 'email' => '  ', // this should not save a `email` field on these users
                 'mobile' => $this->faker->unique()->phoneNumber,
                 'source' => 'phpunit',
@@ -383,7 +383,7 @@ class UserTest extends TestCase
             'first_name' => $this->faker->firstName,
         ]);
 
-        $this->withScopes(['admin'])->json('PUT', 'v1/users/_id/'.$user->id, [
+        $this->withLegacyApiKeyScopes(['admin'])->json('PUT', 'v1/users/_id/'.$user->id, [
             'mobile' => '', // this should remove the `mobile` field from the document
         ]);
 
@@ -406,7 +406,7 @@ class UserTest extends TestCase
             'first_name' => $this->faker->firstName,
         ]);
 
-        $this->withScopes(['admin'])->json('PUT', 'v1/users/_id/'.$user->id, [
+        $this->withLegacyApiKeyScopes(['admin'])->json('PUT', 'v1/users/_id/'.$user->id, [
             'email' => '',
         ]);
 
@@ -427,7 +427,7 @@ class UserTest extends TestCase
             'first_name' => $this->faker->firstName,
         ]);
 
-        $this->withScopes(['admin'])->json('PUT', 'v1/users/_id/'.$user->id, [
+        $this->withLegacyApiKeyScopes(['admin'])->json('PUT', 'v1/users/_id/'.$user->id, [
             'email' => '',
             'mobile' => '',
         ]);
@@ -453,7 +453,7 @@ class UserTest extends TestCase
         ];
 
         // This should cause a validation error.
-        $this->withScopes(['admin'])->json('POST', 'v1/users', $payload);
+        $this->withLegacyApiKeyScopes(['admin'])->json('POST', 'v1/users', $payload);
         $this->assertResponseStatus(422);
     }
 
@@ -468,7 +468,7 @@ class UserTest extends TestCase
             'email' => 'existing-user@dosomething.org',
         ]);
 
-        $this->withScopes(['admin'])->json('POST', 'v1/users', [
+        $this->withLegacyApiKeyScopes(['admin'])->json('POST', 'v1/users', [
             'email' => 'EXISTING-USER@dosomething.org',
             'source' => 'phpunit',
         ]);
@@ -491,7 +491,7 @@ class UserTest extends TestCase
         ]);
 
         // Try to make a conflict up by upserting something that would match 2 accounts.
-        $this->withScopes(['admin'])->json('POST', 'v1/users', [
+        $this->withLegacyApiKeyScopes(['admin'])->json('POST', 'v1/users', [
             'drupal_id' => '123123',
             'first_name' => 'Bob',
         ]);
@@ -520,7 +520,7 @@ class UserTest extends TestCase
         ]);
 
         // Try to make a conflict up by upserting something that would match 2 accounts.
-        $this->withScopes(['admin'])->json('POST', 'v1/users', [
+        $this->withLegacyApiKeyScopes(['admin'])->json('POST', 'v1/users', [
             'email' => 'other-existing-user@example.com',
             'drupal_id' => '123123',
         ]);
@@ -539,7 +539,7 @@ class UserTest extends TestCase
             'mobile' => '2035551238',
         ]);
 
-        $this->withScopes(['admin'])->json('POST', 'v1/users', [
+        $this->withLegacyApiKeyScopes(['admin'])->json('POST', 'v1/users', [
             'email' => 'lalalala@dosomething.org',
             'mobile' => '2035551238',
             'source' => 'phpunit',
@@ -563,7 +563,7 @@ class UserTest extends TestCase
         ]);
 
         // Post a "new" user object to merge into existing record
-        $this->withScopes(['admin'])->json('POST', 'v1/users', [
+        $this->withLegacyApiKeyScopes(['admin'])->json('POST', 'v1/users', [
             'email' => 'upsert-me@dosomething.org',
             'mobile' => '5556667777',
             'password' => 'secret',
@@ -599,7 +599,7 @@ class UserTest extends TestCase
         ]);
 
         // Post a "new" user object to merge into existing record
-        $this->withScopes(['admin'])->json('POST', 'v1/users?upsert=false', [
+        $this->withLegacyApiKeyScopes(['admin'])->json('POST', 'v1/users?upsert=false', [
             'email' => $user->email,
             'first_name' => 'Puppet',
         ]);
@@ -618,7 +618,7 @@ class UserTest extends TestCase
     public function testCreateUserWhileOptingOutOfUpsert()
     {
         // Post a "new" user object to merge into existing record
-        $this->withScopes(['admin'])->json('POST', 'v1/users?upsert=false', [
+        $this->withLegacyApiKeyScopes(['admin'])->json('POST', 'v1/users?upsert=false', [
             'email' => $this->faker->email,
             'first_name' => 'Puppet',
         ]);
@@ -642,7 +642,7 @@ class UserTest extends TestCase
         ]);
 
         // Post a "new" user object to merge into existing record
-        $this->withScopes(['admin'])->json('POST', 'v1/users', [
+        $this->withLegacyApiKeyScopes(['admin'])->json('POST', 'v1/users', [
             'email' => 'upsert-me+2@dosomething.org',
             'mobile' => '5556667777',
             'first_name' => 'Puppet',
@@ -679,7 +679,7 @@ class UserTest extends TestCase
         $user = User::create(['mobile' => $this->faker->unique()->phoneNumber]);
 
         // Update an existing user
-        $this->withScopes(['admin'])->json('PUT', 'v1/users/_id/'.$user->id, [
+        $this->withLegacyApiKeyScopes(['admin'])->json('PUT', 'v1/users/_id/'.$user->id, [
             'email' => 'NewEmail@dosomething.org',
             'parse_installation_ids' => 'parse-abc123',
         ]);
@@ -713,7 +713,7 @@ class UserTest extends TestCase
         $user = User::create(['email' => 'email@dosomething.org']);
 
         // Update an existing user
-        $this->withScopes(['admin'])->json('PUT', 'v1/users/_id/'.$user->id, [
+        $this->withLegacyApiKeyScopes(['admin'])->json('PUT', 'v1/users/_id/'.$user->id, [
             'email' => 'new-email@dosomething.org',
         ]);
 
@@ -737,7 +737,7 @@ class UserTest extends TestCase
 
         $user = User::create(['email' => 'admiral.ackbar@example.com']);
 
-        $this->withScopes(['admin'])->json('PUT', 'v1/users/_id/'.$user->id, [
+        $this->withLegacyApiKeyScopes(['admin'])->json('PUT', 'v1/users/_id/'.$user->id, [
             'mobile' => '(555) 555-0101', // the existing user account
             'first_name' => 'Gial',
             'last_name' => 'Ackbar',
@@ -757,7 +757,7 @@ class UserTest extends TestCase
 
         $user = User::create(['email' => 'admiral.ackbar@example.com']);
 
-        $this->withScopes(['admin'])->json('PUT', 'v1/users/_id/'.$user->id, [
+        $this->withLegacyApiKeyScopes(['admin'])->json('PUT', 'v1/users/_id/'.$user->id, [
             'drupal_id' => '123456', // the existing user account
         ]);
 
@@ -777,7 +777,7 @@ class UserTest extends TestCase
         // Mock successful response from AWS API
         $this->mock('Northstar\Services\AWS')->shouldReceive('storeImage')->once()->andReturn('http://bucket.s3.amazonaws.com/'.$user->id.'-1234567.jpg');
 
-        $this->asUser($user)->withScopes(['user'])->json('POST', 'v1/users/'.$user->id.'/avatar', [
+        $this->asUserUsingLegacyAuth($user)->withLegacyApiKeyScopes(['user'])->json('POST', 'v1/users/'.$user->id.'/avatar', [
             'photo' => 'example.jpeg',
         ]);
 
@@ -802,7 +802,7 @@ class UserTest extends TestCase
         // Mock successful response from AWS API
         $this->mock('Northstar\Services\AWS')->shouldReceive('storeImage')->once()->andReturn('http://bucket.s3.amazonaws.com/'.$user->id.'-123415.jpg');
 
-        $this->asUser($user)->withScopes(['user'])->json('POST', 'v1/users/'.$user->id.'/avatar', [
+        $this->asUserUsingLegacyAuth($user)->withLegacyApiKeyScopes(['user'])->json('POST', 'v1/users/'.$user->id.'/avatar', [
             'photo' => '123456789',
         ]);
 
@@ -828,7 +828,7 @@ class UserTest extends TestCase
         $this->delete('v1/users/'.$user->id);
         $this->assertResponseStatus(403);
 
-        $this->withScopes(['admin'])->delete('v1/users/'.$user->id);
+        $this->withLegacyApiKeyScopes(['admin'])->delete('v1/users/'.$user->id);
         $this->assertResponseStatus(200);
     }
 
@@ -840,7 +840,7 @@ class UserTest extends TestCase
      */
     public function testDeleteNoResource()
     {
-        $this->withScopes(['admin'])->delete('v1/users/DUMMY_ID');
+        $this->withLegacyApiKeyScopes(['admin'])->delete('v1/users/DUMMY_ID');
         $this->assertResponseStatus(404);
     }
 }
