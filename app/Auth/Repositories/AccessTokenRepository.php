@@ -6,6 +6,7 @@ use League\OAuth2\Server\Entities\AccessTokenEntityInterface;
 use League\OAuth2\Server\Entities\ClientEntityInterface;
 use League\OAuth2\Server\Repositories\AccessTokenRepositoryInterface;
 use Northstar\Auth\Entities\AccessTokenEntity;
+use Northstar\Models\User;
 
 class AccessTokenRepository implements AccessTokenRepositoryInterface
 {
@@ -22,8 +23,8 @@ class AccessTokenRepository implements AccessTokenRepositoryInterface
         $accessToken = new AccessTokenEntity();
 
         if ($userIdentifier) {
-            // @TODO: Set this from the user model once field is added.
-            $accessToken->setRole('user');
+            $user = User::find($userIdentifier);
+            $accessToken->setRole($user->role);
         }
 
         return $accessToken;

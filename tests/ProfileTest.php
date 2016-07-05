@@ -44,12 +44,14 @@ class ProfileTest extends TestCase
             'first_name' => $this->faker->firstName,
             'last_name' => $this->faker->lastName,
             'drupal_id' => 123456,
+            'role' => 'user',
         ]);
 
         $this->asUser($user)->withScopes(['user'])->json('POST', 'v1/profile', [
             'mobile' => '(555) 123-4567',
             'language' => 'en',
             'drupal_id' => 666666,
+            'role' => 'admin',
         ]);
 
         $this->assertResponseStatus(200);
@@ -60,6 +62,7 @@ class ProfileTest extends TestCase
                 'first_name' => $user->first_name,
                 'last_name' => $user->last_name,
                 'drupal_id' => 123456, // shouldn't have changed, field is read-only for users!
+                'role' => 'user', // shouldn't have changed, field is read-only for users!
                 'mobile' => '5551234567', // should be normalized!
                 'language' => 'en',
             ],

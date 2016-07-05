@@ -23,6 +23,7 @@ use Illuminate\Contracts\Auth\Access\Authorizable as AuthorizableContract;
  * @property string $photo
  * @property array  $interests
  * @property string $source
+ * @property string $role - The user's role, e.g. 'user', 'staff', or 'admin'
  *
  * @property string $addr_street1
  * @property string $addr_street2
@@ -66,7 +67,7 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
      * @var array
      */
     protected $fillable = [
-        'email', 'mobile', 'password', 'drupal_password',
+        'email', 'mobile', 'password', 'drupal_password', 'role',
 
         'first_name', 'last_name', 'birthdate', 'photo', 'interests',
         'race', 'religion',
@@ -89,7 +90,7 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
      * @var array
      */
     public static $internal = [
-        'mobilecommons_id', 'mobilecommons_status', 'cgg_id', 'drupal_id', 'agg_id', 'drupal_password',
+        'mobilecommons_id', 'mobilecommons_status', 'cgg_id', 'drupal_id', 'agg_id', 'drupal_password', 'role',
     ];
 
     /**
@@ -130,6 +131,7 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
 
     /**
      * Computed last initial field, for public profiles.
+     *
      * @return string
      */
     public function getLastInitialAttribute()
@@ -192,6 +194,8 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
      * a source, that value cannot be changed). This allows applications to always
      * pass their own identifier in the user's source, without overwriting that value
      * for existing users.
+     *
+     * @param string $value
      */
     public function setSourceAttribute($value)
     {
@@ -201,8 +205,34 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
     }
 
     /**
+     * Accessor for the `role` field.
+     *
+     * @return string
+     */
+    public function getRoleAttribute()
+    {
+        return ! empty($this->attributes['role']) ? $this->attributes['role'] : 'user';
+    }
+
+    /**
+     * Mutator for the `role` field.
+     *
+     * @param string $value
+     */
+    public function setRoleAttribute($value)
+    {
+        if (! in_array($value, ['user', 'staff', 'admin'])) {
+            return;
+        }
+
+        $this->attributes['role'] = $value;
+    }
+
+    /**
      * Mutator to add new Parse IDs to the user's installation IDs array,
      * either by passing an array or a comma-separated list of values.
+     *
+     * @param array|string $value
      */
     public function setParseInstallationIdsAttribute($value)
     {
@@ -215,6 +245,8 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
      * Mutator to remove any existing password if we migrate a hashed password.
      * This is a one-time thing for syncing users from Phoenix and ensuring that
      * we *only* keep their latest hashed Drupal password.
+     *
+     * @param string $value
      */
     public function setDrupalPasswordAttribute($value)
     {
@@ -229,6 +261,8 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
     /**
      * Mutator to automatically hash any value saved to the password field,
      * and remove the hashed Drupal password if one exists.
+     *
+     * @param string $value
      */
     public function setPasswordAttribute($value)
     {
