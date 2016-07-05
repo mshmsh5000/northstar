@@ -2,6 +2,7 @@
 
 use Illuminate\Database\Seeder;
 use Northstar\Models\Client;
+use Northstar\Auth\Scope;
 
 class ApiKeyTableSeeder extends Seeder
 {
@@ -14,15 +15,17 @@ class ApiKeyTableSeeder extends Seeder
     {
         DB::table('clients')->delete();
 
+        // For easy testing, we'll seed one client with all scopes...
         Client::create([
-            'client_id' => '456',
-            'client_secret' => 'abc4324',
-            'scope' => ['admin', 'user'],
+            'client_id' => 'trusted-test-client',
+            'client_secret' => 'secret1',
+            'scope' => collect(Scope::all())->keys()->toArray(),
         ]);
 
+        // ..and one with limited scopes.
         Client::create([
-            'client_id' => '123',
-            'client_secret' => '5464utyrs',
+            'client_id' => 'untrusted-test-client',
+            'client_secret' => 'secret2',
             'scope' => ['user'],
         ]);
     }
