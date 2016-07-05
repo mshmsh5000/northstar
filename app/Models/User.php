@@ -101,8 +101,20 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
      *
      * @var array
      */
-    public static $indexes = [
+    public static $uniqueIndexes = [
         '_id', 'drupal_id', 'email', 'mobile',
+    ];
+
+    /**
+     * Attributes that can be queried when filtering.
+     *
+     * This array is manually maintained. It does not necessarily mean that
+     * any of these are actual indexes on the database... but they should be!
+     *
+     * @var array
+     */
+    public static $indexes = [
+        '_id', 'drupal_id', 'email', 'mobile', 'source',
     ];
 
     /**

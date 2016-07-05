@@ -92,7 +92,7 @@ class UserController extends Controller
 
         // Makes sure we can't "upsert" a record to have a changed index if already set.
         // @TODO: There must be a better way to do this...
-        foreach (User::$indexes as $index) {
+        foreach (User::$uniqueIndexes as $index) {
             if ($request->has($index) && ! empty($existingUser->{$index}) && $request->input($index) !== $existingUser->{$index}) {
                 app('stathat')->ezCount('upsert conflict');
                 logger('attempted to upsert an existing index', [
