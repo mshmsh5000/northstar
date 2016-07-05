@@ -131,6 +131,7 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
 
     /**
      * Computed last initial field, for public profiles.
+     *
      * @return string
      */
     public function getLastInitialAttribute()
@@ -193,6 +194,8 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
      * a source, that value cannot be changed). This allows applications to always
      * pass their own identifier in the user's source, without overwriting that value
      * for existing users.
+     *
+     * @param string $value
      */
     public function setSourceAttribute($value)
     {
@@ -202,7 +205,9 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
     }
 
     /**
-     * Mutator for the `role` field.
+     * Accessor for the `role` field.
+     *
+     * @return string
      */
     public function getRoleAttribute()
     {
@@ -211,6 +216,8 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
 
     /**
      * Mutator for the `role` field.
+     *
+     * @param string $value
      */
     public function setRoleAttribute($value)
     {
@@ -224,6 +231,8 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
     /**
      * Mutator to add new Parse IDs to the user's installation IDs array,
      * either by passing an array or a comma-separated list of values.
+     *
+     * @param array|string $value
      */
     public function setParseInstallationIdsAttribute($value)
     {
@@ -236,6 +245,8 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
      * Mutator to remove any existing password if we migrate a hashed password.
      * This is a one-time thing for syncing users from Phoenix and ensuring that
      * we *only* keep their latest hashed Drupal password.
+     *
+     * @param string $value
      */
     public function setDrupalPasswordAttribute($value)
     {
@@ -250,6 +261,8 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
     /**
      * Mutator to automatically hash any value saved to the password field,
      * and remove the hashed Drupal password if one exists.
+     *
+     * @param string $value
      */
     public function setPasswordAttribute($value)
     {
