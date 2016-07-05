@@ -40,5 +40,6 @@ class Kernel extends HttpKernel
         'auth' => \Northstar\Http\Middleware\Authenticate::class,
         'guest' => \Northstar\Http\Middleware\RedirectIfAuthenticated::class,
         'scope' => \Northstar\Http\Middleware\RequireScope::class,
+        'role' => \Northstar\Http\Middleware\RequireRole::class,
     ];
 }

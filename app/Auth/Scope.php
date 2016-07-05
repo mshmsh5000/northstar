@@ -13,8 +13,15 @@ class Scope
      * @var array
      */
     protected static $scopes = [
+        'role:admin' => [
+            'description' => 'Allows this client to act as an administrator if the user has that role.',
+        ],
+        'role:staff' => [
+            'description' => 'Allows this client to act as a staff member if the user has that role.',
+        ],
         'admin' => [
-            'description' => 'Allows "administrative" actions that should not be user-accessible, like deleting user records.',
+            'description' => 'Grant administrative privileges to this token, whether or not the user has the admin role.',
+            'warning' => true,
         ],
         'user' => [
             'description' => 'Allows actions to be made on a user\'s behalf.',
