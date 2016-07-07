@@ -1,11 +1,11 @@
 <?php
 
-namespace Northstar\Http\Transformers;
+namespace Northstar\Http\Transformers\Legacy;
 
 use Northstar\Models\Client;
 use League\Fractal\TransformerAbstract;
 
-class ClientTransformer extends TransformerAbstract
+class KeyTransformer extends TransformerAbstract
 {
     /**
      * @param Client $client

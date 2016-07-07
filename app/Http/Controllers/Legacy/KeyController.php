@@ -1,21 +1,22 @@
 <?php
 
-namespace Northstar\Http\Controllers;
+namespace Northstar\Http\Controllers\Legacy;
 
 use Illuminate\Http\Request;
-use Northstar\Http\Transformers\ClientTransformer;
 use Northstar\Models\Client;
+use Northstar\Http\Transformers\Legacy\KeyTransformer;
 use Symfony\Component\HttpKernel\Exception\HttpException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
+use Northstar\Http\Controllers\Controller;
 
-class ClientController extends Controller
+class KeyController extends Controller
 {
     /**
-     * @var ClientTransformer
+     * @var KeyTransformer
      */
     protected $transformer;
 
-    public function __construct(ClientTransformer $transformer)
+    public function __construct(KeyTransformer $transformer)
     {
         $this->transformer = $transformer;
 

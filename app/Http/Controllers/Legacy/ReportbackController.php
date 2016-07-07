@@ -1,11 +1,12 @@
 <?php
 
-namespace Northstar\Http\Controllers;
+namespace Northstar\Http\Controllers\Legacy;
 
 use Illuminate\Http\Request;
 use Northstar\Models\User;
 use Northstar\Services\Phoenix;
 use Symfony\Component\HttpKernel\Exception\HttpException;
+use Northstar\Http\Controllers\Controller;
 use Auth;
 
 class ReportbackController extends Controller
