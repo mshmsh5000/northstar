@@ -54,8 +54,7 @@ class Scope
     }
 
     /**
-     * Return whether a properly scoped API key is provided
-     * with the current request.
+     * Return whether the current request includes the proper client scopes.
      *
      * @param $scope - Required scope
      * @return bool
@@ -70,9 +69,12 @@ class Scope
             return in_array($scope, $oauthScopes);
         }
 
-        $key = Client::current();
+        // Otherwise, try to get the client from the legacy X-DS-REST-API-Key header,
+        // and compare against its whitelisted scopes.
+        $client_secret = request()->header('X-DS-REST-API-Key');
+        $client = Client::where('client_secret', $client_secret)->first();
 
-        return $key && $key->hasScope($scope);
+        return $client && in_array($scope, $client->scope);
     }
 
     /**
@@ -85,7 +87,7 @@ class Scope
     public static function gate($scope)
     {
         if (! static::allows($scope)) {
-            app('stathat')->ezCount('invalid API key error');
+            app('stathat')->ezCount('invalid client scope error');
 
             // If scopes have been parsed from a provided JWT access token, use OAuth access
             // denied exception to return a 401 error.

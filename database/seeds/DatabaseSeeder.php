@@ -14,8 +14,8 @@ class DatabaseSeeder extends Seeder
     {
         Model::unguard();
 
-        $this->call('UserTableSeeder');
-        $this->call('ApiKeyTableSeeder');
-        $this->call('TokenTableSeeder');
+        $this->call(UserTableSeeder::class);
+        $this->call(ClientTableSeeder::class);
+        $this->call(TokenTableSeeder::class);
     }
 }
