@@ -59,11 +59,13 @@ class ClientController extends Controller
      * Display the specified resource.
      * GET /v2/clients/:client_id
      *
-     * @param Client $client
+     * @param $client_id
      * @return \Illuminate\Http\Response
      */
-    public function show(Client $client)
+    public function show($client_id)
     {
+        $client = Client::findOrFail($client_id);
+
         return $this->item($client);
     }
 
@@ -71,16 +73,17 @@ class ClientController extends Controller
      * Update the specified resource.
      * PUT /v2/clients/:client_id
      *
-     * @param Client $client
+     * @param $client_id
      * @param Request $request
      * @return \Illuminate\Http\Response
      */
-    public function update(Client $client, Request $request)
+    public function update($client_id, Request $request)
     {
         $this->validate($request, [
             'scope' => 'array|scope', // @see Scope::validateScopes
         ]);
-
+        
+        $client = Client::findOrFail($client_id);
         $client->update($request->all());
 
         return $this->item($client);
@@ -90,11 +93,12 @@ class ClientController extends Controller
      * Delete an API key resource.
      * DELETE /v2/clients/:client_id
      *
-     * @param Client $client
+     * @param $client_id
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Client $client)
+    public function destroy($client_id)
     {
+        $client = Client::findOrFail($client_id);
         $client->delete();
 
         return $this->respond('Deleted key.', 200);
