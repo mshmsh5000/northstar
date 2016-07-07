@@ -4,7 +4,7 @@ use Illuminate\Database\Seeder;
 use Northstar\Models\Client;
 use Northstar\Auth\Scope;
 
-class ApiKeyTableSeeder extends Seeder
+class ClientTableSeeder extends Seeder
 {
     /**
      * Run the database seeds.
