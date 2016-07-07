@@ -25,13 +25,14 @@ class ClientController extends Controller
      * Display a listing of the resource.
      * GET /v2/clients
      *
+     * @param Request $request
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
-        $keys = Client::all();
+        $clients = $this->newQuery(Client::class);
 
-        return $this->collection($keys);
+        return $this->paginatedCollection($clients, $request);
     }
 
     /**
