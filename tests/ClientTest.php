@@ -65,11 +65,11 @@ class ClientTest extends TestCase
         // Verify a non-admin user is not able to see whether a client exists or not
         $this->asNormalUser()->get('v2/clients/notarealkey');
         $this->assertResponseStatus(401);
-        
+
         // Verify a non-admin user is not able to see keys details
         $this->asNormalUser()->get('v2/clients/'.$client->client_id);
         $this->assertResponseStatus(401);
-        
+
         // Verify an admin key is able to view key details
         $this->asAdminUser()->get('v2/clients/'.$client->client_id);
         $this->assertResponseStatus(200);

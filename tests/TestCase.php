@@ -87,19 +87,19 @@ class TestCase extends Illuminate\Foundation\Testing\TestCase
 
     /**
      * Make the following request as a normal user with the `user` scope.
-     * 
+     *
      * @return $this
      */
     public function asNormalUser()
     {
         $user = factory(User::class)->create();
-        
+
         return $this->asUser($user, ['user']);
     }
 
     /**
      * Make the following request as an admin user with the `user` and `role:admin` scopes.
-     * 
+     *
      * @return $this
      */
     public function asAdminUser()
@@ -107,7 +107,7 @@ class TestCase extends Illuminate\Foundation\Testing\TestCase
         $admin = factory(User::class)->create();
         $admin->role = 'admin';
         $admin->save();
-        
+
         return $this->asUser($admin, ['user', 'role:admin']);
     }
 

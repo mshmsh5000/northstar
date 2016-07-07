@@ -82,7 +82,7 @@ class ClientController extends Controller
         $this->validate($request, [
             'scope' => 'array|scope', // @see Scope::validateScopes
         ]);
-        
+
         $client = Client::findOrFail($client_id);
         $client->update($request->all());
 
