@@ -22,11 +22,11 @@ Endpoint                  | Functionality                                       
 #### Users
 Endpoint                                     | Functionality                                            | Required Scope
 -------------------------------------------- | -------------------------------------------------------- | --------------
-`GET v1/users`                               | [Retrieve All Users](endpoints/users.md#retrieve-all-users) | `admin`
-`POST v1/users`                              | [Create a User](endpoints/users.md#create-a-user) | `admin`
+`GET v1/users`                               | [Retrieve All Users](endpoints/users.md#retrieve-all-users) | `role:admin` or `admin`
+`POST v1/users`                              | [Create a User](endpoints/users.md#create-a-user) | `role:admin` or `admin`
 `GET v1/users/:term/:identifier`             | [Retrieve a User](endpoints/users.md#retrieve-a-user) 
-`PUT v1/users/:term/:id`                     | [Update a User](endpoints/users.md#update-a-user) | `admin`
-`DELETE v1/users/:user_id`                   | [Delete a User](endpoints/users.md#delete-a-user) | `admin`
+`PUT v1/users/:term/:id`                     | [Update a User](endpoints/users.md#update-a-user) | `role:admin` or `admin`
+`DELETE v1/users/:user_id`                   | [Delete a User](endpoints/users.md#delete-a-user) | `role:admin` or `admin`
 `POST v1/users/:user_id/avatar`              | [Set User Avatar](endpoints/users.md#set-user-avatar) | `user`
 
 #### Profile
@@ -57,15 +57,15 @@ Endpoint                                     | Functionality                    
 
 > __Note:__ These endpoints are lightweight proxies to their Phoenix equivalents.
 
-#### Keys
-Endpoint                                     | Functionality                                            | Required Scope
--------------------------------------------- | -------------------------------------------------------- | --------------
-`GET v1/keys`                                | [Retrieve All API Keys](endpoints/keys.md#retrieve-all-api-keys)  | `admin`
-`POST v1/keys`                               | [Create an API Key](endpoints/keys.md#create-an-api-key) | `admin`
-`GET v1/keys/:api_key`                       | [Retrieve An API Key](endpoints/keys.md#retrieve-an-api-key) | `admin`
-`PUT v1/keys/:api_key`                       | [Update An API Key](endpoints/keys.md#update-an-api-key) | `admin`
-`DELETE v1/keys/:api_key`                    | [Delete an API Key](endpoints/keys.md#delete-an-api-key) | `admin`
-`GET v1/scopes`                                | [Retrieve All API Key Scopes](endpoints/keys.md#retrieve-all-api-key-scopes) |
+#### Clients
+Endpoint                                     | Functionality                                                    | Required Scope
+-------------------------------------------- | ---------------------------------------------------------------- | --------------
+`GET v2/clients`                             | [Retrieve All Clients](endpoints/keys.md#retrieve-all-api-keys)  | `role:admin` or `admin`
+`POST v2/clients`                            | [Create a Client](endpoints/keys.md#create-an-api-key)           | `role:admin` or `admin`
+`GET v2/clients/:client_id`                  | [Retrieve a Client](endpoints/keys.md#retrieve-an-api-key)       | `role:admin` or `admin`
+`PUT v2/clients/:client_id`                  | [Update a Client](endpoints/keys.md#update-an-api-key)           | `role:admin` or `admin`
+`DELETE v2/clients/:client_id`               | [Delete a Client](endpoints/keys.md#delete-an-api-key)           | `role:admin` or `admin`
+`GET v2/scopes`                              | [Retrieve All Client Scopes](endpoints/keys.md#retrieve-all-api-key-scopes) |
 
 <br>
 > :bulb: __Did you know?__ We also have a shared [Paw Collection](endpoints.paw) for testing these endpoints against your local environment.  
