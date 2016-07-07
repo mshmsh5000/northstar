@@ -19,6 +19,10 @@ class UserPolicy
      */
     public function viewFullProfile(User $user, User $profile)
     {
+        if (in_array($user->role, ['admin', 'staff'])) {
+            return true;
+        }
+
         return $user->id === $profile->id;
     }
 
@@ -32,6 +36,10 @@ class UserPolicy
      */
     public function editProfile(User $user, User $profile)
     {
+        if (in_array($user->role, ['admin', 'staff'])) {
+            return true;
+        }
+
         return $user->id === $profile->id;
     }
 }
