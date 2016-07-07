@@ -2,8 +2,6 @@
 
 namespace Northstar\Models;
 
-use Illuminate\Support\Str;
-
 /**
  * The Client model. These identify the "client application" making
  * a request, and their maximum allowed scopes.
@@ -20,13 +18,6 @@ class Client extends Model
      * @var string
      */
     protected $primaryKey = 'client_id';
-
-    /**
-     * Indicates if the IDs are auto-incrementing.
-     *
-     * @var bool
-     */
-    public $incrementing = false;
 
     /**
      * The database collection used by the model.
@@ -68,11 +59,11 @@ class Client extends Model
     {
         parent::__construct($attributes);
 
-        // Automatically set random API key. This field *may* be manually
+        // Automatically set random client secret. This field *may* be manually
         // set when seeding the database, so we first check if empty.
         static::creating(function (Client $client) {
             if (empty($client->client_secret)) {
-                $client->client_secret = Str::random(32);
+                $client->client_secret = str_random(32);
             }
         });
     }
@@ -83,7 +74,7 @@ class Client extends Model
      */
     public function setAppIdAttribute($value)
     {
-        $this->attributes['client_id'] = snake_case(str_replace(' ', '', $value));
+        $this->setClientIdAttribute($value);
     }
 
     /**
@@ -92,7 +83,7 @@ class Client extends Model
      */
     public function setClientIdAttribute($value)
     {
-        $this->attributes['client_id'] = snake_case(str_replace(' ', '', $value));
+        $this->attributes['client_id'] = snake_case($value);
     }
 
     /**
@@ -106,28 +97,5 @@ class Client extends Model
         }
 
         return $this->attributes['scope'];
-    }
-
-    /**
-     * Check if this API key has the given scope.
-     *
-     * @param $scope - Scope to test for
-     * @return bool
-     */
-    public function hasScope($scope)
-    {
-        return in_array($scope, $this->scope);
-    }
-
-    /**
-     * Get the API key specified for the current request.
-     *
-     * @return \Northstar\Models\Client
-     */
-    public static function current()
-    {
-        $client_secret = request()->header('X-DS-REST-API-Key');
-
-        return static::where('client_secret', $client_secret)->first();
     }
 }
