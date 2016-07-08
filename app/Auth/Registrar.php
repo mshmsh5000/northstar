@@ -4,6 +4,7 @@ namespace Northstar\Auth;
 
 use Hash;
 use Illuminate\Contracts\Auth\Guard as Auth;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Validation\Factory as Validation;
 use Illuminate\Http\Request;
 use Northstar\Exceptions\NorthstarValidationException;
@@ -200,6 +201,24 @@ class Registrar
 
         // If we can't conclusively resolve one user so return null.
         return null;
+    }
+
+    /**
+     * Resolve a user account from the given credentials, or throw
+     * an exception to trigger a 404 if not able to.
+     *
+     * @param $credentials
+     * @return User|null
+     */
+    public function resolveOrFail($credentials)
+    {
+        $user = $this->resolve($credentials);
+
+        if (! $user) {
+            throw new ModelNotFoundException;
+        }
+
+        return $user;
     }
 
     /**
