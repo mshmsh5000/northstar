@@ -43,11 +43,11 @@ $router->group(['prefix' => 'v2'], function () use ($router) {
 // https://northstar.dosomething.org/v1/
 $router->group(['prefix' => 'v1'], function () use ($router) {
     // Authentication
-    $router->post('auth/token', 'AuthController@createToken');
-    $router->post('auth/invalidate', 'AuthController@invalidateToken');
-    $router->post('auth/verify', 'AuthController@verify');
-    $router->post('auth/register', 'AuthController@register');
-    $router->post('auth/phoenix', 'AuthController@phoenix');
+    $router->post('auth/token', 'Legacy\AuthController@createToken');
+    $router->post('auth/invalidate', 'Legacy\AuthController@invalidateToken');
+    $router->post('auth/verify', 'Legacy\AuthController@verify');
+    $router->post('auth/register', 'Legacy\AuthController@register');
+    $router->post('auth/phoenix', 'Legacy\AuthController@phoenix');
 
     // Users
     $router->resource('users', 'UserController', ['except' => ['show', 'update']]);
@@ -58,15 +58,15 @@ $router->group(['prefix' => 'v1'], function () use ($router) {
     // Profile (the currently authenticated user)
     $router->get('profile', 'ProfileController@show');
     $router->post('profile', 'ProfileController@update');
-    $router->get('profile/signups', 'SignupController@profile');
-    $router->get('profile/reportbacks', 'ReportbackController@profile');
+    $router->get('profile/signups', 'Legacy\SignupController@profile');
+    $router->get('profile/reportbacks', 'Legacy\ReportbackController@profile');
 
     // Signups & Reportbacks (Phoenix)
-    $router->resource('signups', 'SignupController', ['only' => ['index', 'show', 'store']]);
-    $router->resource('reportbacks', 'ReportbackController', ['only' => ['index', 'show', 'store']]);
+    $router->resource('signups', 'Legacy\SignupController', ['only' => ['index', 'show', 'store']]);
+    $router->resource('reportbacks', 'Legacy\ReportbackController', ['only' => ['index', 'show', 'store']]);
 
     // API Clients (the artist formerly known as keys)
-    $router->resource('keys', 'ClientController');
+    $router->resource('keys', 'Legacy\KeyController');
 
     $router->get('scopes', function () {
         $scopes = \Northstar\Auth\Scope::all();

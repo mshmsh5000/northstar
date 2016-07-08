@@ -1,11 +1,11 @@
 <?php
 
-namespace Northstar\Http\Transformers;
+namespace Northstar\Http\Transformers\Legacy;
 
 use Northstar\Models\Client;
 use League\Fractal\TransformerAbstract;
 
-class ClientTransformer extends TransformerAbstract
+class KeyTransformer extends TransformerAbstract
 {
     /**
      * @param Client $client
@@ -20,6 +20,10 @@ class ClientTransformer extends TransformerAbstract
 
             'updated_at' => $client->updated_at->toISO8601String(),
             'created_at' => $client->created_at->toISO8601String(),
+
+            // DEPRECATED:
+            'app_id' => $client->client_id,
+            'api_key' => $client->client_secret,
         ];
     }
 }

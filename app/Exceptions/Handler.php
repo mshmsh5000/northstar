@@ -12,6 +12,7 @@ use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
 use Symfony\Bridge\PsrHttpMessage\Factory\HttpFoundationFactory;
 use Psr\Http\Message\ResponseInterface;
 use Exception;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class Handler extends ExceptionHandler
 {
@@ -66,6 +67,11 @@ class Handler extends ExceptionHandler
             // @see \Northstar\Http\Controller@buildFailedValidationResponse
             if ($e instanceof ValidationException || $e instanceof NorthstarValidationException) {
                 return $e->getResponse();
+            }
+
+            // Turn ModelNotFoundExceptions from findOrFail Eloquent method into 404s.
+            if ($e instanceof ModelNotFoundException) {
+                throw new NotFoundHttpException('That resource could not be found.');
             }
 
             $code = $e instanceof HttpException ? $e->getStatusCode() : 500;

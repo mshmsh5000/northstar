@@ -1,20 +1,22 @@
 <?php
 
-namespace Northstar\Http\Controllers;
+namespace Northstar\Http\Controllers\Legacy;
 
 use Illuminate\Http\Request;
 use Northstar\Models\Client;
-use Northstar\Http\Transformers\ClientTransformer;
+use Northstar\Http\Transformers\Legacy\KeyTransformer;
 use Symfony\Component\HttpKernel\Exception\HttpException;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
+use Northstar\Http\Controllers\Controller;
 
-class ClientController extends Controller
+class KeyController extends Controller
 {
     /**
-     * @var ClientTransformer
+     * @var KeyTransformer
      */
     protected $transformer;
 
-    public function __construct(ClientTransformer $transformer)
+    public function __construct(KeyTransformer $transformer)
     {
         $this->transformer = $transformer;
 
@@ -23,21 +25,20 @@ class ClientController extends Controller
 
     /**
      * Display a listing of the resource.
-     * GET /v2/clients
+     * GET /keys
      *
-     * @param Request $request
      * @return \Illuminate\Http\Response
      */
-    public function index(Request $request)
+    public function index()
     {
-        $clients = $this->newQuery(Client::class);
+        $keys = Client::all();
 
-        return $this->paginatedCollection($clients, $request);
+        return $this->collection($keys);
     }
 
     /**
      * Store a newly created resource in storage.
-     * POST /v2/clients
+     * POST /keys
      *
      * @param Request $request
      * @return \Illuminate\Http\Response
@@ -46,59 +47,62 @@ class ClientController extends Controller
     public function store(Request $request)
     {
         $this->validate($request, [
-            'client_id' => 'required|unique:clients,client_id',
+            'app_id' => 'required|unique:clients,client_id',
             'scope' => 'array|scope', // @see Scope::validateScopes
         ]);
 
-        $key = Client::create($request->only('client_id', 'scope'));
+        $key = Client::create($request->all());
 
         return $this->item($key, 201);
     }
 
     /**
      * Display the specified resource.
-     * GET /v2/clients/:client_id
+     * GET /keys/:client_secret
      *
-     * @param $client_id
      * @return \Illuminate\Http\Response
+     * @throws NotFoundHttpException
      */
-    public function show($client_id)
+    public function show($client_secret)
     {
-        $client = Client::findOrFail($client_id);
+        $client = Client::where('client_secret', $client_secret)->first();
+
+        if (! $client) {
+            throw new NotFoundHttpException('The resource does not exist.');
+        }
 
         return $this->item($client);
     }
 
     /**
      * Update the specified resource.
-     * PUT /v2/clients/:client_id
+     * PUT /keys/:client_secret
      *
-     * @param $client_id
      * @param Request $request
      * @return \Illuminate\Http\Response
+     * @throws HttpException
      */
-    public function update($client_id, Request $request)
+    public function update($client_secret, Request $request)
     {
         $this->validate($request, [
             'scope' => 'array|scope', // @see Scope::validateScopes
         ]);
 
-        $client = Client::findOrFail($client_id);
-        $client->update($request->only('scope'));
+        $client = Client::where('client_secret', $client_secret)->firstOrFail();
+        $client->update($request->all());
 
         return $this->item($client);
     }
 
     /**
      * Delete an API key resource.
-     * DELETE /v2/clients/:client_id
+     * DELETE /keys/:client_secret
      *
-     * @param $client_id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($client_id)
+    public function destroy($client_secret)
     {
-        $client = Client::findOrFail($client_id);
+        $client = Client::where('client_secret', $client_secret)->firstOrFail();
         $client->delete();
 
         return $this->respond('Deleted key.', 200);

@@ -1,8 +1,9 @@
 <?php
 
-namespace Northstar\Http\Controllers;
+namespace Northstar\Http\Controllers\Legacy;
 
 use Illuminate\Http\Request;
+use Northstar\Http\Controllers\Controller;
 use Northstar\Http\Transformers\TokenTransformer;
 use Northstar\Http\Transformers\UserTransformer;
 use Northstar\Models\User;
