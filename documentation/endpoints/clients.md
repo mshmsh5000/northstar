@@ -216,7 +216,7 @@ curl -X DELETE \
 Retrieves all valid scopes and a short description of each.
 
 ```
-GET /v1/scopes
+GET /v2/scopes
 ```
 
 **Example Request:**
