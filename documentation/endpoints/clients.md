@@ -147,9 +147,6 @@ PUT /v2/clients/:client_id
 
 ```js
 {
-  /* (optional) Change the client's ID */
-  client_id: String
-
   /* (optional) Change the whitelisted scope(s) for this application. */
   scope: Array
 }

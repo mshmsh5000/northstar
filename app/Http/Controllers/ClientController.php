@@ -84,7 +84,7 @@ class ClientController extends Controller
         ]);
 
         $client = Client::findOrFail($client_id);
-        $client->update($request->all());
+        $client->update($request->only('scope'));
 
         return $this->item($client);
     }
