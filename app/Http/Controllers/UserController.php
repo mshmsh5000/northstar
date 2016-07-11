@@ -142,12 +142,7 @@ class UserController extends Controller
             Scope::gate('admin');
         }
 
-        // Find the user.
-        $user = $this->registrar->resolve([$term => $id]);
-
-        if (! $user) {
-            throw new NotFoundHttpException('The resource does not exist.');
-        }
+        $user = $this->registrar->resolveOrFail([$term => $id]);
 
         return $this->item($user);
     }
@@ -164,10 +159,7 @@ class UserController extends Controller
      */
     public function update($term, $id, Request $request)
     {
-        $user = User::where($term, $id)->first();
-        if (! $user) {
-            throw new NotFoundHttpException('The resource does not exist.');
-        }
+        $user = $this->registrar->resolveOrFail([$term => $id]);
 
         // Normalize input and validate the request
         $request = $this->registrar->normalize($request);
@@ -194,12 +186,7 @@ class UserController extends Controller
      */
     public function destroy($id)
     {
-        $user = User::where('_id', $id)->first();
-
-        if (! $user) {
-            throw new NotFoundHttpException('The resource does not exist.');
-        }
-
+        $user = User::findOrFail($id);
         $user->delete();
 
         return $this->respond('No Content.');
