@@ -104,9 +104,7 @@ class TestCase extends Illuminate\Foundation\Testing\TestCase
      */
     public function asAdminUser()
     {
-        $admin = factory(User::class)->create();
-        $admin->role = 'admin';
-        $admin->save();
+        $admin = factory(User::class, 'admin')->create();
 
         return $this->asUser($admin, ['user', 'role:admin']);
     }

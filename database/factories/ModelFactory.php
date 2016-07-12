@@ -24,3 +24,33 @@ $factory->define(Northstar\Models\User::class, function (Faker\Generator $faker)
         'source' => 'factory',
     ];
 });
+
+$factory->defineAs(Northstar\Models\User::class, 'staff', function (Faker\Generator $faker) {
+    return [
+        'first_name' => $faker->firstName,
+        'last_name' => $faker->lastName,
+        'email' => $faker->unique()->safeEmail,
+        'mobile' => $faker->unique()->phoneNumber,
+        'password' => $faker->password,
+        'birthdate' => $faker->date($format = 'm/d/Y', $max = 'now'),
+        'country' => $faker->countryCode,
+        'language' => $faker->languageCode,
+        'source' => 'factory',
+        'role' => 'staff',
+    ];
+});
+
+$factory->defineAs(Northstar\Models\User::class, 'admin', function (Faker\Generator $faker) {
+    return [
+        'first_name' => $faker->firstName,
+        'last_name' => $faker->lastName,
+        'email' => $faker->unique()->safeEmail,
+        'mobile' => $faker->unique()->phoneNumber,
+        'password' => $faker->password,
+        'birthdate' => $faker->date($format = 'm/d/Y', $max = 'now'),
+        'country' => $faker->countryCode,
+        'language' => $faker->languageCode,
+        'source' => 'factory',
+        'role' => 'admin',
+    ];
+});
