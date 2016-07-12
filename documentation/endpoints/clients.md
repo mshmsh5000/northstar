@@ -28,6 +28,7 @@ curl -X GET \
         "user",
         "role:admin"
       ],
+      "refresh_tokens": 28,
       "updated_at": "2016-07-07T15:46:21+0000",
       "created_at": "2016-07-06T18:26:04+0000"
     },
@@ -37,6 +38,7 @@ curl -X GET \
       "scope": [
         "user"
       ],
+      "refresh_tokens": 16,
       "updated_at": "2016-07-06T18:26:04+0000",
       "created_at": "2016-07-06T18:26:04+0000"
     }
@@ -95,6 +97,7 @@ curl -X POST \
     "scope": [
       "user"
     ],
+    "refresh_tokens": 0,
     "updated_at": "2015-05-19 17:10:37",
     "created_at": "2015-05-19 17:10:37",
   }
@@ -130,6 +133,7 @@ curl -X GET\
       "admin",
       "user"
     ],
+    "refresh_tokens": 32,
     "updated_at": "2015-05-19 17:10:37",
     "created_at": "2015-05-19 17:10:37",
   }
@@ -175,6 +179,7 @@ curl -X PUT \
       "admin",
       "user"
     ],
+    "refresh_tokens": 32,
     "updated_at": "2015-05-19 17:10:37",
     "created_at": "2015-05-19 17:10:37",
   }

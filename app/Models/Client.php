@@ -98,4 +98,13 @@ class Client extends Model
 
         return $this->attributes['scope'];
     }
+
+    /**
+     * Get the number of refresh tokens assigned to this client.
+     * @return array
+     */
+    public function getRefreshTokenCount()
+    {
+        return RefreshToken::where('client_id', $this->client_id)->count();
+    }
 }
