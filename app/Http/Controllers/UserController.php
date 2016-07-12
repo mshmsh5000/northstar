@@ -42,7 +42,7 @@ class UserController extends Controller
 
         $this->transformer = new UserTransformer();
 
-        $this->middleware('role:admin', ['except' => ['show']]);
+        $this->middleware('role:admin,staff', ['except' => ['show']]);
     }
 
     /**
