@@ -1,6 +1,7 @@
 # User Endpoints
 ## Retrieve All Users
-Get data for all users in a paginated format. This requires `admin` scope.
+Get data for all users in a paginated format. This requires either the `admin` scope, or "admin" or "staff" role with the appropriate scope.
+
 
 ```
 GET /v1/users
@@ -90,8 +91,7 @@ Index fields (such as `email`, `mobile`, `drupal_id`) can _only_ be "upserted" i
 account. To change an existing value for one of these fields, you must explicitly update that user via the
 [update](#update-a-user) endpoint.
 
-This endpoint requires an API key with `admin` scope. For registering a user, consider using the
-[`auth/register`](#register-user) endpoint, which will also create and return a new authentication token.
+This requires either the `admin` scope, or "admin" or "staff" role with the appropriate scope. 
 
 ```
 POST /v1/users
@@ -189,7 +189,7 @@ curl -X POST \
 Get profile data for a specific user. This can be retrieved with either the user's Northstar ID (which is automatically
 generated when a new database record is created), a mobile phone number, an email address, or the user's Drupal ID.
 
-Fetching a user via email or mobile requires `admin` scope.
+Fetching a user via username, email, or mobile requires either the `admin` scope, or an "admin" or "staff" role with the appropriate scope.
 
 ```
 GET /v1/users/id/<user_id>
@@ -234,7 +234,7 @@ curl -X GET \
 ```
 
 ## Update a User
-Update a user resource. This can be retrieved with the user's Northstar ID or the source ID (`drupal_id`). This endpoint requires an API key with `admin` scope.
+Update a user resource. This can be retrieved with the user's Northstar ID or the source ID (`drupal_id`). This requires either the `admin` scope, or "admin" or "staff" role with the appropriate scope.
 
 ```
 PUT /v1/users/_id/<user_id>
@@ -306,7 +306,7 @@ curl -X PUT \
 ```
 
 ## Delete a User
-Destroy a user resource. The  `user_id` property of the user to delete must be provided in the URL path, and refers to the user's Northstar ID. This endpoint requires an API key with `admin` scope.
+Destroy a user resource. The `user_id` property of the user to delete must be provided in the URL path, and refers to the user's Northstar ID. This requires either the `admin` scope, or "admin" or "staff" role with the appropriate scope.
 
 ```
 DELETE /v1/users/:user_id
