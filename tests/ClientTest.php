@@ -5,15 +5,22 @@ use Northstar\Models\Client;
 class ClientTest extends TestCase
 {
     /**
-     * Test authentication & functionality of key index endpoint.
-     * @test
+     * Verify a non-admin user is not able to list clients.
      */
-    public function testIndex()
+    public function testIndexAsNormalUser()
+    {
+        $this->asNormalUser()->get('v2/clients');
+        $this->assertResponseStatus(401);
+    }
+
+    /**
+     * Verify an admin user is able to list all clients.
+     */
+    public function testIndexAsAdminUser()
     {
         Client::create(['client_id' => 'test']);
         Client::create(['client_id' => 'testingz']);
 
-        // Verify an admin key is able to view all keys
         $this->asAdminUser()->get('v2/clients');
         $this->assertResponseStatus(200);
         $this->seeJsonStructure([
@@ -23,29 +30,31 @@ class ClientTest extends TestCase
                 ],
             ],
         ]);
+    }
 
-        // Verify a "user" scoped key is not able to list keys
-        $this->asNormalUser()->get('v2/clients');
+    /**
+     * Verify a non-admin user is not able to create new clients.
+     */
+    public function testStoreAsNormalUser()
+    {
+        $this->asNormalUser()->json('POST', 'v2/clients', [
+            'client_id' => 'dog', // hello this is doge
+            'scope' => ['admin'],
+        ]);
+
         $this->assertResponseStatus(401);
     }
 
     /**
-     * Test authentication & functionality of key creation endpoint.
-     * @test
+     * Verify an admin is able to create a new client.
      */
-    public function testStore()
+    public function testStoreAsAdminUser()
     {
-        $attributes = [
-            'client_id' => 'dog', // hello this is doge key
+        $this->asAdminUser()->json('POST', 'v2/clients', [
+            'client_id' => 'dog',
             'scope' => ['admin'],
-        ];
+        ]);
 
-        // Verify a "user" scoped key is not able to create new keys
-        $this->asNormalUser()->json('POST', 'v2/clients', $attributes);
-        $this->assertResponseStatus(401);
-
-        // Verify an admin key is able to create a new key
-        $this->asAdminUser()->json('POST', 'v2/clients', $attributes);
         $this->assertResponseStatus(201);
         $this->seeJsonStructure([
             'data' => [
@@ -55,51 +64,67 @@ class ClientTest extends TestCase
     }
 
     /**
-     * Test authentication & functionality of key details endpoint.
-     * @test
+     * Verify a non-admin user is not able to see whether a client exists or not.
      */
-    public function testShow()
+    public function testShowWontExposeClientNames()
+    {
+        $this->asNormalUser()->get('v2/clients/notarealkey');
+        $this->assertResponseStatus(401);
+    }
+
+    /**
+     * Verify a non-admin user is not able to see client details.
+     */
+    public function testShowAsNormalUser()
     {
         $client = Client::create(['client_id' => 'phpunit_key']);
 
-        // Verify a non-admin user is not able to see whether a client exists or not
-        $this->asNormalUser()->get('v2/clients/notarealkey');
-        $this->assertResponseStatus(401);
-
-        // Verify a non-admin user is not able to see keys details
         $this->asNormalUser()->get('v2/clients/'.$client->client_id);
         $this->assertResponseStatus(401);
+    }
 
-        // Verify an admin key is able to view key details
+    /**
+     * Verify a admin user is able to see client details.
+     */
+    public function testShowAsAdminUser()
+    {
+        $client = Client::create(['client_id' => 'phpunit_key']);
+
         $this->asAdminUser()->get('v2/clients/'.$client->client_id);
         $this->assertResponseStatus(200);
     }
 
     /**
-     * Test authentication & functionality of key creation endpoint.
-     * @test
+     * Verify a non-admin user is not able to update clients.
      */
-    public function testUpdate()
+    public function testUpdateAsNormalUser()
     {
         $client = Client::create(['client_id' => 'update_key']);
 
-        $modifications = [
+        $this->asNormalUser()->json('PUT', 'v2/clients/'.$client->client_id, [
             'scope' => [
                 'admin',
                 'user',
             ],
-        ];
+        ]);
 
-        // Verify a non-admin user is not able to see whether a client exists or not
-        $this->asNormalUser()->json('PUT', 'v2/clients/notarealkey');
         $this->assertResponseStatus(401);
+    }
 
-        // Verify a non-admin user is not able to update keys
-        $this->asNormalUser()->json('PUT', 'v2/clients/'.$client->client_id, $modifications);
-        $this->assertResponseStatus(401);
+    /**
+     * Verify an admin is able to update a client.
+     */
+    public function testUpdateAsAdminUser()
+    {
+        $client = Client::create(['client_id' => 'update_key']);
 
-        // Verify an admin is able to update a key
-        $this->asAdminUser()->json('PUT', 'v2/clients/'.$client->client_id, $modifications);
+        $this->asAdminUser()->json('PUT', 'v2/clients/'.$client->client_id, [
+            'scope' => [
+                'admin',
+                'user',
+            ],
+        ]);
+
         $this->assertResponseStatus(200);
         $this->seeInDatabase('clients', [
             'client_id' => 'update_key',
@@ -108,21 +133,31 @@ class ClientTest extends TestCase
     }
 
     /**
-     * Test authentication & functionality of key deletion endpoint.
+     * Verify a non-admin user is not able to delete clients.
      * @test
      */
-    public function testDestroy()
+    public function testDestroyAsNormalUser()
     {
         $client = Client::create(['client_id' => 'delete_me']);
 
-        // Verify a non-admin user is not able to delete keys
         $this->asNormalUser()->json('DELETE', 'v1/keys/'.$client->client_secret);
         $this->assertResponseStatus(401);
-        $this->seeInDatabase('clients', ['client_id' => 'delete_me']);
 
-        // Verify an admin is able to delete a key
+        // It's still there!
+        $this->seeInDatabase('clients', ['client_id' => 'delete_me']);
+    }
+
+    /**
+     * Verify an admin is able to delete a client.
+     * @test
+     */
+    public function testDestroyAsAdminUser()
+    {
+        $client = Client::create(['client_id' => 'delete_me']);
+
         $this->asAdminUser()->json('DELETE', 'v1/keys/'.$client->client_secret);
         $this->assertResponseStatus(200);
+
         $this->dontSeeInDatabase('clients', ['client_id' => 'delete_me']);
     }
 }

@@ -28,14 +28,26 @@ class UserTest extends TestCase
      *
      * @return void
      */
+    public function testIndexVisibleToStaffRole()
+    {
+        // Make a staff user & some test users.
+        $staff = factory(User::class, 'staff')->create();
+        factory(User::class, 5)->create();
+
+        $this->asUser($staff, ['role:staff'])->get('v1/users');
+        $this->assertResponseStatus(200);
+    }
+
+    /**
+     * Test retrieving multiple users.
+     * GET /users
+     *
+     * @return void
+     */
     public function testIndexVisibleToAdminRole()
     {
-        // Make a admin to test acting as.
-        $admin = factory(User::class)->create();
-        $admin->role = 'admin';
-        $admin->save();
-
-        // Make some test users to see in the index.
+        // Make a admin & some test users.
+        $admin = factory(User::class, 'admin')->create();
         factory(User::class, 5)->create();
 
         $this->asUser($admin, ['role:admin'])->get('v1/users');
@@ -71,15 +83,34 @@ class UserTest extends TestCase
      *
      * @return void
      */
+    public function testGetAllDataFromUserAsStaff()
+    {
+        $user = factory(User::class)->create();
+        $admin = factory(User::class, 'staff')->create();
+
+        $this->asUser($admin, ['user', 'user:admin'])->get('v1/users/id/'.$user->id);
+        $this->assertResponseStatus(200);
+
+        // Check that public & private profile fields are visible
+        $this->seeJsonStructure([
+            'data' => [
+                'id', 'email', 'first_name', 'last_name',
+            ],
+        ]);
+    }
+
+    /**
+     * Test that retrieving a user as an admin returns full profile.
+     * GET /users/:term/:id
+     *
+     * @return void
+     */
     public function testGetAllDataFromUserAsAdmin()
     {
         $user = factory(User::class)->create();
+        $admin = factory(User::class, 'admin')->create();
 
-        $admin = factory(User::class)->create();
-        $admin->role = 'admin';
-        $admin->save();
-
-        $this->asUser($admin, ['user', 'user:admin'])->get('v1/users/_id/'.$user->id);
+        $this->asUser($admin, ['user', 'user:admin'])->get('v1/users/id/'.$user->id);
         $this->assertResponseStatus(200);
 
         // Check that public & private profile fields are visible

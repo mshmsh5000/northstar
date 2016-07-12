@@ -61,6 +61,12 @@ class Scope
      */
     public static function allows($scope)
     {
+        // If trying to check `role:user`, check `user` scope instead.
+        // @TODO: Change this scope so it's consistent.
+        if ($scope === 'role:user') {
+            $scope = 'user';
+        }
+
         $oauthScopes = request()->attributes->get('oauth_scopes');
 
         // If scopes have been parsed from a provided JWT access token, check against
