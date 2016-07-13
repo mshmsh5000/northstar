@@ -34,6 +34,9 @@ $router->group(['prefix' => 'v2'], function () use ($router) {
     // OAuth Clients
     $router->resource('clients', 'ClientController');
 
+    // Public Key
+    $router->get('key', 'KeyController@show');
+
     // Scopes
     $router->get('scopes', function () {
         return \Northstar\Auth\Scope::all();
