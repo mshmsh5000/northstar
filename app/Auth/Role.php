@@ -85,9 +85,9 @@ class Role
         if (! static::allows($allowedRoles)) {
             app('stathat')->ezCount('invalid role error');
 
-            // If scopes have been parsed from a provided JWT access token, use OAuth access
-            // denied exception to return a 401 error.
-            if (request()->attributes->has('oauth_scopes')) {
+            // If request is authenticated by a JWT access token or we are looking at a v2 endpoint,
+            // use OAuth access denied exception to return a 401 error.
+            if (request()->attributes->has('oauth_user_id') || request()->route()->getPrefix() === '/v2') {
                 throw OAuthServerException::accessDenied('Requires one of the following roles: `'.implode(', ', $allowedRoles).'.');
             }
 
