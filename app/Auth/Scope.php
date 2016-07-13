@@ -95,9 +95,9 @@ class Scope
         if (! static::allows($scope)) {
             app('stathat')->ezCount('invalid client scope error');
 
-            // If scopes have been parsed from a provided JWT access token, use OAuth access
-            // denied exception to return a 401 error.
-            if (request()->attributes->has('oauth_scopes')) {
+            // If scopes have been parsed from a provided JWT access token or we are looking at a v2 endpoint,
+            // use OAuth access denied exception to return a 401 error.
+            if (request()->attributes->has('oauth_scopes') || request()->route()->getPrefix() === '/v2') {
                 throw OAuthServerException::accessDenied('Requires the `'.$scope.'` scope.');
             }
 

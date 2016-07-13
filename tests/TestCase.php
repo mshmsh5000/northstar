@@ -98,6 +98,18 @@ class TestCase extends Illuminate\Foundation\Testing\TestCase
     }
 
     /**
+     * Make the following request as a staff user with the `user` and `role:staff` scopes.
+     *
+     * @return $this
+     */
+    public function asStaffUser()
+    {
+        $staff = factory(User::class, 'staff')->create();
+
+        return $this->asUser($staff, ['user', 'role:staff']);
+    }
+
+    /**
      * Make the following request as an admin user with the `user` and `role:admin` scopes.
      *
      * @return $this

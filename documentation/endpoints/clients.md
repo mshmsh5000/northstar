@@ -28,6 +28,7 @@ curl -X GET \
         "user",
         "role:admin"
       ],
+      "refresh_tokens": 28,
       "updated_at": "2016-07-07T15:46:21+0000",
       "created_at": "2016-07-06T18:26:04+0000"
     },
@@ -37,6 +38,7 @@ curl -X GET \
       "scope": [
         "user"
       ],
+      "refresh_tokens": 16,
       "updated_at": "2016-07-06T18:26:04+0000",
       "created_at": "2016-07-06T18:26:04+0000"
     }
@@ -95,6 +97,7 @@ curl -X POST \
     "scope": [
       "user"
     ],
+    "refresh_tokens": 0,
     "updated_at": "2015-05-19 17:10:37",
     "created_at": "2015-05-19 17:10:37",
   }
@@ -130,6 +133,7 @@ curl -X GET\
       "admin",
       "user"
     ],
+    "refresh_tokens": 32,
     "updated_at": "2015-05-19 17:10:37",
     "created_at": "2015-05-19 17:10:37",
   }
@@ -175,6 +179,7 @@ curl -X PUT \
       "admin",
       "user"
     ],
+    "refresh_tokens": 32,
     "updated_at": "2015-05-19 17:10:37",
     "created_at": "2015-05-19 17:10:37",
   }
@@ -182,8 +187,9 @@ curl -X PUT \
 ```
 
 
-## Delete an API Key
-Delete an OAuth client. This requires either the `admin` scope, or `role:admin` with an admin user.
+## Delete a Client 
+Delete an OAuth client. This will invalidate all refresh tokens that have been created by that client. This requires
+either the `admin` scope, or `role:admin` with an admin user.
 
 ```
 DELETE /v2/clients/:client_id
@@ -207,7 +213,7 @@ curl -X DELETE \
 {
   "success": {
     "code": 200,
-    "message": "Deleted key."
+    "message": "Deleted client."
   }
 }
 ```
@@ -245,4 +251,30 @@ curl -X GET https://northstar.dosomething.org/v2/scopes
 }
 ```
 
+
+## Retrieve Public Key
+Retrieves the public key which can be used to verify issued JWT access tokens. This endpoint requires either the `admin` scope,
+or `role:admin` with an admin user.
+
+```
+GET /v2/key
+```
+
+**Example Request:**
+```sh
+curl -X GET https://northstar.dosomething.org/v2/key \
+  -H "Authorization: ${ACCESS_TOKEN}" \
+  -H "Accept: application/json"
+```
+
+**Example Response:**
+```js
+// 200 OK
+
+{
+  "algorithm": "RS256",
+  "issuer": "http://northstar.dosomething.org",
+  "public_key": "-----BEGIN PUBLIC KEY-----\n...\n-----END PUBLIC KEY-----\n"
+}
+```
 

@@ -18,6 +18,8 @@ class ClientTransformer extends TransformerAbstract
             'client_secret' => $client->client_secret,
             'scope' => $client->scope,
 
+            'refresh_tokens' => $client->getRefreshTokenCount(),
+
             'updated_at' => $client->updated_at->toISO8601String(),
             'created_at' => $client->created_at->toISO8601String(),
         ];
