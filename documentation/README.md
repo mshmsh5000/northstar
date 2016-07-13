@@ -58,14 +58,15 @@ Endpoint                                     | Functionality                    
 > __Note:__ These endpoints are lightweight proxies to their Phoenix equivalents.
 
 #### Clients
-Endpoint                                     | Functionality                                                    | Required Scope
--------------------------------------------- | ---------------------------------------------------------------- | --------------
-`GET v2/clients`                             | [Retrieve All Clients](endpoints/keys.md#retrieve-all-api-keys)  | `role:admin` or `admin`
-`POST v2/clients`                            | [Create a Client](endpoints/keys.md#create-an-api-key)           | `role:admin` or `admin`
-`GET v2/clients/:client_id`                  | [Retrieve a Client](endpoints/keys.md#retrieve-an-api-key)       | `role:admin` or `admin`
-`PUT v2/clients/:client_id`                  | [Update a Client](endpoints/keys.md#update-an-api-key)           | `role:admin` or `admin`
-`DELETE v2/clients/:client_id`               | [Delete a Client](endpoints/keys.md#delete-an-api-key)           | `role:admin` or `admin`
-`GET v2/scopes`                              | [Retrieve All Client Scopes](endpoints/keys.md#retrieve-all-api-key-scopes) |
+Endpoint                                     | Functionality                                                       | Required Scope
+-------------------------------------------- | ------------------------------------------------------------------- | --------------
+`GET v2/clients`                             | [Retrieve All Clients](endpoints/clients.md#retrieve-all-clients)   | `role:admin` or `admin`
+`POST v2/clients`                            | [Create a Client](endpoints/clients.md#create-a-client)             | `role:admin` or `admin`
+`GET v2/clients/:client_id`                  | [Retrieve a Client](endpoints/clients.md#retrieve-a-client)         | `role:admin` or `admin`
+`PUT v2/clients/:client_id`                  | [Update a Client](endpoints/clients.md#update-a-client)             | `role:admin` or `admin`
+`DELETE v2/clients/:client_id`               | [Delete a Client](endpoints/clients.md#delete-a-client)             | `role:admin` or `admin`
+`GET v2/scopes`                              | [Retrieve All Client Scopes](endpoints/clients.md#retrieve-all-client-scopes) |
+`GET v2/key`                                 | [Retrieve Public Key](endpoints/clients.md#retrieve-public-key)     | `role:admin` or `admin`
 
 <br>
 > :bulb: __Did you know?__ We also have a shared [Paw Collection](endpoints.paw) for testing these endpoints against your local environment.  

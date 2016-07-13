@@ -187,8 +187,9 @@ curl -X PUT \
 ```
 
 
-## Delete an API Key
-Delete an OAuth client. This requires either the `admin` scope, or `role:admin` with an admin user.
+## Delete a Client 
+Delete an OAuth client. This will invalidate all refresh tokens that have been created by that client. This requires
+either the `admin` scope, or `role:admin` with an admin user.
 
 ```
 DELETE /v2/clients/:client_id
@@ -212,7 +213,7 @@ curl -X DELETE \
 {
   "success": {
     "code": 200,
-    "message": "Deleted key."
+    "message": "Deleted client."
   }
 }
 ```
@@ -250,4 +251,30 @@ curl -X GET https://northstar.dosomething.org/v2/scopes
 }
 ```
 
+
+## Retrieve Public Key
+Retrieves the public key which can be used to verify issued JWT access tokens. This endpoint requires either the `admin` scope,
+or `role:admin` with an admin user.
+
+```
+GET /v2/key
+```
+
+**Example Request:**
+```sh
+curl -X GET https://northstar.dosomething.org/v2/key \
+  -H "Authorization: ${ACCESS_TOKEN}" \
+  -H "Accept: application/json"
+```
+
+**Example Response:**
+```js
+// 200 OK
+
+{
+  "algorithm": "RS256",
+  "issuer": "http://northstar.dosomething.org",
+  "public_key": "-----BEGIN PUBLIC KEY-----\n...\n-----END PUBLIC KEY-----\n"
+}
+```
 

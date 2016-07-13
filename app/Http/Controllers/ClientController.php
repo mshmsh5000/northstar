@@ -101,6 +101,6 @@ class ClientController extends Controller
         $client = Client::findOrFail($client_id);
         $client->delete();
 
-        return $this->respond('Deleted key.', 200);
+        return $this->respond('Deleted client.', 200);
     }
 }
