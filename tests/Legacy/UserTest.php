@@ -569,6 +569,7 @@ class LegacyUserTest extends TestCase
             'password' => 'secret',
             'first_name' => 'Puppet',
             'source' => 'phpunit',
+            'role' => 'admin',
         ]);
 
         // The response should return JSON with a 200 Okay status code
@@ -576,11 +577,16 @@ class LegacyUserTest extends TestCase
         $this->seeJsonSubset([
             'data' => [
                 'email' => 'upsert-me@dosomething.org',
+
                 // Check for the new fields we "upserted":
                 'first_name' => 'Puppet',
                 'mobile' => '5556667777',
+
                 // Ensure the `source` field is immutable (since we tried to update to 'phpunit'):
                 'source' => 'database',
+
+                // The role should *not* be changed by upsert (since that'd make it easily to accidentally grant!)
+                'role' => 'user',
             ],
         ]);
     }

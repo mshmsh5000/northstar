@@ -165,13 +165,19 @@ class UserController extends Controller
         $request = $this->registrar->normalize($request);
         $this->registrar->validate($request, $user);
 
-        $user = $this->registrar->register($request->all(), $user);
+        // Only admins can change the role field.
+        if ($request->has('role') && $request->input('role') !== 'user') {
+            Role::gate(['admin']);
+        }
+
+        $user->fill($request->all());
 
         // Should we try to make a Drupal account for this user?
         if ($request->has('create_drupal_user') && $request->has('password') && ! $user->drupal_id) {
             $user = $this->registrar->createDrupalUser($user, $request->input('password'));
-            $user->save();
         }
+
+        $user->save();
 
         return $this->item($user);
     }
