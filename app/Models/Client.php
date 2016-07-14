@@ -42,6 +42,8 @@ class Client extends Model
      */
     protected $fillable = [
         'client_id',
+        'title',
+        'description',
         'scope',
 
         // For backwards compatibility...

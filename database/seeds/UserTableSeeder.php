@@ -15,26 +15,20 @@ class UserTableSeeder extends Seeder
         // Clear the database.
         DB::table('users')->delete();
 
-        // Create a user with a predetermined ID to use when manually testing endpoints.
-        User::create([
-            '_id' => '5430e850dt8hbc541c37tt3d',
+        // Create an example normal & admin user for local development.
+        factory(User::class)->create([
             'email' => 'test@dosomething.org',
-            'mobile' => '5555550100',
             'password' => 'secret',
-            'drupal_id' => '100001',
-            'addr_street1' => '123',
-            'addr_street2' => '456',
-            'addr_city' => 'Paris',
-            'addr_state' => 'Florida',
-            'addr_zip' => '555555',
-            'country' => 'US',
-            'birthdate' => '12/17/91',
-            'first_name' => 'First',
-            'last_name' => 'Last',
-            'parse_installation_ids' => 'parse-abc123',
         ]);
 
-        // Then create a bunch of randomly-generated test data!
+        factory(User::class, 'admin')->create([
+            'email' => 'admin@dosomething.org',
+            'password' => 'secret',
+        ]);
+
+        // Then create some randomly-generated test data!
+        factory(User::class, 'admin', 4)->create();
+        factory(User::class, 'staff', 50)->create();
         factory(User::class, 250)->create();
     }
 }

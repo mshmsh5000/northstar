@@ -14,6 +14,9 @@ class ClientTransformer extends TransformerAbstract
     public function transform(Client $client)
     {
         return [
+            'title' => ! empty($client->title) ? $client->title : title_case($client->client_id),
+            'description' => $client->description,
+
             'client_id' => $client->client_id,
             'client_secret' => $client->client_secret,
             'scope' => $client->scope,
