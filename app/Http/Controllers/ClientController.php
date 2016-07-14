@@ -47,10 +47,11 @@ class ClientController extends Controller
     {
         $this->validate($request, [
             'client_id' => 'required|unique:clients,client_id',
+            'title' => 'required',
             'scope' => 'array|scope', // @see Scope::validateScopes
         ]);
 
-        $key = Client::create($request->only('client_id', 'scope'));
+        $key = Client::create($request->only('client_id', 'title', 'description', 'scope'));
 
         return $this->item($key, 201);
     }
@@ -84,7 +85,7 @@ class ClientController extends Controller
         ]);
 
         $client = Client::findOrFail($client_id);
-        $client->update($request->only('scope'));
+        $client->update($request->only('title', 'description', 'scope'));
 
         return $this->item($client);
     }
