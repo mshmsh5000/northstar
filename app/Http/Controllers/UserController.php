@@ -101,7 +101,7 @@ class UserController extends Controller
                     'existing' => $existingUser->{$index},
                 ]);
 
-                throw new NorthstarValidationException([$index => ['Cannot upsert an existing index.']]);
+                throw new NorthstarValidationException([$index => ['Cannot upsert an existing index.']], $existingUser);
             }
         }
 
