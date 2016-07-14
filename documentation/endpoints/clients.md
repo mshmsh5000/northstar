@@ -21,6 +21,8 @@ curl -X GET \
 {
   "data": [
     {
+      "title": "Trusted Test Client",
+      "description": "A trusted example client.",
       "client_id": "trusted-test-client",
       "client_secret": "Mq3kXQZldCXmDKs2XxJvC2qsuzfUusdQ",
       "scope": [
@@ -33,6 +35,8 @@ curl -X GET \
       "created_at": "2016-07-06T18:26:04+0000"
     },
     {
+      "title": "Untrusted Test Client",
+      "description": "A untrusted example client.",
       "client_id": "untrusted-test-client",
       "client_secret": "qZRBJiOXsE657sUuvYcRzHAMNjHUdjkH",
       "scope": [
@@ -67,7 +71,13 @@ POST /v2/clients
 
 ```js
 {
-  /* Application name registering for the new key */
+  /* The application's title. */
+  title: String
+
+  /* (optional) The description for this application. */
+  description: String
+  
+  /* Application ID for the new key */
   client_id: String
 
   /* Whitelisted client scope(s) */
@@ -81,7 +91,7 @@ curl -X POST \
   -H "Authorization: ${ACCESS_TOKEN}" \
   -H "Content-Type: application/json" \
   -H "Accept: application/json" \
-  -d '{"client_id": "test application", "scope": ["user"]}' \
+  -d '{"title": "Test Application", "description: "An example app.", "client_id": "test-application", "scope": ["user"]}' \
   https://northstar.dosomething.org/v2/clients
 ```
 
@@ -92,6 +102,8 @@ curl -X POST \
 
 {
   "data": {
+    "title": "Test Application",
+    "description": "An example app.",
     "client_id": "test-application",
     "client_secret": "1laEQhhKtQEaPK0qpESdXHm2EbdLu5sRIRLcRtF8",
     "scope": [
@@ -127,6 +139,8 @@ curl -X GET\
 
 {
   "data": {
+    "title": "Test Application",
+    "description": "An example app.",
     "client_id": "testapplication",
     "client_secret": "1laEQhhKtQEaPK0qpESdXHm2EbdLu5sRIRLcRtF8",
     "scope": [
@@ -151,6 +165,12 @@ PUT /v2/clients/:client_id
 
 ```js
 {
+  /* (optional) Change this application's title. */
+  title: String
+
+  /* (optional) Change the description for this application. */
+  description: String
+
   /* (optional) Change the whitelisted scope(s) for this application. */
   scope: Array
 }
@@ -173,6 +193,8 @@ curl -X PUT \
 
 {
   "data": {
+    "title": "Test Application",
+    "description": "An example app.",
     "client_id": "testapplication",
     "client_secret": "1laEQhhKtQEaPK0qpESdXHm2EbdLu5sRIRLcRtF8",
     "scope": [
