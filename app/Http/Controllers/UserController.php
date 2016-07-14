@@ -106,7 +106,7 @@ class UserController extends Controller
         }
 
         $upserting = ! is_null($existingUser);
-        $user = $this->registrar->register($request->all(), $existingUser);
+        $user = $this->registrar->register($request->except('role'), $existingUser);
 
         // Optionally, allow setting a custom "created_at" (useful for back-filling from other services).
         if ($request->has('created_at')) {
