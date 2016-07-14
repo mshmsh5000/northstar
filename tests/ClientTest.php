@@ -38,7 +38,9 @@ class ClientTest extends TestCase
     public function testStoreAsNormalUser()
     {
         $this->asNormalUser()->json('POST', 'v2/clients', [
-            'client_id' => 'dog', // hello this is doge
+            'title' => 'Dog',
+            'description' => 'hello this is doge',
+            'client_id' => 'dog',
             'scope' => ['admin'],
         ]);
 
@@ -51,6 +53,8 @@ class ClientTest extends TestCase
     public function testStoreAsAdminUser()
     {
         $this->asAdminUser()->json('POST', 'v2/clients', [
+            'title' => 'Dog',
+            'description' => 'hello this is doge',
             'client_id' => 'dog',
             'scope' => ['admin'],
         ]);
@@ -119,6 +123,7 @@ class ClientTest extends TestCase
         $client = Client::create(['client_id' => 'update_key']);
 
         $this->asAdminUser()->json('PUT', 'v2/clients/'.$client->client_id, [
+            'title' => 'New Title',
             'scope' => [
                 'admin',
                 'user',
@@ -127,6 +132,7 @@ class ClientTest extends TestCase
 
         $this->assertResponseStatus(200);
         $this->seeInDatabase('clients', [
+            'title' => 'New Title',
             'client_id' => 'update_key',
             'scope' => ['admin', 'user'],
         ]);
