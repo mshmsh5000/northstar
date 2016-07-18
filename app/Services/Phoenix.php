@@ -43,7 +43,7 @@ class Phoenix
             ];
 
             $response = $this->client->post('auth/login', [
-                'body' => json_encode($payload),
+                'json' => $payload,
             ]);
 
             $body = json_decode($response->getBody()->getContents(), true);
@@ -122,7 +122,7 @@ class Phoenix
             'query' => [
                 'forward' => false,
             ],
-            'body' => json_encode($payload),
+            'json' => $payload,
         ]);
 
         $json = json_decode($response->getBody()->getContents(), true);
@@ -227,7 +227,7 @@ class Phoenix
         ];
 
         $response = $this->client->post('campaigns/'.$campaign_id.'/signup', [
-            'body' => json_encode($payload),
+            'json' => $payload,
             'cookies' => $this->getAuthenticationCookie(),
             'headers' => [
                 'X-CSRF-Token' => $this->getAuthenticationToken(),
@@ -312,7 +312,7 @@ class Phoenix
         ];
 
         $response = $this->client->post('campaigns/'.$campaign_id.'/reportback', [
-            'body' => json_encode($payload),
+            'json' => $payload,
             'cookies' => $this->getAuthenticationCookie(),
             'headers' => [
                 'X-CSRF-Token' => $this->getAuthenticationToken(),
