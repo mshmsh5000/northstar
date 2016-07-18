@@ -19,7 +19,7 @@ class Phoenix
         $version = config('services.drupal.version');
 
         $this->client = new Client([
-            'base_url' => [$base_url.'/api/{version}/', ['version' => $version]],
+            'base_uri' => $base_url.'/api/'.$version.'/',
             'defaults' => [
                 'headers' => [
                     'Content-Type' => 'application/json',
@@ -46,7 +46,7 @@ class Phoenix
                 'body' => json_encode($payload),
             ]);
 
-            $body = $response->json();
+            $body = json_decode($response->getBody()->getContents(), true);
 
             $session_name = $body['session_name'];
             $session_value = $body['sessid'];
@@ -97,7 +97,7 @@ class Phoenix
             $response = $this->client->get('content/'.$id.'.json');
         }
 
-        return $response->json();
+        return json_decode($response->getBody()->getContents(), true);
     }
 
     /**
@@ -125,7 +125,7 @@ class Phoenix
             'body' => json_encode($payload),
         ]);
 
-        $json = $response->json();
+        $json = json_decode($response->getBody()->getContents(), true);
 
         return $json['uid'];
     }
@@ -151,7 +151,8 @@ class Phoenix
             ],
         ]);
 
-        $json = $response->json();
+        $json = json_decode($response->getBody()->getContents(), true);
+
         if (count($json) > 0) {
             return $json[0]['uid'];
         } else {
@@ -176,7 +177,7 @@ class Phoenix
             ],
         ]);
 
-        return $response->json();
+        return json_decode($response->getBody()->getContents(), true);
     }
 
     /**
@@ -197,7 +198,7 @@ class Phoenix
                 ],
             ]);
 
-            return $response->json();
+            return json_decode($response->getBody()->getContents(), true);
         } catch (ClientException $e) {
             if ($e->getCode() === 404) {
                 throw new NotFoundHttpException('That signup could not be found.');
@@ -233,7 +234,7 @@ class Phoenix
             ],
         ]);
 
-        return $response->json();
+        return json_decode($response->getBody()->getContents(), true);
     }
 
     /**
@@ -253,7 +254,7 @@ class Phoenix
             ],
         ]);
 
-        return $response->json();
+        return json_decode($response->getBody()->getContents(), true);
     }
 
     /**
@@ -274,7 +275,7 @@ class Phoenix
                 ],
             ]);
 
-            return $response->json();
+            return json_decode($response->getBody()->getContents(), true);
         } catch (ClientException $e) {
             if ($e->getCode() === 404) {
                 throw new NotFoundHttpException('That reportback could not be found.');
@@ -318,7 +319,7 @@ class Phoenix
             ],
         ]);
 
-        return $response->json();
+        return json_decode($response->getBody()->getContents(), true);
     }
 
     /**
@@ -339,6 +340,6 @@ class Phoenix
             ],
         ]);
 
-        return $response->json();
+        return json_decode($response->getBody()->getContents(), true);
     }
 }
