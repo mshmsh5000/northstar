@@ -53,7 +53,10 @@ class Phoenix
             $session_value = $body['sessid'];
 
             return [
-                'cookie' => [$session_name => $session_value],
+                'cookie' => [
+                    'Name' => $session_name,
+                    'Value' => $session_value,
+                ],
                 'token' => $body['token'],
             ];
         });
