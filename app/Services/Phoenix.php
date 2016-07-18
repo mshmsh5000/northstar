@@ -4,6 +4,7 @@ namespace Northstar\Services;
 
 use Exception;
 use GuzzleHttp\Client;
+use GuzzleHttp\Cookie\CookieJar;
 use GuzzleHttp\Exception\ClientException;
 use Illuminate\Support\Str;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
@@ -73,11 +74,11 @@ class Phoenix
     /**
      * Get the cookie for the authenticated API session.
      *
-     * @return array - cookie key/value
+     * @return CookieJar
      */
     private function getAuthenticationCookie()
     {
-        return $this->authenticate()['cookie'];
+        return CookieJar::fromArray($this->authenticate()['cookie'], config('services.drupal.url'));
     }
 
     /**
