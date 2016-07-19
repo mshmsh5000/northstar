@@ -53,10 +53,7 @@ class Phoenix
             $session_value = $body['sessid'];
 
             return [
-                'cookie' => [
-                    'Name' => $session_name,
-                    'Value' => $session_value,
-                ],
+                'cookie' => [$session_name => $session_value],
                 'token' => $body['token'],
             ];
         });
@@ -81,7 +78,9 @@ class Phoenix
      */
     private function getAuthenticationCookie()
     {
-        return CookieJar::fromArray($this->authenticate()['cookie'], config('services.drupal.url'));
+        $cookieDomain = parse_url(config('services.drupal.url'))['host'];
+
+        return CookieJar::fromArray($this->authenticate()['cookie'], $cookieDomain);
     }
 
     /**
