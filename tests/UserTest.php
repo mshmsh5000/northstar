@@ -120,4 +120,73 @@ class UserTest extends TestCase
             ],
         ]);
     }
+
+    /**
+     * Test that a staffer can update a user's profile.
+     * GET /users/:term/:id
+     *
+     * @return void
+     */
+    public function testUpdateProfileAsStaff()
+    {
+        $user = factory(User::class)->create();
+        $staff = factory(User::class, 'staff')->create();
+
+        $this->asUser($staff, ['user', 'role:staff'])->json('PUT', 'v1/users/id/'.$user->id, [
+            'first_name' => 'Alexander',
+            'last_name' => 'Hamilton',
+        ]);
+
+        $this->assertResponseStatus(200);
+
+        // The user should remain unchanged.
+        $user->fresh();
+        $this->assertNotEquals('Alexander', $user->first_name);
+        $this->assertNotEquals('Hamilton', $user->last_name);
+    }
+
+    /**
+     * Test that a staffer cannot change a user's role.
+     * GET /users/:term/:id
+     *
+     * @return void
+     */
+    public function testGrantRoleAsStaff()
+    {
+        $user = factory(User::class)->create();
+        $staff = factory(User::class, 'staff')->create();
+
+        $this->asUser($staff, ['user', 'role:staff'])->json('PUT', 'v1/users/id/'.$user->id, [
+            'role' => 'admin',
+        ]);
+
+        $this->assertResponseStatus(401);
+    }
+
+    /**
+     * Test that an admin can update a user's profile, including their role.
+     * GET /users/:term/:id
+     *
+     * @return void
+     */
+    public function testUpdateProfileAsAdmin()
+    {
+        $user = factory(User::class)->create();
+        $admin = factory(User::class, 'admin')->create();
+
+        $this->asUser($admin, ['user', 'role:admin'])->json('PUT', 'v1/users/id/'.$user->id, [
+            'first_name' => 'Hercules',
+            'last_name' => 'Mulligan',
+            'role' => 'admin',
+        ]);
+
+        $this->assertResponseStatus(200);
+        $this->seeJsonSubset([
+            'data' => [
+                'first_name' => 'Hercules',
+                'last_name' => 'Mulligan',
+                'role' => 'admin',
+            ],
+        ]);
+    }
 }
