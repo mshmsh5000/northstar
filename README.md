@@ -1,8 +1,7 @@
 # Northstar [![Wercker](https://img.shields.io/wercker/ci/548f17b907fa3ea41500a0ec.svg?style=flat-square)](https://app.wercker.com/#applications/548f17b907fa3ea41500a0ec) [![StyleCI](https://styleci.io/repos/26884886/shield)](https://styleci.io/repos/26884886)
 
-This is __Northstar__, the DoSomething.org user & activity API. It's our single "source of
-truth" for member information. Northstar is built using [Laravel 5.1](http://laravel.com/docs/5.1)
-and [MongoDB](https://www.mongodb.com).
+This is __Northstar__, the DoSomething.org user & identity API. It's our single "source of truth" for member information.
+Northstar is built using [Laravel 5.2](http://laravel.com/docs/5.2) and [MongoDB](https://www.mongodb.com).
 
 ### Getting Started
 
@@ -36,6 +35,9 @@ Consider [writing a test case](http://laravel.com/docs/5.1/testing) when adding 
 Most steps you would take when manually testing your code can be automated, which makes it easier for
 yourself & others to review your code and ensures we don't accidentally break something later on!
 
+### Security Vulnerabilities
+We take security very seriously. Any vulnerabilities in Northstar should be reported to [security@dosomething.org](mailto:security@dosomething.org),
+and will be promptly addressed. Thank you for taking the time to responsibly disclose any issues you find.
 
 ### License
 &copy;2016 DoSomething.org. Northstar is free software, and may be redistributed under the terms specified
