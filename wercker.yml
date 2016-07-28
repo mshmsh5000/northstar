@@ -4,30 +4,30 @@ build:
   # The steps that will be executed on build
   steps:
     - script:
-        name: Update PHP 5.6
+        name: configure & update apt repositories
         code: |-
           sudo apt-get update
           sudo apt-get -y install software-properties-common
           sudo LC_ALL=C.UTF-8 add-apt-repository -y ppa:ondrej/php
-          sudo apt-get update
-          sudo apt-get install php5.6
-    - script:
-        name: Install MongoDB
-        code: |-
           sudo apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv 7F0CEB10
           echo "deb http://repo.mongodb.org/apt/ubuntu "$(lsb_release -sc)"/mongodb-org/3.0 multiverse" | sudo tee /etc/apt/sources.list.d/mongodb-org-3.0.list
           sudo apt-get update
-          sudo apt-get install -y mongodb-org
-          sudo service mongod status
     - script:
-        name: install php extensions
-        code: sudo apt-get install php5.6-mongo php5.6-curl php5.6-mbstring php5.6-mcrypt php5.6-mysql php5.6-xml php5.6-zip
+        name: update node
+        code: |-
+          curl -sL https://deb.nodesource.com/setup_4.x | sudo -E bash -
+          sudo apt-get install -y nodejs
     - script:
-        name: Update Composer
+        name: update php & install mongodb
+        code: |-
+          sudo apt-get install php5.6 mongodb-org -y
+          sudo apt-get install php5.6-mongo php5.6-curl php5.6-mbstring php5.6-mcrypt php5.6-mysql php5.6-xml php5.6-zip
+    - script:
+        name: update composer
         code: sudo composer self-update
     - leipert/composer-install@0.0.1
     - script:
-        name: create test RSA keys
+        name: create test keys
         code: |-
           openssl genrsa -out storage/keys/private.key 1024
           openssl rsa -in storage/keys/private.key -pubout -out storage/keys/public.key
