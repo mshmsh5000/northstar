@@ -36,6 +36,12 @@ build:
         code: |-
           cp .env.example .env
           vendor/bin/phpunit
+    - script:
+        name: install npm dependencies
+        code: npm install
+    - script:
+        name: build front-end assets
+        code: npm run build
 
 deploy:
   steps:
