@@ -7,14 +7,18 @@
  * @see \Northstar\Providers\RouteServiceProvider
  */
 
-// Redirect to some useful documentation on the homepage.
-$router->get('/', function () {
-    return redirect()->to('https://github.com/DoSomething/api');
-});
+// https://northstar.dosomething.org/
+$router->group(['guard' => 'web', 'middleware' => ['web']], function () use ($router) {
+    // It's the homepage.
+    $router->get('/', 'WebController@home');
 
-// Simple health check endpoint
-$router->get('/status', function () {
-    return ['status' => 'good'];
+    // Authorization flow for the Auth Code OAuth grant.
+    $router->get('authorize', 'OAuthController@authorize');
+
+    // Login & Logout
+    $router->get('login', 'WebController@getLogin');
+    $router->post('login', 'WebController@postLogin');
+    $router->post('logout', 'WebController@getLogin');
 });
 
 // https://nortstar.dosomething.org/v2/
@@ -77,4 +81,9 @@ $router->group(['prefix' => 'v1', 'middleware' => ['api']], function () use ($ro
             return $scope['description'];
         });
     });
+});
+
+// Simple health check endpoint
+$router->get('/status', function () {
+    return ['status' => 'good'];
 });

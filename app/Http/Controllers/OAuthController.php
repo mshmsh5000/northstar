@@ -49,6 +49,19 @@ class OAuthController extends Controller
     }
 
     /**
+     * Show the login form for authenticating a user using one of the
+     * authentication code grant.
+     *
+     * @param ServerRequestInterface $request
+     * @param ResponseInterface $response
+     * @return \Illuminate\Http\Response
+     */
+    public function authorize(ServerRequestInterface $request, ResponseInterface $response)
+    {
+        return $this->respond('Not yet implemented.', 501);
+    }
+
+    /**
      * Authenticate a registered user using one of the supported OAuth
      * grants and return token details.
      *

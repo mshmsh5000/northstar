@@ -21,6 +21,13 @@ class Kernel extends HttpKernel
      * @var array
      */
     protected $middlewareGroups = [
+        'web' => [
+            \Northstar\Http\Middleware\EncryptCookies::class,
+            \Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse::class,
+            \Illuminate\Session\Middleware\StartSession::class,
+            \Illuminate\View\Middleware\ShareErrorsFromSession::class,
+            \Northstar\Http\Middleware\VerifyCsrfToken::class,
+        ],
         'api' => [
             \Northstar\Http\Middleware\ParseOAuthHeader::class,
         ],
