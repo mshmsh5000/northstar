@@ -2,8 +2,6 @@
 
 namespace Northstar\Http\Controllers\Traits;
 
-use Northstar\Auth\Scope;
-
 trait FiltersRequests
 {
     /**
@@ -65,9 +63,6 @@ trait FiltersRequests
         if (! $searches) {
             return $query;
         }
-
-        // Only "admin" keys should be able to search
-        Scope::gate('admin');
 
         // Searches may only be performed on indexed fields.
         $searches = array_intersect_key($searches, array_flip($indexes));
