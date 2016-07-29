@@ -16,6 +16,8 @@ use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class Handler extends ExceptionHandler
 {
+    const PRODUCTION_ERROR_MESSAGE = 'Looks like something went wrong. We\'ve noted the problem and will try to get it fixed!';
+
     /**
      * A list of the exception types that should not be reported.
      *
@@ -75,10 +77,11 @@ class Handler extends ExceptionHandler
             }
 
             $code = $e instanceof HttpException ? $e->getStatusCode() : 500;
+            $shouldHideErrorDetails = $code == 500 && ! config('app.debug');
             $response = [
                 'error' => [
                     'code' => $code,
-                    'message' => $e->getMessage(),
+                    'message' => $shouldHideErrorDetails ? self::PRODUCTION_ERROR_MESSAGE : $e->getMessage(),
                 ],
             ];
 
