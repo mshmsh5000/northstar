@@ -18,12 +18,10 @@ $router->get('/status', function () {
 });
 
 // https://nortstar.dosomething.org/v2/
-$router->group(['prefix' => 'v2'], function () use ($router) {
+$router->group(['prefix' => 'v2', 'middleware' => ['api']], function () use ($router) {
     // Authentication
-    if (config('features.oauth')) {
-        $router->post('auth/token', 'OAuthController@createToken');
-        $router->delete('auth/token', 'OAuthController@invalidateToken');
-    }
+    $router->post('auth/token', 'OAuthController@createToken');
+    $router->delete('auth/token', 'OAuthController@invalidateToken');
 
     // Users
     // ...
@@ -44,7 +42,7 @@ $router->group(['prefix' => 'v2'], function () use ($router) {
 });
 
 // https://northstar.dosomething.org/v1/
-$router->group(['prefix' => 'v1'], function () use ($router) {
+$router->group(['prefix' => 'v1', 'middleware' => ['api']], function () use ($router) {
     // Authentication
     $router->post('auth/token', 'Legacy\AuthController@createToken');
     $router->post('auth/invalidate', 'Legacy\AuthController@invalidateToken');
