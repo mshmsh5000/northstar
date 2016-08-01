@@ -18,7 +18,7 @@ class Authenticate
      */
     public function handle($request, Closure $next)
     {
-        if (! Auth::check()) {
+        if (! auth()->check()) {
             app('stathat')->ezCount('invalid auth token error');
             throw new HttpException(401, 'Authentication token mismatched.');
         }

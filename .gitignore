@@ -1,9 +1,14 @@
+# Compiled assets
+/public/dist
+
+# PHP
 /vendor
-/node_modules
 .env
 
-.DS_Store
-app/.DS_Store
+# NPM
+/node_modules
+npm-debug.log
 
-# PhpStorm
+# macOS & editor
+.DS_Store
 .idea/

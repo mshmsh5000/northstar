@@ -14,7 +14,7 @@ class KeyController extends Controller
      * to verify JWT access tokens.
      * GET /key
      *
-     * @return \Illuminate\Http\Response
+     * @return array
      */
     public function show()
     {

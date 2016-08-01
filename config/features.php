@@ -12,7 +12,4 @@ return [
     |
     */
 
-    // Enable OAuth2 endpoints & middleware. Requires PHP 5.6+.
-    'oauth' => env('NORTHSTAR_ENABLE_OAUTH', false),
-
 ];
