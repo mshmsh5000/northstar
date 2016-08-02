@@ -30,6 +30,7 @@ class Kernel extends HttpKernel
         ],
         'api' => [
             \Northstar\Http\Middleware\ParseOAuthHeader::class,
+            \Northstar\Http\Middleware\ThrottleRequests::class,
         ],
     ];
 

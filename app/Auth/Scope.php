@@ -26,6 +26,10 @@ class Scope
         'user' => [
             'description' => 'Allows actions to be made on a user\'s behalf.',
         ],
+        'unlimited' => [
+            'description' => 'Disables rate limiting for this client.',
+            'warning' => true,
+        ],
     ];
 
     /**
