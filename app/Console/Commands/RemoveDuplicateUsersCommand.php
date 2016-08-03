@@ -12,7 +12,7 @@ class RemoveDuplicateUsersCommand extends Command
      *
      * @var string
      */
-    protected $name = 'users:dedupe';
+    protected $name = 'northstar:dedupe';
 
     /**
      * The console command description.
@@ -20,16 +20,6 @@ class RemoveDuplicateUsersCommand extends Command
      * @var string
      */
     protected $description = 'Script to remove duplicate users.';
-
-    /**
-     * Create a new command instance.
-     *
-     * @return void
-     */
-    public function __construct()
-    {
-        parent::__construct();
-    }
 
     /**
      * Execute the console command.
