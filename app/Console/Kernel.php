@@ -14,6 +14,7 @@ class Kernel extends ConsoleKernel
      */
     protected $commands = [
         \Northstar\Console\Commands\RemoveDuplicateUsersCommand::class,
+        \Northstar\Console\Commands\CleanDrupalIdsCommand::class,
     ];
 
     /**
