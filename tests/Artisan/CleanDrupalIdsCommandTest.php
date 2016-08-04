@@ -37,12 +37,21 @@ class CleanDrupalIdsCommandTest extends TestCase
             }
         }
 
+        // Make 5 users with explicitly null Drupal ID. Trouble-makers!
+        for ($i = 0; $i < 5; $i++) {
+            User::create([
+                'first_name' => $this->faker->firstName,
+                'email' => $this->faker->email,
+                'drupal_id' => null,
+            ]);
+        }
+
         // There should be 20 users to start with...
-        $this->assertEquals(20, User::all()->count(), 'created all the expected duplicates');
+        $this->assertEquals(25, User::all()->count(), 'created all the expected duplicates');
 
         // And after running the command, we should have only the 10 unique Drupal IDs.
         $this->artisan('northstar:clean_drupal_ids');
-        $this->assertEquals(10, User::all()->count(), 'removed the expected number of duplicates');
+        $this->assertEquals(15, User::all()->count(), 'removed the expected number of duplicates');
 
         // Finally, make sure that we kept all the right records.
         $this->assertEquals('Khan', User::where('drupal_id', $kamala->drupal_id)->first()->last_name);

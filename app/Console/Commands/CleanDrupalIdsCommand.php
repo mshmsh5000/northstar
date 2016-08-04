@@ -62,8 +62,16 @@ class CleanDrupalIdsCommand extends Command
             $users = User::findMany($result['uniqueIds'])
                 ->sortBy('created_at')->values();
 
-            // Delete all but the oldest dupe.
             $users->each(function ($user, $index) {
+                // If the Drupal ID is explicitly set null, unset that field & don't delete.
+                if (is_null($user->drupal_id)) {
+                    $user->unset('drupal_id');
+                    $user->save();
+
+                    return;
+                }
+
+                // We want to delete all but the oldest (sorted first) dupe.
                 if ($index === 0) {
                     return;
                 }
