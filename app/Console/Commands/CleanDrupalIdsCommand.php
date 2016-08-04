@@ -60,10 +60,10 @@ class CleanDrupalIdsCommand extends Command
             ]);
         });
 
-        $blanks->each(function ($result) {
-            $this->info('Found '.$result->count.' duplicates for '.$result->_id['drupal_id'].'.');
+        foreach ($blanks['result'] as $result) {
+            $this->info('Found '.$result['count'].' duplicates for '.$result['_id']['drupal_id'].'.');
 
-            foreach ($result->uniqueIds as $index => $duplicateId) {
+            foreach ($result['uniqueIds'] as $index => $duplicateId) {
                 $user = User::find($duplicateId);
 
                 if ($index !== 0) {
@@ -71,6 +71,6 @@ class CleanDrupalIdsCommand extends Command
                     $this->comment('Deleted duplicate with ID '.$user->id.'!');
                 }
             }
-        });
+        }
     }
 }

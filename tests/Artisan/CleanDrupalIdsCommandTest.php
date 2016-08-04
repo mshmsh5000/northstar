@@ -14,8 +14,12 @@ class CleanDrupalIdsCommandTest extends TestCase
     {
         User::create(['first_name' => 'Tony', 'last_name' => 'Stark', 'drupal_id' => '12345']);
         User::create(['first_name' => 'Steve', 'last_name' => 'Rogers', 'drupal_id' => '12346']);
+        User::create(['first_name' => $this->faker->firstName, 'drupal_id' => '55555']);
 
-        // Make 5 duplicates for each of these fake Drupal IDs.
+        // Make some users with no Drupal ID.
+        factory(User::class, 7)->create();
+
+        // Make 5 duplicates for Tony Stark & Steve Rogers' Drupal IDs.
         foreach (['12345', '12346'] as $drupalId) {
             for ($i = 0; $i < 5; $i++) {
                 User::create([
@@ -25,12 +29,6 @@ class CleanDrupalIdsCommandTest extends TestCase
                 ]);
             }
         }
-
-        // Make some users with no Drupal ID.
-        factory(User::class, 7)->create();
-
-        // And finally, a single user with a non-duplicated Drupal ID.
-        User::create(['first_name' => $this->faker->firstName, 'drupal_id' => '55555']);
 
         // There should be 18 users to start with...
         $this->assertEquals(20, User::all()->count(), 'created all the expected duplicates');
