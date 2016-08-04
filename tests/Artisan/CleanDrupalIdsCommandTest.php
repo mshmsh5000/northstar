@@ -1,5 +1,6 @@
 <?php
 
+use Carbon\Carbon;
 use Northstar\Models\User;
 
 class CleanDrupalIdsCommandTest extends TestCase
@@ -12,8 +13,12 @@ class CleanDrupalIdsCommandTest extends TestCase
      */
     public function testThatItDeletesTheDupes()
     {
-        User::create(['first_name' => 'Tony', 'last_name' => 'Stark', 'drupal_id' => '12345']);
-        User::create(['first_name' => 'Steve', 'last_name' => 'Rogers', 'drupal_id' => '12346']);
+        $tony = User::create(['first_name' => 'Tony', 'last_name' => 'Stark', 'drupal_id' => '12345']);
+        $tony->setCreatedAt(new Carbon('March 10 1963'))->save();
+
+        $steve = User::create(['first_name' => 'Steve', 'last_name' => 'Rogers', 'drupal_id' => '12346']);
+        $steve->setCreatedAt(new Carbon('July 4 1920'))->save();
+
         User::create(['first_name' => $this->faker->firstName, 'drupal_id' => '55555']);
 
         // Make some users with no Drupal ID.
@@ -30,7 +35,7 @@ class CleanDrupalIdsCommandTest extends TestCase
             }
         }
 
-        // There should be 18 users to start with...
+        // There should be 20 users to start with...
         $this->assertEquals(20, User::all()->count(), 'created all the expected duplicates');
 
         // And after running the command, we should have only the 10 unique Drupal IDs.
@@ -38,7 +43,7 @@ class CleanDrupalIdsCommandTest extends TestCase
         $this->assertEquals(10, User::all()->count(), 'removed the expected number of duplicates');
 
         // Finally, make sure those original two records for the duped Drupal IDs are the ones we kept.
-        $this->assertEquals('Stark', User::where('drupal_id', '12345')->first()->last_name);
-        $this->assertEquals('Rogers', User::where('drupal_id', '12346')->first()->last_name);
+        $this->assertEquals('Stark', User::where('drupal_id', $tony->drupal_id)->first()->last_name);
+        $this->assertEquals('Rogers', User::where('drupal_id', $steve->drupal_id)->first()->last_name);
     }
 }

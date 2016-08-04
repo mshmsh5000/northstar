@@ -33,11 +33,6 @@ class CleanDrupalIdsCommand extends Command
         $blanks = User::raw(function (Collection $collection) {
             return $collection->aggregate([
                 [
-                    '$sort' => [
-                        'created_at' => -1,
-                    ],
-                ],
-                [
                     '$match' => [
                         'drupal_id' => ['$exists' => true],
                     ],
@@ -60,17 +55,23 @@ class CleanDrupalIdsCommand extends Command
             ]);
         });
 
+        echo PHP_EOL;
         foreach ($blanks['result'] as $result) {
             $this->info('Found '.$result['count'].' duplicates for '.$result['_id']['drupal_id'].'.');
 
-            foreach ($result['uniqueIds'] as $index => $duplicateId) {
-                $user = User::find($duplicateId);
+            // Load each duplicated user model & sort them by their created_at.
+            $users = User::findMany($result['uniqueIds'])
+                ->sortByDesc('created_at');
+
+            // Delete all but the oldest dupe.
+            $users->each(function ($user, $index) {
+                echo '['.$index.']'.' '.$user->drupal_id.' - '.$user->first_name.' '.$user->last_name.' ('.$user->created_at->toDateString().')'.PHP_EOL;
 
                 if ($index !== 0) {
                     $user->delete();
                     $this->comment('Deleted duplicate with ID '.$user->id.'!');
                 }
-            }
+            });
         }
     }
 }
