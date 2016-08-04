@@ -45,10 +45,6 @@ class Client extends Model
         'title',
         'description',
         'scope',
-
-        // For backwards compatibility...
-        'app_id',
-        'api_key',
     ];
 
     /**
@@ -68,15 +64,6 @@ class Client extends Model
                 $client->client_secret = str_random(32);
             }
         });
-    }
-
-    /**
-     * Map legacy 'app_id' to it's OAuth equivalent.
-     * @return string
-     */
-    public function setAppIdAttribute($value)
-    {
-        $this->setClientIdAttribute($value);
     }
 
     /**

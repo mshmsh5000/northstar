@@ -146,7 +146,7 @@ class ClientTest extends TestCase
     {
         $client = Client::create(['client_id' => 'delete_me']);
 
-        $this->asNormalUser()->json('DELETE', 'v1/keys/'.$client->client_secret);
+        $this->asNormalUser()->json('DELETE', 'v2/clients/'.$client->client_id);
         $this->assertResponseStatus(401);
 
         // It's still there!
@@ -161,7 +161,7 @@ class ClientTest extends TestCase
     {
         $client = Client::create(['client_id' => 'delete_me']);
 
-        $this->asAdminUser()->json('DELETE', 'v1/keys/'.$client->client_secret);
+        $this->asAdminUser()->json('DELETE', 'v2/clients/'.$client->client_id);
         $this->assertResponseStatus(200);
 
         $this->dontSeeInDatabase('clients', ['client_id' => 'delete_me']);
