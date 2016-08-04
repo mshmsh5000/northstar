@@ -74,6 +74,7 @@ class CleanDrupalIdsCommand extends Command
                 // We want to delete all but the oldest (sorted first) dupe.
                 if ($index === 0) {
                     $this->comment('Keeping user account: http://aurora.dosomething.org/users/'.$user->id.' ('.$user->email.' / '.$user->first_name.')');
+
                     return;
                 }
 
