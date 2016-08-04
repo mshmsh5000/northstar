@@ -9,11 +9,11 @@ use Northstar\Models\User;
 class CleanDrupalIdsCommand extends Command
 {
     /**
-     * The console command name.
+     * The name and signature of the console command.
      *
      * @var string
      */
-    protected $name = 'northstar:clean_drupal_ids';
+    protected $signature = 'northstar:clean_drupal_ids {--pretend : List the duplicates that would be deleted.}';
 
     /**
      * The console command description.
@@ -56,7 +56,7 @@ class CleanDrupalIdsCommand extends Command
         });
 
         foreach ($blanks['result'] as $result) {
-            $this->info('Found '.$result['count'].' duplicates for '.$result['_id']['drupal_id'].'.');
+            $this->info('Found '.$result['count'].' duplicates for '.$result['_id']['drupal_id'].':');
 
             // Load each duplicated user model, sort them by their created_at, and reset keys.
             $users = User::findMany($result['uniqueIds'])
@@ -76,8 +76,13 @@ class CleanDrupalIdsCommand extends Command
                     return;
                 }
 
-                $user->delete();
-                $this->comment('Deleted duplicate with ID '.$user->id.'!');
+                $shouldDelete = ! $this->option('pretend');
+                if ($shouldDelete) {
+                    $user->delete();
+                }
+
+                $verb = $shouldDelete ? 'Deleted' : 'Would have deleted';
+                $this->comment($verb.' duplicate with ID '.$user->id.'!');
             });
         }
     }
