@@ -56,7 +56,7 @@ class CleanDrupalIdsCommand extends Command
         });
 
         foreach ($blanks['result'] as $result) {
-            $this->info('Found '.$result['count'].' duplicates for '.$result['_id']['drupal_id'].':');
+            $this->info('Found '.$result['count'].' duplicates for '.$result['_id']['drupal_id'].' ('.config('services.drupal.url').'/users/'.$result['_id']['drupal_id'].'):');
 
             // Load each duplicated user model, sort them by their created_at, and reset keys.
             $users = User::findMany($result['uniqueIds'])
@@ -73,6 +73,8 @@ class CleanDrupalIdsCommand extends Command
 
                 // We want to delete all but the oldest (sorted first) dupe.
                 if ($index === 0) {
+                    $this->comment('Keeping user account: http://aurora.dosomething.org/users/'.$user->id.' ('.$user->email.' / '.$user->first_name.')');
+
                     return;
                 }
 
@@ -81,9 +83,11 @@ class CleanDrupalIdsCommand extends Command
                     $user->delete();
                 }
 
-                $verb = $shouldDelete ? 'Deleted' : 'Would have deleted';
-                $this->comment($verb.' duplicate with ID '.$user->id.'!');
+                $verb = $shouldDelete ? 'Deleted' : 'Will delete';
+                $this->comment($verb.' duplicate: http://aurora.dosomething.org/users/'.$user->id.' ('.$user->email.' / '.$user->first_name.')');
             });
+
+            $this->line('');
         }
     }
 }
