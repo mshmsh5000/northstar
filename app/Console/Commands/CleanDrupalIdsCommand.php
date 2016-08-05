@@ -13,7 +13,10 @@ class CleanDrupalIdsCommand extends Command
      *
      * @var string
      */
-    protected $signature = 'northstar:clean_drupal_ids {--pretend : List the duplicates that would be deleted.} {--aurora=https://aurora.dosomething.org : The Aurora URL to link to.}';
+    protected $signature = 'northstar:clean_drupal_ids
+                            {--pretend : List the duplicates that would be deleted.}
+                            {--aurora=https://aurora.dosomething.org : The Aurora URL to link to.}
+                            {--force : Do not ask for confirmation on dupes we\'re uncertain about.}';
 
     /**
      * The console command description.
@@ -81,7 +84,7 @@ class CleanDrupalIdsCommand extends Command
                 }
 
                 // Delete the user automatically if they don't have a first name. Otherwise we'll prompt.
-                $safeToDelete = empty($user->first_name);
+                $safeToDelete = empty($user->first_name) || $this->option('force');
                 $verb = $safeToDelete ? 'Will delete' : 'Would ask to delete';
 
                 // If we're pretending, skip over actually deleting the user.
