@@ -13,7 +13,10 @@ class CleanDrupalIdsCommand extends Command
      *
      * @var string
      */
-    protected $signature = 'northstar:clean_drupal_ids {--pretend : List the duplicates that would be deleted.}';
+    protected $signature = 'northstar:clean_drupal_ids
+                            {--pretend : List the duplicates that would be deleted.}
+                            {--aurora=https://aurora.dosomething.org : The Aurora URL to link to.}
+                            {--force : Do not ask for confirmation on dupes we\'re uncertain about.}';
 
     /**
      * The console command description.
@@ -56,13 +59,15 @@ class CleanDrupalIdsCommand extends Command
         });
 
         foreach ($blanks['result'] as $result) {
-            $this->info('Found '.$result['count'].' duplicates for '.$result['_id']['drupal_id'].' ('.config('services.drupal.url').'/users/'.$result['_id']['drupal_id'].'):');
+            $this->info('Found '.$result['count'].' duplicates for '.$result['_id']['drupal_id'].' ('.config('services.drupal.url').'/user/'.$result['_id']['drupal_id'].'):');
 
             // Load each duplicated user model, sort them by their created_at, and reset keys.
             $users = User::findMany($result['uniqueIds'])
                 ->sortBy('created_at')->values();
 
             $users->each(function ($user, $index) {
+                $aurora = $this->option('aurora');
+
                 // If the Drupal ID is explicitly set null, unset that field & don't delete.
                 if (is_null($user->drupal_id)) {
                     $user->unset('drupal_id');
@@ -73,18 +78,26 @@ class CleanDrupalIdsCommand extends Command
 
                 // We want to delete all but the oldest (sorted first) dupe.
                 if ($index === 0) {
-                    $this->comment('Keeping user account: http://aurora.dosomething.org/users/'.$user->id.' ('.$user->email.' / '.$user->first_name.')');
+                    $this->line('Keeping user account: '.$aurora.'/users/'.$user->id.' ('.$user->email.' / '.$user->first_name.')');
 
                     return;
                 }
 
-                $shouldDelete = ! $this->option('pretend');
-                if ($shouldDelete) {
-                    $user->delete();
+                // Delete the user automatically if they don't have a first name. Otherwise we'll prompt.
+                $safeToDelete = empty($user->first_name) || $this->option('force');
+                $verb = $safeToDelete ? 'Will delete' : 'Would ask to delete';
+
+                // If we're pretending, skip over actually deleting the user.
+                if (! $this->option('pretend')) {
+                    $verb = 'Did not delete';
+
+                    if ($safeToDelete || $this->confirm('Are you sure that we should delete '.$aurora.'/users/'.$user->id.'?')) {
+                        $user->delete();
+                        $verb = 'Deleted';
+                    }
                 }
 
-                $verb = $shouldDelete ? 'Deleted' : 'Will delete';
-                $this->comment($verb.' duplicate: http://aurora.dosomething.org/users/'.$user->id.' ('.$user->email.' / '.$user->first_name.')');
+                $this->comment($verb.' duplicate: '.$aurora.'/users/'.$user->id.' ('.$user->email.' / '.$user->first_name.')');
             });
 
             $this->line('');

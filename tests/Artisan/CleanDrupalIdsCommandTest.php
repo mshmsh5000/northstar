@@ -50,7 +50,7 @@ class CleanDrupalIdsCommandTest extends TestCase
         $this->assertEquals(25, User::all()->count(), 'created all the expected duplicates');
 
         // And after running the command, we should have only the 10 unique Drupal IDs.
-        $this->artisan('northstar:clean_drupal_ids');
+        $this->artisan('northstar:clean_drupal_ids', ['--force' => true]);
         $this->assertEquals(15, User::all()->count(), 'removed the expected number of duplicates');
 
         // Finally, make sure that we kept all the right records.
