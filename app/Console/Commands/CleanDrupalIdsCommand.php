@@ -13,7 +13,7 @@ class CleanDrupalIdsCommand extends Command
      *
      * @var string
      */
-    protected $signature = 'northstar:clean_drupal_ids {--pretend : List the duplicates that would be deleted.}';
+    protected $signature = 'northstar:clean_drupal_ids {--pretend : List the duplicates that would be deleted.} {--aurora=https://aurora.dosomething.org : The Aurora URL to link to.}';
 
     /**
      * The console command description.
@@ -63,6 +63,8 @@ class CleanDrupalIdsCommand extends Command
                 ->sortBy('created_at')->values();
 
             $users->each(function ($user, $index) {
+                $aurora = $this->option('aurora');
+
                 // If the Drupal ID is explicitly set null, unset that field & don't delete.
                 if (is_null($user->drupal_id)) {
                     $user->unset('drupal_id');
@@ -73,7 +75,7 @@ class CleanDrupalIdsCommand extends Command
 
                 // We want to delete all but the oldest (sorted first) dupe.
                 if ($index === 0) {
-                    $this->comment('Keeping user account: http://aurora.dosomething.org/users/'.$user->id.' ('.$user->email.' / '.$user->first_name.')');
+                    $this->line('Keeping user account: '.$aurora.'/users/'.$user->id.' ('.$user->email.' / '.$user->first_name.')');
 
                     return;
                 }
@@ -84,7 +86,7 @@ class CleanDrupalIdsCommand extends Command
                 }
 
                 $verb = $shouldDelete ? 'Deleted' : 'Will delete';
-                $this->comment($verb.' duplicate: http://aurora.dosomething.org/users/'.$user->id.' ('.$user->email.' / '.$user->first_name.')');
+                $this->comment($verb.' duplicate: '.$aurora.'/users/'.$user->id.' ('.$user->email.' / '.$user->first_name.')');
             });
 
             $this->line('');
