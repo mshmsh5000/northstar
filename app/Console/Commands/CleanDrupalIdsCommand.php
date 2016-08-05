@@ -56,7 +56,7 @@ class CleanDrupalIdsCommand extends Command
         });
 
         foreach ($blanks['result'] as $result) {
-            $this->info('Found '.$result['count'].' duplicates for '.$result['_id']['drupal_id'].' ('.config('services.drupal.url').'/users/'.$result['_id']['drupal_id'].'):');
+            $this->info('Found '.$result['count'].' duplicates for '.$result['_id']['drupal_id'].' ('.config('services.drupal.url').'/user/'.$result['_id']['drupal_id'].'):');
 
             // Load each duplicated user model, sort them by their created_at, and reset keys.
             $users = User::findMany($result['uniqueIds'])
