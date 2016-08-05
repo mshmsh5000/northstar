@@ -82,6 +82,12 @@ POST /v2/clients
 
   /* Whitelisted client scope(s) */
   scope: Array
+  
+  /* (optional) Allowed OAuth grants(s): password, auth_code, client_credentials */
+  allowed_grants: Array
+  
+  /* (optional) The URI to redirect to in the Auth Code flow. */
+  redirect_uri: String
 }
 ```
 
@@ -173,6 +179,12 @@ PUT /v2/clients/:client_id
 
   /* (optional) Change the whitelisted scope(s) for this application. */
   scope: Array
+  
+  /* (optional) Allowed OAuth grants(s): password, auth_code, client_credentials */
+  allowed_grants: Array
+  
+  /* (optional) The URI to redirect to in the Auth Code flow. */
+  redirect_uri: String
 }
 ```
 

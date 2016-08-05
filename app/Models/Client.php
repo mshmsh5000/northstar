@@ -32,6 +32,7 @@ class Client extends Model
      * @var array
      */
     protected $attributes = [
+        'allowed_grants' => [],
         'scope' => [],
     ];
 
@@ -44,6 +45,8 @@ class Client extends Model
         'client_id',
         'title',
         'description',
+        'allowed_grants',
+        'redirect_uri',
         'scope',
     ];
 

@@ -21,6 +21,9 @@ class ClientTransformer extends TransformerAbstract
             'client_secret' => $client->client_secret,
             'scope' => $client->scope,
 
+            'allowed_grants' => $client->allowed_grants,
+            'redirect_uri' => $client->redirect_uri,
+
             'refresh_tokens' => $client->getRefreshTokenCount(),
 
             'updated_at' => $client->updated_at->toISO8601String(),
