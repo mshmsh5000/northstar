@@ -80,12 +80,20 @@ class CleanDrupalIdsCommand extends Command
                     return;
                 }
 
-                $shouldDelete = ! $this->option('pretend');
-                if ($shouldDelete) {
-                    $user->delete();
+                // Delete the user automatically if they don't have a first name. Otherwise we'll prompt.
+                $safeToDelete = empty($user->first_name);
+                $verb = $safeToDelete ? 'Will delete' : 'Would ask to delete';
+
+                // If we're pretending, skip over actually deleting the user.
+                if (! $this->option('pretend')) {
+                    $verb = 'Did not delete';
+
+                    if ($safeToDelete || $this->confirm('Are you sure that we should delete '.$aurora.'/users/'.$user->id.'?')) {
+                        $user->delete();
+                        $verb = 'Deleted';
+                    }
                 }
 
-                $verb = $shouldDelete ? 'Deleted' : 'Will delete';
                 $this->comment($verb.' duplicate: '.$aurora.'/users/'.$user->id.' ('.$user->email.' / '.$user->first_name.')');
             });
 
