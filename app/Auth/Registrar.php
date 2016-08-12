@@ -149,7 +149,7 @@ class Registrar
         $existingId = isset($user->id) ? $user->id : 'null';
         $rules = [
             'email' => 'email|unique:users,email,'.$existingId.',_id|required_without:mobile',
-            'mobile' => 'unique:users,mobile,'.$existingId.',_id|required_without:email',
+            'mobile' => 'mobile|unique:users,mobile,'.$existingId.',_id|required_without:email',
             'drupal_id' => 'unique:users,drupal_id,'.$existingId.',_id',
         ];
 

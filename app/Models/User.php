@@ -185,14 +185,16 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
     public function setMobileAttribute($value)
     {
         // Remove all non-numeric characters.
-        $sanitized_value = preg_replace('/[^0-9]/', '', $value);
+        $sanitizedValue = preg_replace('/[^0-9]/', '', $value);
 
-        if (strlen($sanitized_value) === 10) {
-            $this->attributes['mobile'] = $sanitized_value;
-        } else if (strlen($sanitized_value) === 11 && $sanitized_value[0] == 1) {
-            // If it's 11-digits and the leading digit is a 1, then remove it.
-            $this->attributes['mobile'] = substr($sanitized_value, 1);
+        // If it's 11-digits and the leading digit is a 1, then remove country code.
+        if (strlen($sanitizedValue) === 11 && $sanitizedValue[0] === 1) {
+            $this->attributes['mobile'] = substr($sanitizedValue, 1);
+
+            return;
         }
+
+        $this->attributes['mobile'] = $sanitizedValue;
     }
 
     /**

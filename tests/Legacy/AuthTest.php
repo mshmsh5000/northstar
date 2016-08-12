@@ -228,6 +228,22 @@ class AuthTest extends TestCase
     }
 
     /**
+     * Test that we can't register a user with an invalid mobile.
+     * POST /auth/register
+     *
+     * @return void
+     */
+    public function testRegisterValidatesMobile()
+    {
+        $this->withLegacyApiKeyScopes(['user'])->json('POST', 'v1/auth/register', [
+            'mobile' => '123',
+            'password' => 'secret',
+        ]);
+
+        $this->assertResponseStatus(422);
+    }
+
+    /**
      * Test that a user can't set "internal" fields when registering.
      * POST /auth/register
      *
