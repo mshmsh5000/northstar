@@ -14,5 +14,22 @@ use Jenssegers\Mongodb\Eloquent\Model as BaseModel;
  */
 class Model extends BaseModel
 {
-    // ...
+    /**
+     * Set a given attribute on the model.
+     *
+     * @param  string  $key
+     * @param  mixed   $value
+     * @return mixed
+     */
+    public function setAttribute($key, $value)
+    {
+        // Drop field if attribute is empty string or null.
+        if (empty($value)) {
+            $this->drop($key);
+
+            return null;
+        }
+
+        return parent::setAttribute($key, $value);
+    }
 }
