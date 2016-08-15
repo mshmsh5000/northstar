@@ -32,7 +32,7 @@ class ValidationServiceProvider extends ServiceProvider
             return ! empty($valid) && empty($repeat);
         }, 'The :attribute must be a valid US phone number.');
 
-        // Add custom validator for localized date (e.g. `MM/DD/YYYY` or `DD/MM/YYYY`).
+        // Add custom validator for OAuth scopes.
         $this->validator->extend('scope', function ($attribute, $value, $parameters) {
             return Scope::validateScopes($value);
         }, 'Invalid scope(s) provided.');
