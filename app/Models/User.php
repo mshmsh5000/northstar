@@ -161,13 +161,6 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
      */
     public function setEmailAttribute($value)
     {
-        // Drop field if attribute is empty string or null.
-        if (empty($value)) {
-            $this->drop('email');
-
-            return;
-        }
-
         $this->attributes['email'] = strtolower($value);
     }
 
@@ -191,15 +184,17 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
      */
     public function setMobileAttribute($value)
     {
-        // Drop field if attribute is empty string or null.
-        if (empty($value)) {
-            $this->drop('mobile');
+        // Remove all non-numeric characters.
+        $sanitizedValue = preg_replace('/[^0-9]/', '', $value);
+
+        // If it's 11-digits and the leading digit is a 1, then remove country code.
+        if (strlen($sanitizedValue) === 11 && $sanitizedValue[0] === 1) {
+            $this->attributes['mobile'] = substr($sanitizedValue, 1);
 
             return;
         }
 
-        // Otherwise, remove all non-numeric characters.
-        $this->attributes['mobile'] = preg_replace('/[^0-9]/', '', $value);
+        $this->attributes['mobile'] = $sanitizedValue;
     }
 
     /**
@@ -212,9 +207,11 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
      */
     public function setSourceAttribute($value)
     {
-        if (empty($this->attributes['source'])) {
-            $this->attributes['source'] = $value;
+        if (! empty($this->attributes['source'])) {
+            return;
         }
+
+        $this->attributes['source'] = $value;
     }
 
     /**
