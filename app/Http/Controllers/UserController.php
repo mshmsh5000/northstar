@@ -79,7 +79,7 @@ class UserController extends Controller
     {
         // This endpoint will upsert by default (so it will either create a new user, or
         // update a user if one with a matching index field is found).
-        $existingUser = $this->registrar->resolve($request->only('id', 'email', 'mobile', 'drupal_id'));
+        $existingUser = $this->registrar->resolve($request->only('id', 'email', 'mobile', 'drupal_id', 'facebook_id'));
 
         // If `?upsert=false` and a record already exists, return a custom validation error.
         if (! filter_var($request->query('upsert', 'true'), FILTER_VALIDATE_BOOLEAN) && $existingUser) {
@@ -138,7 +138,7 @@ class UserController extends Controller
     public function show($term, $id)
     {
         // Restrict username/email/mobile profile lookup to admin or staff.
-        if (in_array($term, ['username', 'email', 'mobile'])) {
+        if (in_array($term, ['username', 'email', 'mobile', 'facebook_id'])) {
             Role::gate(['admin', 'staff']);
         }
 

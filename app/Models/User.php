@@ -54,6 +54,7 @@ use Northstar\Auth\Role;
  * @property string $drupal_id
  * @property string $agg_id
  * @property array  $parse_installation_ids
+ * @property string $facebook_id
  *
  * @property Carbon $created_at
  * @property Carbon $updated_at
@@ -79,7 +80,7 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
         'addr_street1', 'addr_street2', 'addr_city', 'addr_state', 'addr_zip',
         'country', 'language',
 
-        'mobilecommons_id', 'mobilecommons_status', 'cgg_id', 'drupal_id', 'agg_id', 'source',
+        'mobilecommons_id', 'mobilecommons_status', 'cgg_id', 'drupal_id', 'agg_id', 'source', 'facebook_id'
 
         'parse_installation_ids',
     ];
@@ -91,7 +92,7 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
      * @var array
      */
     public static $internal = [
-        'mobilecommons_id', 'mobilecommons_status', 'cgg_id', 'drupal_id', 'agg_id', 'drupal_password', 'role',
+        'mobilecommons_id', 'mobilecommons_status', 'cgg_id', 'drupal_id', 'agg_id', 'drupal_password', 'role', 'facebook_id',
     ];
 
     /**
@@ -103,7 +104,7 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
      * @var array
      */
     public static $uniqueIndexes = [
-        '_id', 'drupal_id', 'email', 'mobile',
+        '_id', 'drupal_id', 'email', 'mobile', 'facebook_id'
     ];
 
     /**
@@ -115,7 +116,7 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
      * @var array
      */
     public static $indexes = [
-        '_id', 'drupal_id', 'email', 'mobile', 'source', 'role',
+        '_id', 'drupal_id', 'email', 'mobile', 'source', 'role', 'facebook_id'
     ];
 
     /**
