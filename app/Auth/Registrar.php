@@ -120,7 +120,15 @@ class Registrar
      */
     public function normalizeMobile($mobile)
     {
-        return preg_replace('/[^0-9]/', '', $mobile);
+        // Remove all non-numeric characters.
+        $sanitizedValue = preg_replace('/[^0-9]/', '', $mobile);
+
+        // If it's 11-digits and the leading digit is a 1, then remove country code.
+        if (strlen($sanitizedValue) === 11 && $sanitizedValue[0] === '1') {
+            $sanitizedValue = substr($sanitizedValue, 1);
+        }
+
+        return $sanitizedValue;
     }
 
     /**

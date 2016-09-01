@@ -59,7 +59,7 @@ class RegistrarTest extends TestCase
             'mobile' => '1 (555) 123-4567',
         ]);
 
-        $this->assertSame('15551234567', $normalized['mobile']);
+        $this->assertSame('5551234567', $normalized['mobile']);
     }
 
     /**
@@ -93,7 +93,7 @@ class RegistrarTest extends TestCase
         $this->assertArrayNotHasKey('username', $normalized);
         $this->assertArrayNotHasKey('email', $normalized);
 
-        $this->assertSame('15551234567', $normalized['mobile']);
+        $this->assertSame('5551234567', $normalized['mobile']);
     }
 
     /**
