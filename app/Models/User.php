@@ -80,7 +80,7 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
         'addr_street1', 'addr_street2', 'addr_city', 'addr_state', 'addr_zip',
         'country', 'language',
 
-        'mobilecommons_id', 'mobilecommons_status', 'cgg_id', 'drupal_id', 'agg_id', 'source', 'facebook_id'
+        'mobilecommons_id', 'mobilecommons_status', 'cgg_id', 'drupal_id', 'agg_id', 'source', 'facebook_id',
 
         'parse_installation_ids',
     ];
