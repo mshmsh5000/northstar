@@ -189,4 +189,26 @@ class UserTest extends TestCase
             ],
         ]);
     }
+
+    /**
+     * Test that creating a user results in saving normalized data.
+     * POST /users
+     *
+     * @return void
+     */
+    public function testFieldsAreNormalized()
+    {
+        $this->asAdminUser()->json('POST', 'v1/users', [
+            'first_name' => 'Batman',
+            'email' => 'BatMan@example.com',
+            'mobile' => '1 (222) 333-5555',
+        ]);
+
+        $this->assertResponseStatus(201);
+        $this->seeInDatabase('users', [
+            'first_name' => 'Batman',
+            'email' => 'batman@example.com',
+            'mobile' => '2223335555',
+        ]);
+    }
 }
