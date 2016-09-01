@@ -189,7 +189,7 @@ curl -X POST \
 
 ## Retrieve a User
 Get profile data for a specific user. This can be retrieved with either the user's Northstar ID (which is automatically
-generated when a new database record is created), a mobile phone number, an email address, or the user's Drupal ID.
+generated when a new database record is created), a mobile phone number, an email address, a Facebook ID or the user's Drupal ID.
 
 Fetching a user via username, email, or mobile requires either the `admin` scope, or an "admin" or "staff" role with the appropriate scope.
 
@@ -198,6 +198,7 @@ GET /v1/users/id/<user_id>
 GET /v1/users/mobile/<mobile>
 GET /v1/users/email/<email>
 GET /v1/users/drupal_id/<drupal_id>
+GET /v1/users/facebook_id/<facebook_id>
 ```
 
 **Example Request:**  

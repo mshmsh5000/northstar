@@ -137,7 +137,7 @@ class UserController extends Controller
      */
     public function show($term, $id)
     {
-        // Restrict username/email/mobile profile lookup to admin or staff.
+        // Restrict username/email/mobile/facebook_id profile lookup to admin or staff.
         if (in_array($term, ['username', 'email', 'mobile', 'facebook_id'])) {
             Role::gate(['admin', 'staff']);
         }
