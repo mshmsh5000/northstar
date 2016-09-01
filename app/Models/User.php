@@ -7,7 +7,6 @@ use Illuminate\Foundation\Auth\Access\Authorizable;
 use Illuminate\Auth\Authenticatable;
 use Illuminate\Contracts\Auth\Authenticatable as AuthenticatableContract;
 use Illuminate\Contracts\Auth\Access\Authorizable as AuthorizableContract;
-use Northstar\Auth\Registrar;
 use Northstar\Auth\Role;
 
 /**
@@ -162,7 +161,7 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
      */
     public function setEmailAttribute($value)
     {
-        $this->attributes['email'] = app(Registrar::class)->normalizeEmail($value);
+        $this->attributes['email'] = trim(strtolower($value));
     }
 
     /**
@@ -185,7 +184,15 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
      */
     public function setMobileAttribute($value)
     {
-        $this->attributes['mobile'] = app(Registrar::class)->normalizeMobile($value);
+        // Remove all non-numeric characters.
+        $sanitizedValue = preg_replace('/[^0-9]/', '', $value);
+
+        // If it's 11-digits and the leading digit is a 1, then remove country code.
+        if (strlen($sanitizedValue) === 11 && $sanitizedValue[0] === '1') {
+            $sanitizedValue = substr($sanitizedValue, 1);
+        }
+
+        $this->attributes['mobile'] = $sanitizedValue;
     }
 
     /**
