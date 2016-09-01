@@ -75,6 +75,7 @@ class UserTest extends TestCase
         $this->assertArrayNotHasKey('last_name', $data);
         $this->assertArrayNotHasKey('email', $data);
         $this->assertArrayNotHasKey('mobile', $data);
+        $this->assertArrayNotHasKey('facebook_id', $data);
     }
 
     /**
