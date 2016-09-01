@@ -101,6 +101,7 @@ class Registrar
      * Sanitize an email address before verifying or saving to the database.
      * This method will likely be called multiple times per user, so it *must*
      * provide the same result if so.
+     * @TODO: This should be moved into a Normalizer class to DRY up.
      *
      * @param string $email
      * @return string
@@ -114,6 +115,7 @@ class Registrar
      * Sanitize a mobile number before verifying or saving to the database.
      * This method will likely be called multiple times per user, so it *must*
      * provide the same result if so.
+     * @TODO: This should be moved into a Normalizer class to DRY up.
      *
      * @param string $mobile
      * @return string

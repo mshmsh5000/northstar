@@ -156,6 +156,7 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
 
     /**
      * Mutator to normalize email addresses to lowercase.
+     * @TODO: This should be moved into a Normalizer class to DRY up.
      *
      * @param string $value
      */
@@ -179,6 +180,7 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
 
     /**
      * Mutator to strip non-numeric characters from mobile numbers.
+     * @TODO: This should be moved into a Normalizer class to DRY up.
      *
      * @param string $value
      */
