@@ -95,7 +95,7 @@ class UserTest extends TestCase
         // Check that public & private profile fields are visible
         $this->seeJsonStructure([
             'data' => [
-                'id', 'email', 'first_name', 'last_name',
+                'id', 'email', 'first_name', 'last_name', 'facebook_id'
             ],
         ]);
     }
@@ -117,7 +117,7 @@ class UserTest extends TestCase
         // Check that public & private profile fields are visible
         $this->seeJsonStructure([
             'data' => [
-                'id', 'email', 'first_name', 'last_name',
+                'id', 'email', 'first_name', 'last_name', 'facebook_id'
             ],
         ]);
     }
