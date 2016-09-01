@@ -156,12 +156,13 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
 
     /**
      * Mutator to normalize email addresses to lowercase.
+     * @TODO: This should be moved into a Normalizer class to DRY up.
      *
      * @param string $value
      */
     public function setEmailAttribute($value)
     {
-        $this->attributes['email'] = strtolower($value);
+        $this->attributes['email'] = trim(strtolower($value));
     }
 
     /**
@@ -179,6 +180,7 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
 
     /**
      * Mutator to strip non-numeric characters from mobile numbers.
+     * @TODO: This should be moved into a Normalizer class to DRY up.
      *
      * @param string $value
      */
@@ -188,10 +190,8 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
         $sanitizedValue = preg_replace('/[^0-9]/', '', $value);
 
         // If it's 11-digits and the leading digit is a 1, then remove country code.
-        if (strlen($sanitizedValue) === 11 && $sanitizedValue[0] === 1) {
-            $this->attributes['mobile'] = substr($sanitizedValue, 1);
-
-            return;
+        if (strlen($sanitizedValue) === 11 && $sanitizedValue[0] === '1') {
+            $sanitizedValue = substr($sanitizedValue, 1);
         }
 
         $this->attributes['mobile'] = $sanitizedValue;

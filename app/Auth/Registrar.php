@@ -101,6 +101,7 @@ class Registrar
      * Sanitize an email address before verifying or saving to the database.
      * This method will likely be called multiple times per user, so it *must*
      * provide the same result if so.
+     * @TODO: This should be moved into a Normalizer class to DRY up.
      *
      * @param string $email
      * @return string
@@ -114,13 +115,23 @@ class Registrar
      * Sanitize a mobile number before verifying or saving to the database.
      * This method will likely be called multiple times per user, so it *must*
      * provide the same result if so.
+     * @TODO: This should be moved into a Normalizer class to DRY up.
      *
      * @param string $mobile
      * @return string
      */
     public function normalizeMobile($mobile)
     {
-        return preg_replace('/[^0-9]/', '', $mobile);
+        // Remove all non-numeric characters.
+        $sanitizedValue = preg_replace('/[^0-9]/', '', $mobile);
+
+        // @TODO: Look-ups should be normalized too, but waiting until data is fixed in prod.
+        // If it's 11-digits and the leading digit is a 1, then remove country code.
+        // if (strlen($sanitizedValue) === 11 && $sanitizedValue[0] === '1') {
+        //     $sanitizedValue = substr($sanitizedValue, 1);
+        // }
+
+        return $sanitizedValue;
     }
 
     /**
