@@ -91,7 +91,7 @@ Index fields (such as `email`, `mobile`, `drupal_id`) can _only_ be "upserted" i
 account. To change an existing value for one of these fields, you must explicitly update that user via the
 [update](#update-a-user) endpoint.
 
-This requires either the `admin` scope, or "admin" or "staff" role with the appropriate scope. 
+This requires either the `admin` scope, or "admin" or "staff" role with the appropriate scope.
 
 ```
 POST /v1/users
@@ -104,11 +104,14 @@ Either a mobile number or email is required.
 // Content-Type: application/json
 
 {
-  // Required if 'mobile' is not provided
+  // Required if 'mobile' or 'facebook_id' is not provided
   email: String
 
-  // Required if 'email' is not provided
+  // Required if 'email' or 'facebook_id' is not provided
   mobile: String
+
+  // Required if 'email' or 'mobile' is not provided
+  facebook_id: Number
 
   // Optional, but required for user to be able to log in!
   password: String
@@ -130,7 +133,7 @@ Either a mobile number or email is required.
   parse_installation_ids: String // CSV values or array will be appended to existing interests
   interests: String, Array // CSV values or array will be appended to existing interests
   source: String // Immutable (can only be set if existing value is `null`)
-  
+
   // Hidden fields (optional):
   race: String
   religion: String
@@ -215,6 +218,7 @@ curl -X GET \
         "id": "5430e850dt8hbc541c37tt3d",
         "email": "test@example.com",
         "mobile": "5555555555",
+        "facebook_id": "10101010101010101",
         "drupal_id": "123456",
         "addr_street1": "123",
         "addr_street2": "456",
@@ -248,6 +252,7 @@ PUT /v1/users/drupal_id/<drupal_id>
 {
   email: String
   mobile: String
+  facebook_id: Number
   password: String
   birthdate: Date
   first_name: String
@@ -266,7 +271,7 @@ PUT /v1/users/drupal_id/<drupal_id>
   interests: String, Array // CSV values or array will be appended to existing interests
   source: String // Immutable (can only be set if existing value is `null`)
   role: String // Can only be modified by admins. Either 'user' (default), 'staff', or 'admin'.
-  
+
   // Hidden fields (optional):
   race: String
   religion: String
