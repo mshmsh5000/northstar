@@ -149,8 +149,8 @@ class Registrar
         $existingId = isset($user->id) ? $user->id : 'null';
         $rules = [
             'email' => 'email|unique:users,email,'.$existingId.',_id|required_without_all:mobile,facebook_id',
-            'mobile' => 'mobile|unique:users,mobile,'.$existingId.',_id|required_without_all:email,facebook_id,',
-            'facebook_id' => 'numeric|unique:users,facebook_id,'.$existingId.'_id|required_without_all:email,mobile',
+            'mobile' => 'mobile|unique:users,mobile,'.$existingId.',_id|required_without_all:email,facebook_id',
+            'facebook_id' => 'numeric|unique:users,facebook_id,'.$existingId.',_id|required_without_all:email,mobile',
             'drupal_id' => 'unique:users,drupal_id,'.$existingId.',_id',
         ];
 
