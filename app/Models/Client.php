@@ -32,6 +32,7 @@ class Client extends Model
      * @var array
      */
     protected $attributes = [
+        'allowed_grants' => [],
         'scope' => [],
     ];
 
@@ -44,11 +45,9 @@ class Client extends Model
         'client_id',
         'title',
         'description',
+        'allowed_grants',
+        'redirect_uri',
         'scope',
-
-        // For backwards compatibility...
-        'app_id',
-        'api_key',
     ];
 
     /**
@@ -68,15 +67,6 @@ class Client extends Model
                 $client->client_secret = str_random(32);
             }
         });
-    }
-
-    /**
-     * Map legacy 'app_id' to it's OAuth equivalent.
-     * @return string
-     */
-    public function setAppIdAttribute($value)
-    {
-        $this->setClientIdAttribute($value);
     }
 
     /**

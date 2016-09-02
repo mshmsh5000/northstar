@@ -69,18 +69,6 @@ $router->group(['prefix' => 'v1', 'middleware' => ['api']], function () use ($ro
     // Signups & Reportbacks (Phoenix)
     $router->resource('signups', 'Legacy\SignupController', ['only' => ['index', 'show', 'store']]);
     $router->resource('reportbacks', 'Legacy\ReportbackController', ['only' => ['index', 'show', 'store']]);
-
-    // API Clients (the artist formerly known as keys)
-    $router->resource('keys', 'Legacy\KeyController');
-
-    $router->get('scopes', function () {
-        $scopes = \Northstar\Auth\Scope::all();
-
-        // Format as a single key-value array to keep compatibility.
-        return collect($scopes)->map(function ($scope) {
-            return $scope['description'];
-        });
-    });
 });
 
 // Simple health check endpoint

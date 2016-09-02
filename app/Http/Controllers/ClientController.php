@@ -46,12 +46,15 @@ class ClientController extends Controller
     public function store(Request $request)
     {
         $this->validate($request, [
-            'client_id' => 'required|unique:clients,client_id',
-            'title' => 'required',
+            'client_id' => 'required|alpha_dash|unique:clients,client_id',
+            'title' => 'required|string',
+            'description' => 'string',
             'scope' => 'array|scope', // @see Scope::validateScopes
+            'allowed_grants' => 'array|in:authorization_code,password,client_credentials,legacy',
+            'redirect_uri' => 'url',
         ]);
 
-        $key = Client::create($request->only('client_id', 'title', 'description', 'scope'));
+        $key = Client::create($request->except('client_secret'));
 
         return $this->item($key, 201);
     }
@@ -81,11 +84,15 @@ class ClientController extends Controller
     public function update($client_id, Request $request)
     {
         $this->validate($request, [
+            'title' => 'string',
+            'description' => 'string',
             'scope' => 'array|scope', // @see Scope::validateScopes
+            'allowed_grants' => 'array|in:authorization_code,password,client_credentials,legacy',
+            'redirect_uri' => 'url',
         ]);
 
         $client = Client::findOrFail($client_id);
-        $client->update($request->only('title', 'description', 'scope'));
+        $client->update($request->except('client_id', 'client_secret'));
 
         return $this->item($client);
     }

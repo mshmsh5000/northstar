@@ -27,11 +27,29 @@ class ClientRepository implements ClientRepositoryInterface
             return null;
         }
 
+        // Is this client allowed to use this grant type?
+        if (! $this->clientCanUseGrant($model, $grantType)) {
+            return null;
+        }
+
         // If the grant requires us to check the client secret, do that.
         if ($mustValidateSecret && $model->client_secret !== $clientSecret) {
             return null;
         }
 
         return new ClientEntity($model->client_id, $model->scope);
+    }
+
+    /**
+     * Is the given client allowed to use the given grant type?
+     *
+     * @param $client
+     * @param $grantType
+     * @return bool
+     */
+    public function clientCanUseGrant($client, $grantType)
+    {
+        // @TODO: Limit this based on the 'allowed_grants' field on the Client.
+        return true;
     }
 }

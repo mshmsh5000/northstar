@@ -11,7 +11,7 @@ class OAuthTest extends TestCase
     public function testPasswordGrant()
     {
         $user = User::create(['email' => 'login-test@dosomething.org', 'password' => 'secret']);
-        $client = Client::create(['app_id' => 'phpunit', 'scope' => ['admin', 'user']]);
+        $client = Client::create(['client_id' => 'phpunit', 'scope' => ['admin', 'user']]);
 
         $this->post('v2/auth/token', [
             'grant_type' => 'password',
@@ -52,7 +52,7 @@ class OAuthTest extends TestCase
     public function testRoleClaim()
     {
         $admin = User::create(['email' => 'login-test@dosomething.org', 'password' => 'secret', 'role' => 'admin']);
-        $client = Client::create(['app_id' => 'phpunit', 'scope' => ['admin', 'user']]);
+        $client = Client::create(['client_id' => 'phpunit', 'scope' => ['admin', 'user']]);
 
         $this->post('v2/auth/token', [
             'grant_type' => 'password',
@@ -75,7 +75,7 @@ class OAuthTest extends TestCase
     public function testPasswordGrantWithInvalidCredentials()
     {
         $user = User::create(['email' => 'login-test@dosomething.org', 'password' => 'secret']);
-        $client = Client::create(['app_id' => 'phpunit']);
+        $client = Client::create(['client_id' => 'phpunit']);
 
         $this->post('v2/auth/token', [
             'grant_type' => 'password',
@@ -93,7 +93,7 @@ class OAuthTest extends TestCase
      */
     public function testClientCredentialsGrantWithFakeClient()
     {
-        Client::create(['app_id' => 'phpunit']);
+        Client::create(['client_id' => 'phpunit']);
 
         $this->post('v2/auth/token', [
             'grant_type' => 'client_credentials',
@@ -110,7 +110,7 @@ class OAuthTest extends TestCase
      */
     public function testClientCredentialsGrantWithMissingSecret()
     {
-        Client::create(['app_id' => 'phpunit']);
+        Client::create(['client_id' => 'phpunit']);
 
         $this->post('v2/auth/token', [
             'grant_type' => 'client_credentials',
@@ -125,7 +125,7 @@ class OAuthTest extends TestCase
      */
     public function testClientCredentialsGrantWithInvalidCredentials()
     {
-        Client::create(['app_id' => 'phpunit']);
+        Client::create(['client_id' => 'phpunit']);
 
         $this->post('v2/auth/token', [
             'grant_type' => 'client_credentials',
@@ -141,7 +141,7 @@ class OAuthTest extends TestCase
      */
     public function testRequestSubsetOfClientScopes()
     {
-        $client = Client::create(['app_id' => 'phpunit', 'scope' => ['admin', 'user']]);
+        $client = Client::create(['client_id' => 'phpunit', 'scope' => ['admin', 'user']]);
 
         $this->post('v2/auth/token', [
             'grant_type' => 'client_credentials',
@@ -161,7 +161,7 @@ class OAuthTest extends TestCase
      */
     public function testCantRequestDisallowedClientScope()
     {
-        $client = Client::create(['app_id' => 'phpunit', 'scope' => ['user']]);
+        $client = Client::create(['client_id' => 'phpunit', 'scope' => ['user']]);
 
         $this->post('v2/auth/token', [
             'grant_type' => 'client_credentials',
@@ -180,7 +180,7 @@ class OAuthTest extends TestCase
      */
     public function testCantRequestFakeClientScope()
     {
-        $client = Client::create(['app_id' => 'phpunit', 'scope' => ['user']]);
+        $client = Client::create(['client_id' => 'phpunit', 'scope' => ['user']]);
 
         $this->post('v2/auth/token', [
             'grant_type' => 'client_credentials',
@@ -197,7 +197,7 @@ class OAuthTest extends TestCase
      */
     public function testClientCredentials()
     {
-        $client = Client::create(['app_id' => 'phpunit']);
+        $client = Client::create(['client_id' => 'phpunit']);
 
         $this->post('v2/auth/token', [
             'grant_type' => 'client_credentials',
@@ -227,7 +227,7 @@ class OAuthTest extends TestCase
     public function testRefreshTokenGrant()
     {
         $user = User::create(['email' => 'login-test@dosomething.org', 'password' => 'secret']);
-        $client = Client::create(['app_id' => 'phpunit']);
+        $client = Client::create(['client_id' => 'phpunit']);
 
         $this->post('v2/auth/token', [
             'grant_type' => 'password',
@@ -273,7 +273,7 @@ class OAuthTest extends TestCase
     public function testAccessToken()
     {
         $user = User::create(['email' => 'login-test@dosomething.org', 'password' => 'secret']);
-        $client = Client::create(['app_id' => 'phpunit', 'scope' => ['admin', 'user']]);
+        $client = Client::create(['client_id' => 'phpunit', 'scope' => ['admin', 'user']]);
 
         $this->post('v2/auth/token', [
             'grant_type' => 'password',
@@ -296,7 +296,7 @@ class OAuthTest extends TestCase
     public function testRevokeRefreshToken()
     {
         $user = User::create(['email' => 'login-test@dosomething.org', 'password' => 'secret']);
-        $client = Client::create(['app_id' => 'phpunit', 'scope' => ['admin', 'user']]);
+        $client = Client::create(['client_id' => 'phpunit', 'scope' => ['admin', 'user']]);
 
         $this->post('v2/auth/token', [
             'grant_type' => 'password',
@@ -336,7 +336,7 @@ class OAuthTest extends TestCase
     {
         $user1 = User::create(['email' => 'login-test@dosomething.org', 'password' => 'secret']);
         $user2 = User::create(['email' => 'evil-user@dosomething.org', 'password' => 'secret']);
-        $client = Client::create(['app_id' => 'phpunit', 'scope' => ['admin', 'user']]);
+        $client = Client::create(['client_id' => 'phpunit', 'scope' => ['admin', 'user']]);
 
         // Make token for user #1.
         $jwt1 = $this->post('v2/auth/token', [

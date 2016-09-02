@@ -26,7 +26,7 @@ class ClientTest extends TestCase
         $this->seeJsonStructure([
             'data' => [
                 '*' => [
-                    'client_id', 'client_secret', 'scope',
+                    'client_id', 'client_secret', 'scope', 'allowed_grants', 'redirect_uri',
                 ],
             ],
         ]);
@@ -56,6 +56,7 @@ class ClientTest extends TestCase
             'title' => 'Dog',
             'description' => 'hello this is doge',
             'client_id' => 'dog',
+            'allowed_grants' => ['password', 'client_credentials'],
             'scope' => ['admin'],
         ]);
 
@@ -120,14 +121,13 @@ class ClientTest extends TestCase
      */
     public function testUpdateAsAdminUser()
     {
-        $client = Client::create(['client_id' => 'update_key']);
+        $client = Client::create(['client_id' => 'update_key', 'allowed_grants' => ['password']]);
 
         $this->asAdminUser()->json('PUT', 'v2/clients/'.$client->client_id, [
             'title' => 'New Title',
-            'scope' => [
-                'admin',
-                'user',
-            ],
+            'scope' => ['admin', 'user'],
+            'allowed_grants' => ['authorization_code'],
+            'redirect_uri' => 'http://example.com/callback',
         ]);
 
         $this->assertResponseStatus(200);
@@ -135,6 +135,8 @@ class ClientTest extends TestCase
             'title' => 'New Title',
             'client_id' => 'update_key',
             'scope' => ['admin', 'user'],
+            'allowed_grants' => ['authorization_code'],
+            'redirect_uri' => 'http://example.com/callback',
         ]);
     }
 
@@ -146,7 +148,7 @@ class ClientTest extends TestCase
     {
         $client = Client::create(['client_id' => 'delete_me']);
 
-        $this->asNormalUser()->json('DELETE', 'v1/keys/'.$client->client_secret);
+        $this->asNormalUser()->json('DELETE', 'v2/clients/'.$client->client_id);
         $this->assertResponseStatus(401);
 
         // It's still there!
@@ -161,7 +163,7 @@ class ClientTest extends TestCase
     {
         $client = Client::create(['client_id' => 'delete_me']);
 
-        $this->asAdminUser()->json('DELETE', 'v1/keys/'.$client->client_secret);
+        $this->asAdminUser()->json('DELETE', 'v2/clients/'.$client->client_id);
         $this->assertResponseStatus(200);
 
         $this->dontSeeInDatabase('clients', ['client_id' => 'delete_me']);
