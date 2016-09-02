@@ -75,6 +75,7 @@ class UserTest extends TestCase
         $this->assertArrayNotHasKey('last_name', $data);
         $this->assertArrayNotHasKey('email', $data);
         $this->assertArrayNotHasKey('mobile', $data);
+        $this->assertArrayNotHasKey('facebook_id', $data);
     }
 
     /**
@@ -94,7 +95,7 @@ class UserTest extends TestCase
         // Check that public & private profile fields are visible
         $this->seeJsonStructure([
             'data' => [
-                'id', 'email', 'first_name', 'last_name',
+                'id', 'email', 'first_name', 'last_name', 'facebook_id',
             ],
         ]);
     }
@@ -116,7 +117,7 @@ class UserTest extends TestCase
         // Check that public & private profile fields are visible
         $this->seeJsonStructure([
             'data' => [
-                'id', 'email', 'first_name', 'last_name',
+                'id', 'email', 'first_name', 'last_name', 'facebook_id',
             ],
         ]);
     }
