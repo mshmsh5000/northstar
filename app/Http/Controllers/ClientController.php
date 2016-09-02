@@ -50,7 +50,7 @@ class ClientController extends Controller
             'title' => 'required|string',
             'description' => 'string',
             'scope' => 'array|scope', // @see Scope::validateScopes
-            'allowed_grants' => 'array|in:authorization_code,password,client_credentials',
+            'allowed_grants' => 'array|in:authorization_code,password,client_credentials,legacy',
             'redirect_uri' => 'url',
         ]);
 
@@ -87,7 +87,7 @@ class ClientController extends Controller
             'title' => 'string',
             'description' => 'string',
             'scope' => 'array|scope', // @see Scope::validateScopes
-            'allowed_grants' => 'array|in:authorization_code,password,client_credentials',
+            'allowed_grants' => 'array|in:authorization_code,password,client_credentials,legacy',
             'redirect_uri' => 'url',
         ]);
 
