@@ -226,7 +226,7 @@ class UserTest extends TestCase
             'last_name' => '└(^o^)┘',
         ]);
 
-        $this->assertResponseOk();
+        $this->assertResponseStatus(201);
         $this->seeJsonSubset([
             'data' => [
                 'last_name' => '└(^o^)┘',
