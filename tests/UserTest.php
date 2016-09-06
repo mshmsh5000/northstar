@@ -212,4 +212,26 @@ class UserTest extends TestCase
             'mobile' => '2223335555',
         ]);
     }
+
+    /**
+     * Test that an admin can update a user's profile, including their role.
+     * GET /users/:term/:id
+     *
+     * @return void
+     */
+    public function testUTF8Fields()
+    {
+        $this->asAdminUser()->json('POST', 'v1/users', [
+            'email' => 'woot-woot@example.com',
+            'last_name' => '└(^o^)┘',
+        ]);
+
+        $this->assertResponseOk();
+        $this->seeJsonSubset([
+            'data' => [
+                'last_name' => '└(^o^)┘',
+                'last_initial' => '└',
+            ],
+        ]);
+    }
 }
