@@ -2,6 +2,7 @@
 
 namespace Northstar\Exceptions;
 
+use Illuminate\Auth\AuthenticationException;
 use Illuminate\Validation\ValidationException;
 use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
@@ -71,9 +72,12 @@ class Handler extends ExceptionHandler
                 return $e->getResponse();
             }
 
-            // Turn ModelNotFoundExceptions from findOrFail Eloquent method into 404s.
-            if ($e instanceof ModelNotFoundException) {
-                throw new NotFoundHttpException('That resource could not be found.');
+            // Turn AuthenticationExceptions & ModelNotFoundExceptions into
+            // HttpExceptions so we can render them nicely below.
+            if ($e instanceof AuthenticationException) {
+                return $this->render($request, new HttpException(401, 'Unauthorized.'));
+            } elseif ($e instanceof ModelNotFoundException) {
+                return $this->render($request, new NotFoundHttpException('That resource could not be found.'));
             }
 
             $code = $e instanceof HttpException ? $e->getStatusCode() : 500;
