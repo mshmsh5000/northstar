@@ -27,7 +27,7 @@ class Token extends Model
      *
      * @var array
      */
-    protected $fillable = [];
+    protected $fillable = ['user_id'];
 
     /**
      * Create a new Token.

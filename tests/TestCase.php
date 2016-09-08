@@ -6,6 +6,7 @@ use Northstar\Auth\Entities\ClientEntity;
 use Northstar\Auth\Entities\ScopeEntity;
 use Northstar\Auth\Scope;
 use Northstar\Models\Client;
+use Northstar\Models\Token;
 use Northstar\Models\User;
 
 class TestCase extends Illuminate\Foundation\Testing\TestCase
@@ -166,7 +167,9 @@ class TestCase extends Illuminate\Foundation\Testing\TestCase
      */
     public function asUserUsingLegacyAuth(User $user)
     {
-        $token = $user->login();
+        // Create a legacy token.
+        $token = Token::create(['user_id' => $user->id]);
+
         $this->serverVariables = array_replace($this->serverVariables, [
             'HTTP_Authorization' => 'Bearer '.$token->key,
         ]);

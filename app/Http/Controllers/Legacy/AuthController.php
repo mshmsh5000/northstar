@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use Northstar\Http\Controllers\Controller;
 use Northstar\Http\Transformers\TokenTransformer;
 use Northstar\Http\Transformers\UserTransformer;
+use Northstar\Models\Token;
 use Northstar\Models\User;
 use Northstar\Services\Phoenix;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
@@ -82,7 +83,15 @@ class AuthController extends Controller
         $this->validate($request, $this->loginRules);
 
         $credentials = $request->only('email', 'mobile', 'password');
-        $token = $this->registrar->login($credentials);
+        $user = $this->registrar->resolve($credentials);
+
+        if (! $this->registrar->verify($user, $credentials)) {
+            throw new UnauthorizedHttpException(null, 'Invalid credentials.');
+        }
+
+        // Create a legacy token & set the user for this request.
+        $token = Token::create(['user_id' => $user->id]);
+        $this->auth->setUser($user);
 
         return $this->item($token, 201);
     }
@@ -168,7 +177,10 @@ class AuthController extends Controller
             $user->save();
         }
 
-        $token = $this->registrar->createToken($user);
+
+        // Create a legacy token & set the user for this request.
+        $token = Token::create(['user_id' => $user->id]);
+        $this->auth->setUser($user);
 
         return $this->item($token);
     }

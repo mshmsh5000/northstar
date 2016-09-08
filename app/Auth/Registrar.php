@@ -2,25 +2,16 @@
 
 namespace Northstar\Auth;
 
-use Illuminate\Contracts\Auth\Guard as Auth;
 use Illuminate\Contracts\Hashing\Hasher;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Validation\Factory as Validation;
 use Illuminate\Http\Request;
 use Northstar\Exceptions\NorthstarValidationException;
-use Northstar\Models\Token;
 use Northstar\Models\User;
 use Northstar\Services\Phoenix;
-use Symfony\Component\HttpKernel\Exception\UnauthorizedHttpException;
 
 class Registrar
 {
-    /**
-     * The authentication guard.
-     * @var Auth
-     */
-    protected $auth;
-
     /**
      * Phoenix Drupal API wrapper.
      *
@@ -45,35 +36,15 @@ class Registrar
     /**
      * Registrar constructor.
      *
-     * @param Auth $auth
      * @param Phoenix $phoenix
      * @param Validation $validation
      * @param Hasher $hasher
      */
-    public function __construct(Auth $auth, Phoenix $phoenix, Validation $validation, Hasher $hasher)
+    public function __construct(Phoenix $phoenix, Validation $validation, Hasher $hasher)
     {
-        $this->auth = $auth;
         $this->phoenix = $phoenix;
         $this->validation = $validation;
         $this->hasher = $hasher;
-    }
-
-    /**
-     * Authenticate a user based on the given credentials,
-     * and create a new session token.
-     *
-     * @param array $credentials
-     * @return mixed
-     */
-    public function login($credentials)
-    {
-        $user = $this->resolve($credentials);
-
-        if (! $this->verify($user, $credentials)) {
-            throw new UnauthorizedHttpException(null, 'Invalid credentials.');
-        }
-
-        return $this->createToken($user);
     }
 
     /**
@@ -193,21 +164,6 @@ class Registrar
 
         // Well, looks like we couldn't authenticate...
         return false;
-    }
-
-    /**
-     * Create a new authentication token & set the active user.
-     *
-     * @param User $user
-     * @return Token
-     */
-    public function createToken($user)
-    {
-        $token = $user->login();
-
-        $this->auth->setUser($user);
-
-        return $token;
     }
 
     /**
