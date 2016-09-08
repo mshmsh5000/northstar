@@ -78,7 +78,7 @@ class AuthController extends Controller
      */
     public function createToken(Request $request)
     {
-        $request = $this->registrar->normalize($request);
+        $request = normalize('credentials', $request);
         $this->validate($request, $this->loginRules);
 
         $credentials = $request->only('email', 'mobile', 'password');
@@ -96,7 +96,7 @@ class AuthController extends Controller
      */
     public function verify(Request $request)
     {
-        $request = $this->registrar->normalize($request);
+        $request = normalize('credentials', $request);
         $this->validate($request, $this->loginRules);
 
         $credentials = $request->only('email', 'mobile', 'password');
@@ -148,7 +148,7 @@ class AuthController extends Controller
      */
     public function register(Request $request)
     {
-        $request = $this->registrar->normalize($request);
+        $request = normalize('credentials', $request);
 
         // If a user exists but has not set a password yet, allow them to
         // "register" to set a new password on their account.

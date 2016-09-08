@@ -65,18 +65,6 @@ class Registrar
     }
 
     /**
-     * Normalize the given credentials in the array or request (for example, before
-     * validating, or before saving to the database).
-     *
-     * @param \ArrayAccess|array $credentials
-     * @return mixed
-     */
-    public function normalize($credentials)
-    {
-        return normalize('credentials', $credentials);
-    }
-
-    /**
      * Validate the given user and request.
      *
      * @param Request $request
@@ -117,7 +105,7 @@ class Registrar
      */
     public function resolve($credentials)
     {
-        $credentials = $this->normalize($credentials);
+        $credentials = normalize('credentials', $credentials);
 
         $matches = (new User)->query();
 

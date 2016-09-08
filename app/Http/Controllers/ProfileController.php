@@ -65,7 +65,7 @@ class ProfileController extends Controller
         $user = $this->auth->user();
 
         // Normalize & validate the given request.
-        $request = $this->registrar->normalize($request);
+        $request = normalize('credentials', $request);
         $this->registrar->validate($request, $user);
 
         $user->fill($request->except(User::$internal));

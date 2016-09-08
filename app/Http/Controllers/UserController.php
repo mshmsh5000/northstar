@@ -59,10 +59,10 @@ class UserController extends Controller
         $query = $this->newQuery(User::class);
 
         $filters = $request->query('filter');
-        $query = $this->filter($query, $this->registrar->normalize($filters), User::$indexes);
+        $query = $this->filter($query, normalize('credentials', $filters), User::$indexes);
 
         $searches = $request->query('search');
-        $query = $this->search($query, $this->registrar->normalize($searches), User::$indexes);
+        $query = $this->search($query, normalize('credentials', $searches), User::$indexes);
 
         return $this->paginatedCollection($query, $request);
     }
@@ -87,7 +87,7 @@ class UserController extends Controller
         }
 
         // Normalize input and validate the request
-        $request = $this->registrar->normalize($request);
+        $request = normalize('credentials', $request);
         $this->registrar->validate($request, $existingUser);
 
         // Makes sure we can't "upsert" a record to have a changed index if already set.
@@ -162,7 +162,7 @@ class UserController extends Controller
         $user = $this->registrar->resolveOrFail([$term => $id]);
 
         // Normalize input and validate the request
-        $request = $this->registrar->normalize($request);
+        $request = normalize('credentials', $request);
         $this->registrar->validate($request, $user);
 
         // Only admins can change the role field.
