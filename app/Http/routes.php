@@ -18,7 +18,7 @@ $router->group(['guard' => 'web', 'middleware' => ['web']], function () use ($ro
     // Login & Logout
     $router->get('login', 'WebController@getLogin');
     $router->post('login', 'WebController@postLogin');
-    $router->post('logout', 'WebController@getLogin');
+    $router->get('logout', 'WebController@getLogout');
 });
 
 // https://nortstar.dosomething.org/v2/
