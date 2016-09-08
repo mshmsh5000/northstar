@@ -2,8 +2,8 @@
 
 namespace Northstar\Auth;
 
-use Hash;
 use Illuminate\Contracts\Auth\Guard as Auth;
+use Illuminate\Contracts\Hashing\Hasher;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Validation\Factory as Validation;
 use Illuminate\Http\Request;
@@ -23,27 +23,39 @@ class Registrar
 
     /**
      * Phoenix Drupal API wrapper.
+     *
      * @var Phoenix
      */
     protected $phoenix;
 
     /**
      * Laravel's validation factory.
+     *
      * @var Validation
      */
     protected $validation;
 
     /**
+     * The hasher implementation.
+     *
+     * @var \Illuminate\Contracts\Hashing\Hasher
+     */
+    protected $hasher;
+
+    /**
      * Registrar constructor.
+     *
      * @param Auth $auth
      * @param Phoenix $phoenix
      * @param Validation $validation
+     * @param Hasher $hasher
      */
-    public function __construct(Auth $auth, Phoenix $phoenix, Validation $validation)
+    public function __construct(Auth $auth, Phoenix $phoenix, Validation $validation, Hasher $hasher)
     {
         $this->auth = $auth;
         $this->phoenix = $phoenix;
         $this->validation = $validation;
+        $this->hasher = $hasher;
     }
 
     /**
@@ -166,7 +178,7 @@ class Registrar
             return false;
         }
 
-        if (Hash::check($credentials['password'], $user->password)) {
+        if ($this->hasher->check($credentials['password'], $user->password)) {
             return true;
         }
 
