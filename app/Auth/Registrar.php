@@ -9,6 +9,7 @@ use Illuminate\Http\Request;
 use Northstar\Exceptions\NorthstarValidationException;
 use Northstar\Models\User;
 use Northstar\Services\Phoenix;
+use Illuminate\Contracts\Auth\Authenticatable as UserContract;
 
 class Registrar
 {
@@ -138,14 +139,14 @@ class Registrar
     }
 
     /**
-     * Verify the given user and credentials. If the user has a Drupal
+     * Validate a user against the given credentials. If the user has a Drupal
      * password & it matches, re-hash and save to the user document.
      *
-     * @param User $user
+     * @param UserContract|User $user
      * @param array $credentials
      * @return bool
      */
-    public function verify($user, $credentials)
+    public function validateCredentials(UserContract $user, array $credentials)
     {
         if (! $user) {
             return false;
