@@ -125,11 +125,9 @@ class NorthstarTokenGuard extends TokenGuard implements Guard
      */
     public function validate(array $credentials = [])
     {
-        if ($this->getUserForToken($credentials[$this->inputKey])) {
-            return true;
-        }
+        $user = $this->provider->retrieveByCredentials($credentials);
 
-        return false;
+        return $this->provider->validateCredentials($user, $credentials);
     }
 
     /**
