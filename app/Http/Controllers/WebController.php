@@ -3,6 +3,7 @@
 namespace Northstar\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Contracts\Auth\Factory as Auth;
 
 class WebController extends Controller
 {
