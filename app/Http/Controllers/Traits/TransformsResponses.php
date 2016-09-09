@@ -21,7 +21,7 @@ trait TransformsResponses
      * Transform the given item or collection.
      *
      * @param $resource
-     * @return \Illuminate\Http\JsonResponse
+     * @return \Illuminate\Http\Response
      */
     public function transform($resource, $code)
     {
@@ -38,7 +38,7 @@ trait TransformsResponses
      * @param int $code
      * @param array $meta
      * @param null $transformer
-     * @return \Illuminate\Http\JsonResponse
+     * @return \Illuminate\Http\Response
      */
     public function item($item, $code = 200, $meta = [], $transformer = null)
     {
@@ -77,7 +77,7 @@ trait TransformsResponses
      * Format & return a paginated collection response.
      *
      * @param $query - Eloquent query
-     * @return \Symfony\Component\HttpFoundation\Response
+     * @return \Illuminate\Http\Response
      */
     public function paginatedCollection($query, $request, $code = 200, $meta = [], $transformer = null)
     {
