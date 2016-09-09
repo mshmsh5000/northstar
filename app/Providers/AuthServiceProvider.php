@@ -16,6 +16,8 @@ use League\OAuth2\Server\Repositories\UserRepositoryInterface;
 use League\OAuth2\Server\AuthorizationServer;
 use League\OAuth2\Server\ResourceServer;
 use Northstar\Auth\NorthstarTokenGuard;
+use Northstar\Auth\NorthstarUserProvider;
+use Northstar\Auth\Registrar;
 use Northstar\Auth\Repositories\AccessTokenRepository;
 use Northstar\Auth\Repositories\ClientRepository;
 use Northstar\Auth\Repositories\RefreshTokenRepository;
@@ -48,6 +50,11 @@ class AuthServiceProvider extends ServiceProvider
          * @var \Illuminate\Auth\AuthManager $auth
          */
         $auth = $this->app['auth'];
+
+        // Register our custom user provider
+        $auth->provider('northstar', function ($app, array $config) {
+            return new NorthstarUserProvider($app[Registrar::class], $app['hash'], $config['model']);
+        });
 
         // Register our custom token Guard implementation
         $auth->extend('northstar-token', function ($app, $name, array $config) use ($auth) {
