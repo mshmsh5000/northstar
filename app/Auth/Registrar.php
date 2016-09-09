@@ -88,7 +88,9 @@ class Registrar
      */
     public function resolve($credentials)
     {
+        // Normalize credentials and remove password if provided.
         $credentials = normalize('credentials', $credentials);
+        $credentials = array_except($credentials, 'password');
 
         $matches = (new User)->query();
 
