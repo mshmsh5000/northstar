@@ -3,16 +3,32 @@
 namespace Northstar\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Routing\Controller as BaseController;
+use Illuminate\Foundation\Validation\ValidatesRequests;
+use Illuminate\Contracts\Auth\Factory as Auth;
 
-class WebController extends Controller
+class WebController extends BaseController
 {
+    use ValidatesRequests;
+
     /**
-     * Make a new HomeController, inject dependencies,
-     * and set middleware for this controller's methods.
+     * The authentication factory.
+     *
+     * @var \Illuminate\Contracts\Auth\Factory
      */
-    public function __construct()
+    protected $auth;
+
+    /**
+     * Make a new WebController, inject dependencies,
+     * and set middleware for this controller's methods.
+     *
+     * @param \Illuminate\Contracts\Auth\Factory $auth
+     */
+    public function __construct(Auth $auth)
     {
-        // ...
+        $this->auth = $auth;
+
+        $this->middleware('auth:web', ['except' => ['getLogin', 'postLogin']]);
     }
 
     /**
@@ -22,7 +38,7 @@ class WebController extends Controller
      */
     public function home()
     {
-        return redirect()->to('https://www.dosomething.org');
+        return view('home');
     }
 
     /**
@@ -36,10 +52,10 @@ class WebController extends Controller
     }
 
     /**
-     * the login form.
+     * Handle submissions of the login form.
      *
      * @param Request $request
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\RedirectResponse
      */
     public function postLogin(Request $request)
     {
@@ -48,16 +64,26 @@ class WebController extends Controller
             'password' => 'required',
         ]);
 
-        return $this->respond('Not yet implemented.', 501);
+        $credentials = $request->only('username', 'password');
+        if (! $this->auth->guard('web')->attempt($credentials, true)) {
+            return redirect()->back()
+                ->withInput($request->only('username'))
+                ->withErrors(['username' => 'These credentials do not match our records.']);
+        }
+
+        return redirect()->intended('/');
     }
 
     /**
-     * Placeholder logout route.
+     * Log a user out from Northstar, preventing one-click
+     * sign-ons to other DoSomething.org websites.
      *
      * @return \Illuminate\Http\Response
      */
     public function getLogout()
     {
-        return $this->respond('Not yet implemented.', 501);
+        $this->auth->guard('web')->logout();
+
+        return redirect('login');
     }
 }

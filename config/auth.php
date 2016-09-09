@@ -66,7 +66,7 @@ return [
 
     'providers' => [
         'users' => [
-            'driver' => 'eloquent',
+            'driver' => 'northstar', // @see: \Northstar\Auth\NorthstarUserProvider
             'model' => Northstar\Models\User::class,
         ],
     ],

@@ -11,6 +11,7 @@ class UserRepository implements UserRepositoryInterface
 {
     /**
      * Northstar's user registrar.
+     *
      * @var Registrar
      */
     protected $registrar;
@@ -39,7 +40,7 @@ class UserRepository implements UserRepositoryInterface
         $credentials = ['username' => $username, 'password' => $password];
         $user = $this->registrar->resolve($credentials);
 
-        if (! $user || ! $this->registrar->verify($user, $credentials)) {
+        if (! $this->registrar->validateCredentials($user, $credentials)) {
             return null;
         }
 

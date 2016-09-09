@@ -12,14 +12,14 @@ use Northstar\Services\Phoenix;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 use Symfony\Component\HttpKernel\Exception\HttpException;
 use Symfony\Component\HttpKernel\Exception\UnauthorizedHttpException;
-use Illuminate\Contracts\Auth\Guard as Auth;
+use Illuminate\Contracts\Auth\Factory as Auth;
 use Northstar\Auth\Registrar;
 
 class AuthController extends Controller
 {
     /**
-     * The authentication guard.
-     * @var \Northstar\Auth\NorthstarTokenGuard
+     * The authentication factory.
+     * @var \Illuminate\Contracts\Auth\Factory
      */
     protected $auth;
 
@@ -85,13 +85,13 @@ class AuthController extends Controller
         $credentials = $request->only('email', 'mobile', 'password');
         $user = $this->registrar->resolve($credentials);
 
-        if (! $this->registrar->verify($user, $credentials)) {
+        if (! $this->registrar->validateCredentials($user, $credentials)) {
             throw new UnauthorizedHttpException(null, 'Invalid credentials.');
         }
 
         // Create a legacy token & set the user for this request.
         $token = Token::create(['user_id' => $user->id]);
-        $this->auth->setUser($user);
+        $this->auth->guard('api')->setUser($user);
 
         return $this->item($token, 201);
     }
@@ -111,7 +111,7 @@ class AuthController extends Controller
         $credentials = $request->only('email', 'mobile', 'password');
         $user = $this->registrar->resolve($credentials);
 
-        if (! $this->registrar->verify($user, $credentials)) {
+        if (! $this->registrar->validateCredentials($user, $credentials)) {
             throw new UnauthorizedHttpException(null, 'Invalid credentials.');
         }
 
@@ -128,7 +128,7 @@ class AuthController extends Controller
      */
     public function invalidateToken(Request $request)
     {
-        $token = $this->auth->token();
+        $token = $this->auth->guard('api')->token();
 
         // Attempt to delete token.
         $deleted = $token->delete();

@@ -3,7 +3,7 @@
 namespace Northstar\Http\Controllers;
 
 use Illuminate\Http\Request;
-use Illuminate\Contracts\Auth\Guard as Auth;
+use Illuminate\Contracts\Auth\Factory as Auth;
 use League\OAuth2\Server\Exception\OAuthServerException;
 use Northstar\Auth\Encrypter;
 use Northstar\Models\RefreshToken;
@@ -15,13 +15,15 @@ class OAuthController extends Controller
 {
     /**
      * The OAuth authorization server.
+     *
      * @var AuthorizationServer
      */
     protected $oauth;
 
     /**
-     * The authentication guard.
-     * @var \Northstar\Auth\NorthstarTokenGuard
+     * The authentication factory.
+     *
+     * @var \Illuminate\Contracts\Auth\Factory
      */
     protected $auth;
 
@@ -103,7 +105,7 @@ class OAuthController extends Controller
         }
 
         // Make sure that the authenticated user is allowed to do this.
-        if ($this->auth->user()->getAuthIdentifier() !== $refreshToken['user_id']) {
+        if ($this->auth->guard('api')->user()->getAuthIdentifier() !== $refreshToken['user_id']) {
             throw OAuthServerException::accessDenied('That refresh token does not belong to the currently authorized user.');
         }
 
