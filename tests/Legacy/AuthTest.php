@@ -388,7 +388,7 @@ class AuthTest extends TestCase
      */
     public function testMissingToken()
     {
-        $this->withLegacyApiKeyScopes(['user'])->get('v1/profile');
+        $this->withLegacyApiKeyScopes(['user'])->json('GET', 'v1/profile');
         $this->assertResponseStatus(401);
     }
 
@@ -398,7 +398,7 @@ class AuthTest extends TestCase
      */
     public function testFakeToken()
     {
-        $this->withLegacyApiKeyScopes(['user'])->get('v1/profile', [
+        $this->withLegacyApiKeyScopes(['user'])->json('GET', 'v1/profile', [
             'Authorization' => 'Bearer any_token_anytime_anywhere',
         ]);
 
@@ -420,7 +420,7 @@ class AuthTest extends TestCase
                 'expires' => '2016-06-08T16:54:09+00:00',
             ]);
 
-        $this->asUserUsingLegacyAuth($user)->withLegacyApiKeyScopes(['user'])->post('v1/auth/phoenix');
+        $this->asUserUsingLegacyAuth($user)->withLegacyApiKeyScopes(['user'])->json('POST', 'v1/auth/phoenix');
 
         $this->assertResponseStatus(200);
         $this->seeJsonStructure([
@@ -435,7 +435,7 @@ class AuthTest extends TestCase
     {
         $user = User::create(['email' => $this->faker->email]);
 
-        $this->asUserUsingLegacyAuth($user)->withLegacyApiKeyScopes(['user'])->post('v1/auth/phoenix');
+        $this->asUserUsingLegacyAuth($user)->withLegacyApiKeyScopes(['user'])->json('POST', 'v1/auth/phoenix');
         $this->assertResponseStatus(403);
     }
 
@@ -444,7 +444,7 @@ class AuthTest extends TestCase
      */
     public function testMagicLoginAnonymous()
     {
-        $this->withLegacyApiKeyScopes(['user'])->post('v1/auth/phoenix');
+        $this->withLegacyApiKeyScopes(['user'])->json('POST', 'v1/auth/phoenix');
         $this->assertResponseStatus(401);
     }
 }

@@ -5,10 +5,12 @@ namespace Northstar\Providers;
 use DateInterval;
 use Illuminate\Contracts\Auth\Access\Gate as GateContract;
 use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
+use League\OAuth2\Server\Grant\AuthCodeGrant;
 use League\OAuth2\Server\Grant\ClientCredentialsGrant;
 use League\OAuth2\Server\Grant\PasswordGrant;
 use League\OAuth2\Server\Grant\RefreshTokenGrant;
 use League\OAuth2\Server\Repositories\AccessTokenRepositoryInterface;
+use League\OAuth2\Server\Repositories\AuthCodeRepositoryInterface;
 use League\OAuth2\Server\Repositories\ClientRepositoryInterface;
 use League\OAuth2\Server\Repositories\RefreshTokenRepositoryInterface;
 use League\OAuth2\Server\Repositories\ScopeRepositoryInterface;
@@ -19,6 +21,7 @@ use Northstar\Auth\NorthstarTokenGuard;
 use Northstar\Auth\NorthstarUserProvider;
 use Northstar\Auth\Registrar;
 use Northstar\Auth\Repositories\AccessTokenRepository;
+use Northstar\Auth\Repositories\AuthCodeRepository;
 use Northstar\Auth\Repositories\ClientRepository;
 use Northstar\Auth\Repositories\RefreshTokenRepository;
 use Northstar\Auth\Repositories\ScopeRepository;
@@ -66,6 +69,16 @@ class AuthServiceProvider extends ServiceProvider
         $this->app->bind(ScopeRepositoryInterface::class, ScopeRepository::class);
         $this->app->bind(RefreshTokenRepositoryInterface::class, RefreshTokenRepository::class);
         $this->app->bind(AccessTokenRepositoryInterface::class, AccessTokenRepository::class);
+        $this->app->bind(AuthCodeRepositoryInterface::class, AuthCodeRepository::class);
+
+        // Auth Code grant needs auth code TTL to be injected.
+        $this->app->bind(AuthCodeGrant::class, function () {
+            return new AuthCodeGrant(
+                app(AuthCodeRepositoryInterface::class),
+                app(RefreshTokenRepositoryInterface::class),
+                new DateInterval('PT1H')
+            );
+        });
 
         // Configure the OAuth authorization server
         $this->app->singleton(AuthorizationServer::class, function () {
@@ -80,6 +93,7 @@ class AuthServiceProvider extends ServiceProvider
             // Define which OAuth grants we'll accept.
             $grants = [
                 PasswordGrant::class,
+                AuthCodeGrant::class,
                 ClientCredentialsGrant::class,
                 RefreshTokenGrant::class,
             ];

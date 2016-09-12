@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use Illuminate\Contracts\Auth\Factory as Auth;
 use League\OAuth2\Server\Exception\OAuthServerException;
 use Northstar\Auth\Encrypter;
+use Northstar\Auth\Entities\UserEntity;
 use Northstar\Models\RefreshToken;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
@@ -47,7 +48,8 @@ class OAuthController extends Controller
         $this->auth = $auth;
         $this->encrypter = $encrypter;
 
-        $this->middleware('auth', ['only' => 'invalidateToken']);
+        $this->middleware('auth:web', ['only' => 'authorize']);
+        $this->middleware('auth:api', ['only' => 'invalidateToken']);
     }
 
     /**
@@ -56,11 +58,24 @@ class OAuthController extends Controller
      *
      * @param ServerRequestInterface $request
      * @param ResponseInterface $response
-     * @return \Illuminate\Http\Response
+     * @return ResponseInterface|\Illuminate\Http\RedirectResponse
      */
     public function authorize(ServerRequestInterface $request, ResponseInterface $response)
     {
-        return $this->respond('Not yet implemented.', 501);
+        // Validate the HTTP request and return an AuthorizationRequest.
+        $authRequest = $this->oauth->validateAuthorizationRequest($request);
+
+        $entity = new UserEntity();
+        $userId = $this->auth->guard('web')->user()->getAuthIdentifier();
+        $entity->setIdentifier($userId);
+        $authRequest->setUser($entity);
+
+        // Clients are all our own at the moment, so they will always be approved.
+        // @TODO: Add an explicit "DoSomething.org app" boolean to the Client model.
+        $authRequest->setAuthorizationApproved(true);
+
+        // Return the HTTP redirect response.
+        return $this->oauth->completeAuthorizationRequest($authRequest, $response);
     }
 
     /**

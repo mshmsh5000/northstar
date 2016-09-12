@@ -12,6 +12,7 @@ See [Authentication](authentication.md) for details on authorizing your requests
 #### Authentication
 Endpoint                  | Functionality                                                      | Required Scope
 ------------------------- | ------------------------------------------------------------------ | --------------
+`POST v2/auth/token`      | [Create Auth Token (Authorization Code Grant)](endpoints/auth.md#create-token-authorization-code-grant) | 
 `POST v2/auth/token`      | [Create Auth Token (Password Grant)](endpoints/auth.md#create-token-password-grant) | 
 `POST v2/auth/token`      | [Create Auth Token (Client Credentials Grant)](endpoints/auth.md#create-token-client-credentials-grant) | 
 `POST v2/auth/token`      | [Create Auth Token (Refresh Token Grant)](endpoints/auth.md#create-token-refresh-token-grant) | 

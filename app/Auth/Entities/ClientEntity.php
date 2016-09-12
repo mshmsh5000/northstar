@@ -22,14 +22,12 @@ class ClientEntity implements ClientEntityInterface
      * @param $client_id
      * @param $scopes
      */
-    public function __construct($client_id, $scopes)
+    public function __construct($client_id, $scopes, $redirect_uri = '')
     {
         $this->name = $client_id; // @TODO: If we store a human-readable client name, use here.
         $this->allowedScopes = $scopes;
         $this->identifier = $client_id;
-
-        // @TODO: Will need this for authentication code flow. Save this per client!
-        $this->redirectUri = '';
+        $this->redirectUri = $redirect_uri;
     }
 
     /**
