@@ -6,6 +6,73 @@ use Northstar\Models\User;
 class OAuthTest extends TestCase
 {
     /**
+     * A custom PHPUnit assertion to validate an OAuth response & JWT token claims.
+     *
+     * @param $user
+     * @param $client
+     * @param array $scopes
+     */
+    protected function assertValidJwtToken($user, $client, array $scopes)
+    {
+        $this->assertResponseStatus(200);
+        $this->seeJsonStructure([
+            'token_type',
+            'expires_in',
+            'access_token',
+            'refresh_token',
+        ]);
+
+        // Parse the token we received to see it's built correctly.
+        $token = $this->decodeResponseJson()['access_token'];
+        $jwt = (new \Lcobucci\JWT\Parser())->parse($token);
+
+        // Check that the token has the expected user ID and scopes.
+        $this->assertSame($user->id, $jwt->getClaim('sub'));
+        $this->assertSame('user', $jwt->getClaim('role'));
+        $this->assertSame($scopes, $jwt->getClaim('scopes'));
+
+        // Check that a refresh token was saved to the database.
+        $this->seeInDatabase('refresh_tokens', [
+            'user_id' => $user->id,
+            'client_id' => $client->client_id,
+        ]);
+    }
+
+    /**
+     * Test that the authorization code grant provides a JWT for valid credentials.
+     */
+    public function testAuthorizationCodeGrant()
+    {
+        $user = User::create(['email' => 'login-test@dosomething.org', 'password' => 'secret']);
+        $client = Client::create(['client_id' => 'phpunit', 'scope' => ['user', 'role:staff', 'role:admin'], 'redirect_uri' => 'http://example.com/']);
+
+        // Make the authorization request:
+        $this->be($user, 'web');
+        $this->get('authorize?'.http_build_query([
+            'response_type' => 'code',
+            'client_id' => $client->client_id,
+            'client_secret' => $client->client_secret,
+            'scope' => 'user role:staff',
+            'state' => csrf_token(),
+        ]));
+
+        // For the purpose of the the test, let's just grab the 'code' from the redirect.
+        $redirect = $this->response->headers->get('location');
+        $code = urldecode(str_replace('http://example.com/?code=', '', $redirect));
+        $this->assertNotEmpty($code, 'A code was returned to the redirect URI.');
+
+        // Finally, use that code to request a token:
+        $this->post('v2/auth/token', [
+            'grant_type' => 'authorization_code',
+            'client_id' => $client->client_id,
+            'client_secret' => $client->client_secret,
+            'code' => $code,
+        ]);
+
+        $this->assertValidJwtToken($user, $client, ['user', 'role:staff']);
+    }
+
+    /**
      * Test that the password grant provides a JWT for valid credentials.
      */
     public function testPasswordGrant()
@@ -22,28 +89,7 @@ class OAuthTest extends TestCase
             'scope' => 'admin user',
         ]);
 
-        $this->assertResponseStatus(200);
-        $this->seeJsonStructure([
-            'token_type',
-            'expires_in',
-            'access_token',
-            'refresh_token',
-        ]);
-
-        // Parse the token we received to see it's built correctly.
-        $token = $this->decodeResponseJson()['access_token'];
-        $jwt = (new \Lcobucci\JWT\Parser())->parse($token);
-
-        // Check that the token has the expected user ID and scopes.
-        $this->assertSame($user->id, $jwt->getClaim('sub'));
-        $this->assertSame('user', $jwt->getClaim('role'));
-        $this->assertSame(['admin', 'user'], $jwt->getClaim('scopes'));
-
-        // Check that a refresh token was saved to the database.
-        $this->seeInDatabase('refresh_tokens', [
-            'user_id' => $user->id,
-            'client_id' => $client->client_id,
-        ]);
+        $this->assertValidJwtToken($user, $client, ['admin', 'user']);
     }
 
     /**
