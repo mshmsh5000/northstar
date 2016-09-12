@@ -37,7 +37,7 @@ class ClientRepository implements ClientRepositoryInterface
             return null;
         }
 
-        return new ClientEntity($model->client_id, $model->scope);
+        return new ClientEntity($model->client_id, $model->scope, $model->redirect_uri);
     }
 
     /**
