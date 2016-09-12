@@ -10,6 +10,85 @@ a short lifetime, a user can be "logged out" of all services by revoking their r
 Each access token includes the authorized user's ID, expiration timestamp, and scopes. Tokens are signed to prevent
 tampering, and can be verified using a shared public key.
 
+## Create Token (Authorization Code Grant)
+The authorization code grant allows you to authorize a user without needing to manually handle their username or password.
+It's a two-step process that involves redirecting the user to Northstar in their web browser, and then using the "code"
+returned to the application's redirect URL to request an access & refresh token.
+
+The produced JWT authentication token can be used to sign future requests on the user's behalf, and the refresh token
+can be used to fetch a new access token after the first one expires.
+
+**Step One: Authorize the User**
+
+Redirect the user to Northstar's "authorize" page with the following query string parameters:
+
+* `response_type` with the value `code`
+* `client_id` with your Client ID
+* `scope` with a space-delimited list of scopes to request
+* `state` with a CSRF token that can be validated below
+
+For example, an application named `puppet-sloth` may initiate a user authorization request like so:
+
+```
+GET /authorize?response_type=code&client_id=puppet-sloth&scope=user&state=MCceWSE5vHVyYQovh3CL4UWBqe0Uhcpf
+```
+
+The user will be presented with a login page (unless they've previously logged in to Northstar, in which case we'll just use
+their existing session), and then redirected back to your application's registered `redirect_uri` with the following values
+in the query string of the request:
+
+* `code` with the authorization code (used below)
+* `state` with the CSRF token (compare this to what you provided!)
+
+**Step Two: Request a Token**
+
+You may now use the provided code to request a token:
+
+```
+POST /v2/auth/token
+```
+
+```js
+// Content-Type: application/json
+ 
+{
+  grant_type: 'authorization_code',
+  
+  // The client application's Client ID (required)
+  client_id: String,
+  
+  // The client application's Client Secret (required)
+  client_secret: String,
+
+  // The authorization code returned in Step One (required)
+  code: String
+}
+```
+
+**Example Request:**
+
+```
+curl -X POST \
+  -H "Content-Type: application/json" \
+  -H "Accept: application/json" \
+  -d '{"grant_type": "authorization_code", "client_id": "${CLIENT_ID}", "client_secret": "${CLIENT_SECRET}", \
+  "code": "KwM/cj40QWuCmpEALcmjxEOeXmcvoYNBQCb7pWd6X0yEG4fRn/b58C8oEos4SRUhSAjOgoZMcKk+rdk9hbd9u5rvFoC3pj8oIFTMyig1fFE0Lpvvu"}' \
+  https://northstar.dosomething.org/v2/auth/token
+```
+
+**Example Response:**
+
+```js
+// 200 OK
+
+{
+  "token_type": "Bearer",
+  "expires_in": 3600,
+  "access_token": "eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiIsImp0aSI6IjU1ZDEwNjk4MTAzNDliMDVhNjdjODI1NDQ2NzIxYmFhNTcyMDM2MTg1MDNhOTlhYjA5ZWYxODVmMGJhZTI2MmJhY2VjZWVhMTY2YjIwYmE5In0.eyJhdWQiOiIiLCJqdGkiOiI1NWQxMDY5ODEwMzQ5YjA1YTY3YzgyNTQ0NjcyMWJhYTU3MjAzNjE4NTAzYTk5YWIwOWVmMTg1ZjBiYWUyNjJiYWNlY2VlYTE2NmIyMGJhOSIsImlhdCI6MTQ2MDQwMDU0NCwibmJmIjoxNDYwNDAwNTQ0LCJleHAiOjE0NjA0MDQxNDQsInN1YiI6IjU0MzBlODUwZHQ4aGJjNTQxYzM3dHQzZCIsInNjb3BlcyI6WyJhZG1pbiJdfQ.Q9SvBEjbJlDEBbBzzvxiL_Dg_nC29Zz34Slrs5WdDdxPKrIwHI6SqnjPvMo4gwoWTr2s9dWye--3Dv0hNNn3xIo7MF6b6DDS96XKplzFRGx2043AzPIVmxxDPz4QdeF18Lnx5W2Aj-_YdRGc-S2n-du2rVYTaGpEzVII4W4Wh7Q",
+  "refresh_token": "EytNzc1CJrA0fn1ymUutcg8FzOM7yUER5F+31oP/eRJdXwwaII6Lw4yS/PrC/orThdot4+7o81d/VXdUDBre6NDsMbEtTjk9fJVPDFSU74focg3N0zXKiPziBRvegv4DLrM2RkAfYYfxTK5nM1uMT2pCNBobrA8qHahgmw2XgoSE4J/xco/lmHKP393KMwn0nziKDr0YeqPRi+PAvtdsNPKpydyc0JbAFEevZ2UYXz4bRIaS4nUP+IyB6cYSdnok3OCJr8lDUp/OHA0JlOk9ra7YBFXNB8ZvlR1GEL2qQBlIWCqxPL9xrUBTIWUst7/+imx8LmBqevmGY1UFBXAm7n0p1Ih3Qxj0dx9u5woBdCwLYxAlEL70LaSDbx3qdhF+6uhrZTCnpOPE/tZSImpbmashh/SLtFEMpVP+ifISnLYSnQTvyL4XvWU/8azrFGmDmxYB63kuR4D+4QcqptPyA8JC5sOnn1CpDwzTcn93WMbhtWdIUCBTgF2R8rYNVki5"
+}
+```
+
 ## Create Token (Password Grant)
 
 This will verify a user's credentials and create a JWT authentication token, which can be used to sign future requests
