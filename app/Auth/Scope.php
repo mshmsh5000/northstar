@@ -26,6 +26,12 @@ class Scope
         'user' => [
             'description' => 'Allows actions to be made on a user\'s behalf.',
         ],
+        'profile' => [
+            'description' => 'Allows viewing an authenticated user\'s full profile.',
+        ],
+        'openid' => [
+            'description' => 'Allows users to be authorized by OpenID Connect.',
+        ],
     ];
 
     /**
