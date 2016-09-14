@@ -10,14 +10,22 @@ Northstar! :sparkles:
 
 ### Contributing
 
-Fork and clone this repository, and install into your local [DS Homestead](https://github.com/DoSomething/ds-homestead).
+Fork and clone this repository, add to your local [DS Homestead](https://github.com/DoSomething/ds-homestead), and run set-up:
 
-After installation, set environment variables, create your public & private keys, and run the outstanding migrations:
+```sh
+# Install dependencies:
+$ composer install && npm install
+    
+# Copy the default environment variables:
+$ cp .env.example .env
 
-    $ cp .env.example .env
-    $ openssl genrsa -out storage/keys/private.key 1024
-    $ openssl rsa -in storage/keys/private.key -pubout -out storage/keys/public.key
-    $ php artisan migrate
+# Make public & private RSA keys:
+$ openssl genrsa -out storage/keys/private.key 1024
+$ openssl rsa -in storage/keys/private.key -pubout -out storage/keys/public.key
+
+# And finally, run database migrations:
+$ php artisan migrate
+```
 
 You can seed the database with test data:
 
