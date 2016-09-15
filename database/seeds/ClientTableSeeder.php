@@ -23,7 +23,7 @@ class ClientTableSeeder extends Seeder
             'client_secret' => 'secret1',
             'redirect_uri' => [
                 'http://northstar.dev:8000',
-                'http://dev.dosomething.org:8888/openid-connect/generic',
+                'http://dev.dosomething.org:8888/openid-connect/northstar',
             ],
             'allowed_grants' => ['authorization_code', 'password', 'client_credentials'],
             'scope' => collect(Scope::all())->keys()->toArray(),
