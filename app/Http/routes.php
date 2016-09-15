@@ -25,6 +25,7 @@ $router->group(['guard' => 'web', 'middleware' => ['web']], function () use ($ro
 $router->group(['prefix' => 'v2', 'middleware' => ['api']], function () use ($router) {
     // Authentication
     $router->post('auth/token', 'OAuthController@createToken');
+    $router->get('auth/info', 'OAuthController@info');
     $router->delete('auth/token', 'OAuthController@invalidateToken');
 
     // Users
