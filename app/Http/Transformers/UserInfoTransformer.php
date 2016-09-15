@@ -13,6 +13,8 @@ class UserInfoTransformer extends TransformerAbstract
      */
     public function transform(User $user)
     {
+        // User data, formatted according to OpenID Connect spec, section 5.3.
+        // @see http://openid.net/specs/openid-connect-core-1_0.html#UserInfo
         $response = [
             'id' => $user->_id,
             'given_name' => $user->first_name,
