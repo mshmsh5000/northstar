@@ -7,6 +7,7 @@ use Illuminate\Contracts\Auth\Factory as Auth;
 use League\OAuth2\Server\Exception\OAuthServerException;
 use Northstar\Auth\Encrypter;
 use Northstar\Auth\Entities\UserEntity;
+use Northstar\Http\Transformers\UserInfoTransformer;
 use Northstar\Models\RefreshToken;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
@@ -49,7 +50,7 @@ class OAuthController extends Controller
         $this->encrypter = $encrypter;
 
         $this->middleware('auth:web', ['only' => 'authorize']);
-        $this->middleware('auth:api', ['only' => 'invalidateToken']);
+        $this->middleware('auth:api', ['only' => ['info', 'invalidateToken']]);
     }
 
     /**
@@ -76,6 +77,18 @@ class OAuthController extends Controller
 
         // Return the HTTP redirect response.
         return $this->oauth->completeAuthorizationRequest($authRequest, $response);
+    }
+
+    /**
+     * Show the user info for the authorized user.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function info()
+    {
+        $user = $this->auth->guard('api')->user();
+
+        return $this->item($user, 200, [], new UserInfoTransformer);
     }
 
     /**

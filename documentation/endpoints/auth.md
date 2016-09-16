@@ -293,3 +293,44 @@ curl -X DELETE \
   }
 }
 ```
+
+## Get User Info
+
+This will display the user's profile according to the format [defined in the OpenID Connect specification](http://openid.net/specs/openid-connect-core-1_0.html#UserInfo).
+
+```
+GET /v2/auth/info
+```
+
+**Example Request:**
+```sh
+curl -X GET \
+  -H "Authorization: ${ACCESS_TOKEN}" \
+  -H "Accept: application/json"
+  https://northstar.dosomething.org/v2/auth/info
+```
+
+**Example Response:**
+
+```js
+// 200 OK
+
+{
+  "data": {
+    "id": "57dac28fbffebcb7708b4567",
+    "given_name": "Ezra",
+    "family_name": null,
+    "email": "test@dosomething.org",
+    "phone_number": "3294927429",
+    "address": {
+      "street_address": "518 Lorenza Creek Suite 862\n",
+      "locality": null,
+      "region": "AL",
+      "postal_code": "04296",
+      "country": "SY"
+    },
+    "updated_at": 1473954542,
+    "created_at": 1473954447
+  }
+}
+```

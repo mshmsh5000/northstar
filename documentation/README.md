@@ -17,6 +17,7 @@ Endpoint                  | Functionality                                       
 `POST v2/auth/token`      | [Create Auth Token (Client Credentials Grant)](endpoints/auth.md#create-token-client-credentials-grant) | 
 `POST v2/auth/token`      | [Create Auth Token (Refresh Token Grant)](endpoints/auth.md#create-token-refresh-token-grant) | 
 `DELETE v2/auth/token`    | [Invalidate Auth Token](endpoints/auth.md#revoke-token) | 
+`GET v2/auth/info`        | [Get User Info](endpoints/auth.md#get-user-info) | 
 
 > :memo: There's also the [legacy authentication endpoints](endpoints/legacy/auth.md), but those are deprecated so don't get too attached!
 
