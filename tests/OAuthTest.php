@@ -337,6 +337,45 @@ class OAuthTest extends TestCase
     }
 
     /**
+     * Test that the user info route requires an access token.
+     */
+    public function testUserInfoAnonymous()
+    {
+        $this->json('GET', 'v2/auth/info');
+        $this->assertResponseStatus(401);
+    }
+
+    /**
+     * Test that an authenticated user can see their profile data, formatted
+     * according to the OpenID Connect spec.
+     */
+    public function testUserInfo()
+    {
+        $this->asNormalUser()->json('GET', 'v2/auth/info');
+        $this->assertResponseStatus(200);
+
+        $this->seeJsonStructure([
+            'data' => [
+                'given_name',
+                'family_name',
+                'email',
+                'phone_number',
+
+                'address' => [
+                    'street_address',
+                    'locality',
+                    'region',
+                    'postal_code',
+                    'country',
+                ],
+
+                'updated_at',
+                'created_at',
+            ],
+        ]);
+    }
+
+    /**
      * Test that a refresh token can be revoked.
      */
     public function testRevokeRefreshToken()
