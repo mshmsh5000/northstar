@@ -87,7 +87,6 @@ class WebController extends BaseController
         return redirect('login');
     }
 
-
     /**
      * Display the registration form.
      *
@@ -101,10 +100,17 @@ class WebController extends BaseController
     /**
      * Handle submissions of the registration form.
      *
+     * @param Request $request
      * @return \Illuminate\Http\Response
      */
-    public function postRegister()
+    public function postRegister(Request $request)
     {
+        $this->validate($request, [
+            'first_name' => 'required',
+            'email' => 'required|email',
+            'birthdate' => 'required|date',
+            'mobile' => 'mobile',
+            'password' => 'required|confirmed|min:6',
+        ]);
     }
-
 }

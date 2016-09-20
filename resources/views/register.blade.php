@@ -24,22 +24,22 @@
 
                     <div class="form-item">
                         <label for="first_name" class="field-label">First Name</label>
-                        <input name="first_name" type="text" class="text-field" placeholder="What do we call you?">
+                        <input name="first_name" type="text" class="text-field" placeholder="What do we call you?"value="{{ old('first_name') }}">
                     </div>
 
                     <div class="form-item">
                         <label for="birthdate" class="field-label">Birthday</label>
-                        <input name="birthdate" type="text" class="text-field" placeholder="MM/DD/YYYY">
+                        <input name="birthdate" type="text" class="text-field" placeholder="MM/DD/YYYY" value="{{ old('birthdate') }}">
                     </div>
 
                     <div class="form-item">
                         <label for="email" class="field-label">Email address</label>
-                        <input name="email" type="text" class="text-field" placeholder="puppet-sloth@example.org">
+                        <input name="email" type="text" class="text-field" placeholder="puppet-sloth@example.org" value="{{ old('email') }}">
                     </div>
 
                     <div class="form-item">
                         <label for="mobile" class="field-label">Cell Number <em>(optional)</em></label>
-                        <input name="mobile" type="text" class="text-field" placeholder="(555) 555-5555">
+                        <input name="mobile" type="text" class="text-field" placeholder="(555) 555-5555" value="{{ old('mobile') }}">
                     </div>
 
                     <div class="form-item">
@@ -48,8 +48,8 @@
                     </div>
 
                     <div class="form-item">
-                        <label for="confirm_password" class="field-label">Confirm Password</label>
-                        <input name="confirm_password" type="password" class="text-field" placeholder="Just double checking!">
+                        <label for="password_confirmation" class="field-label">Confirm Password</label>
+                        <input name="password_confirmation" type="password" class="text-field" placeholder="Just double checking!">
                     </div>
 
                     <div class="form-actions -padded">
