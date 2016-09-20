@@ -100,6 +100,13 @@ class Handler extends ExceptionHandler
             return response()->json($response, $code);
         }
 
+        // Redirect with input & flash message if a validation error on the web:
+        if ($e instanceof ValidationException || $e instanceof NorthstarValidationException) {
+            return redirect()->back()
+                ->withInput($request->except('password', 'password_confirmation'))
+                ->withErrors($e->getErrors());
+        }
+
         return parent::render($request, $e);
     }
 }
