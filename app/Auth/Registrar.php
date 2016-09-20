@@ -58,7 +58,7 @@ class Registrar
      */
     public function validate(Request $request, User $user = null, array $additionalRules = [])
     {
-        $fields = $request->all();
+        $fields = normalize('credentials', $request->all());
 
         $existingId = isset($user->id) ? $user->id : 'null';
         $rules = [
