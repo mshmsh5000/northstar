@@ -82,16 +82,15 @@ class Registrar
     }
 
     /**
-     * Resolve a user account from the given credentials.
+     * Resolve a user account from the given credentials. This will only
+     * take into account unique indexes on the User.
      *
-     * @param array $credentials
+     * @param Request|array $credentials
      * @return User|null
      */
     public function resolve($credentials)
     {
-        // Normalize credentials and remove password if provided.
         $credentials = normalize('credentials', $credentials);
-        $credentials = array_except($credentials, 'password');
 
         $matches = (new User)->query();
 
