@@ -28,7 +28,7 @@ class WebController extends BaseController
     {
         $this->auth = $auth;
 
-        $this->middleware('auth:web', ['except' => ['getLogin', 'postLogin']]);
+        $this->middleware('auth:web', ['only' => ['home', 'getLogout']]);
     }
 
     /**
@@ -86,4 +86,25 @@ class WebController extends BaseController
 
         return redirect('login');
     }
+
+
+    /**
+     * Display the registration form.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function getRegister()
+    {
+        return view('register');
+    }
+
+    /**
+     * Handle submissions of the registration form.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function postRegister()
+    {
+    }
+
 }

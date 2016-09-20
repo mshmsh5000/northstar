@@ -39,7 +39,7 @@
             </div>
             <div class="container__block -centered">
                 <ul>
-                    <li><a href="{{ url(config('services.drupal.url').'/user/register') }}">Create a DoSomething.org account</a></li>
+                    <li><a href="{{ url('register') }}">Create a DoSomething.org account</a></li>
                     <li><a href="{{ url(config('services.drupal.url').'/user/password') }}">Forgot your password?</a></li>
                 </ul>
             </div>
