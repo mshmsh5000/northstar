@@ -40,7 +40,7 @@ class WebController extends BaseController
         $this->auth = $auth;
         $this->registrar = $registrar;
 
-        $this->middleware('auth:web', ['only' => ['home', 'getLogout']]);
+        $this->middleware('auth:web', ['only' => ['home']]);
         $this->middleware('guest:web', ['except' => ['home', 'getLogout']]);
     }
 
@@ -91,13 +91,17 @@ class WebController extends BaseController
      * Log a user out from Northstar, preventing one-click
      * sign-ons to other DoSomething.org websites.
      *
+     * @param Request $request
      * @return \Illuminate\Http\Response
      */
-    public function getLogout()
+    public function getLogout(Request $request)
     {
+        // A custom post-logout redirect can be specified with `/logout?redirect=`
+        $redirect = $request->query('redirect', 'login');
+
         $this->auth->guard('web')->logout();
 
-        return redirect('login');
+        return redirect($redirect);
     }
 
     /**
