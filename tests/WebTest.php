@@ -80,4 +80,21 @@ class WebTest extends TestCase
 
         $this->assertEquals(false, auth()->check());
     }
+
+    /**
+     * Test that users can register via the web.
+     */
+    public function testRegister()
+    {
+        $this->visit('register')
+            ->type('Puppet', 'first_name')
+            ->type('test@dosomething.org', 'email')
+            ->type('1/20/1993', 'birthdate')
+            ->type('secret', 'password')
+            ->type('secret', 'password_confirmation')
+            ->press('Create New Account');
+
+        $this->seeIsAuthenticated('web');
+        $this->see('You\'re logged in.');
+    }
 }

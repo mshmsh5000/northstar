@@ -6,6 +6,9 @@ use Illuminate\Http\Request;
 use Illuminate\Routing\Controller as BaseController;
 use Illuminate\Foundation\Validation\ValidatesRequests;
 use Illuminate\Contracts\Auth\Factory as Auth;
+use Northstar\Auth\Registrar;
+use Northstar\Exceptions\NorthstarValidationException;
+use Northstar\Models\User;
 
 class WebController extends BaseController
 {
@@ -19,16 +22,26 @@ class WebController extends BaseController
     protected $auth;
 
     /**
+     * The registrar.
+     *
+     * @var Registrar
+     */
+    protected $registrar;
+
+    /**
      * Make a new WebController, inject dependencies,
      * and set middleware for this controller's methods.
      *
      * @param \Illuminate\Contracts\Auth\Factory $auth
+     * @param Registrar $registrar
      */
-    public function __construct(Auth $auth)
+    public function __construct(Auth $auth, Registrar $registrar)
     {
         $this->auth = $auth;
+        $this->registrar = $registrar;
 
-        $this->middleware('auth:web', ['except' => ['getLogin', 'postLogin']]);
+        $this->middleware('auth:web', ['only' => ['home', 'getLogout']]);
+        $this->middleware('guest:web', ['except' => ['home', 'getLogout']]);
     }
 
     /**
@@ -85,5 +98,44 @@ class WebController extends BaseController
         $this->auth->guard('web')->logout();
 
         return redirect('login');
+    }
+
+    /**
+     * Display the registration form.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function getRegister()
+    {
+        return view('register');
+    }
+
+    /**
+     * Handle submissions of the registration form.
+     *
+     * @param Request $request
+     * @return \Illuminate\Http\Response
+     * @throws NorthstarValidationException
+     */
+    public function postRegister(Request $request)
+    {
+        // If a user exists but has not set a password yet, allow them to
+        // "register" to set a new password on their account.
+        $existing = $this->registrar->resolve($request);
+        if ($existing && $existing->hasPassword()) {
+            throw new NorthstarValidationException(['email' => 'A user with that email or mobile has already been registered.']);
+        }
+
+        $this->registrar->validate($request, $existing, [
+            'first_name' => 'required',
+            'birthdate' => 'required|date',
+            'password' => 'required|confirmed|min:6',
+        ]);
+
+        // Register and login the user.
+        $user = $this->registrar->register($request->except(User::$internal), $existing);
+        $this->auth->guard('web')->login($user, true);
+
+        return redirect()->intended('/');
     }
 }

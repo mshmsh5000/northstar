@@ -24,7 +24,7 @@
 
                     <div class="form-item">
                         <label for="username" class="field-label">Email address or cell number</label>
-                        <input name="username" type="text" class="text-field" placeholder="puppet-sloth@example.org">
+                        <input name="username" type="text" class="text-field" placeholder="puppet-sloth@example.org" value="{{ old('username') }}">
                     </div>
 
                     <div class="form-item">
@@ -39,7 +39,7 @@
             </div>
             <div class="container__block -centered">
                 <ul>
-                    <li><a href="{{ url(config('services.drupal.url').'/user/register') }}">Create a DoSomething.org account</a></li>
+                    <li><a href="{{ url('register') }}">Create a DoSomething.org account</a></li>
                     <li><a href="{{ url(config('services.drupal.url').'/user/password') }}">Forgot your password?</a></li>
                 </ul>
             </div>

@@ -2,26 +2,59 @@
 
 namespace Northstar\Http\Middleware;
 
-use Auth;
 use Closure;
+use Illuminate\Http\Request;
 use Symfony\Component\HttpKernel\Exception\HttpException;
+use Illuminate\Contracts\Auth\Factory as Auth;
 
 class RedirectIfAuthenticated
 {
     /**
+     * The authentication factory.
+     *
+     * @var \Illuminate\Contracts\Auth\Factory
+     */
+    protected $auth;
+
+    /**
+     * Create a new middleware instance.
+     *
+     * @param \Illuminate\Contracts\Auth\Factory $auth
+     */
+    public function __construct(Auth $auth)
+    {
+        $this->auth = $auth;
+    }
+
+    /**
      * Handle an incoming request.
      *
-     * @param  \Illuminate\Http\Request $request
-     * @param  \Closure $next
+     * @param  \Illuminate\Http\Request  $request
+     * @param  \Closure  $next
+     * @param  string|null  $guard
      * @return mixed
-     * @throws HttpException
      */
-    public function handle($request, Closure $next)
+    public function handle($request, Closure $next, $guard = 'api')
     {
-        if (Auth::check()) {
-            throw new HttpException(401, 'You cannot do this with an active authentication token.');
+        if ($this->auth->guard($guard)->check()) {
+            return $this->handleAnonymous($request);
         }
 
         return $next($request);
+    }
+
+    /**
+     * Handle an anonymous request.
+     *
+     * @param Request $request
+     * @return \Illuminate\Http\RedirectResponse
+     */
+    protected function handleAnonymous(Request $request)
+    {
+        if ($request->wantsJson() || $request->ajax()) {
+            throw new HttpException(401, 'You cannot do this with an active authentication token.');
+        }
+
+        return redirect('/');
     }
 }
