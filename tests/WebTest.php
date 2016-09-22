@@ -78,7 +78,22 @@ class WebTest extends TestCase
         $this->get('logout')->followRedirects();
         $this->see('Log in to get started!');
 
-        $this->assertEquals(false, auth()->check());
+        $this->dontSeeIsAuthenticated('web');
+    }
+
+    /**
+     * Test that we can specify a custom post-logout redirect.
+     */
+    public function testLogoutRedirect()
+    {
+        $user = factory(User::class)->create();
+        $this->be($user, 'web');
+
+        $this->get('logout?redirect=http://dev.dosomething.org:8888');
+
+        $this->dontSeeIsAuthenticated('web');
+        $this->assertResponseStatus(302);
+        $this->seeHeader('Location', 'http://dev.dosomething.org:8888');
     }
 
     /**
