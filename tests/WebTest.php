@@ -48,8 +48,7 @@ class WebTest extends TestCase
             ->type('secret', 'password')
             ->press('Log In');
 
-        $this->assertEquals($user->id, auth()->id());
-        $this->see('You\'re logged in.');
+        $this->seeIsAuthenticatedAs($user, 'web');
     }
 
     /**
@@ -110,6 +109,5 @@ class WebTest extends TestCase
             ->press('Create New Account');
 
         $this->seeIsAuthenticated('web');
-        $this->see('You\'re logged in.');
     }
 }
