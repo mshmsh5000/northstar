@@ -4,21 +4,21 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "a71b915129a449fb89d1574d63be5508",
-    "content-hash": "148818fbb9cff1900111079c4d4488ab",
+    "hash": "8c9f48541e015fde187fb76e72a83b51",
+    "content-hash": "01095ab1eea3b3ff36899841f0c78be3",
     "packages": [
         {
             "name": "aws/aws-sdk-php",
-            "version": "3.19.4",
+            "version": "3.19.10",
             "source": {
                 "type": "git",
                 "url": "https://github.com/aws/aws-sdk-php.git",
-                "reference": "f67bc37fa4b76d85423052eae2a9577aab99adc1"
+                "reference": "eb9488f671175e708cf68c74cc04bd9115c96761"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/aws/aws-sdk-php/zipball/f67bc37fa4b76d85423052eae2a9577aab99adc1",
-                "reference": "f67bc37fa4b76d85423052eae2a9577aab99adc1",
+                "url": "https://api.github.com/repos/aws/aws-sdk-php/zipball/eb9488f671175e708cf68c74cc04bd9115c96761",
+                "reference": "eb9488f671175e708cf68c74cc04bd9115c96761",
                 "shasum": ""
             },
             "require": {
@@ -85,7 +85,7 @@
                 "s3",
                 "sdk"
             ],
-            "time": "2016-09-01 21:37:32"
+            "time": "2016-09-22 19:32:03"
         },
         {
             "name": "classpreloader/classpreloader",
@@ -1088,16 +1088,16 @@
         },
         {
             "name": "league/oauth2-server",
-            "version": "5.1.1",
+            "version": "5.1.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/thephpleague/oauth2-server.git",
-                "reference": "b8b92e59255ffe586ddd50a3975d7219ca9a8c38"
+                "reference": "e091d4812789cdce69dee43d300fd3707548a4aa"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/thephpleague/oauth2-server/zipball/b8b92e59255ffe586ddd50a3975d7219ca9a8c38",
-                "reference": "b8b92e59255ffe586ddd50a3975d7219ca9a8c38",
+                "url": "https://api.github.com/repos/thephpleague/oauth2-server/zipball/e091d4812789cdce69dee43d300fd3707548a4aa",
+                "reference": "e091d4812789cdce69dee43d300fd3707548a4aa",
                 "shasum": ""
             },
             "require": {
@@ -1160,7 +1160,7 @@
                 "secure",
                 "server"
             ],
-            "time": "2016-07-26 19:42:03"
+            "time": "2016-09-19 09:23:42"
         },
         {
             "name": "monolog/monolog",
@@ -1388,16 +1388,16 @@
         },
         {
             "name": "nikic/php-parser",
-            "version": "v2.1.0",
+            "version": "v2.1.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/nikic/PHP-Parser.git",
-                "reference": "47b254ea51f1d6d5dc04b9b299e88346bf2369e3"
+                "reference": "4dd659edadffdc2143e4753df655d866dbfeedf0"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/nikic/PHP-Parser/zipball/47b254ea51f1d6d5dc04b9b299e88346bf2369e3",
-                "reference": "47b254ea51f1d6d5dc04b9b299e88346bf2369e3",
+                "url": "https://api.github.com/repos/nikic/PHP-Parser/zipball/4dd659edadffdc2143e4753df655d866dbfeedf0",
+                "reference": "4dd659edadffdc2143e4753df655d866dbfeedf0",
                 "shasum": ""
             },
             "require": {
@@ -1435,7 +1435,7 @@
                 "parser",
                 "php"
             ],
-            "time": "2016-04-19 13:41:41"
+            "time": "2016-09-16 12:04:44"
         },
         {
             "name": "paragonie/random_compat",
@@ -1590,22 +1590,30 @@
         },
         {
             "name": "psr/log",
-            "version": "1.0.0",
+            "version": "1.0.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/php-fig/log.git",
-                "reference": "fe0936ee26643249e916849d48e3a51d5f5e278b"
+                "reference": "5277094ed527a1c4477177d102fe4c53551953e0"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/php-fig/log/zipball/fe0936ee26643249e916849d48e3a51d5f5e278b",
-                "reference": "fe0936ee26643249e916849d48e3a51d5f5e278b",
+                "url": "https://api.github.com/repos/php-fig/log/zipball/5277094ed527a1c4477177d102fe4c53551953e0",
+                "reference": "5277094ed527a1c4477177d102fe4c53551953e0",
                 "shasum": ""
             },
+            "require": {
+                "php": ">=5.3.0"
+            },
             "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "1.0.x-dev"
+                }
+            },
             "autoload": {
-                "psr-0": {
-                    "Psr\\Log\\": ""
+                "psr-4": {
+                    "Psr\\Log\\": "Psr/Log/"
                 }
             },
             "notification-url": "https://packagist.org/downloads/",
@@ -1619,12 +1627,13 @@
                 }
             ],
             "description": "Common interface for logging libraries",
+            "homepage": "https://github.com/php-fig/log",
             "keywords": [
                 "log",
                 "psr",
                 "psr-3"
             ],
-            "time": "2012-12-21 11:40:51"
+            "time": "2016-09-19 16:02:08"
         },
         {
             "name": "psy/psysh",
@@ -2636,16 +2645,16 @@
         },
         {
             "name": "zendframework/zend-diactoros",
-            "version": "1.3.5",
+            "version": "1.3.6",
             "source": {
                 "type": "git",
                 "url": "https://github.com/zendframework/zend-diactoros.git",
-                "reference": "b1d59735b672865dbeb930805029c24f226e3e77"
+                "reference": "a60da179c37f2c4e44ef734d0b92824a58943f7f"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/zendframework/zend-diactoros/zipball/b1d59735b672865dbeb930805029c24f226e3e77",
-                "reference": "b1d59735b672865dbeb930805029c24f226e3e77",
+                "url": "https://api.github.com/repos/zendframework/zend-diactoros/zipball/a60da179c37f2c4e44ef734d0b92824a58943f7f",
+                "reference": "a60da179c37f2c4e44ef734d0b92824a58943f7f",
                 "shasum": ""
             },
             "require": {
@@ -2656,7 +2665,7 @@
                 "psr/http-message-implementation": "~1.0.0"
             },
             "require-dev": {
-                "phpunit/phpunit": "~4.6",
+                "phpunit/phpunit": "^4.6 || ^5.5",
                 "squizlabs/php_codesniffer": "^2.3.1"
             },
             "type": "library",
@@ -2682,7 +2691,7 @@
                 "psr",
                 "psr-7"
             ],
-            "time": "2016-03-17 18:02:05"
+            "time": "2016-09-07 17:57:29"
         }
     ],
     "packages-dev": [
