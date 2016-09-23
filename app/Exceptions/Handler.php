@@ -30,6 +30,7 @@ class Handler extends ExceptionHandler
         OAuthServerException::class,
         ModelNotFoundException::class,
         ValidationException::class,
+        NorthstarValidationException::class,
         LegacyValidationException::class,
     ];
 
