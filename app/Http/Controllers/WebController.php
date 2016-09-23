@@ -51,7 +51,7 @@ class WebController extends BaseController
      */
     public function home()
     {
-        return view('home');
+        return view('home', ['user' => auth()->guard('web')->user()]);
     }
 
     /**

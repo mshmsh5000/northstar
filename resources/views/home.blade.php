@@ -1,16 +1,22 @@
 @extends('app')
 
-@section('title', 'Log In | DoSomething.org')
+@section('title', 'Profile | DoSomething.org')
 
 @section('content')
     <div class="container -padded">
         <div class="wrapper">
             <div class="container__block -centered">
-                <h1>You're logged in.</h1>
+                <article class="figure -medium">
+                    <div class="figure__media">
+                        <img class="avatar" alt="avatar" src="{{ $user->avatar or asset('avatar-placeholder.png') }}" />
+                    </div>
+                    <div class="figure__body">
+                        You are logged in as <strong>{{ $user->displayName() }}</strong>.
+                    </div>
+                </article>
             </div>
             <div class="container__block -centered">
-                <p><a href="{{ url('logout') }}" class="button -secondary">Log out</a></p>
-                <p class="footnote">(That's all for now.)</p>
+                <div class="form-actions"><a href="{{ url('logout') }}" class="button -secondary">Log out</a></div>
             </div>
         </div>
     </div>
