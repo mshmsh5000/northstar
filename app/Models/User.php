@@ -276,20 +276,6 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
     }
 
     /**
-     * Generate a token to authenticate a user
-     *
-     * @return mixed
-     */
-    public function login()
-    {
-        $token = new Token();
-        $token->user_id = $this->_id;
-        $token->save();
-
-        return $token;
-    }
-
-    /**
      * Does this user have a password set?
      *
      * @return bool
