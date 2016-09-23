@@ -276,20 +276,6 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
     }
 
     /**
-     * Generate a token to authenticate a user
-     *
-     * @return mixed
-     */
-    public function login()
-    {
-        $token = new Token();
-        $token->user_id = $this->_id;
-        $token->save();
-
-        return $token;
-    }
-
-    /**
      * Does this user have a password set?
      *
      * @return bool
@@ -297,6 +283,22 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
     public function hasPassword()
     {
         return ! (empty($this->password) && empty($this->drupal_password));
+    }
+
+    /**
+     * Get the display name for the user.
+     *
+     * @return string
+     */
+    public function displayName()
+    {
+        if (! empty($this->first_name) && ! empty($this->last_name)) {
+            return $this->first_name.' '.$this->last_initial;
+        } elseif (! empty($this->first_name)) {
+            return $this->first_name;
+        }
+
+        return 'a doer';
     }
 
     /**
