@@ -300,6 +300,22 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
     }
 
     /**
+     * Get the display name for the user.
+     *
+     * @return string
+     */
+    public function displayName()
+    {
+        if (! empty($this->first_name) && ! empty($this->last_name)) {
+            return $this->first_name.' '.$this->last_initial;
+        } elseif (! empty($this->first_name)) {
+            return $this->first_name;
+        }
+
+        return 'a doer';
+    }
+
+    /**
      * Get the corresponding Drupal ID for the given Northstar ID,
      * if it exists.
      *
