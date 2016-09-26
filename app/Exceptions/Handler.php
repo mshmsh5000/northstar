@@ -64,50 +64,82 @@ class Handler extends ExceptionHandler
             return (new HttpFoundationFactory())->createResponse($psrResponse);
         }
 
-        // If client requests it, render exception as JSON object
-        if ($request->ajax() || $request->wantsJson()) {
-
-            // If reporting a validation exception, use the prepared response
-            // @see \Northstar\Http\Controller@buildFailedValidationResponse
-            if ($e instanceof ValidationException || $e instanceof NorthstarValidationException) {
-                return $e->getResponse();
-            }
-
-            // Turn AuthenticationExceptions & ModelNotFoundExceptions into
-            // HttpExceptions so we can render them nicely below.
-            if ($e instanceof AuthenticationException) {
-                return $this->render($request, new HttpException(401, 'Unauthorized.'));
-            } elseif ($e instanceof ModelNotFoundException) {
-                return $this->render($request, new NotFoundHttpException('That resource could not be found.'));
-            }
-
-            $code = $e instanceof HttpException ? $e->getStatusCode() : 500;
-            $shouldHideErrorDetails = $code == 500 && ! config('app.debug');
-            $response = [
-                'error' => [
-                    'code' => $code,
-                    'message' => $shouldHideErrorDetails ? self::PRODUCTION_ERROR_MESSAGE : $e->getMessage(),
-                ],
-            ];
-
-            // Show more information if we're in debug mode
-            if (config('app.debug')) {
-                $response['debug'] = [
-                    'file' => $e->getFile(),
-                    'line' => $e->getLine(),
-                ];
-            }
-
-            return response()->json($response, $code);
+        // Re-cast specific exceptions or uniquely render them:
+        if ($e instanceof AuthenticationException) {
+            return $this->unauthenticated($request, $e);
+        } elseif ($e instanceof ValidationException || $e instanceof NorthstarValidationException) {
+            return $this->invalidated($request, $e);
+        } elseif ($e instanceof ModelNotFoundException) {
+            $e = new NotFoundHttpException('That resource could not be found.');
         }
 
-        // Redirect with input & flash message if a validation error on the web:
-        if ($e instanceof ValidationException || $e instanceof NorthstarValidationException) {
-            return redirect()->back()
-                ->withInput($request->except('password', 'password_confirmation'))
-                ->withErrors($e->getErrors());
+        // If client requests it, render exception as JSON object
+        if ($request->ajax() || $request->wantsJson()) {
+            return $this->buildJsonResponse($e);
         }
 
         return parent::render($request, $e);
+    }
+
+    /**
+     * Convert an validation exception into flash redirect or JSON response.
+     *
+     * @param \Illuminate\Http\Request $request
+     * @param ValidationException|NorthstarValidationException $e
+     * @return \Symfony\Component\HttpFoundation\Response
+     */
+    protected function invalidated($request, $e)
+    {
+        if ($request->ajax() || $request->wantsJson()) {
+            return $e->getResponse();
+        }
+
+        return redirect()->back()
+            ->withInput($request->except('password', 'password_confirmation'))
+            ->withErrors($e->getErrors());
+    }
+
+    /**
+     * Convert an authentication exception into an redirect or JSON response.
+     *
+     * @param \Illuminate\Http\Request $request
+     * @param \Illuminate\Auth\AuthenticationException $e
+     * @return \Symfony\Component\HttpFoundation\Response
+     */
+    protected function unauthenticated($request, AuthenticationException $e)
+    {
+        if ($request->ajax() || $request->wantsJson()) {
+            return $this->buildJsonResponse(new HttpException(401, 'Unauthorized.'));
+        }
+
+        return redirect()->guest('login');
+    }
+
+    /**
+     * Build a JSON error response for API clients.
+     *
+     * @param Exception $e
+     * @return \Illuminate\Http\JsonResponse
+     */
+    protected function buildJsonResponse(Exception $e)
+    {
+        $code = $e instanceof HttpException ? $e->getStatusCode() : 500;
+        $shouldHideErrorDetails = $code == 500 && ! config('app.debug');
+        $response = [
+            'error' => [
+                'code' => $code,
+                'message' => $shouldHideErrorDetails ? self::PRODUCTION_ERROR_MESSAGE : $e->getMessage(),
+            ],
+        ];
+
+        // Show more information if we're in debug mode
+        if (config('app.debug')) {
+            $response['debug'] = [
+                'file' => $e->getFile(),
+                'line' => $e->getLine(),
+            ];
+        }
+
+        return response()->json($response, $code);
     }
 }
