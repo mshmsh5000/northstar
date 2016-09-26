@@ -145,7 +145,7 @@ class Registrar
      * @param array $credentials
      * @return bool
      */
-    public function validateCredentials(UserContract $user, array $credentials)
+    public function validateCredentials($user, array $credentials)
     {
         if (! $user) {
             return false;
