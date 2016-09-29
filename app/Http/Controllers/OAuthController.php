@@ -64,8 +64,12 @@ class OAuthController extends Controller
     {
         // Validate the HTTP request and return an AuthorizationRequest.
         $authRequest = $this->oauth->validateAuthorizationRequest($request);
+        $client = $authRequest->getClient();
 
         if (! $this->auth->guard('web')->check()) {
+            $destination = request()->query('destination', $client->getName());
+            session(['destination' => $destination]);
+
             return redirect()->guest('login');
         }
 
