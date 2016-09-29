@@ -21,7 +21,9 @@ class ClientEntity implements ClientEntityInterface
      * Make a new OAuth Client entity.
      *
      * @param $client_id
+     * @param $client_name
      * @param $scopes
+     * @param $redirect_uri
      */
     public function __construct($client_id, $client_name, $scopes, $redirect_uri = '')
     {
