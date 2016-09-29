@@ -21,8 +21,9 @@ class ClientRepository implements ClientRepositoryInterface
      */
     public function getClientEntity($clientIdentifier, $grantType, $clientSecret = null, $mustValidateSecret = true)
     {
-        // Fetch client from the database.
+        /** @var \Northstar\Models\Client $model */
         $model = Client::where('client_id', $clientIdentifier)->first();
+
         if (! $model) {
             return null;
         }
@@ -37,7 +38,7 @@ class ClientRepository implements ClientRepositoryInterface
             return null;
         }
 
-        return new ClientEntity($model->client_id, $model->scope, $model->redirect_uri);
+        return ClientEntity::fromModel($model);
     }
 
     /**
