@@ -30,9 +30,9 @@ body, html {
 .container .container__block {
   &.-centered {
     @include media($tablet) {
-      @include span(9 of 12);
-      @include push(2);
-
+      float: none;
+      max-width: 600px;
+      margin: $base-spacing auto;
       text-align: center;
 
       // @TODO: Hacky!
