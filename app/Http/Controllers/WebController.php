@@ -84,6 +84,9 @@ class WebController extends BaseController
                 ->withErrors(['username' => 'These credentials do not match our records.']);
         }
 
+        // If we had stored a destination name, reset it.
+        session()->pull('destination');
+
         return redirect()->intended('/');
     }
 

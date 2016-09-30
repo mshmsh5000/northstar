@@ -24,6 +24,7 @@ Redirect the user to Northstar's "authorize" page with the following query strin
 
 * `response_type` with the value `code`
 * `client_id` with your Client ID
+* `destination` with a destination to display on the login page (optional)
 * `scope` with a space-delimited list of scopes to request
 * `state` with a CSRF token that can be validated below
 

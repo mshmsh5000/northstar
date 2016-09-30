@@ -122,7 +122,7 @@ class TestCase extends Illuminate\Foundation\Testing\TestCase
     public function asUser($user, $scopes = [])
     {
         $accessToken = new AccessTokenEntity();
-        $accessToken->setClient(new ClientEntity('phpunit', $scopes));
+        $accessToken->setClient(new ClientEntity('phpunit', 'PHPUnit', $scopes));
         $accessToken->setIdentifier(bin2hex(random_bytes(40)));
         $accessToken->setExpiryDateTime((new \DateTime())->add(new DateInterval('PT1H')));
 

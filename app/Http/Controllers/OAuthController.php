@@ -49,7 +49,6 @@ class OAuthController extends Controller
         $this->auth = $auth;
         $this->encrypter = $encrypter;
 
-        $this->middleware('auth:web', ['only' => 'authorize']);
         $this->middleware('auth:api', ['only' => ['info', 'invalidateToken']]);
     }
 
@@ -65,6 +64,14 @@ class OAuthController extends Controller
     {
         // Validate the HTTP request and return an AuthorizationRequest.
         $authRequest = $this->oauth->validateAuthorizationRequest($request);
+        $client = $authRequest->getClient();
+
+        if (! $this->auth->guard('web')->check()) {
+            $destination = request()->query('destination', $client->getName());
+            session(['destination' => $destination]);
+
+            return redirect()->guest('login');
+        }
 
         $entity = new UserEntity();
         $userId = $this->auth->guard('web')->user()->getAuthIdentifier();

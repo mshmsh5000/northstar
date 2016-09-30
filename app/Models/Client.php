@@ -6,8 +6,11 @@ namespace Northstar\Models;
  * The Client model. These identify the "client application" making
  * a request, and their maximum allowed scopes.
  *
- * @property string client_id
- * @property string client_secret
+ * @property string $title
+ * @property string $description
+ * @property string $client_id
+ * @property string $client_secret
+ * @property string $redirect_uri
  * @property array $scope
  */
 class Client extends Model

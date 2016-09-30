@@ -6,7 +6,8 @@
     <div class="container -padded">
         <div class="wrapper">
             <div class="container__block -centered">
-                <h1>Log in to get started!</h1>
+                <h1>Let's do this!</h1>
+                <h3>Log in to continue to {{ session('destination', 'DoSomething.org') }}.</h3>
             </div>
             <div class="container__block -centered">
                 @if (count($errors) > 0)

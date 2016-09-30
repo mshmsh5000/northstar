@@ -75,8 +75,8 @@ class WebTest extends TestCase
         $this->be($user, 'web');
 
         $this->get('logout')->followRedirects();
-        $this->see('Log in to get started!');
 
+        $this->seePageIs('login');
         $this->dontSeeIsAuthenticated('web');
     }
 
