@@ -7,14 +7,18 @@ Retrieves all valid OAuth clients. This requires either the `admin` scope, or `r
 GET /v2/clients
 ```
 
+<details>
+<summary>**Example Request**</summary>
 **Example Request:**
 ```sh
 curl -X GET \
   -H "Authorization: ${ACCESS_TOKEN}" \
   https://northstar.dosomething.org/v2/clients
 ```
+</details>
 
-**Example Response:**
+<details>
+<summary>**Example Response**</summary>
 ```js
 // 200 OK
 
@@ -59,6 +63,7 @@ curl -X GET \
   }
 }
 ```
+</details>
 
 ## Create a Client
 Creates a new OAuth client. This requires either the `admin` scope, or `role:admin` with an admin user.
@@ -67,7 +72,7 @@ Creates a new OAuth client. This requires either the `admin` scope, or `role:adm
 POST /v2/clients
 ```
 
-**Parameters:**
+**Request Parameters:**
 
 ```js
 {
@@ -91,7 +96,8 @@ POST /v2/clients
 }
 ```
 
-**Example Request:**
+<details>
+<summary>**Example Request**</summary>
 ```sh
 curl -X POST \
   -H "Authorization: ${ACCESS_TOKEN}" \
@@ -100,9 +106,10 @@ curl -X POST \
   -d '{"title": "Test Application", "description: "An example app.", "client_id": "test-application", "scope": ["user"]}' \
   https://northstar.dosomething.org/v2/clients
 ```
+</details>
 
-
-**Example Responses:**
+<details>
+<summary>**Example Response**</summary>
 ```js
 // 200 OK
 
@@ -121,6 +128,7 @@ curl -X POST \
   }
 }
 ```
+</details>
 
 ## Retrieve a Client
 View details for an OAuth client. This requires either the `admin` scope, or `role:admin` with an admin user.
@@ -129,7 +137,8 @@ View details for an OAuth client. This requires either the `admin` scope, or `ro
 GET /v2/clients/:client_id
 ```
 
-**Example Request:**
+<details>
+<summary>**Example Request**</summary>
 ```sh
 curl -X GET\
   -H "Authorization: ${ACCESS_TOKEN}" \
@@ -137,9 +146,11 @@ curl -X GET\
   -H "Accept: application/json" \
   https://northstar.dosomething.org/v2/clients/test-application
 ```
+</details>
 
 
-**Example Responses:**
+<details>
+<summary>**Example Response**</summary>
 ```js
 // 200 OK
 
@@ -159,6 +170,7 @@ curl -X GET\
   }
 }
 ```
+</details>
 
 ## Update a Client
 Updates an existing OAuth client's ID or scope(s). This requires either the `admin` scope, or `role:admin` with an admin user.
@@ -167,7 +179,7 @@ Updates an existing OAuth client's ID or scope(s). This requires either the `adm
 PUT /v2/clients/:client_id
 ```
 
-**Parameters:**
+**Request Parameters:**
 
 ```js
 {
@@ -188,7 +200,8 @@ PUT /v2/clients/:client_id
 }
 ```
 
-**Example Request:**
+<details>
+<summary>**Example Request**</summary>
 ```sh
 curl -X PUT \
   -H "Authorization: ${ACCESS_TOKEN}" \
@@ -197,9 +210,11 @@ curl -X PUT \
   -d '{"scope": ["admin", "user"]}' \
   https://northstar.dosomething.org/v2/clients/test-application
 ```
+</details>
 
 
-**Example Responses:**
+<details>
+<summary>**Example Response**</summary>
 ```js
 // 200 OK
 
@@ -219,6 +234,7 @@ curl -X PUT \
   }
 }
 ```
+</details>
 
 
 ## Delete a Client 
@@ -230,7 +246,8 @@ DELETE /v2/clients/:client_id
 ```
 
 
-**Example Request:**
+<details>
+<summary>**Example Request**</summary>
 ```sh
 curl -X DELETE \
   -H "Authorization: ${ACCESS_TOKEN}" \
@@ -238,9 +255,11 @@ curl -X DELETE \
   -H "Accept: application/json" \
   https://northstar.dosomething.org/v2/clients/test-application
 ```
+</details>
 
 
-**Example Responses:**
+<details>
+<summary>**Example Response**</summary>
 ```js
 // 200 OK
 
@@ -251,6 +270,7 @@ curl -X DELETE \
   }
 }
 ```
+</details>
 
 ## Retrieve All Client Scopes
 Retrieves all valid scopes and a short description of each.
@@ -259,12 +279,14 @@ Retrieves all valid scopes and a short description of each.
 GET /v2/scopes
 ```
 
-**Example Request:**
+<details>
+<summary>**Example Request**</summary>
 ```sh
 curl -X GET https://northstar.dosomething.org/v2/scopes
 ```
 
-**Example Response:**
+<details>
+<summary>**Example Response**</summary>
 ```js
 // 200 OK
 
@@ -284,6 +306,7 @@ curl -X GET https://northstar.dosomething.org/v2/scopes
   }
 }
 ```
+</details>
 
 
 ## Retrieve Public Key
@@ -294,14 +317,17 @@ or `role:admin` with an admin user.
 GET /v2/key
 ```
 
-**Example Request:**
+<details>
+<summary>**Example Request**</summary>
 ```sh
 curl -X GET https://northstar.dosomething.org/v2/key \
   -H "Authorization: ${ACCESS_TOKEN}" \
   -H "Accept: application/json"
 ```
+</details>
 
-**Example Response:**
+<details>
+<summary>**Example Response**</summary>
 ```js
 // 200 OK
 
@@ -311,4 +337,5 @@ curl -X GET https://northstar.dosomething.org/v2/key \
   "public_key": "-----BEGIN PUBLIC KEY-----\n...\n-----END PUBLIC KEY-----\n"
 }
 ```
+</details>
 

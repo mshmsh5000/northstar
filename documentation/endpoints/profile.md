@@ -7,15 +7,18 @@ Get profile data for the [currently authenticated user](../authentication.md). T
 GET /v1/profile
 ```
 
-**Example Request:**  
+<details>
+<summary>**Example Request**</summary>
 ```sh
 curl -X GET \
   -H "Authorization: ${ACCESS_TOKEN}" \
   -H "Accept: application/json"
   https://northstar.dosomething.org/v1/profile
 ```
+</details>
 
-**Example Response:**  
+<details>
+<summary>**Example Response**</summary>
 ```js
 // 200 OK
 
@@ -40,6 +43,7 @@ curl -X GET \
     }
 }
 ```
+</details>
 
 ## Update Authenticated User's Profile
 Update the profile data for the [currently authenticated user](../authentication.md). This must be done using an API key with `user` scope.
@@ -48,7 +52,7 @@ Update the profile data for the [currently authenticated user](../authentication
 POST /v1/profile
 ```
 
-**Body Parameters:**
+**Request Parameters:**
 
 ```js
 // Content-Type: application/json
@@ -85,7 +89,8 @@ POST /v1/profile
 }
 ```
 
-**Example Request:**
+<details>
+<summary>**Example Request**</summary>
 
 ```sh
 curl -X POST \
@@ -93,8 +98,10 @@ curl -X POST \
   -d '{"first_name": "New First name"}' \
   https://northstar.dosomething.org/v1/profile
 ```
+</details>
 
-**Example Response:**
+<details>
+<summary>**Example Response**</summary>
 
 ```js
 // 200 OK
@@ -107,6 +114,7 @@ curl -X POST \
     }
 }
 ```
+</details>
 
 ## Get Authenticated User's Signups
 Hmm, documentation is coming soon! :construction:

@@ -1,6 +1,6 @@
 # Northstar
 
-This is __Northstar__, the DoSomething.org user & identity API. It's our single "source of truth" for member
+This is __Northstar__, the DoSomething.org user & identity service. It's our single "source of truth" for member
 information. Northstar is currently only available for use by registered DoSomething.org services.
 
 ## Authentication
@@ -13,9 +13,8 @@ See [Authentication](authentication.md) for details on authorizing your requests
 Endpoint                  | Functionality                                                      | Required Scope
 ------------------------- | ------------------------------------------------------------------ | --------------
 `POST v2/auth/token`      | [Create Auth Token (Authorization Code Grant)](endpoints/auth.md#create-token-authorization-code-grant) | 
-`POST v2/auth/token`      | [Create Auth Token (Password Grant)](endpoints/auth.md#create-token-password-grant) | 
-`POST v2/auth/token`      | [Create Auth Token (Client Credentials Grant)](endpoints/auth.md#create-token-client-credentials-grant) | 
 `POST v2/auth/token`      | [Create Auth Token (Refresh Token Grant)](endpoints/auth.md#create-token-refresh-token-grant) | 
+`POST v2/auth/token`      | [Create Auth Token (Client Credentials Grant)](endpoints/auth.md#create-token-client-credentials-grant) | 
 `DELETE v2/auth/token`    | [Invalidate Auth Token](endpoints/auth.md#revoke-token) | 
 `GET v2/auth/info`        | [Get User Info](endpoints/auth.md#get-user-info) | 
 
@@ -69,9 +68,6 @@ Endpoint                                     | Functionality                    
 `DELETE v2/clients/:client_id`               | [Delete a Client](endpoints/clients.md#delete-a-client)             | `role:admin` or `admin`
 `GET v2/scopes`                              | [Retrieve All Client Scopes](endpoints/clients.md#retrieve-all-client-scopes) |
 `GET v2/key`                                 | [Retrieve Public Key](endpoints/clients.md#retrieve-public-key)     | `role:admin` or `admin`
-
-<br>
-> :bulb: __Did you know?__ We also have a shared [Paw Collection](endpoints.paw) for testing these endpoints against your local environment.  
 
 <br>
 

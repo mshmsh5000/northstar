@@ -14,15 +14,18 @@ GET /v1/users
 - `filter`: Filter the collection to include _only_ users matching the following comma-separated values. For example, `/v1/users?filter[drupal_id]=10123,10124,10125` would return users whose Drupal ID is either 10123, 10124, or 10125. You can filter by one or more indexed fields.
 - `search`: Search the collection for users with fields whose value match the query. For example, `/v1/users?search[id]=test@example.com&search[email]=test@example.org` would return all users with either an ID or email address matching `test@example.org`. You can search by one or more indexed fields.
 
-**Example Request:**
-
+<details>
+<summary>**Example Request**</summary>
 ```sh
 curl -X GET \
   -H "Authorization: ${ACCESS_TOKEN}" \
   https://northstar.dosomething.org/v1/users?limit=15&page=1
 ```
+</details>
 
-**Example Response:**
+<details>
+<summary>**Example Response**</summary>
+
 ```js
 // 200 OK
 
@@ -49,7 +52,11 @@ curl -X GET \
     }
 }
 ```
-**Example Request:**
+
+</details>
+
+<details>
+<summary>**Example Request (filtered)**</summary>
 
 ```sh
 curl -X GET \
@@ -57,7 +64,11 @@ curl -X GET \
   https://northstar.dosomething.org/v1/users?filter[drupal_id]=10010
 ```
 
-**Example Response:**
+</details>
+
+<details>
+<summary>**Example Response (filtered)**</summary>
+
 ```js
 // 200 OK
 
@@ -82,6 +93,8 @@ curl -X GET \
 }
 ```
 
+</summary>
+
 ## Create a User
 Create a new user. This is performed as an "[upsert](https://docs.mongodb.org/v2.6/reference/glossary/#term-upsert)" by default,
 so if a user with a matching identifier is found, new/changed properties will be merged into the existing document. This means
@@ -97,7 +110,7 @@ This requires either the `admin` scope, or "admin" or "staff" role with the appr
 POST /v1/users
 ```
 
-**Body Parameters:**
+**Request Parameters:**
 
 Either a mobile number or email is required.
 ```js
@@ -153,7 +166,8 @@ Either a mobile number or email is required.
 - `create_drupal_user`: Will send a request to create a drupal user in the main DS app.
 - `upsert`: Should this request upsert an existing account, if matched? Defaults to `true`.
 
-**Example Request:**  
+<details>
+<summary>**Example Resquest**</summary>
 
 ```sh
 curl -X POST \
@@ -164,7 +178,10 @@ curl -X POST \
   https://northstar.dosomething.org/v1/users?create_drupal_user=1
 ```
 
-**Example Response:**
+</details>
+
+<details>
+<summary>**Example Response**</summary>
 
 ```js
 // 200 Okay (or) 201 Created
@@ -187,6 +204,8 @@ curl -X POST \
 }
 ```
 
+</details>
+
 ## Retrieve a User
 Get profile data for a specific user. This can be retrieved with either the user's Northstar ID (which is automatically
 generated when a new database record is created), a mobile phone number, an email address, a Facebook ID or the user's Drupal ID.
@@ -201,15 +220,19 @@ GET /v1/users/drupal_id/<drupal_id>
 GET /v1/users/facebook_id/<facebook_id>
 ```
 
-**Example Request:**  
+<details>
+<summary>**Example Request**</summary>
 ```sh
 curl -X GET \
   -H "Authorization: ${ACCESS_TOKEN}" \
   -H "Accept: application/json"
   https://northstar.dosomething.org/v1/users/mobile/5555555555
 ```
+</details>
 
-**Example Response:**  
+<details>
+<summary>**Example Response**</summary>
+
 ```js
 // 200 OK
 
@@ -237,6 +260,8 @@ curl -X GET \
 }
 ```
 
+</details>
+
 ## Update a User
 Update a user resource. This can be retrieved with the user's Northstar ID or the source ID (`drupal_id`). This requires either the `admin` scope, or "admin" or "staff" role with the appropriate scope.
 
@@ -245,7 +270,7 @@ PUT /v1/users/_id/<user_id>
 PUT /v1/users/drupal_id/<drupal_id>
 ```
 
-**Body Parameters:**
+**Request Parameters:**
 
 ```js
 // Content-Type: application/json
@@ -287,7 +312,8 @@ PUT /v1/users/drupal_id/<drupal_id>
 }
 ```
 
-**Example Request:**
+<details>
+<summary>**Example Request**</summary>
 
 ```sh
 curl -X PUT \
@@ -296,7 +322,10 @@ curl -X PUT \
   https://northstar.dosomething.org/v1/_id/5430e850dt8hbc541c37tt3d
 ```
 
-**Example Response:**
+</details>
+
+<details>
+<summary>**Example Response**</summary>
 
 ```js
 // 200 Okay
@@ -310,6 +339,8 @@ curl -X PUT \
 }
 ```
 
+</details>
+
 ## Delete a User
 Destroy a user resource. The `user_id` property of the user to delete must be provided in the URL path, and refers to the user's Northstar ID. This requires either the `admin` scope, or "admin" or "staff" role with the appropriate scope.
 
@@ -317,14 +348,20 @@ Destroy a user resource. The `user_id` property of the user to delete must be pr
 DELETE /v1/users/:user_id
 ```
 
-**Example Request:**
+<details>
+<summary>**Example Request**</summary>
+
 ```sh
 curl -X DELETE \
   -H "Authorization: ${ACCESS_TOKEN}" \
   https://northstar.dosomething.org/v1/users/555b9ca8bffebc30068b456e
 ```
 
-**Example Response:**
+</details>
+
+<details>
+<summary>**Example Response**</summary>
+
 ```js
 // 200 OK
 
@@ -336,6 +373,8 @@ curl -X DELETE \
 }
 ```
 
+</details>
+
 ## Set User Avatar
 Save an avatar to the user's Northstar profile. Accepts a file or Base64 string in the data request. This will return
 the updated User profile document, with a `photo` attribute pointing to the newly created image.
@@ -344,7 +383,7 @@ the updated User profile document, with a `photo` attribute pointing to the newl
 POST /v1/users/:user_id/avatar
 ```
 
-**Parameters:**
+**Request Parameters:**
 ```js
 // Content-Type: multipart/form-data --or-- application/json
 // Accept: application/json
@@ -355,7 +394,9 @@ POST /v1/users/:user_id/avatar
 }
 ```
 
-**Example Request:**
+<details>
+<summary>**Example Request**</summary>
+
 ```sh
 curl -X POST \
   -H "Authorization: ${ACCESS_TOKEN}" \
@@ -365,7 +406,11 @@ curl -X POST \
   https://northstar.dosomething.org/v1/users/{id}/avatar
 ```
 
-**Example Response:**
+</details>
+
+<details>
+<summary>**Example Response**</summary>
+
 ```js
 // 200 OK
 
@@ -378,3 +423,5 @@ curl -X POST \
     }
 }
 ```
+
+</details>
