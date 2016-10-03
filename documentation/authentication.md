@@ -1,10 +1,13 @@
 # Authentication
 
 We handle authentication using __OAuth 2__, an [open standard](https://tools.ietf.org/html/rfc6749) for authorization.
-OAuth allows us to issue access tokens (so a user's credentials don't need to be sent with every request) and refresh
-tokens (so that a user's credentials do not need to be stored on a device). It also allows us to restrict abilities of
-different clients based on scopes (so that, for example, internal tools like [Aurora](https://aurora.dosomething.org/auth/login)
-can delete users, but an "external" application like the mobile app cannot).
+OAuth allows us to issue access tokens (so a user or machine's credentials don't need to be sent with every request) and
+refresh tokens (so that a user's credentials do not need to be stored to re-authorize later). Most importantly, Northstar
+access tokens can be used to make requests to _any_ other DoSomething.org service!
+
+__Here's the tl;dr:__ If a user is logging in to an application and making requests, use the [Authorization Code grant](endpoints/auth.md#create-token-authorization-code-grant)
+ to request an access & refresh token for them. If you're performing requests as a "machine" (not as a direct result of a
+ user's action), use the [Client Credentials Grant](endpoints/auth.md#create-token-client-credentials-grant). 
 
 ### Clients
 When requesting an authentication token, credentials for a valid **client application** must be included. This includes a client ID
@@ -24,8 +27,8 @@ The allowed scopes for each client are listed on Aurora. A machine-friendly list
 retrieved from the public [`scopes`](endpoints/clients.md#retrieve-all-client-scopes) endpoint.
 
 ### Access Tokens
-The [Authorization Code Grant](endpoints/auth.md#create-token-authorization-code-grant) or [Password Grant](endpoints/auth.md#create-token-password-grant)
-may be used to request an **access token** which can "authorize" requests on behalf of a particular user.
+The [Authorization Code Grant](endpoints/auth.md#create-token-authorization-code-grant) may be used to request an **access token** which
+can "authorize" requests on behalf of a particular user.
 
 We authenticate requests to our APIs using [JSON Web Tokens](https://jwt.io), another [open standard](https://tools.ietf.org/html/rfc7519)
 that allows us to issue cryptographically signed tokens. Because the tokens are signed, this data can't be tampered with without invalidating
@@ -70,13 +73,13 @@ If you're curious about more of the nerdy details on JWTs, check out the [offici
 
 ### Refresh Tokens
 Access tokens are short-lived and expire after an hour. Since that's not a very long time, clients are also issued
-**refresh tokens** which can be used (once!) to create another access token. Refresh tokens _never_ expire, but can be revoked
+**refresh tokens** which can be used (once!) to create another access token. Refresh tokens don't expire, but can be revoked
 manually - for example, if a user "removes" an application or logs out from their account.
 
 Once a refresh token is used to create a new access token through the [Refresh Token Grant](endpoints/auth.md#create-token-refresh-token-grant),
 a _new_ access token and refresh token are returned & the old refresh token cannot be used again.
 
-### "Computer" Authentication
+### Machine Authentication
 Some services don't authenticate on behalf of a user (for example, an internal batch-processing service). These clients can use the
 [Client Credentials Grant](endpoints/auth.md#create-token-client-credentials-grant) to request a signed authentication token
 that securely identifies that particular application. Since user credentials are not involved, this does _not_ create a refresh
