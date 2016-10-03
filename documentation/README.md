@@ -1,6 +1,6 @@
 # Northstar
 
-This is __Northstar__, the DoSomething.org user & identity API. It's our single "source of truth" for member
+This is __Northstar__, the DoSomething.org user & identity service. It's our single "source of truth" for member
 information. Northstar is currently only available for use by registered DoSomething.org services.
 
 ## Authentication
