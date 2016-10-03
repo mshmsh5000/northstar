@@ -18,9 +18,6 @@ The authorization code grant allows you to authorize a user without needing to m
 It's a two-step process that involves redirecting the user to Northstar in their web browser, and then using the "code"
 returned to the application's redirect URL to request an access & refresh token.
 
-The produced JWT authentication token can be used to sign future requests on the user's behalf, and the refresh token
-can be used to fetch a new access token after the first one expires.
-
 #### Step One: Authorize the User
 
 Redirect the user to Northstar's "authorize" page with the following query string parameters:
@@ -69,7 +66,8 @@ POST /v2/auth/token
 }
 ```
 
-**Example Request:**
+<details>
+<summary>**Example Request**</summary>
 
 ```
 curl -X POST \
@@ -79,8 +77,11 @@ curl -X POST \
   "code": "KwM/cj40QWuCmpEALcmjxEOeXmcvoYNBQCb7pWd6X0yEG4fRn/b58C8oEos4SRUhSAjOgoZMcKk+rdk9hbd9u5rvFoC3pj8oIFTMyig1fFE0Lpvvu"}' \
   https://northstar.dosomething.org/v2/auth/token
 ```
+</details>
 
-**Example Response:**
+
+<details>
+<summary>**Example Response**</summary>
 
 ```js
 // 200 OK
@@ -92,6 +93,7 @@ curl -X POST \
   "refresh_token": "EytNzc1CJrA0fn1ymUutcg8FzOM7yUER5F+31oP/eRJdXwwaII6Lw4yS/PrC/orThdot4+7o81d/VXdUDBre6NDsMbEtTjk9fJVPDFSU74focg3N0zXKiPziBRvegv4DLrM2RkAfYYfxTK5nM1uMT2pCNBobrA8qHahgmw2XgoSE4J/xco/lmHKP393KMwn0nziKDr0YeqPRi+PAvtdsNPKpydyc0JbAFEevZ2UYXz4bRIaS4nUP+IyB6cYSdnok3OCJr8lDUp/OHA0JlOk9ra7YBFXNB8ZvlR1GEL2qQBlIWCqxPL9xrUBTIWUst7/+imx8LmBqevmGY1UFBXAm7n0p1Ih3Qxj0dx9u5woBdCwLYxAlEL70LaSDbx3qdhF+6uhrZTCnpOPE/tZSImpbmashh/SLtFEMpVP+ifISnLYSnQTvyL4XvWU/8azrFGmDmxYB63kuR4D+4QcqptPyA8JC5sOnn1CpDwzTcn93WMbhtWdIUCBTgF2R8rYNVki5"
 }
 ```
+</details>
 
 ## Create Token (Refresh Token Grant)
 
@@ -103,7 +105,7 @@ If an invalid refresh token is provided, a `400 Bad Request` error will be retur
 POST /v2/auth/token
 ```
 
-**Parameters:**
+**Request Parameters:**
 
 ```js
 // Content-Type: application/json
@@ -125,7 +127,8 @@ POST /v2/auth/token
 }
 ```
 
-**Example Request:**
+<details>
+<summary>**Example Request**</summary>
 ```
 curl -X POST \
   -H "Content-Type: application/json" \
@@ -134,8 +137,10 @@ curl -X POST \
   "refresh_token": "${REFRESH_TOKEN}"}' \
   https://northstar.dosomething.org/v2/auth/token
 ```
+</details>
 
-**Example Response:**
+<details>
+<summary>**Example Response**</summary>
 
 ```js
 // 200 OK
@@ -147,6 +152,7 @@ curl -X POST \
   "refresh_token": "EytNzc1CJrA0fn1ymUutcg8FzOM7yUER5F+31oP/eRJdXwwaII6Lw4yS/PrC/orThdot4+7o81d/VXdUDBre6NDsMbEtTjk9fJVPDFSU74focg3N0zXKiPziBRvegv4DLrM2RkAfYYfxTK5nM1uMT2pCNBobrA8qHahgmw2XgoSE4J/xco/lmHKP393KMwn0nziKDr0YeqPRi+PAvtdsNPKpydyc0JbAFEevZ2UYXz4bRIaS4nUP+IyB6cYSdnok3OCJr8lDUp/OHA0JlOk9ra7YBFXNB8ZvlR1GEL2qQBlIWCqxPL9xrUBTIWUst7/+imx8LmBqevmGY1UFBXAm7n0p1Ih3Qxj0dx9u5woBdCwLYxAlEL70LaSDbx3qdhF+6uhrZTCnpOPE/tZSImpbmashh/SLtFEMpVP+ifISnLYSnQTvyL4XvWU/8azrFGmDmxYB63kuR4D+4QcqptPyA8JC5sOnn1CpDwzTcn93WMbhtWdIUCBTgF2R8rYNVki5"
 }
 ```
+</details>
 
 ## Create Token (Client Credentials Grant)
 This will verify a client application's credentials and create a JWT authentication token, which can be used to sign future
@@ -156,7 +162,7 @@ requests by the application. If invalid credentials are provided, this endpoint 
 POST /v2/auth/token
 ```
 
-**Parameters:**
+**Request Parameters:**
 
 ```js
 // Content-Type: application/json
@@ -175,7 +181,9 @@ POST /v2/auth/token
 }
 ```
 
-**Example Request:**
+<details>
+<summary>**Example Request**</summary>
+
 ```
 curl -X POST \
   -H "Content-Type: application/json" \
@@ -183,8 +191,10 @@ curl -X POST \
   -d '{"grant_type": "client_credentials", "client_id": "${CLIENT_ID}", "client_secret": "${CLIENT_SECRET}"'
   https://northstar.dosomething.org/v2/auth/token
 ```
+</details>
 
-**Example Response:**
+<details>
+<summary>**Example Response**</summary>
 
 ```js
 // 200 OK
@@ -196,6 +206,8 @@ curl -X POST \
 }
 ```
 
+</details>
+
 ## Revoke Token
 
 This will revoke the provided refresh token, if the user is authorized to do so.
@@ -204,7 +216,7 @@ This will revoke the provided refresh token, if the user is authorized to do so.
 DELETE /v2/auth/token
 ```
 
-**Parameters:**
+**Request Parameters:**
 
 ```js
 // Content-Type: application/json
@@ -214,7 +226,8 @@ DELETE /v2/auth/token
 }
 ```
 
-**Example Request:**
+<details>
+<summary>**Example Request**</summary>
 
 ```
 curl -X DELETE \
@@ -224,7 +237,10 @@ curl -X DELETE \
   https://northstar.dosomething.org/v2/auth/token
 ```
 
-**Example Response:**
+</details>
+
+<details>
+<summary>**Example Response**</summary>
 
 ```js
 // 200 OK
@@ -237,6 +253,8 @@ curl -X DELETE \
 }
 ```
 
+</details>
+
 ## Get User Info
 
 This will display the user's profile according to the format [defined in the OpenID Connect specification](http://openid.net/specs/openid-connect-core-1_0.html#UserInfo).
@@ -245,15 +263,19 @@ This will display the user's profile according to the format [defined in the Ope
 GET /v2/auth/info
 ```
 
-**Example Request:**
+<details>
+<summary>**Example Request**</summary>
+
 ```sh
 curl -X GET \
   -H "Authorization: ${ACCESS_TOKEN}" \
   -H "Accept: application/json"
   https://northstar.dosomething.org/v2/auth/info
 ```
+</details>
 
-**Example Response:**
+<details>
+<summary>**Example Response**</summary>
 
 ```js
 // 200 OK
@@ -277,3 +299,4 @@ curl -X GET \
   }
 }
 ```
+</details>

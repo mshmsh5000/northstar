@@ -11,7 +11,7 @@ This will verify a user's credentials and create an authentication token, which 
 POST /v1/auth/token
 ```
 
-**Parameters:**
+**Request Parameters:**
 
 In addition to the password, either mobile number or email is required.
 ```js
@@ -72,7 +72,7 @@ This will verify the given credentials _without_ creating a new authentication t
 POST /v1/auth/verify
 ```
 
-**Parameters:**
+**Request Parameters:**
 
 In addition to the password, either mobile number or email is required.
 ```js
@@ -163,7 +163,7 @@ setting a password via this endpoint.
 POST /v1/auth/register
 ```
 
-**Parameters:**
+**Request Parameters:**
 
 In addition to the password, either mobile number or email is required.
 ```js
@@ -248,7 +248,7 @@ This will check if the given Facebook token is valid & corresponds to the Facebo
 POST /v1/auth/facebook/validate
 ```
 
-**Parameters:**
+**Request Parameters:**
 
 ```js
 // Content-Type: application/json
