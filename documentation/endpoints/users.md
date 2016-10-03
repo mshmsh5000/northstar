@@ -93,7 +93,7 @@ curl -X GET \
 }
 ```
 
-</summary>
+</details>
 
 ## Create a User
 Create a new user. This is performed as an "[upsert](https://docs.mongodb.org/v2.6/reference/glossary/#term-upsert)" by default,
@@ -167,7 +167,7 @@ Either a mobile number or email is required.
 - `upsert`: Should this request upsert an existing account, if matched? Defaults to `true`.
 
 <details>
-<summary>**Example Resquest**</summary>
+<summary>**Example Request**</summary>
 
 ```sh
 curl -X POST \
