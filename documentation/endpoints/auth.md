@@ -69,7 +69,7 @@ POST /v2/auth/token
 <details>
 <summary>**Example Request**</summary>
 
-```
+```sh
 curl -X POST \
   -H "Content-Type: application/json" \
   -H "Accept: application/json" \
@@ -129,7 +129,8 @@ POST /v2/auth/token
 
 <details>
 <summary>**Example Request**</summary>
-```
+
+```sh
 curl -X POST \
   -H "Content-Type: application/json" \
   -H "Accept: application/json" \
@@ -137,6 +138,7 @@ curl -X POST \
   "refresh_token": "${REFRESH_TOKEN}"}' \
   https://northstar.dosomething.org/v2/auth/token
 ```
+
 </details>
 
 <details>
@@ -184,7 +186,7 @@ POST /v2/auth/token
 <details>
 <summary>**Example Request**</summary>
 
-```
+```sh
 curl -X POST \
   -H "Content-Type: application/json" \
   -H "Accept: application/json" \
@@ -229,7 +231,7 @@ DELETE /v2/auth/token
 <details>
 <summary>**Example Request**</summary>
 
-```
+```sh
 curl -X DELETE \
   -H "Content-Type: application/json" \
   -H "Accept: application/json" \
@@ -268,8 +270,8 @@ GET /v2/auth/info
 
 ```sh
 curl -X GET \
-  -H "Authorization: ${ACCESS_TOKEN}" \
-  -H "Accept: application/json"
+  -H "Authorization: Bearer ${ACCESS_TOKEN}" \
+  -H "Accept: application/json" \
   https://northstar.dosomething.org/v2/auth/info
 ```
 </details>
