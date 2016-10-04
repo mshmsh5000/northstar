@@ -12,7 +12,7 @@ GET /v2/clients
 **Example Request:**
 ```sh
 curl -X GET \
-  -H "Authorization: ${ACCESS_TOKEN}" \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}" \
   https://northstar.dosomething.org/v2/clients
 ```
 </details>
@@ -100,7 +100,7 @@ POST /v2/clients
 <summary>**Example Request**</summary>
 ```sh
 curl -X POST \
-  -H "Authorization: ${ACCESS_TOKEN}" \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}" \
   -H "Content-Type: application/json" \
   -H "Accept: application/json" \
   -d '{"title": "Test Application", "description: "An example app.", "client_id": "test-application", "scope": ["user"]}' \
@@ -141,7 +141,7 @@ GET /v2/clients/:client_id
 <summary>**Example Request**</summary>
 ```sh
 curl -X GET\
-  -H "Authorization: ${ACCESS_TOKEN}" \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}" \
   -H "Content-Type: application/json" \
   -H "Accept: application/json" \
   https://northstar.dosomething.org/v2/clients/test-application
@@ -204,7 +204,7 @@ PUT /v2/clients/:client_id
 <summary>**Example Request**</summary>
 ```sh
 curl -X PUT \
-  -H "Authorization: ${ACCESS_TOKEN}" \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}" \
   -H "Content-Type: application/json" \
   -H "Accept: application/json" \
   -d '{"scope": ["admin", "user"]}' \
@@ -250,7 +250,7 @@ DELETE /v2/clients/:client_id
 <summary>**Example Request**</summary>
 ```sh
 curl -X DELETE \
-  -H "Authorization: ${ACCESS_TOKEN}" \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}" \
   -H "Content-Type: application/json" \
   -H "Accept: application/json" \
   https://northstar.dosomething.org/v2/clients/test-application
@@ -321,7 +321,7 @@ GET /v2/key
 <summary>**Example Request**</summary>
 ```sh
 curl -X GET https://northstar.dosomething.org/v2/key \
-  -H "Authorization: ${ACCESS_TOKEN}" \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}" \
   -H "Accept: application/json"
 ```
 </details>

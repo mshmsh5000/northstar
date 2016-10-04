@@ -11,7 +11,7 @@ GET /v1/profile
 <summary>**Example Request**</summary>
 ```sh
 curl -X GET \
-  -H "Authorization: ${ACCESS_TOKEN}" \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}" \
   -H "Accept: application/json"
   https://northstar.dosomething.org/v1/profile
 ```
@@ -94,7 +94,7 @@ POST /v1/profile
 
 ```sh
 curl -X POST \
-  -H "Authorization: ${ACCESS_TOKEN}" \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}" \
   -d '{"first_name": "New First name"}' \
   https://northstar.dosomething.org/v1/profile
 ```
