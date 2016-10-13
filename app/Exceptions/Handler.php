@@ -73,9 +73,11 @@ class Handler extends ExceptionHandler
             $e = new NotFoundHttpException('That resource could not be found.');
         }
 
-        // If route is in the `api` group, render exception as JSON object.
+        // If route has 'Accepts: application/json' header or is in the `api`
+        // middleware group, render the exception as JSON object.
         $middleware = app('router')->getCurrentRoute()->middleware();
-        if (in_array('api', $middleware)) {
+        $isApiRoute = in_array('api', $middleware);
+        if ($request->ajax() || $request->wantsJson() || $isApiRoute) {
             return $this->buildJsonResponse($e);
         }
 
