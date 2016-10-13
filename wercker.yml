@@ -21,7 +21,11 @@ build:
         name: update php & install mongodb
         code: |-
           sudo apt-get install php5.6 mongodb-org -y
-          sudo apt-get install php5.6-mongo php5.6-curl php5.6-mbstring php5.6-mcrypt php5.6-mysql php5.6-xml php5.6-zip
+          sudo apt-get install php5.6-mongo php5.6-curl php5.6-mbstring php5.6-mcrypt php5.6-mongodb php5.6-mysql php5.6-xml php5.6-zip
+    - script:
+        name: install mongodb pecl extensions
+        code: |-
+          sudo pecl install mongodb
     - script:
         name: update composer
         code: sudo composer self-update
