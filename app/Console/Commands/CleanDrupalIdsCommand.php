@@ -58,12 +58,13 @@ class CleanDrupalIdsCommand extends Command
             ]);
         });
 
-        foreach ($blanks['result'] as $result) {
-            $this->info('Found '.$result['count'].' duplicates for '.$result['_id']['drupal_id'].' ('.config('services.drupal.url').'/user/'.$result['_id']['drupal_id'].'):');
+        $app = $this;
+        $blanks->each(function ($this) use (&$app) {
+            $app->info('Found '.$this['count'].' duplicates for '. $this['_id']['drupal_id'] .' ('.config('services.drupal.url').'/user/'. $this['_id']['drupal_id'].'):');
 
             // Load each duplicated user model, sort them by their created_at, and reset keys.
-            $users = User::findMany($result['uniqueIds'])
-                ->sortBy('created_at')->values();
+            $users = User::findMany($this['uniqueIds']->bsonSerialize())
+              ->sortBy('created_at')->values();
 
             $users->each(function ($user, $index) {
                 $aurora = $this->option('aurora');
@@ -100,7 +101,9 @@ class CleanDrupalIdsCommand extends Command
                 $this->comment($verb.' duplicate: '.$aurora.'/users/'.$user->id.' ('.$user->email.' / '.$user->first_name.')');
             });
 
-            $this->line('');
-        }
+            $app->line('');
+
+        });
+
     }
 }
