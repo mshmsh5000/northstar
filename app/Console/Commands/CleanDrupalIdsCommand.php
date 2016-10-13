@@ -102,8 +102,6 @@ class CleanDrupalIdsCommand extends Command
             });
 
             $app->line('');
-
         });
-
     }
 }
