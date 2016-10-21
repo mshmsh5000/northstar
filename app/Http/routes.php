@@ -23,6 +23,11 @@ $router->group(['guard' => 'web', 'middleware' => ['web']], function () use ($ro
     // Registration
     $router->get('register', 'WebController@getRegister');
     $router->post('register', 'WebController@postRegister');
+
+    // Password Reset
+    $this->get('password/reset/{token?}', 'PasswordController@showResetForm');
+    $this->post('password/email', 'PasswordController@sendResetLinkEmail');
+    $this->post('password/reset', 'PasswordController@reset');
 });
 
 // https://nortstar.dosomething.org/v2/
