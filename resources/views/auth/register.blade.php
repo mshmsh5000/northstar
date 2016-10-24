@@ -1,6 +1,12 @@
-@extends('app')
+@extends('layouts.app')
 
 @section('title', 'Create Account | DoSomething.org')
+
+@section('navigation')
+    <nav class="navigation">
+        <a class="navigation__logo" href="http://www.dosomething.org"><span>DoSomething.org</span></a>
+    </nav>
+@endsection
 
 @section('content')
     <div class="container -padded">

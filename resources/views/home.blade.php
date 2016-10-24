@@ -1,6 +1,12 @@
-@extends('app')
+@extends('layouts.app')
 
 @section('title', 'Profile | DoSomething.org')
+
+@section('navigation')
+    <nav class="navigation">
+        <a class="navigation__logo" href="http://www.dosomething.org"><span>DoSomething.org</span></a>
+    </nav>
+@endsection
 
 @section('content')
     <div class="container -padded">
@@ -16,7 +22,10 @@
                 </article>
             </div>
             <div class="container__block -centered">
-                <div class="form-actions"><a href="{{ url('logout') }}" class="button -secondary">Log out</a></div>
+                <div class="form-actions">
+                    <a href="{{ url('users/'.$user->id.'/edit') }}" class="button -secondary">Edit Profile</a>
+                    <a href="{{ url('logout') }}" class="button -secondary">Log out</a>
+                </div>
             </div>
         </div>
     </div>

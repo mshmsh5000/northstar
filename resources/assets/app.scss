@@ -3,28 +3,20 @@ $forge-path: "~@dosomething/forge/assets/";
 // Import Forge.
 @import "~@dosomething/forge/scss/forge";
 
-// Remove the gray background from the page.
-body, html {
+// Amend styles for alternate page display.
+.alternate {
   background: #fff;
-}
 
-// Remove the shadow from the chrome so it's border-less.
-.chrome > .wrapper {
-  box-shadow: none;
-}
-
-// The navigation shouldn't float on mobile here.
-@include media($mobile) {
-  .navigation .navigation__logo {
-    position: static;
+  .chrome > .wrapper {
+    box-shadow: none;
   }
 }
 
-// Fix a strange issue with the Container on mobile.
-// @TODO: Why is this happening here?
-.container > .wrapper {
-  width: 100%;
-}
+// // Fix a strange issue with the Container on mobile.
+// // @TODO: Why is this happening here?
+// .container > .wrapper {
+//   width: 100%;
+// }
 
 // Add a new `.-centered` variation to the Container Block.
 .container .container__block {

@@ -1,4 +1,4 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -9,15 +9,16 @@
     <meta name="csrf-token" content="{{ csrf_token() }}">
 </head>
 
-<body class="modernizr-no-js">
+<body class="modernizr-no-js {{ $bodyClasses or '' }}">
 <div class="chrome">
     @if (session('status'))
         <div class="messages">{{ session('status') }}</div>
     @endif
     <div class="wrapper">
-        <nav class="navigation">
-            <a class="navigation__logo" href="http://www.dosomething.org"><span>DoSomething.org</span></a>
-        </nav>
+        @section('navigation')
+            @include('layouts.navigation')
+        @show
+
         @yield('content')
     </div>
 </div>
