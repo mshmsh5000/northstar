@@ -16,4 +16,31 @@ class PasswordController extends BaseController
      * @var string
      */
     protected $guard = 'web';
+
+    /**
+     * The path to redirect to after a successful reset.
+     *
+     * @var string
+     */
+    protected $redirectTo = '/';
+
+    /**
+     * Reset the given user's password.
+     *
+     * @param  \Northstar\Models\User  $user
+     * @param  string  $password
+     * @return void
+     */
+    protected function resetPassword($user, $password)
+    {
+        $attributes = [
+            'password' => $password,
+            'remember_token' => str_random(60),
+        ];
+
+        $user->forceFill($attributes)->save();
+
+        // And create a Northstar session for the user.
+        auth()->guard($this->getGuard())->login($user);
+    }
 }
