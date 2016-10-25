@@ -11,6 +11,9 @@
 
 <body class="modernizr-no-js">
 <div class="chrome">
+    @if (session('status'))
+        <div class="messages">{{ session('status') }}</div>
+    @endif
     <div class="wrapper">
         <nav class="navigation">
             <a class="navigation__logo" href="http://www.dosomething.org"><span>DoSomething.org</span></a>
