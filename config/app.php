@@ -152,6 +152,7 @@ return [
          * Third Party Service Providers...
          */
         Jenssegers\Mongodb\MongodbServiceProvider::class,
+        Jenssegers\Mongodb\Auth\PasswordResetServiceProvider::class,
         DoSomething\StatHat\StatHatServiceProvider::class,
 
         /*
