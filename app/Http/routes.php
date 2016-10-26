@@ -25,9 +25,16 @@ $router->group(['guard' => 'web', 'middleware' => ['web']], function () use ($ro
     $router->post('register', 'WebController@postRegister');
 
     // Password Reset
-    $this->get('password/reset/{token?}', 'PasswordController@showResetForm');
-    $this->post('password/email', 'PasswordController@sendResetLinkEmail');
-    $this->post('password/reset', 'PasswordController@reset');
+    if (config('features.password-reset')) {
+        $this->get('password/reset/{token?}', 'PasswordController@showResetForm');
+        $this->post('password/email', 'PasswordController@sendResetLinkEmail');
+        $this->post('password/reset', 'PasswordController@reset');
+    } else {
+        // If feature flag is disabled, just redirect to Phoenix's reset form.
+        $this->get('password/reset/{token?}', function () {
+            return redirect(config('services.drupal.url').'/user/password');
+        });
+    }
 });
 
 // https://nortstar.dosomething.org/v2/
