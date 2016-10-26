@@ -19,6 +19,10 @@ return [
         'secret' => env('MAILGUN_KEY'),
     ],
 
+    'mandrill' => [
+        'secret' => env('MANDRILL_SECRET'),
+    ],
+
     'drupal' => [
         'url' => env('DRUPAL_API_URL'),
         'version' => 'v1',
