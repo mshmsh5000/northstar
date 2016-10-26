@@ -97,6 +97,10 @@ class Handler extends ExceptionHandler
             return $e->getResponse();
         }
 
+        if ($e instanceof ValidationException) {
+            return $e->getResponse();
+        }
+
         return redirect()->back()
             ->withInput($request->except('password', 'password_confirmation'))
             ->withErrors($e->getErrors());

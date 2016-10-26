@@ -14,6 +14,11 @@ return [
     |
     */
 
+    'mailgun' => [
+        'domain' => env('MAILGUN_DOMAIN'),
+        'secret' => env('MAILGUN_KEY'),
+    ],
+
     'drupal' => [
         'url' => env('DRUPAL_API_URL'),
         'version' => 'v1',
