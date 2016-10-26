@@ -2,17 +2,18 @@
 
 namespace Northstar\Exceptions;
 
-use Illuminate\Auth\AuthenticationException;
-use Illuminate\Validation\ValidationException;
-use Illuminate\Auth\Access\AuthorizationException;
-use Illuminate\Database\Eloquent\ModelNotFoundException;
-use League\OAuth2\Server\Exception\OAuthServerException;
-use Symfony\Component\HttpKernel\Exception\HttpException;
-use Illuminate\Foundation\Validation\ValidationException as LegacyValidationException;
-use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
-use Symfony\Bridge\PsrHttpMessage\Factory\HttpFoundationFactory;
-use Psr\Http\Message\ResponseInterface;
 use Exception;
+use Illuminate\Auth\Access\AuthorizationException;
+use Illuminate\Auth\AuthenticationException;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
+use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
+use Illuminate\Foundation\Validation\ValidationException as LegacyValidationException;
+use Illuminate\Validation\ValidationException;
+use League\OAuth2\Server\Exception\OAuthServerException;
+use Psr\Http\Message\ResponseInterface;
+use Symfony\Bridge\PsrHttpMessage\Factory\HttpFoundationFactory;
+use Symfony\Component\HttpKernel\Exception\HttpException;
+use Symfony\Component\HttpKernel\Exception\MethodNotAllowedHttpException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class Handler extends ExceptionHandler
@@ -79,6 +80,11 @@ class Handler extends ExceptionHandler
         $isApiRoute = $currentRoute && in_array('api', $currentRoute->middleware());
         if ($request->ajax() || $request->wantsJson() || $isApiRoute) {
             return $this->buildJsonResponse($e);
+        }
+
+        // Redirect to root if trying to access disabled methods on a controller.
+        if ($e instanceof MethodNotAllowedHttpException) {
+            return redirect('/');
         }
 
         return parent::render($request, $e);
