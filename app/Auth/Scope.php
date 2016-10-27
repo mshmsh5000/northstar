@@ -101,6 +101,10 @@ class Scope
      */
     public static function gate($scope)
     {
+        if (hasMiddleware('web')) {
+            return true;
+        }
+
         if (! static::allows($scope)) {
             app('stathat')->ezCount('invalid client scope error');
 
