@@ -81,7 +81,7 @@ class Handler extends ExceptionHandler
             return $this->buildJsonResponse($e);
         }
 
-        // Redirect to root if trying to access disabled methods on a controller.
+        // Redirect to root if trying to access disabled methods on a controller or access denied to user.
         if ($e instanceof MethodNotAllowedHttpException || $e instanceof AccessDeniedHttpException) {
             return redirect('/');
         }
