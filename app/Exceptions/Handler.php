@@ -12,6 +12,7 @@ use Illuminate\Validation\ValidationException;
 use League\OAuth2\Server\Exception\OAuthServerException;
 use Psr\Http\Message\ResponseInterface;
 use Symfony\Bridge\PsrHttpMessage\Factory\HttpFoundationFactory;
+use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 use Symfony\Component\HttpKernel\Exception\HttpException;
 use Symfony\Component\HttpKernel\Exception\MethodNotAllowedHttpException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
@@ -81,7 +82,7 @@ class Handler extends ExceptionHandler
         }
 
         // Redirect to root if trying to access disabled methods on a controller.
-        if ($e instanceof MethodNotAllowedHttpException) {
+        if ($e instanceof MethodNotAllowedHttpException || $e instanceof AccessDeniedHttpException) {
             return redirect('/');
         }
 
