@@ -13,7 +13,6 @@ $router->group(['namespace' => 'Web', 'guard' => 'web', 'middleware' => ['web']]
 
     // @NOTE: disabling /index, /create, /delete for now.
     $router->resource('users', 'UsersController', ['except' => ['index', 'create', 'delete']]);
-
 });
 
 // @TODO: move these into above group, seperate into Web\AuthController.

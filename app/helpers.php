@@ -30,7 +30,7 @@ function normalize($type = null, $value = null)
  * Check if the current route has any middleware attached.
  *
  * @param  null|string  $middleware
- * @return boolean
+ * @return bool
  */
 function hasMiddleware($middleware = null)
 {
