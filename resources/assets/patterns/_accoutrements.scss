@@ -1,0 +1,24 @@
+// Helpers and mini patterns!
+
+%kaleidoscope-bar {
+  background: linear-gradient(to right,  $purple 0%, $purple 25%, $yellow 25%, $yellow 75%, $blue 75%, $blue 100%);
+  bottom: 0;
+  content: "";
+  display: block;
+  height: 10px;
+  position: absolute;
+  width: 100%;
+}
+
+.logo {
+  background: 0 0 forge-asset-url("images/logo.svg") no-repeat;
+  background-size: cover;
+  display: inline-block;
+  height: 60px;
+  margin: 0;
+  width: 72px;
+
+  > span {
+    @include visually-hidden
+  }
+}

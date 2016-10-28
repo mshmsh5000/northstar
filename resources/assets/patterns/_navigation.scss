@@ -1,0 +1,14 @@
+// @TODO: incorporate into the Container pattern in Forge!
+
+.navigation {
+  margin: 0 auto;
+  padding: 0 ($base-spacing / 2);
+  position: relative;
+  top: 5px;
+
+  @include media($tablet) {
+    max-width: $container-max-width;
+    padding: 0 ($base-spacing / 2);
+    top: 30px;
+  }
+}

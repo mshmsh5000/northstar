@@ -1,45 +1,16 @@
+// Global Variables
+$container-max-width: 560px;
 $forge-path: "~@dosomething/forge/assets/";
 
 // Import Forge.
 @import "~@dosomething/forge/scss/forge";
 
-// Amend styles for alternate page display.
-.alternate {
-  background: #fff;
 
-  .chrome > .wrapper {
-    box-shadow: none;
-  }
-}
-
-// // Fix a strange issue with the Container on mobile.
-// // @TODO: Why is this happening here?
-// .container > .wrapper {
-//   width: 100%;
-// }
-
-// Add a new `.-centered` variation to the Container Block.
-.container .container__block {
-  &.-centered {
-    @include media($tablet) {
-      float: none;
-      max-width: 600px;
-      margin: $base-spacing auto;
-      text-align: center;
-
-      // @TODO: Hacky!
-      .field-label { text-align: left; }
-    }
-  }
-}
-
-// Validation Errors
-.validation-error {
-  color: #ff4747;
-  text-align: left;
-  margin: 12px 0;
-
-  & h4 {
-    color: #ff4747
-  }
-}
+// Local Patterns
+// @TODO: move some of below patterns into Forge!
+@import "patterns/_forge-overrides";
+@import "patterns/_accoutrements";
+@import "patterns/_navigation";
+@import "patterns/_container-v2";
+@import "patterns/_key-value";
+@import "patterns/_validation";

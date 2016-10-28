@@ -1,20 +1,11 @@
-<nav class="navigation -white -floating">
-    <a class="navigation__logo" href="//www.dosomething.org"><span>DoSomething.org</span></a>
-    <div class="navigation__menu">
-        <ul class="navigation__primary">
-          <li>
-            <a href="//www.dosomething.org/campaigns">
-              <strong class="navigation__title">Explore Campaigns</strong>
-              <span class="navigation__subtitle">Any cause, anytime, anywhere.</span>
-            </a>
-          </li>
+<nav class="navigation">
+    <a class="" href="http://www.dosomething.org"><span>&lsaquo;</span> Back</a>
 
-          <li>
-            <a href="//www.dosomething.org/about/who-we-are">
-              <strong class="navigation__title">What Is DoSomething.org?</strong>
-              <span class="navigation__subtitle">Young people + social change.</span>
-            </a>
-          </li>
+    {{-- @TODO: commented out for now, might try to reinclude using form-actions list pattern.
+    @if (auth()->guard('web')->user())
+        <ul class="navigation__secondary">
+            <a href="{{ url('logout') }}" class="button -secondary">Log out</a>
         </ul>
-    </div>
+    @endif
+    --}}
 </nav>

@@ -5,26 +5,46 @@
 @section('content')
     <main role="main">
         <article class="profile">
-            <header role="banner" class="header">
+        <section class="container">
                 <div class="wrapper">
-                    <h1 class="header__title">Edit Profile</h1>
-                </div>
-            </header>
 
-            <section class="container -padded">
-                <div class="wrapper">
                     <div class="container__block -centered">
-                        <p>{{ $user->id }}</p>
-                        <p>{{ $user->first_name.' '.$user->last_name }}</p>
-                        <p>{{ $user->email }}</p>
-                        <p>{{ $user->mobile }}</p>
-                        <p>{{ $user->addr_street1 }}</p>
-                        <p>{{ $user->addr_street2 }}</p>
-                        <p>{{ $user->addr_city }}</p>
-                        <p>{{ $user->addr_state }}</p>
-                        <p>{{ $user->addr_zip }}</p>
-                        <p>{{ $user->country }}</p>
+                        <figure class="figure -medium">
+                            <div class="figure__media">
+                                <img class="avatar" alt="avatar" src="{{ $user->avatar or asset('avatar-placeholder.png') }}" />
+                            </div>
+                            <div class="figure__body">
+                                You are logged in as <strong>{{ $user->displayName() }}</strong>.
+                            </div>
+                        </figure>
                     </div>
+
+                    <div class="container__block -narrow">
+                        <div class="key-value">
+                            {{-- @TODO: Might want to handle null values a little better so empty <dd>'s and <p>'s don't output  --}}
+                            <dt>ID:</dt>
+                            <dd>{{ $user->id }}</dd>
+                            <dt>First Name:</dt>
+                            <dd>{{ $user->first_name }}</dd>
+                            <dt>Last Name:</dt>
+                            <dd>{{ $user->last_name }}</dd>
+                            <dt>Email:</dt>
+                            <dd>{{ $user->email }}</dd>
+                            <dt>Mobile:</dt>
+                            <dd>{{ $user->mobile }}</dd>
+                            <dt>Address:</dt>
+                            <dd>
+                                <p>{{ $user->addr_street1 }}</p>
+                                <p>{{ $user->addr_street2 }}</p>
+                                <p>{{ $user->addr_city }}</p>
+                                <p>{{ $user->addr_state }}</p>
+                                <p>{{ $user->addr_zip }}</p>
+                            </dd>
+                            <dt>Country:</dt>
+                            <dd>{{ $user->country }}</dd>
+                        </div>
+                    </div>
+
                 </div>
             </section>
         </article>

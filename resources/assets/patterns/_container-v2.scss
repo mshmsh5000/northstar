@@ -1,0 +1,64 @@
+// @TODO: incorporate into the Container pattern in Forge!
+
+.container {
+  // @TODO: patternize in Forge?
+  &.-framed {
+    background-color: $white;
+    margin-top: $base-spacing;
+    padding: $section-spacing 0;
+    position: relative;
+
+    @include media($tablet) {
+      border-radius: 4px;
+      box-shadow: 0px 1px 4px 1px rgba(0, 0, 0, 0.2);
+      max-width: $container-max-width;
+      margin: $section-spacing auto;
+    }
+
+    &:after {
+      @extend %kaleidoscope-bar;
+    }
+
+    .logo {
+      height: 84px;
+      left: 50%;
+      margin-left: -50px;
+      position: absolute;
+      top: -42px;
+      width: 100px;
+    }
+  }
+
+  // Fix a strange issue with the Container on mobile.
+  // @TODO: Why is this happening here?
+  // @TODO: Maybe have version of container where wrapper isn't floated.
+  > .wrapper {
+    float: none;
+    margin-left: 0;
+
+    @include media($tablet) {
+      float: none;
+      margin-left: 0;
+      width: 100%;
+    }
+  }
+
+  .container__block {
+    // Add a new `.-centered` variation to the Container Block.
+    &.-centered {
+      text-align: center;
+      .form-item {
+        text-align: left;
+      }
+
+      @include media($tablet) {
+        float: none;
+        max-width: 600px;
+        margin: $base-spacing auto;
+
+        // @TODO: Hacky!
+        .field-label { text-align: left; }
+      }
+    }
+  }
+}

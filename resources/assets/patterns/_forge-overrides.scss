@@ -1,0 +1,9 @@
+// Overrides that change some of the default style rules defined by Forge Pattern Library.
+
+body, html {
+  background: $white;
+}
+
+.chrome > .wrapper {
+  box-shadow: none;
+}
