@@ -40,7 +40,6 @@ class WebController extends BaseController
         $this->auth = $auth;
         $this->registrar = $registrar;
 
-        $this->middleware('auth:web', ['only' => ['show', 'edit']]);
         $this->middleware('guest:web', ['only' => ['getLogin', 'postLogin', 'getRegister', 'postRegister']]);
     }
 
