@@ -55,6 +55,6 @@ class RedirectIfAuthenticated
             throw new HttpException(401, 'You cannot do this with an active authentication token.');
         }
 
-        return redirect('/');
+        return redirect('login');
     }
 }
