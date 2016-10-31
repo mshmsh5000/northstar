@@ -101,7 +101,7 @@ class Scope
      */
     public static function gate($scope)
     {
-        if (hasMiddleware('web')) {
+        if (has_middleware('web')) {
             return true;
         }
 

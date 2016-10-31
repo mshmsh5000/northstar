@@ -77,7 +77,7 @@ class Handler extends ExceptionHandler
 
         // If request has 'Accepts: application/json' header or we're on a route that
         // is in the `api` middleware group, render the exception as JSON object.
-        if ($request->ajax() || $request->wantsJson() || hasMiddleware('api')) {
+        if ($request->ajax() || $request->wantsJson() || has_middleware('api')) {
             return $this->buildJsonResponse($e);
         }
 

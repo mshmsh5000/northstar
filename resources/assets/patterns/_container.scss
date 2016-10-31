@@ -5,6 +5,7 @@
   &.-framed {
     background-color: $white;
     margin-top: $base-spacing;
+    overflow: hidden;
     padding: $section-spacing 0;
     position: relative;
 
@@ -15,31 +16,12 @@
       margin: $section-spacing auto;
     }
 
+    .navigation + & {
+      margin-top: 0;
+    }
+
     &:after {
       @extend %kaleidoscope-bar;
-    }
-
-    .logo {
-      height: 84px;
-      left: 50%;
-      margin-left: -50px;
-      position: absolute;
-      top: -42px;
-      width: 100px;
-    }
-  }
-
-  // Fix a strange issue with the Container on mobile.
-  // @TODO: Why is this happening here?
-  // @TODO: Maybe have version of container where wrapper isn't floated.
-  > .wrapper {
-    float: none;
-    margin-left: 0;
-
-    @include media($tablet) {
-      float: none;
-      margin-left: 0;
-      width: 100%;
     }
   }
 

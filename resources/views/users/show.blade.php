@@ -22,8 +22,6 @@
                     <div class="container__block -narrow">
                         <div class="key-value">
                             {{-- @TODO: Might want to handle null values a little better so empty <dd>'s and <p>'s don't output  --}}
-                            <dt>ID:</dt>
-                            <dd>{{ $user->id }}</dd>
                             <dt>First Name:</dt>
                             <dd>{{ $user->first_name }}</dd>
                             <dt>Last Name:</dt>

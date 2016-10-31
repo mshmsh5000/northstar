@@ -22,7 +22,7 @@
         @include('layouts.navigation')
 
         <section class="container -framed">
-            <h1 class="logo"><span>DoSomething.org</span></h1>
+
             <div class="wrapper">
 
             @yield('content')

@@ -2,14 +2,17 @@
 $container-max-width: 560px;
 $forge-path: "~@dosomething/forge/assets/";
 
-// Import Forge.
+
+// Import Forge
 @import "~@dosomething/forge/scss/forge";
 
 
 // Local Patterns
 // @TODO: move some of below patterns into Forge!
-@import "patterns/_forge-overrides";
+@import "patterns/_base";
+@import "patterns/_chrome";
+@import "patterns/_navigation";
 @import "patterns/_accoutrements";
-@import "patterns/_container-v2";
+@import "patterns/_container";
 @import "patterns/_key-value";
 @import "patterns/_validation";

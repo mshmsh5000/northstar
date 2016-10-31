@@ -32,7 +32,7 @@ function normalize($type = null, $value = null)
  * @param  null|string  $middleware
  * @return bool
  */
-function hasMiddleware($middleware = null)
+function has_middleware($middleware = null)
 {
     $currentRoute = app('router')->getCurrentRoute();
 
