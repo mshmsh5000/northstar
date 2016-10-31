@@ -46,7 +46,7 @@ class WebAuthenticationTest extends TestCase
     {
         $user = factory(User::class)->create([
             'email' => 'login-test@dosomething.org',
-            'password' => 'secret'
+            'password' => 'secret',
         ]);
 
         $this->visit('login')
