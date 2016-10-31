@@ -1,6 +1,4 @@
-// Global Variables
-$container-max-width: 560px;
-$forge-path: "~@dosomething/forge/assets/";
+@import "patterns/utilities/_variables";
 
 
 // Import Forge
@@ -9,10 +7,11 @@ $forge-path: "~@dosomething/forge/assets/";
 
 // Local Patterns
 // @TODO: move some of below patterns into Forge!
-@import "patterns/_base";
+@import "patterns/utilities/_accoutrements";
+@import "patterns/base/_elements";
 @import "patterns/_chrome";
 @import "patterns/_navigation";
-@import "patterns/_accoutrements";
+@import "patterns/_logo";
 @import "patterns/_container";
 @import "patterns/_key-value";
-@import "patterns/_validation";
+@import "patterns/_validation-error";

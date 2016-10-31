@@ -9,16 +9,3 @@
   position: absolute;
   width: 100%;
 }
-
-.logo {
-  background: 0 0 forge-asset-url("images/logo.svg") no-repeat;
-  background-size: cover;
-  display: inline-block;
-  height: 60px;
-  margin: 0;
-  width: 72px;
-
-  > span {
-    @include visually-hidden
-  }
-}

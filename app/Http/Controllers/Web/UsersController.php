@@ -9,23 +9,14 @@ use Northstar\Models\User;
 class UsersController extends BaseController
 {
     /**
-     * The authentication factory.
-     *
-     * @var \Illuminate\Contracts\Auth\Factory
-     */
-    protected $auth;
-
-    /**
      * Make a new UsersController, inject dependencies and
      * set middleware for this controller's methods.
      *
      * @param Auth      $auth
      * @param Registrar $registrar
      */
-    public function __construct(Auth $auth)
+    public function __construct()
     {
-        $this->auth = $auth;
-
         $this->middleware('auth:web');
         $this->middleware('role:admin,staff', ['only' => ['show']]);
     }
