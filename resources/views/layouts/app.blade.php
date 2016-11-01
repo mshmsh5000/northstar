@@ -1,8 +1,12 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+
     <title>@yield('title', 'DoSomething.org')</title>
+
+    <meta name="viewport" content="width=device-width, initial-scale=1">
 
     <link rel="stylesheet" href="{{ asset('dist/app.css') }}">
     <script src="{{ asset('dist/modernizr.js') }}"></script>
@@ -15,10 +19,17 @@
         <div class="messages">{{ session('status') }}</div>
     @endif
     <div class="wrapper">
-        <nav class="navigation">
-            <a class="navigation__logo" href="http://www.dosomething.org"><span>DoSomething.org</span></a>
-        </nav>
-        @yield('content')
+        @include('layouts.navigation')
+
+        <section class="container -framed">
+
+            <div class="wrapper">
+
+            @yield('content')
+
+            </div>
+        </section>
+
     </div>
 </div>
 </body>

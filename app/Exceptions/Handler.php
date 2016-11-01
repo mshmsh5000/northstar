@@ -2,17 +2,19 @@
 
 namespace Northstar\Exceptions;
 
-use Illuminate\Auth\AuthenticationException;
-use Illuminate\Validation\ValidationException;
-use Illuminate\Auth\Access\AuthorizationException;
-use Illuminate\Database\Eloquent\ModelNotFoundException;
-use League\OAuth2\Server\Exception\OAuthServerException;
-use Symfony\Component\HttpKernel\Exception\HttpException;
-use Illuminate\Foundation\Validation\ValidationException as LegacyValidationException;
-use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
-use Symfony\Bridge\PsrHttpMessage\Factory\HttpFoundationFactory;
-use Psr\Http\Message\ResponseInterface;
 use Exception;
+use Illuminate\Auth\Access\AuthorizationException;
+use Illuminate\Auth\AuthenticationException;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
+use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
+use Illuminate\Foundation\Validation\ValidationException as LegacyValidationException;
+use Illuminate\Validation\ValidationException;
+use League\OAuth2\Server\Exception\OAuthServerException;
+use Psr\Http\Message\ResponseInterface;
+use Symfony\Bridge\PsrHttpMessage\Factory\HttpFoundationFactory;
+use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
+use Symfony\Component\HttpKernel\Exception\HttpException;
+use Symfony\Component\HttpKernel\Exception\MethodNotAllowedHttpException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class Handler extends ExceptionHandler
@@ -75,10 +77,13 @@ class Handler extends ExceptionHandler
 
         // If request has 'Accepts: application/json' header or we're on a route that
         // is in the `api` middleware group, render the exception as JSON object.
-        $currentRoute = app('router')->getCurrentRoute();
-        $isApiRoute = $currentRoute && in_array('api', $currentRoute->middleware());
-        if ($request->ajax() || $request->wantsJson() || $isApiRoute) {
+        if ($request->ajax() || $request->wantsJson() || has_middleware('api')) {
             return $this->buildJsonResponse($e);
+        }
+
+        // Redirect to root if trying to access disabled methods on a controller or access denied to user.
+        if ($e instanceof MethodNotAllowedHttpException || $e instanceof AccessDeniedHttpException) {
+            return redirect('/');
         }
 
         return parent::render($request, $e);

@@ -1,0 +1,47 @@
+// @TODO: incorporate into the Container pattern in Forge!
+
+.container {
+  // @TODO: patternize in Forge?
+  &.-framed {
+    background-color: $white;
+    margin-top: $base-spacing;
+    overflow: hidden;
+    padding: $section-spacing 0;
+    position: relative;
+
+    @include media($tablet) {
+      border-radius: $lg-border-radius;
+      box-shadow: $soft-box-shadow;
+      max-width: $container-max-width;
+      margin: $section-spacing auto;
+    }
+
+    .navigation + & {
+      margin-top: 0;
+    }
+
+    &:after {
+      @extend %kaleidoscope-bar;
+    }
+  }
+
+  .container__block {
+    // Add a new `.-centered` variation to the Container Block.
+    &.-centered {
+      text-align: center;
+
+      .form-item {
+        text-align: left;
+      }
+
+      @include media($tablet) {
+        float: none;
+        max-width: 600px;
+        margin: $base-spacing auto;
+
+        // @TODO: Hacky!
+        .field-label { text-align: left; }
+      }
+    }
+  }
+}

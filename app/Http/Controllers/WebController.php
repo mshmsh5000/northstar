@@ -40,18 +40,7 @@ class WebController extends BaseController
         $this->auth = $auth;
         $this->registrar = $registrar;
 
-        $this->middleware('auth:web', ['only' => ['home']]);
-        $this->middleware('guest:web', ['except' => ['home', 'getLogout']]);
-    }
-
-    /**
-     * Show the homepage.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function home()
-    {
-        return view('home', ['user' => auth()->guard('web')->user()]);
+        $this->middleware('guest:web', ['only' => ['getLogin', 'postLogin', 'getRegister', 'postRegister']]);
     }
 
     /**
@@ -61,7 +50,7 @@ class WebController extends BaseController
      */
     public function getLogin()
     {
-        return view('login');
+        return view('auth.login');
     }
 
     /**
@@ -114,7 +103,7 @@ class WebController extends BaseController
      */
     public function getRegister()
     {
-        return view('register');
+        return view('auth.register');
     }
 
     /**

@@ -37,7 +37,7 @@ class RedirectIfAuthenticated
     public function handle($request, Closure $next, $guard = 'api')
     {
         if ($this->auth->guard($guard)->check()) {
-            return $this->handleAnonymous($request);
+            return $this->handleAuthenticated($request);
         }
 
         return $next($request);
@@ -49,7 +49,7 @@ class RedirectIfAuthenticated
      * @param Request $request
      * @return \Illuminate\Http\RedirectResponse
      */
-    protected function handleAnonymous(Request $request)
+    protected function handleAuthenticated(Request $request)
     {
         if ($request->wantsJson() || $request->ajax()) {
             throw new HttpException(401, 'You cannot do this with an active authentication token.');

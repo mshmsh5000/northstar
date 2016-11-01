@@ -7,11 +7,16 @@
  * @see \Northstar\Providers\RouteServiceProvider
  */
 
-// https://northstar.dosomething.org/
-$router->group(['guard' => 'web', 'middleware' => ['web']], function () use ($router) {
-    // It's the homepage.
-    $router->get('/', 'WebController@home');
+// Web Experience for https://northstar.dosomething.org/
+$router->group(['namespace' => 'Web', 'guard' => 'web', 'middleware' => ['web']], function () use ($router) {
+    $router->get('/', 'UsersController@home');
 
+    // @NOTE: disabling /index, /create, /delete for now.
+    $router->resource('users', 'UsersController', ['except' => ['index', 'create', 'delete']]);
+});
+
+// @TODO: move these into above group, seperate into Web\AuthController.
+$router->group(['guard' => 'web', 'middleware' => ['web']], function () use ($router) {
     // Authorization flow for the Auth Code OAuth grant.
     $router->get('authorize', 'OAuthController@authorize');
 
@@ -37,7 +42,7 @@ $router->group(['guard' => 'web', 'middleware' => ['web']], function () use ($ro
     }
 });
 
-// https://nortstar.dosomething.org/v2/
+// API experience for https://nortstar.dosomething.org/v2/
 $router->group(['prefix' => 'v2', 'middleware' => ['api']], function () use ($router) {
     // Authentication
     $router->post('auth/token', 'OAuthController@createToken');
@@ -62,7 +67,7 @@ $router->group(['prefix' => 'v2', 'middleware' => ['api']], function () use ($ro
     });
 });
 
-// https://northstar.dosomething.org/v1/
+// API experience for https://northstar.dosomething.org/v1/
 $router->group(['prefix' => 'v1', 'middleware' => ['api']], function () use ($router) {
     // Authentication
     $router->post('auth/token', 'Legacy\AuthController@createToken');

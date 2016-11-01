@@ -2,7 +2,7 @@
 
 use Northstar\Models\User;
 
-class WebTest extends TestCase
+class WebAuthenticationTest extends TestCase
 {
     /**
      * Reset the server variables for the request.
@@ -24,14 +24,17 @@ class WebTest extends TestCase
     }
 
     /**
-     * Test that the homepage renders for logged-in users.
+     * Test that the profile renders for logged-in users.
      */
     public function testHomepage()
     {
         $user = factory(User::class)->create();
+
         $this->be($user, 'web');
 
-        $this->visit('/');
+        $this->visit('/')
+            ->followRedirects()
+            ->see('You are logged in as');
 
         $this->assertResponseOk();
     }
@@ -41,7 +44,10 @@ class WebTest extends TestCase
      */
     public function testLogin()
     {
-        $user = factory(User::class)->create(['email' => 'login-test@dosomething.org', 'password' => 'secret']);
+        $user = factory(User::class)->create([
+            'email' => 'login-test@dosomething.org',
+            'password' => 'secret',
+        ]);
 
         $this->visit('login')
             ->type('Login-Test@dosomething.org', 'username')
@@ -72,6 +78,7 @@ class WebTest extends TestCase
     public function testLogout()
     {
         $user = factory(User::class)->create();
+
         $this->be($user, 'web');
 
         $this->get('logout')->followRedirects();
@@ -86,6 +93,7 @@ class WebTest extends TestCase
     public function testLogoutRedirect()
     {
         $user = factory(User::class)->create();
+
         $this->be($user, 'web');
 
         $this->get('logout?redirect=http://dev.dosomething.org:8888');

@@ -1,0 +1,20 @@
+.navigation {
+  margin: 0 auto;
+  padding: ($base-spacing / 2);
+  position: relative;
+  z-index: 10;
+
+  @include media($tablet) {
+    max-width: $container-max-width;
+    padding: $section-spacing ($base-spacing / 2) ($base-spacing / 2);
+  }
+
+  .logo {
+    height: 84px;
+    left: 50%;
+    margin-left: -50px;
+    position: absolute;
+    bottom: -45px;
+    width: 100px;
+  }
+}
