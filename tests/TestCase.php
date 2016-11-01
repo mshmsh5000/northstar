@@ -9,7 +9,7 @@ use Northstar\Models\Client;
 use Northstar\Models\Token;
 use Northstar\Models\User;
 
-class TestCase extends Illuminate\Foundation\Testing\TestCase
+abstract class TestCase extends Illuminate\Foundation\Testing\TestCase
 {
     /**
      * The base URL to use while testing the application.
