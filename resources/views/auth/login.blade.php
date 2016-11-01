@@ -24,7 +24,7 @@
 
             <div class="form-item">
                 <label for="username" class="field-label">Email address or cell number</label>
-                <input name="username" type="text" class="text-field" placeholder="puppet-sloth@example.org" value="{{ old('username') }}">
+                <input name="username" type="text" class="text-field" placeholder="puppet-sloth@example.org" value="{{ old('username') }}" autofocus>
             </div>
 
             <div class="form-item">
