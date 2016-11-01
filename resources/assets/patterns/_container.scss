@@ -14,11 +14,11 @@
       box-shadow: $soft-box-shadow;
       max-width: $container-max-width;
       margin: $section-spacing auto;
-    }
 
-    > .wrapper {
-      margin-left: 0;
-      width: 100%;
+      > .wrapper {
+        margin-left: 0;
+        width: 100%;
+      }
     }
 
     .navigation + & {
