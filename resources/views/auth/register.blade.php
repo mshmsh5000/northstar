@@ -23,7 +23,7 @@
 
             <div class="form-item">
                 <label for="first_name" class="field-label">First Name</label>
-                <input name="first_name" type="text" class="text-field" placeholder="What do we call you?"value="{{ old('first_name') }}">
+                <input name="first_name" type="text" class="text-field" placeholder="What do we call you?"value="{{ old('first_name') }}" autofocus>
             </div>
 
             <div class="form-item">
