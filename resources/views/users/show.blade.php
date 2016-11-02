@@ -25,6 +25,8 @@
             <dd>{{ $user->email }}</dd>
             <dt>Mobile:</dt>
             <dd>{{ $user->mobile }}</dd>
+            <dt>Birthday:</dt>
+            <dd>{{ format_date($user->birthdate) }}</dd>
             <dt>Address:</dt>
             <dd>
                 <p>{{ $user->addr_street1 }}</p>
@@ -35,6 +37,10 @@
             </dd>
             <dt>Country:</dt>
             <dd>{{ $user->country }}</dd>
+        </div>
+
+        <div class="form-actions">
+            <a href="{{ url('users/'.$user->id.'/edit') }}" class="button -secondary">Edit Profile</a>
         </div>
     </div>
 @stop

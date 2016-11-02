@@ -169,6 +169,16 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
     }
 
     /**
+     * Mutator to format the birthdate as a date string with time.
+     *
+     * @param string $value
+     */
+    public function setBirthdateAttribute($value)
+    {
+        $this->attributes['birthdate'] = format_date($value, 'Y-m-d H:i:s');
+    }
+
+    /**
      * Mutator to add interests to the user's interests array, either by
      * passing an array or a comma-separated list of values.
      *

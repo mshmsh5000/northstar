@@ -3,20 +3,31 @@
 namespace Northstar\Http\Controllers\Web;
 
 use Illuminate\Contracts\Auth\Factory as Auth;
+use Illuminate\Http\Request;
 use Illuminate\Routing\Controller as BaseController;
+use Northstar\Auth\Registrar;
 use Northstar\Models\User;
 
-class UsersController extends BaseController
+class UserController extends BaseController
 {
     /**
-     * Make a new UsersController, inject dependencies and
+     * The authentication factory.
+     *
+     * @var \Illuminate\Contracts\Auth\Factory
+     */
+    protected $registrar;
+
+    /**
+     * Make a new UserController, inject dependencies and
      * set middleware for this controller's methods.
      *
      * @param Auth      $auth
      * @param Registrar $registrar
      */
-    public function __construct()
+    public function __construct(Registrar $registrar)
     {
+        $this->registrar = $registrar;
+
         $this->middleware('auth:web');
         $this->middleware('role:admin,staff', ['only' => ['show']]);
     }
@@ -41,6 +52,8 @@ class UsersController extends BaseController
     {
         $user = User::findOrFail($id);
 
+        dd($user);
+
         $authUser = auth()->guard('web')->user()->toArray();
     }
 
@@ -52,7 +65,9 @@ class UsersController extends BaseController
      */
     public function edit($id)
     {
-        dd('editing... more to come...');
+        $user = User::findOrFail($id);
+
+        return view('users.edit', ['user' => $user]);
     }
 
     /**
@@ -64,6 +79,17 @@ class UsersController extends BaseController
      */
     public function update(Request $request, $id)
     {
-        dd('updating... more to come...');
+        $user = User::findOrFail($id);
+
+        $this->registrar->validate($request, $user, [
+            'first_name' => 'required|alpha',
+            'last_name' => 'alpha',
+            'birthdate' => 'required|date',
+            'password' => 'min:6|confirmed',
+        ]);
+
+        $user->fill($request->all())->save();
+
+        return redirect()->route('users.show', $user->id);
     }
 }
