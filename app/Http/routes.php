@@ -16,6 +16,9 @@ $router->group(['namespace' => 'Web', 'guard' => 'web', 'middleware' => ['web']]
     $router->get('authorize', 'OAuthController@authorize');
     $router->resource('users', 'UsersController', ['except' => ['index', 'create', 'delete']]);
 
+    // Authorization flow for the Auth Code OAuth grant.
+    $router->get('authorize', 'AuthController@authorize');
+
     // Login & Logout
     $router->get('login', 'AuthController@getLogin');
     $router->post('login', 'AuthController@postLogin');
@@ -36,11 +39,6 @@ $router->group(['namespace' => 'Web', 'guard' => 'web', 'middleware' => ['web']]
             return redirect(config('services.drupal.url').'/user/password');
         });
     }
-});
-
-$router->group(['guard' => 'web', 'middleware' => ['web']], function() use ($router) {
-    // Authorization flow for the Auth Code OAuth grant.
-    $router->get('authorize', 'OAuthController@authorize');
 });
 
 // API experience for https://nortstar.dosomething.org/v2/
