@@ -1,16 +1,16 @@
 <?php
 
-namespace Northstar\Http\Controllers;
+namespace Northstar\Http\Controllers\Web;
 
+use Illuminate\Contracts\Auth\Factory as Auth;
+use Illuminate\Foundation\Validation\ValidatesRequests;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller as BaseController;
-use Illuminate\Foundation\Validation\ValidatesRequests;
-use Illuminate\Contracts\Auth\Factory as Auth;
 use Northstar\Auth\Registrar;
 use Northstar\Exceptions\NorthstarValidationException;
 use Northstar\Models\User;
 
-class WebController extends BaseController
+class AuthController extends BaseController
 {
     use ValidatesRequests;
 
@@ -32,7 +32,7 @@ class WebController extends BaseController
      * Make a new WebController, inject dependencies,
      * and set middleware for this controller's methods.
      *
-     * @param \Illuminate\Contracts\Auth\Factory $auth
+     * @param Auth $auth
      * @param Registrar $registrar
      */
     public function __construct(Auth $auth, Registrar $registrar)

@@ -1,6 +1,6 @@
 <?php
 
-namespace Northstar\Http\Controllers;
+namespace Northstar\Http\Controllers\Web;
 
 use Illuminate\Foundation\Auth\ResetsPasswords;
 use Illuminate\Routing\Controller as BaseController;

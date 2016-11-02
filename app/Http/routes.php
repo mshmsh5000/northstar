@@ -8,26 +8,22 @@
  */
 
 // Web Experience for https://northstar.dosomething.org/
+
 $router->group(['namespace' => 'Web', 'guard' => 'web', 'middleware' => ['web']], function () use ($router) {
     $router->get('/', 'UserController@home');
 
-    // @NOTE: disabling /index, /create, /delete for now.
-    $router->resource('users', 'UserController', ['except' => ['index', 'create', 'delete']]);
-});
-
-// @TODO: move these into above group, seperate into Web\AuthController.
-$router->group(['guard' => 'web', 'middleware' => ['web']], function () use ($router) {
     // Authorization flow for the Auth Code OAuth grant.
     $router->get('authorize', 'OAuthController@authorize');
+    $router->resource('users', 'UsersController', ['except' => ['index', 'create', 'delete']]);
 
     // Login & Logout
-    $router->get('login', 'WebController@getLogin');
-    $router->post('login', 'WebController@postLogin');
-    $router->get('logout', 'WebController@getLogout');
+    $router->get('login', 'AuthController@getLogin');
+    $router->post('login', 'AuthController@postLogin');
+    $router->get('logout', 'AuthController@getLogout');
 
     // Registration
-    $router->get('register', 'WebController@getRegister');
-    $router->post('register', 'WebController@postRegister');
+    $router->get('register', 'AuthController@getRegister');
+    $router->post('register', 'AuthController@postRegister');
 
     // Password Reset
     if (config('features.password-reset')) {
@@ -40,6 +36,11 @@ $router->group(['guard' => 'web', 'middleware' => ['web']], function () use ($ro
             return redirect(config('services.drupal.url').'/user/password');
         });
     }
+});
+
+$router->group(['guard' => 'web', 'middleware' => ['web']], function() use ($router) {
+    // Authorization flow for the Auth Code OAuth grant.
+    $router->get('authorize', 'OAuthController@authorize');
 });
 
 // API experience for https://nortstar.dosomething.org/v2/
