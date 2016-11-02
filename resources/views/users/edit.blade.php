@@ -1,16 +1,3 @@
-{{ dd([
-    $user,
-    old('first_name'),
-    old('birthdate'),
-    $user->first_name,
-    $user->id,
-    $user->birthdate,
-    format_date($user->birthdate, 'Y-m-d H:i:s'),
-    $errors
-]) }}
-
-{{-- "2000-08-04 00:00:00" --}}
-
 @extends('layouts.app')
 
 @section('title', 'Edit Profile | DoSomething.org')
@@ -19,6 +6,19 @@
     <div class="container__block -centered">
         <h2 class="heading -alpha">Edit your profile</h2>
     </div>
+
+    @if (count($errors) > 0)
+        <div class="container__block">
+            <div class="validation-error fade-in-up">
+                <h4>Hmm, there were some issues with that submission:</h4>
+                <ul class="list -compacted">
+                    @foreach ($errors->all() as $error)
+                        <li>{{ $error }}</li>
+                    @endforeach
+                </ul>
+            </div>
+        </div>
+    @endif
 
     <form method="POST" action="{{ route('users.update', $user->id) }}">
         {{ method_field('PATCH') }}
