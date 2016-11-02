@@ -62,9 +62,7 @@ $router->group(['prefix' => 'v2', 'middleware' => ['api']], function () use ($ro
     $router->get('key', 'KeyController@show');
 
     // Scopes
-    $router->get('scopes', function () {
-        return \Northstar\Auth\Scope::all();
-    });
+    $router->get('scopes', 'ScopeController@index');
 });
 
 // API experience for https://northstar.dosomething.org/v1/
