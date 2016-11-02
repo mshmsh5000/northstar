@@ -52,8 +52,6 @@ class UserController extends BaseController
     {
         $user = User::findOrFail($id);
 
-        dd($user);
-
         $authUser = auth()->guard('web')->user()->toArray();
     }
 
