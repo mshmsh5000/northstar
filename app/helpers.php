@@ -1,5 +1,6 @@
 <?php
 
+use Carbon\Carbon;
 use Northstar\Auth\Normalizer;
 
 /**
@@ -24,6 +25,19 @@ function normalize($type = null, $value = null)
 
     // Otherwise, send the given value to the corresponding method.
     return $normalizer->{$type}($value);
+}
+
+/**
+ * Format a Carbon date if available to a specified format.
+ *
+ * @param  string $date
+ * @return string
+ */
+function format_date($date, $format = 'Y-m-d')
+{
+    $date = new Carbon($date);
+
+    return $date->format($format);
 }
 
 /**

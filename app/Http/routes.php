@@ -9,10 +9,10 @@
 
 // Web Experience for https://northstar.dosomething.org/
 $router->group(['namespace' => 'Web', 'guard' => 'web', 'middleware' => ['web']], function () use ($router) {
-    $router->get('/', 'UsersController@home');
+    $router->get('/', 'UserController@home');
 
     // @NOTE: disabling /index, /create, /delete for now.
-    $router->resource('users', 'UsersController', ['except' => ['index', 'create', 'delete']]);
+    $router->resource('users', 'UserController', ['except' => ['index', 'create', 'delete']]);
 });
 
 // @TODO: move these into above group, seperate into Web\AuthController.
