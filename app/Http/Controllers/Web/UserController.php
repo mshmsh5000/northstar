@@ -80,7 +80,7 @@ class UserController extends BaseController
         $user = User::findOrFail($id);
 
         $this->registrar->validate($request, $user, [
-            'first_name' => 'required|alpha',
+            'first_name' => 'required',
             'last_name' => 'alpha',
             'birthdate' => 'required|date',
             'password' => 'min:6|confirmed',

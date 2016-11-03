@@ -26,6 +26,20 @@ abstract class TestCase extends Illuminate\Foundation\Testing\TestCase
     protected $faker;
 
     /**
+     * Make a new authenticated web user.
+     *
+     * @return \Northstar\Models\User
+     */
+    protected function makeAuthWebUser()
+    {
+        $user = factory(User::class)->create();
+
+        $this->be($user, 'web');
+
+        return $user;
+    }
+
+    /**
      * Setup the test environment. This is run before *every* single
      * test method, so avoid doing anything that takes too much time!
      *

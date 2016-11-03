@@ -99,9 +99,12 @@
         </div>
 
         <div class="container__block">
-            <div class="form-actions -padded">
+            <div class="form-actions">
                 <input type="submit" class="button" value="Save">
             </div>
+            <ul class="form-actions">
+                <li><a href="{{ url('users/'.$user->id) }}">Cancel</a></li>
+            </ul>
         </div>
     </form>
 @stop
