@@ -40,7 +40,7 @@
         </div>
 
         <div class="form-actions">
-            <a href="{{ url('users/'.$user->id.'/edit') }}" class="button -secondary">Edit Profile</a>
+            <a href="{{ route('users.edit', $user->id) }}" class="button -secondary">Edit Profile</a>
         </div>
     </div>
 @stop

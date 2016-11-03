@@ -11,9 +11,9 @@ use Northstar\Models\User;
 class UserController extends BaseController
 {
     /**
-     * The authentication factory.
+     * The registrar.
      *
-     * @var \Illuminate\Contracts\Auth\Factory
+     * @var Registrar
      */
     protected $registrar;
 
@@ -21,7 +21,6 @@ class UserController extends BaseController
      * Make a new UserController, inject dependencies and
      * set middleware for this controller's methods.
      *
-     * @param Auth      $auth
      * @param Registrar $registrar
      */
     public function __construct(Registrar $registrar)
