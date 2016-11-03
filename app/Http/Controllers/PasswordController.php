@@ -18,13 +18,6 @@ class PasswordController extends BaseController
     protected $guard = 'web';
 
     /**
-     * The path to redirect to after a successful reset.
-     *
-     * @var string
-     */
-    protected $redirectTo = '/';
-
-    /**
      * Reset the given user's password.
      *
      * @param  \Northstar\Models\User  $user
@@ -42,5 +35,15 @@ class PasswordController extends BaseController
 
         // And create a Northstar session for the user.
         auth()->guard($this->getGuard())->login($user);
+    }
+
+    /**
+     * Get the path to redirect to after resetting a password.
+     *
+     * @return string
+     */
+    public function redirectPath()
+    {
+        return config('services.drupal.url').'/user/authorize';
     }
 }

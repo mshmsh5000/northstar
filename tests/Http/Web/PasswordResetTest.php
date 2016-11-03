@@ -39,14 +39,14 @@ class PasswordResetTest extends TestCase
 
         // The user should visit the link that was sent via email & set a new password.
         $this->visit('/password/reset/'.$token.'?email='.$user->email);
-        $this->submitForm('Reset Password', [
+        $this->postForm('Reset Password', [
             'password' => 'top_secret',
             'password_confirmation' => 'top_secret',
         ]);
 
-        // The user should be logged-in and see the confirmation message.
-        $this->see('Your password has been reset!');
+        // The user should be logged-in to Northstar, and redirected to Phoenix's OAuth flow.
         $this->seeIsAuthenticatedAs($user, 'web');
+        $this->assertRedirectedTo('http://dev.dosomething.org:8888/user/authorize');
 
         // And their account should be updated with their new password.
         $this->assertTrue(app(Registrar::class)->validateCredentials($user->fresh(), ['password' => 'top_secret']));

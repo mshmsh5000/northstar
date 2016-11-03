@@ -213,4 +213,21 @@ abstract class TestCase extends Illuminate\Foundation\Testing\TestCase
 
         return $mock;
     }
+
+    /**
+     * Submit a form on the page without crawling the returned page. Useful for
+     * when a form results in an external redirect that'd break test crawler.
+     *
+     * @param  string  $buttonText
+     * @param  array  $inputs
+     * @return $this
+     */
+    public function postForm($buttonText, array $inputs = [])
+    {
+        $form = $this->fillForm($buttonText, $inputs);
+
+        $this->call($form->getMethod(), $form->getUri(), $this->extractParametersFromForm($form));
+
+        return $this;
+    }
 }
