@@ -3,7 +3,7 @@ var configurator = require('@dosomething/webpack-config');
 
 var config = configurator({
   entry: {
-    'app': './resources/assets/app.js'
+    'app': './resources/assets/js/app.js'
   }
 });
 
