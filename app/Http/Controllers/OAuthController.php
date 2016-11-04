@@ -7,7 +7,6 @@ use Illuminate\Http\Request;
 use League\OAuth2\Server\AuthorizationServer;
 use League\OAuth2\Server\Exception\OAuthServerException;
 use Northstar\Auth\Encrypter;
-use Northstar\Auth\Entities\UserEntity;
 use Northstar\Http\Transformers\UserInfoTransformer;
 use Northstar\Models\RefreshToken;
 use Psr\Http\Message\ResponseInterface;

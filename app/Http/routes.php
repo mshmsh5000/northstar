@@ -12,9 +12,8 @@
 $router->group(['namespace' => 'Web', 'guard' => 'web', 'middleware' => ['web']], function () use ($router) {
     $router->get('/', 'UserController@home');
 
-    // Authorization flow for the Auth Code OAuth grant.
-    $router->get('authorize', 'OAuthController@authorize');
-    $router->resource('users', 'UsersController', ['except' => ['index', 'create', 'delete']]);
+    // Users
+    $router->resource('users', 'UserController', ['except' => ['index', 'create', 'delete']]);
 
     // Authorization flow for the Auth Code OAuth grant.
     $router->get('authorize', 'AuthController@authorize');

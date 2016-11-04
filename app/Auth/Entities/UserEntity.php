@@ -18,7 +18,7 @@ class UserEntity implements UserEntityInterface
      */
     public static function fromModel(Authenticatable $user)
     {
-        $entity = new UserEntity();
+        $entity = new self();
         $entity->setIdentifier($user->getAuthIdentifier());
 
         return $entity;
