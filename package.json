@@ -26,6 +26,7 @@
     "webpack-dev-server": "^1.14.1"
   },
   "dependencies": {
+    "@dosomething/analytics": "^1.0.2",
     "@dosomething/forge": "^6.7.4"
   }
 }
