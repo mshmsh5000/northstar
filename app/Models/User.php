@@ -136,15 +136,15 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
      */
     protected $casts = [
         'cgg_id' => 'integer',
+        'birthdate' => 'date',
     ];
 
     /**
-     * The attributes which should be stored as MongoDate objects.
-     * @see https://github.com/jenssegers/laravel-mongodb#dates
+     * Indicates if the model should be timestamped.
      *
-     * @var array
+     * @var bool
      */
-    protected $dates = ['created_at', 'updated_at', 'birthdate'];
+    public $timestamps = true;
 
     /**
      * Computed last initial field, for public profiles.
