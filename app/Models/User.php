@@ -23,7 +23,7 @@ use Northstar\Auth\Role;
  * @property string $drupal_password - Hashed password imported from Phoenix
  * @property string $first_name
  * @property string $last_name
- * @property string $birthdate
+ * @property Carbon $birthdate
  * @property string $photo
  * @property array  $interests
  * @property string $source
@@ -144,7 +144,7 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
      *
      * @var array
      */
-    protected $dates = ['created_at', 'updated_at'];
+    protected $dates = ['created_at', 'updated_at', 'birthdate'];
 
     /**
      * Computed last initial field, for public profiles.
@@ -166,16 +166,6 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
     public function setEmailAttribute($value)
     {
         $this->attributes['email'] = normalize('email', $value);
-    }
-
-    /**
-     * Mutator to format the birthdate as a date string with time.
-     *
-     * @param string $value
-     */
-    public function setBirthdateAttribute($value)
-    {
-        $this->attributes['birthdate'] = format_date($value, 'Y-m-d H:i:s');
     }
 
     /**
@@ -285,6 +275,21 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
         }
 
         $this->attributes['password'] = bcrypt($value);
+    }
+
+    /**
+     * Return a timestamp as DateTime object.
+     *
+     * @param  mixed  $value
+     * @return \DateTime|Carbon
+     */
+    protected function asDateTime($value)
+    {
+        try {
+            return parent::asDateTime($value);
+        } catch (\Exception $e) {
+            return Carbon::parse($value);
+        }
     }
 
     /**

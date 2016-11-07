@@ -33,7 +33,7 @@ function normalize($type = null, $value = null)
  * @param  string $date
  * @return string
  */
-function format_date($date, $format = 'Y-m-d')
+function format_date($date, $format = 'm/d/Y')
 {
     $date = new Carbon($date);
 
