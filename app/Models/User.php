@@ -278,21 +278,6 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
     }
 
     /**
-     * Return a timestamp as DateTime object.
-     *
-     * @param  mixed  $value
-     * @return \DateTime|Carbon
-     */
-    protected function asDateTime($value)
-    {
-        try {
-            return parent::asDateTime($value);
-        } catch (\Exception $e) {
-            return Carbon::parse($value);
-        }
-    }
-
-    /**
      * Does this user have a password set?
      *
      * @return bool
