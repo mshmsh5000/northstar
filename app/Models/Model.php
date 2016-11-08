@@ -3,6 +3,7 @@
 namespace Northstar\Models;
 
 use Carbon\Carbon;
+use Exception;
 use InvalidArgumentException;
 use Jenssegers\Mongodb\Eloquent\Model as BaseModel;
 
@@ -62,7 +63,22 @@ class Model extends BaseModel
         try {
             return parent::asDateTime($value);
         } catch (InvalidArgumentException $e) {
+            return $this->asDateTimeFallback($value);
+        }
+    }
+
+    /**
+     * Fallback to try to parse poorly formatted date strings, or
+     * return `null` if it's hopeless.
+     *
+     * @param $value
+     * @return Carbon|null
+     */
+    protected function asDateTimeFallback($value) {
+        try {
             return Carbon::parse($value);
+        } catch (Exception $e) {
+            return null;
         }
     }
 }
