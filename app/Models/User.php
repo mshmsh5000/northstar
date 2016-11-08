@@ -23,7 +23,7 @@ use Northstar\Auth\Role;
  * @property string $drupal_password - Hashed password imported from Phoenix
  * @property string $first_name
  * @property string $last_name
- * @property string $birthdate
+ * @property Carbon $birthdate
  * @property string $photo
  * @property array  $interests
  * @property string $source
@@ -136,15 +136,8 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
      */
     protected $casts = [
         'cgg_id' => 'integer',
+        'birthdate' => 'date',
     ];
-
-    /**
-     * The attributes which should be stored as MongoDate objects.
-     * @see https://github.com/jenssegers/laravel-mongodb#dates
-     *
-     * @var array
-     */
-    protected $dates = ['created_at', 'updated_at'];
 
     /**
      * Computed last initial field, for public profiles.
@@ -166,16 +159,6 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
     public function setEmailAttribute($value)
     {
         $this->attributes['email'] = normalize('email', $value);
-    }
-
-    /**
-     * Mutator to format the birthdate as a date string with time.
-     *
-     * @param string $value
-     */
-    public function setBirthdateAttribute($value)
-    {
-        $this->attributes['birthdate'] = format_date($value, 'Y-m-d H:i:s');
     }
 
     /**

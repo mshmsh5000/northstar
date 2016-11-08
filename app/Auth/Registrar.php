@@ -66,6 +66,7 @@ class Registrar
             'mobile' => 'mobile|unique:users,mobile,'.$existingId.',_id|required_without_all:email,facebook_id',
             'facebook_id' => 'numeric|unique:users,facebook_id,'.$existingId.',_id|required_without_all:email,mobile',
             'drupal_id' => 'unique:users,drupal_id,'.$existingId.',_id',
+            'birthdate' => 'date',
         ];
 
         // If a user is provided, merge it into the request so we can validate

@@ -35,7 +35,7 @@ class UserTransformer extends TransformerAbstract
             $response['facebook_id'] = $user->facebook_id;
 
             $response['interests'] = $user->interests;
-            $response['birthdate'] = $user->birthdate;
+            $response['birthdate'] = format_date($user->birthdate, 'Y-m-d');
 
             $response['addr_street1'] = $user->addr_street1;
             $response['addr_street2'] = $user->addr_street2;
