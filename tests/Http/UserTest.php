@@ -215,7 +215,7 @@ class UserTest extends TestCase
 
     /**
      * Test that an admin can update a user's profile, including their role.
-     * GET /users/:term/:id
+     * POST /v1/users/
      *
      * @return void
      */
@@ -231,6 +231,33 @@ class UserTest extends TestCase
             'data' => [
                 'last_name' => '└(^o^)┘',
                 'last_initial' => '└',
+            ],
+        ]);
+    }
+
+    /**
+     * Test that we can only upsert created_at to be earlier.
+     * POST /v1/users/
+     *
+     * @return void
+     */
+    public function testUpsertCreatedAtField()
+    {
+        $user = factory(User::class)->create(['first_name' => 'Daisy', 'last_name' => 'Johnson']);
+
+        // We finally read Secret War #2, and want to update her 'created_at' date to match her first appearance.
+        $this->asAdminUser()->json('POST', 'v1/users', [
+            'email' => $user->email,
+            'first_name' => 'Daisy',
+            'created_at' => '7/1/2004', // first appearance!
+        ]);
+
+        $this->assertResponseStatus(200);
+        $this->seeJsonSubset([
+            'data' => [
+                'email' => $user->email,
+                'first_name' => 'Daisy',
+                'created_at' => '2004-07-01T00:00:00+0000',
             ],
         ]);
     }
