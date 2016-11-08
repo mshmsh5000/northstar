@@ -74,7 +74,8 @@ class Model extends BaseModel
      * @param $value
      * @return Carbon|null
      */
-    protected function asDateTimeFallback($value) {
+    protected function asDateTimeFallback($value)
+    {
         try {
             return Carbon::parse($value);
         } catch (Exception $e) {
