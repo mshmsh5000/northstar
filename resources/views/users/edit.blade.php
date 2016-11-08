@@ -47,10 +47,9 @@
                 <input type="text" id="mobile" class="text-field" name="mobile" value="{{ old('mobile') ?: $user->mobile }}" />
             </div>
 
-            {{-- @TODO: deal w/ the date input formatting --}}
             <div class="form-item">
                 <label for="birthdate" class="field-label">Birthday</label>
-                <input type="date" id="birthdate" class="text-field" name="birthdate" value="{{ old('birthdate') ?: format_date($user->birthdate) }}" />
+                <input type="text" id="birthdate" class="text-field" name="birthdate" value="{{ old('birthdate') ?: format_date($user->birthdate, 'm/d/Y') }}" />
             </div>
 
             <div class="form-item">
