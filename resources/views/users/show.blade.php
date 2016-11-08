@@ -26,7 +26,7 @@
             <dt>Mobile:</dt>
             <dd>{{ $user->mobile }}</dd>
             <dt>Birthday:</dt>
-            <dd>{{ $user->birthdate ? $user->birthdate->toFormattedDateString() : '' }}</dd>
+            <dd>{{ format_date($user->birthdate) }}</dd>
             <dt>Address:</dt>
             <dd>
                 <p>{{ $user->addr_street1 }}</p>

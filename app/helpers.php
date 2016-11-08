@@ -31,11 +31,16 @@ function normalize($type = null, $value = null)
  * Format a Carbon date if available to a specified format.
  *
  * @param  string $date
- * @return string
+ * @param string $format
+ * @return null|string
  */
-function format_date($date, $format = 'm/d/Y')
+function format_date($date, $format = 'M j, Y')
 {
-    $date = new Carbon($date);
+    try {
+        $date = new Carbon($date);
+    } catch (InvalidArgumentException $e) {
+        return null;
+    }
 
     return $date->format($format);
 }
