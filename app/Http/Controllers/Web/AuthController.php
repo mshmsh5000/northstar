@@ -1,18 +1,29 @@
 <?php
 
-namespace Northstar\Http\Controllers;
+namespace Northstar\Http\Controllers\Web;
 
+use Illuminate\Contracts\Auth\Factory as Auth;
+use Illuminate\Foundation\Validation\ValidatesRequests;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller as BaseController;
-use Illuminate\Foundation\Validation\ValidatesRequests;
-use Illuminate\Contracts\Auth\Factory as Auth;
+use League\OAuth2\Server\AuthorizationServer;
+use Northstar\Auth\Entities\UserEntity;
 use Northstar\Auth\Registrar;
 use Northstar\Exceptions\NorthstarValidationException;
 use Northstar\Models\User;
+use Psr\Http\Message\ResponseInterface;
+use Psr\Http\Message\ServerRequestInterface;
 
-class WebController extends BaseController
+class AuthController extends BaseController
 {
     use ValidatesRequests;
+
+    /**
+     * The OAuth authorization server.
+     *
+     * @var AuthorizationServer
+     */
+    protected $oauth;
 
     /**
      * The authentication factory.
@@ -32,15 +43,48 @@ class WebController extends BaseController
      * Make a new WebController, inject dependencies,
      * and set middleware for this controller's methods.
      *
-     * @param \Illuminate\Contracts\Auth\Factory $auth
+     * @param Auth $auth
      * @param Registrar $registrar
+     * @param AuthorizationServer $oauth
      */
-    public function __construct(Auth $auth, Registrar $registrar)
+    public function __construct(Auth $auth, Registrar $registrar, AuthorizationServer $oauth)
     {
         $this->auth = $auth;
         $this->registrar = $registrar;
+        $this->oauth = $oauth;
 
         $this->middleware('guest:web', ['only' => ['getLogin', 'postLogin', 'getRegister', 'postRegister']]);
+    }
+
+    /**
+     * Authorize an application via OAuth 2.
+     *
+     * @param ServerRequestInterface $request
+     * @param ResponseInterface $response
+     * @return ResponseInterface|\Illuminate\Http\RedirectResponse
+     */
+    public function authorize(ServerRequestInterface $request, ResponseInterface $response)
+    {
+        // Validate the HTTP request and return an AuthorizationRequest.
+        $authRequest = $this->oauth->validateAuthorizationRequest($request);
+        $client = $authRequest->getClient();
+
+        if (! $this->auth->guard('web')->check()) {
+            $destination = request()->query('destination', $client->getName());
+            session(['destination' => $destination]);
+
+            return redirect()->guest('login');
+        }
+
+        $user = UserEntity::fromModel($this->auth->guard('web')->user());
+        $authRequest->setUser($user);
+
+        // Clients are all our own at the moment, so they will always be approved.
+        // @TODO: Add an explicit "DoSomething.org app" boolean to the Client model.
+        $authRequest->setAuthorizationApproved(true);
+
+        // Return the HTTP redirect response.
+        return $this->oauth->completeAuthorizationRequest($authRequest, $response);
     }
 
     /**

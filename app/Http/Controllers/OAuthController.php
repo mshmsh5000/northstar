@@ -2,16 +2,15 @@
 
 namespace Northstar\Http\Controllers;
 
-use Illuminate\Http\Request;
 use Illuminate\Contracts\Auth\Factory as Auth;
+use Illuminate\Http\Request;
+use League\OAuth2\Server\AuthorizationServer;
 use League\OAuth2\Server\Exception\OAuthServerException;
 use Northstar\Auth\Encrypter;
-use Northstar\Auth\Entities\UserEntity;
 use Northstar\Http\Transformers\UserInfoTransformer;
 use Northstar\Models\RefreshToken;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
-use League\OAuth2\Server\AuthorizationServer;
 
 class OAuthController extends Controller
 {
@@ -50,40 +49,6 @@ class OAuthController extends Controller
         $this->encrypter = $encrypter;
 
         $this->middleware('auth:api', ['only' => ['info', 'invalidateToken']]);
-    }
-
-    /**
-     * Show the login form for authenticating a user using one of the
-     * authentication code grant.
-     *
-     * @param ServerRequestInterface $request
-     * @param ResponseInterface $response
-     * @return ResponseInterface|\Illuminate\Http\RedirectResponse
-     */
-    public function authorize(ServerRequestInterface $request, ResponseInterface $response)
-    {
-        // Validate the HTTP request and return an AuthorizationRequest.
-        $authRequest = $this->oauth->validateAuthorizationRequest($request);
-        $client = $authRequest->getClient();
-
-        if (! $this->auth->guard('web')->check()) {
-            $destination = request()->query('destination', $client->getName());
-            session(['destination' => $destination]);
-
-            return redirect()->guest('login');
-        }
-
-        $entity = new UserEntity();
-        $userId = $this->auth->guard('web')->user()->getAuthIdentifier();
-        $entity->setIdentifier($userId);
-        $authRequest->setUser($entity);
-
-        // Clients are all our own at the moment, so they will always be approved.
-        // @TODO: Add an explicit "DoSomething.org app" boolean to the Client model.
-        $authRequest->setAuthorizationApproved(true);
-
-        // Return the HTTP redirect response.
-        return $this->oauth->completeAuthorizationRequest($authRequest, $response);
     }
 
     /**

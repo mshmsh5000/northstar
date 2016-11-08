@@ -4,6 +4,10 @@ namespace Northstar\Http\Controllers;
 
 class KeyController extends Controller
 {
+    /**
+     * Make a new KeyController, inject dependencies,
+     * and set middleware for this controller's methods.
+     */
     public function __construct()
     {
         $this->middleware('role:admin');
