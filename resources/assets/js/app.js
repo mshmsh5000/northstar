@@ -6,4 +6,4 @@ import '../scss/app.scss';
 
 
 // Utilities
-// import Analytics from 'utilities/Analytics';
+import Analytics from 'utilities/Analytics';
