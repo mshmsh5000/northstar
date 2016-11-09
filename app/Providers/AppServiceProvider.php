@@ -3,6 +3,7 @@
 namespace Northstar\Providers;
 
 use Illuminate\Support\ServiceProvider;
+use Northstar\Models\User;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -13,7 +14,10 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-        //
+        User::creating(function ($user) {
+            // Set source automatically if not provided.
+            $user->source = $user->source ?: client_id();
+        });
     }
 
     /**
