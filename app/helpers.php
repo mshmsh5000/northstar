@@ -86,5 +86,6 @@ function client_id()
         return $client->client_id;
     }
 
-    return 'northstar';
+    // If not an API request, use Client ID from `/authorize` call or just 'northstar'.
+    return session('authorize_client_id', 'northstar');
 }

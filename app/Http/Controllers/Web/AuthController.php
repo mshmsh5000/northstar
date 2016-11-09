@@ -69,6 +69,9 @@ class AuthController extends BaseController
         $authRequest = $this->oauth->validateAuthorizationRequest($request);
         $client = $authRequest->getClient();
 
+        // Store the Client ID so we can store it on registrations.
+        session(['authorize_client_id' => request()->query('client_id')]);
+
         if (! $this->auth->guard('web')->check()) {
             $destination = request()->query('destination', $client->getName());
             session(['destination' => $destination]);
