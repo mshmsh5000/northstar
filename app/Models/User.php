@@ -83,7 +83,7 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
         'addr_street1', 'addr_street2', 'addr_city', 'addr_state', 'addr_zip',
         'country', 'language',
 
-        'mobilecommons_id', 'mobilecommons_status', 'cgg_id', 'drupal_id', 'agg_id', 'source', 'facebook_id',
+        'mobilecommons_id', 'mobilecommons_status', 'cgg_id', 'drupal_id', 'agg_id', 'facebook_id',
 
         'parse_installation_ids',
     ];
@@ -182,23 +182,6 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
     public function setMobileAttribute($value)
     {
         $this->attributes['mobile'] = normalize('mobile', $value);
-    }
-
-    /**
-     * Mutator to make the `source` field immutable (e.g. once a user has been assigned
-     * a source, that value cannot be changed). This allows applications to always
-     * pass their own identifier in the user's source, without overwriting that value
-     * for existing users.
-     *
-     * @param string $value
-     */
-    public function setSourceAttribute($value)
-    {
-        if (! empty($this->attributes['source'])) {
-            return;
-        }
-
-        $this->attributes['source'] = $value;
     }
 
     /**

@@ -115,6 +115,14 @@ class UserController extends Controller
         $existingUserHasEarlierCreatedTimestamp = $existingUser && $existingUser->created_at->lt(new Carbon($created_at));
         if ($created_at && ! $existingUserHasEarlierCreatedTimestamp) {
             $user->created_at = $created_at;
+            $user->source = $request->input('source') ?: client_id();
+
+            $user->save();
+        }
+
+        // Only save a source if not upserting a user (unless back-filling, see above).
+        if ($request->has('source') && ! $existingUser) {
+            $user->source = $request->input('source');
             $user->save();
         }
 
