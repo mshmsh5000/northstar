@@ -243,13 +243,14 @@ class UserTest extends TestCase
      */
     public function testUpsertCreatedAtField()
     {
-        $user = factory(User::class)->create(['first_name' => 'Daisy', 'last_name' => 'Johnson']);
+        $user = factory(User::class)->create(['first_name' => 'Daisy', 'last_name' => 'Johnson', 'source' => 'television']);
 
         // We finally read Secret War #2, and want to update her 'created_at' date to match her first appearance.
         $this->asAdminUser()->json('POST', 'v1/users', [
             'email' => $user->email,
             'first_name' => 'Daisy',
-            'created_at' => '7/1/2004', // first appearance!
+            'created_at' => '7/1/2004', // first comic book appearance!
+            'source' => 'comic',
         ]);
 
         $this->assertResponseStatus(200);
@@ -257,8 +258,32 @@ class UserTest extends TestCase
             'data' => [
                 'email' => $user->email,
                 'first_name' => 'Daisy',
+                'source' => 'comic',
                 'created_at' => '2004-07-01T00:00:00+0000',
             ],
         ]);
+    }
+
+    /**
+     * Test that we can only upsert created_at to be earlier.
+     * POST /v1/users/
+     *
+     * @return void
+     */
+    public function testUpsertNewerCreatedAtField()
+    {
+        $user = factory(User::class)->create(['first_name' => 'Nathaniel', 'last_name' => 'Richards']);
+        $created_at = $user->created_at;
+
+        // We don't allow time-travelling (setting your created_at date to be later).
+        $this->asAdminUser()->json('POST', 'v1/users', [
+            'email' => $user->email,
+            'created_at' => '11/1/3001', // the fuuuuuuuuture!
+        ]);
+
+        $this->assertResponseStatus(200);
+
+        // The request should have completed, but the `created_at` should not have changed
+        $this->assertEquals((string) $created_at, (string) $user->fresh()->created_at);
     }
 }
