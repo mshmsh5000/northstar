@@ -277,9 +277,10 @@ class AuthTest extends TestCase
     {
         // Given an account that doesn't have a password (for example,
         // someone who voted in Celebs Gone Good).
-        $user = User::create([
+        $user = factory(User::class)->create([
             'email' => 'poe.dameron@resistance.org',
             'first_name' => 'Poe',
+            'password' => null,
             'source' => 'cgg',
         ]);
 

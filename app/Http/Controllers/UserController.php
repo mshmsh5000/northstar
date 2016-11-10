@@ -2,6 +2,7 @@
 
 namespace Northstar\Http\Controllers;
 
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Northstar\Auth\Registrar;
 use Northstar\Auth\Role;
@@ -109,8 +110,19 @@ class UserController extends Controller
         $user = $this->registrar->register($request->except('role'), $existingUser);
 
         // Optionally, allow setting a custom "created_at" (useful for back-filling from other services).
-        if ($request->has('created_at')) {
-            $user->created_at = $request->input('created_at');
+        // We'll only update this value on existing records if it's earlier than the existing timestamp.
+        $created_at = $request->input('created_at');
+        $existingUserHasEarlierCreatedTimestamp = $existingUser && $existingUser->created_at->lt(new Carbon($created_at));
+        if ($created_at && ! $existingUserHasEarlierCreatedTimestamp) {
+            $user->created_at = $created_at;
+            $user->source = $request->input('source') ?: client_id();
+
+            $user->save();
+        }
+
+        // Only save a source if not upserting a user (unless back-filling, see above).
+        if ($request->has('source') && ! $existingUser) {
+            $user->source = $request->input('source');
             $user->save();
         }
 

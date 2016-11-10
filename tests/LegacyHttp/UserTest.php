@@ -557,8 +557,9 @@ class LegacyUserTest extends TestCase
      */
     public function testUpsertUser()
     {
-        User::create([
+        factory(User::class)->create([
             'email' => 'upsert-me@dosomething.org',
+            'mobile' => null,  // <-- overriding factory so we can add it via upsert
             'source' => 'database',
         ]);
 
@@ -582,7 +583,7 @@ class LegacyUserTest extends TestCase
                 'first_name' => 'Puppet',
                 'mobile' => '5556667777',
 
-                // Ensure the `source` field is immutable (since we tried to update to 'phpunit'):
+                // Ensure the `source` field is immutable (since we did not provide an earlier creation date):
                 'source' => 'database',
 
                 // The role should *not* be changed by upsert (since that'd make it easily to accidentally grant!)
