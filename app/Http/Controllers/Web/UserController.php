@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use Illuminate\Routing\Controller as BaseController;
 use Northstar\Auth\Registrar;
 use Northstar\Models\User;
+use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 
 class UserController extends BaseController
 {
@@ -64,6 +65,10 @@ class UserController extends BaseController
     {
         $user = User::findOrFail($id);
 
+        if (! $user->can('editProfile', [auth()->guard('web')->user(), $user])) {
+            throw new AccessDeniedHttpException;
+        }
+
         return view('users.edit', ['user' => $user]);
     }
 
@@ -77,6 +82,10 @@ class UserController extends BaseController
     public function update(Request $request, $id)
     {
         $user = User::findOrFail($id);
+
+        if (! $user->can('editProfile', [auth()->guard('web')->user(), $user])) {
+            throw new AccessDeniedHttpException;
+        }
 
         $this->registrar->validate($request, $user, [
             'first_name' => 'required',

@@ -60,4 +60,17 @@ class WebUserTest extends TestCase
         $this->assertEquals('Jean-Paul', $updatedUser->first_name);
         $this->assertEquals('Beaubier', $updatedUser->last_name);
     }
+
+    /**
+     * Test that auth user can not access another user's profile.
+     */
+    public function testProfileEditAccess()
+    {
+        $authUser = $this->makeAuthWebUser();
+
+        $randoUser = factory(User::class)->create();
+
+        $this->visit('users/'.$randoUser->id.'/edit')
+             ->seePageIs('/');
+    }
 }
