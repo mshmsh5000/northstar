@@ -102,7 +102,7 @@
                 <input type="submit" class="button" value="Save">
             </div>
             <ul class="form-actions">
-                <li><a href="{{ url('users/'.$user->id) }}">Cancel</a></li>
+                <li><a href="{{ url('users/'.$user->id) }}" data-track-category="Link" data-track-action="Clicked" data-track-label="Cancel">Cancel</a></li>
             </ul>
         </div>
     </form>

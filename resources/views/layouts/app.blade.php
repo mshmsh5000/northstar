@@ -36,4 +36,6 @@
 
 <script src="{{ asset('/dist/app.js') }}"></script>
 
+@include('layouts.google_analytics')
+
 </html>

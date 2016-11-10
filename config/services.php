@@ -14,6 +14,11 @@ return [
     |
     */
 
+    'analytics' => [
+        'production' => 'UA-493209-41',
+        'qa' => 'UA-493209-42',
+    ],
+
     'mailgun' => [
         'domain' => env('MAILGUN_DOMAIN'),
         'secret' => env('MAILGUN_KEY'),
