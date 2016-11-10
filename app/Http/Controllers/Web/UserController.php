@@ -85,7 +85,10 @@ class UserController extends BaseController
             'password' => 'min:6|confirmed',
         ]);
 
-        $user->fill($request->all())->save();
+        // Remove fields with empty values.
+        $values = array_diff($request->all(), ['']);
+
+        $user->fill($values)->save();
 
         return redirect()->route('users.show', $user->id);
     }
