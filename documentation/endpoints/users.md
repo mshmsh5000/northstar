@@ -147,7 +147,7 @@ Either a mobile number or email is required.
   drupal_id: String
   parse_installation_ids: String // CSV values or array will be appended to existing interests
   interests: String, Array // CSV values or array will be appended to existing interests
-  source: String // Immutable (can only be set if existing value is `null`)
+  source: String // Will only be set on new records, or if being provided an earlier `created_at`. 
 
   // Hidden fields (optional):
   race: String
@@ -297,7 +297,6 @@ PUT /v1/users/drupal_id/<drupal_id>
   drupal_id: String
   parse_installation_ids: String // CSV values or array will be appended to existing interests
   interests: String, Array // CSV values or array will be appended to existing interests
-  source: String // Immutable (can only be set if existing value is `null`)
   role: String // Can only be modified by admins. Either 'user' (default), 'staff', or 'admin'.
 
   // Hidden fields (optional):
