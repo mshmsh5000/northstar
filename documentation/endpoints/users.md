@@ -148,6 +148,7 @@ Either a mobile number or email is required.
   parse_installation_ids: String // CSV values or array will be appended to existing interests
   interests: String, Array // CSV values or array will be appended to existing interests
   source: String // Will only be set on new records, or if being provided an earlier `created_at`. 
+  created_at: Number // timestamp
 
   // Hidden fields (optional):
   race: String

@@ -249,7 +249,7 @@ class UserTest extends TestCase
         $this->asAdminUser()->json('POST', 'v1/users', [
             'email' => $user->email,
             'first_name' => 'Daisy',
-            'created_at' => '7/1/2004', // first comic book appearance!
+            'created_at' => '1088640000', // first comic book appearance!
             'source' => 'comic',
         ]);
 
@@ -278,7 +278,7 @@ class UserTest extends TestCase
         // We don't allow time-travelling (setting your created_at date to be later).
         $this->asAdminUser()->json('POST', 'v1/users', [
             'email' => $user->email,
-            'created_at' => '11/1/3001', // the fuuuuuuuuture!
+            'created_at' => '2540246400', // the fuuuuuuuuture!
         ]);
 
         $this->assertResponseStatus(200);
