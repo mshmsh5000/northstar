@@ -2,7 +2,7 @@
  * This is where we load and initialize components of the app.
  */
 
-// Import DoSomething.org libraries.
+// Import Forge, the DoSomething.org pattern library.
 import '@dosomething/forge';
 
 // Styles
