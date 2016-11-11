@@ -19,7 +19,8 @@
                 </ul>
             </div>
         @endif
-        <form method="POST" action="{{ url('login') }}">
+
+        <form id="profile-login-form" method="POST" action="{{ url('login') }}">
             <input name="_token" type="hidden" value="{{ csrf_token() }}">
 
             <div class="form-item">

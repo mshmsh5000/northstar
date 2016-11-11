@@ -18,7 +18,8 @@
                 </ul>
             </div>
         @endif
-        <form method="POST" action="{{ url('register') }}">
+
+        <form id="profile-registration-form" method="POST" action="{{ url('register') }}">
             <input name="_token" type="hidden" value="{{ csrf_token() }}">
 
             <div class="form-item">
