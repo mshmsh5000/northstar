@@ -2,8 +2,9 @@
  * This is where we load and initialize components of the app.
  */
 
-// Import Forge, the DoSomething.org pattern library.
+// Import DoSomething.org libraries.
 import '@dosomething/forge';
+import Validation from 'dosomething-validation';
 
 // Styles
 import '../scss/app.scss';
