@@ -15,8 +15,3 @@ import Analytics from './utilities/Analytics';
 
 // Initialize analytics.
 Analytics.init();
-
-// ...
-$(document).ready(function() {
-  console.log('document has loaded...');
-});

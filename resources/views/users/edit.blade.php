@@ -20,7 +20,7 @@
         </div>
     @endif
 
-    <form method="POST" action="{{ route('users.update', $user->id) }}">
+    <form id="profile-edit-form" method="POST" action="{{ route('users.update', $user->id) }}">
         {{ method_field('PATCH') }}
         {{ csrf_field() }}
 
@@ -102,7 +102,7 @@
                 <input type="submit" class="button" value="Save">
             </div>
             <ul class="form-actions">
-                <li><a href="{{ url('users/'.$user->id) }}" data-track-category="Link" data-track-action="Clicked" data-track-label="Cancel">Cancel</a></li>
+                <li><a href="{{ url('users/'.$user->id) }}" data-track-category="Profile Edit" data-track-action="Clicked" data-track-label="Cancel">Cancel</a></li>
             </ul>
         </div>
     </form>
