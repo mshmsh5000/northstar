@@ -5,7 +5,7 @@ function init() {
   Analytics.init();
 
   // Attach custom form submit events.
-  $(document).delegate('form', 'submit', (event) => {
+  $(document).on('submit', 'form', (event) => {
     Analytics.analyze('Form', 'Submitted', event.target.id);
   });
 }
