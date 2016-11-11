@@ -2,8 +2,6 @@
  * This is where we load and initialize components of the app.
  */
 
-import $ from 'jquery';
-
 // Import Forge, the DoSomething.org pattern library.
 import '@dosomething/forge';
 
