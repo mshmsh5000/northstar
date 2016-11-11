@@ -23,8 +23,13 @@
             <input name="_token" type="hidden" value="{{ csrf_token() }}">
 
             <div class="form-item">
-                <label for="first_name" class="field-label">First Name</label>
-                <input name="first_name" type="text" class="text-field" placeholder="What do we call you?"value="{{ old('first_name') }}" autofocus>
+                <label for="first_name" class="field-label">
+                    <div class="validation">
+                        <div class="validation__label">First Name <span class="form-required" title="This field is required.">*</span></div>
+                        <div class="validation__message"></div>
+                    </div>
+                </label>
+                <input name="first_name" type="text" class="text-field js-validate" placeholder="What do we call you?"value="{{ old('first_name') }}" autofocus data-validate-required data-validate="first_name">
             </div>
 
             <div class="form-item">

@@ -4,13 +4,15 @@
 
 // Import DoSomething.org libraries.
 import '@dosomething/forge';
-import Validation from 'dosomething-validation';
 
 // Styles
 import '../scss/app.scss';
 
 // Utilities
 import Analytics from './utilities/Analytics';
+
+// Register validation rules.
+import './validators/auth';
 
 // Initialize analytics.
 Analytics.init();
