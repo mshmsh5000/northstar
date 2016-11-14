@@ -29,7 +29,7 @@
                         <div class="validation__message"></div>
                     </div>
                 </label>
-                <input name="first_name" type="text" id="first_name" class="text-field required js-validate" placeholder="What do we call you?"value="{{ old('first_name') }}" autofocus data-validate="first_name" data-validate-required />
+                <input name="first_name" type="text" id="first_name" class="text-field required js-validate" placeholder="What do we call you?" value="{{ old('first_name') }}" autofocus data-validate="first_name" data-validate-required />
             </div>
 
             <div class="form-item">
