@@ -24,13 +24,23 @@
             <input name="_token" type="hidden" value="{{ csrf_token() }}">
 
             <div class="form-item">
-                <label for="username" class="field-label">Email address or cell number</label>
-                <input name="username" type="text" class="text-field" placeholder="puppet-sloth@example.org" value="{{ old('username') }}" autofocus />
+                <label for="username" class="field-label">
+                    <div class="validation">
+                        <div class="validation__label">Email address or cell number <span class="form-required" title="This field is required.">*</span></div>
+                        <div class="validation__message"></div>
+                    </div>
+                </label>
+                <input name="username" type="text" class="text-field required" placeholder="puppet-sloth@example.org" value="{{ old('username') }}" autofocus />
             </div>
 
             <div class="form-item">
-                <label for="password" class="field-label">Password</label>
-                <input name="password" type="password" class="text-field" placeholder="••••••••" />
+                <label for="password" class="field-label">
+                    <div class="validation">
+                        <div class="validation__label">Password <span class="form-required" title="This field is required.">*</span></div>
+                        <div class="validation__message"></div>
+                    </div>
+                </label>
+                <input name="password" type="password" class="text-field required" placeholder="••••••••" />
             </div>
 
             <div class="form-actions -padded">
