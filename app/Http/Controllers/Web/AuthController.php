@@ -170,11 +170,13 @@ class AuthController extends BaseController
             throw new NorthstarValidationException(['email' => 'A user with that email or mobile has already been registered.']);
         }
 
+        $existingId = isset($existing->id) ? $existing->id : 'null';
+
         $this->registrar->validate($request, $existing, [
             'first_name' => 'required',
             'birthdate' => 'required|date',
-            'email' => 'required|email|unique:users,email,null,_id',
-            'mobile' => 'mobile|unique:users,mobile,null,_id',
+            'email' => 'required|email|unique:users,email,'.$existingId.',_id',
+            'mobile' => 'mobile|unique:users,mobile,'.$existingId.',_id',
             'password' => 'required|confirmed|min:6',
         ]);
 
