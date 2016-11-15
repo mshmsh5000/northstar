@@ -29,6 +29,7 @@
     "@dosomething/analytics": "^1.0.2",
     "@dosomething/forge": "^6.7.4",
     "dosomething-validation": "^0.2.4",
+    "jquery": "^3.1.1",
     "mailcheck": "^1.1.1"
   }
 }
