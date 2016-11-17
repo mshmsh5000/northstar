@@ -1,5 +1,5 @@
 /**
- * Utility script to enable routing back to last page,
+ * Utility script to enable routing back to the last page,
  * as long as it's within the same top-level domain.
  */
 
