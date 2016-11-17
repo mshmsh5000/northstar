@@ -72,6 +72,9 @@ class AuthController extends BaseController
         // Store the Client ID so we can set user source on registrations.
         session(['authorize_client_id' => request()->query('client_id')]);
 
+        // Store the referrer URI so we can redirect back to it if necessary.
+        session(['referrer_uri' => request()->query('referrer_uri')]);
+
         if (! $this->auth->guard('web')->check()) {
             $destination = request()->query('destination', $client->getName());
             session(['destination' => $destination]);
@@ -97,6 +100,10 @@ class AuthController extends BaseController
      */
     public function getLogin()
     {
+        app('JavaScript')->put([
+            'referrerUri' => session('referrer_uri'),
+        ]);
+
         return view('auth.login');
     }
 

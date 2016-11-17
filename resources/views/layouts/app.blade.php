@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="x-ua-compatible" content="ie=edge">
@@ -14,28 +15,28 @@
 </head>
 
 <body class="modernizr-no-js">
-<div class="chrome">
-    @if (session('status'))
-        <div class="messages">{{ session('status') }}</div>
-    @endif
-    <div class="wrapper">
-        @include('layouts.navigation')
+    <div class="chrome">
+        @if (session('status'))
+            <div class="messages">{{ session('status') }}</div>
+        @endif
+        <div class="wrapper">
+            @include('layouts.navigation')
 
-        <section class="container -framed">
+            <section class="container -framed">
 
-            <div class="wrapper">
+                <div class="wrapper">
 
-            @yield('content')
+                @yield('content')
 
-            </div>
-        </section>
+                </div>
+            </section>
 
+        </div>
     </div>
-</div>
+
+    @include('layouts.variables')
+    <script src="{{ asset('/dist/app.js') }}"></script>
+    @include('layouts.google_analytics')
 </body>
-
-<script src="{{ asset('/dist/app.js') }}"></script>
-
-@include('layouts.google_analytics')
 
 </html>
