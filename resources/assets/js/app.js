@@ -18,9 +18,13 @@ window.Drupal = {
 
 // Utilities
 import Analytics from './utilities/Analytics';
+import DeLorean from './utilities/DeLorean';
 
 // Register validation rules.
 import './validators/auth';
 
 // Initialize analytics.
 Analytics.init();
+
+// Initialize routing back to last page.
+DeLorean.init();
