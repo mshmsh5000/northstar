@@ -17,7 +17,7 @@ class SessionVariablesToJavaScript
      */
     public function handle($request, Closure $next)
     {
-        foreach($this->sessionVariables as $variable) {
+        foreach ($this->sessionVariables as $variable) {
             if (session($variable)) {
                 app('JavaScript')->put([
                     camel_case($variable) => session($variable),
