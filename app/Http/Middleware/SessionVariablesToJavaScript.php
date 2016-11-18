@@ -27,5 +27,4 @@ class SessionVariablesToJavaScript
 
         return $next($request);
     }
-
 }
