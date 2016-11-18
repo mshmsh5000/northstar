@@ -11,8 +11,12 @@ function init(element = 'back') {
     let backLink = document.getElementById(element);
     let referrerUri = document.referrer;
 
-    if (isSpecifiedRoute('/login') && Northstar) {
-      referrerUri = Northstar.referrerUri;
+    if (isSpecifiedRoute('/login') || isSpecifiedRoute('/')) {
+      if (window.Northstar) {
+        referrerUri = Northstar.referrerUri;
+      } else {
+        return;
+      }
     }
 
     if (backLink && referrerUri) {

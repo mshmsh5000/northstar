@@ -54,6 +54,7 @@ class AuthController extends BaseController
         $this->oauth = $oauth;
 
         $this->middleware('guest:web', ['only' => ['getLogin', 'postLogin', 'getRegister', 'postRegister']]);
+        $this->middleware('sessionVars');
     }
 
     /**
@@ -100,10 +101,6 @@ class AuthController extends BaseController
      */
     public function getLogin()
     {
-        app('JavaScript')->put([
-            'referrerUri' => session('referrer_uri'),
-        ]);
-
         return view('auth.login');
     }
 
