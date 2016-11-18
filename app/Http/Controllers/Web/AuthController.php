@@ -54,7 +54,7 @@ class AuthController extends BaseController
         $this->oauth = $oauth;
 
         $this->middleware('guest:web', ['only' => ['getLogin', 'postLogin', 'getRegister', 'postRegister']]);
-        $this->middleware('sessionVars');
+        $this->middleware('session_vars');
     }
 
     /**
