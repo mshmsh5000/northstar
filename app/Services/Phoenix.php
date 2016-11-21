@@ -126,6 +126,10 @@ class Phoenix
                 'forward' => false,
             ],
             'json' => $payload,
+            'cookies' => $this->getAuthenticationCookie(),
+            'headers' => [
+                'X-CSRF-Token' => $this->getAuthenticationToken(),
+            ],
         ]);
 
         $json = json_decode($response->getBody()->getContents(), true);
