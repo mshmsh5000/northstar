@@ -117,7 +117,7 @@ class Phoenix
         $payload = $user->toArray();
 
         // Format user object for consumption by Drupal API.
-        $payload['birthdate'] = date('Y-m-d', strtotime($user->birthdate));
+        $payload['birthdate'] = format_date($user->birthdate, 'Y-m-d');
         $payload['user_registration_source'] = $user->source;
         $payload['password'] = $password;
 
@@ -126,6 +126,10 @@ class Phoenix
                 'forward' => false,
             ],
             'json' => $payload,
+            'cookies' => $this->getAuthenticationCookie(),
+            'headers' => [
+                'X-CSRF-Token' => $this->getAuthenticationToken(),
+            ],
         ]);
 
         $json = json_decode($response->getBody()->getContents(), true);
