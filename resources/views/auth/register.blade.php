@@ -88,4 +88,11 @@
             <li><a href="{{ url('login') }}">Log in to an existing account</a></li>
         </ul>
     </div>
+
+    <div class="container__block -centered">
+        <p class="footnote">Creating an account means you agree to our <a href="https://www.dosomething.org/us/about/terms-service">Terms of Service</a>
+            &amp; <a href="https://www.dosomething.org/us/about/privacy-policy">Privacy Policy</a> and to receive our weekly update.
+            Message &amp; data rates may apply. Text STOP to opt-out, HELP for help.</p>
+    </div>
+
 @stop
