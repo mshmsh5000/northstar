@@ -2,6 +2,7 @@
 
 namespace Northstar\Auth;
 
+use GuzzleHttp\Exception\ClientException;
 use Illuminate\Contracts\Hashing\Hasher;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Validation\Factory as Validation;
@@ -185,23 +186,27 @@ class Registrar
         $user->fill($input);
         $user->save();
 
+        // If this user doesn't have a `drupal_id`, try to make one.
+        if (! $user->drupal_id) {
+            $user = $this->createDrupalUser($user);
+            $user->save();
+        }
+
         return $user;
     }
 
     /**
-     * Attempt to create a Drupal user for the given account.
+     * Create a Drupal user for the given account.
      *
      * @param User $user
-     * @param string $password
      * @return mixed
      */
-    public function createDrupalUser($user, $password)
+    public function createDrupalUser($user)
     {
-        // @TODO: we can't create a Drupal user without an email. Do we just create an @mobile one like we had done previously?
         try {
-            $drupal_id = $this->phoenix->register($user, $password);
+            $drupal_id = $this->phoenix->register($user);
             $user->drupal_id = $drupal_id;
-        } catch (\GuzzleHttp\Exception\ClientException $e) {
+        } catch (ClientException $e) {
             // If user already exists (403 Forbidden), try to find the user to get the UID.
             if ($e->getCode() == 403) {
                 try {

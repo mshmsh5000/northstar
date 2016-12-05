@@ -126,12 +126,6 @@ class UserController extends Controller
             $user->save();
         }
 
-        // Should we try to make a Drupal account for this user?
-        if ($request->has('create_drupal_user') && $request->has('password') && ! $user->drupal_id) {
-            $user = $this->registrar->createDrupalUser($user, $request->input('password'));
-            $user->save();
-        }
-
         $code = $upserting ? 200 : 201;
 
         return $this->item($user, $code);
@@ -182,7 +176,7 @@ class UserController extends Controller
             Role::gate(['admin']);
         }
 
-        $user->fill($request->all());
+        $this->registrar->register($request->all(), $user);
 
         // Should we try to make a Drupal account for this user?
         if ($request->has('create_drupal_user') && $request->has('password') && ! $user->drupal_id) {
