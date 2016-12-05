@@ -177,7 +177,6 @@ class AuthController extends Controller
             $user->save();
         }
 
-
         // Create a legacy token & set the user for this request.
         $token = Token::create(['user_id' => $user->id]);
         $this->auth->setUser($user);

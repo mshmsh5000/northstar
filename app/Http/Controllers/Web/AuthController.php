@@ -81,7 +81,6 @@ class AuthController extends BaseController
             $destination = request()->query('destination', $client->getName());
             session(['destination' => $destination]);
 
-
             return redirect()->guest($authorizationRoute);
         }
 
