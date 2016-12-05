@@ -32,7 +32,6 @@ class HelpersTest extends TestCase
         ]);
         $this->assertEquals(client_id(), 'legacy_client');
 
-
         // And make a request using OAuth.
         $this->asNormalUser()->json('POST', '/v1/auth/register', [
             'email' => $this->faker->safeEmail,

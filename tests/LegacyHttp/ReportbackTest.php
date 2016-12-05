@@ -1,7 +1,6 @@
 <?php
 
 use Northstar\Models\User;
-use Northstar\Services\Phoenix;
 
 class ReportbackTest extends TestCase
 {
@@ -16,9 +15,8 @@ class ReportbackTest extends TestCase
         $user = User::create(['drupal_id' => '512312']);
 
         // For testing, we'll mock successful Phoenix API responses.
-        $phoenix = $this->mock(Phoenix::class);
-        $phoenix->shouldReceive('createReportback')->once()->andReturn(['127']);
-        $phoenix->shouldReceive('getReportback')->once()->andReturn([
+        $this->phoenixMock->shouldReceive('createReportback')->once()->andReturn(['127']);
+        $this->phoenixMock->shouldReceive('getReportback')->once()->andReturn([
             'data' => [
                 'id' => 127,
                 // ...
