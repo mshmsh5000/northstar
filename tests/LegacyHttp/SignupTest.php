@@ -17,7 +17,7 @@ class SignupTest extends TestCase
         $user2 = User::create(['drupal_id' => '100002', 'first_name' => 'Dave']);
 
         // For testing, we'll mock a successful Phoenix API response.
-        $this->mock(Phoenix::class)->shouldReceive('getSignupIndex')->with(['users' => ['100001', '100002']])->once()->andReturn([
+        $this->phoenixMock->shouldReceive('getSignupIndex')->with(['users' => ['100001', '100002']])->once()->andReturn([
             'data' => [
                 [
                     'id' => '243',
@@ -62,7 +62,7 @@ class SignupTest extends TestCase
         $user2 = User::create(['drupal_id' => '100002', 'first_name' => 'Dave']);
 
         // For testing, we'll mock a successful Phoenix API response.
-        $this->mock(Phoenix::class)->shouldReceive('getSignupIndex')->with(['users' => ['100001', '100002']])->once()->andReturn([
+        $this->phoenixMock->shouldReceive('getSignupIndex')->with(['users' => ['100001', '100002']])->once()->andReturn([
             'data' => [
                 [
                     'id' => '243',
@@ -90,7 +90,7 @@ class SignupTest extends TestCase
         $user = User::create(['drupal_id' => '100003', 'first_name' => 'Name']);
 
         // For testing, we'll mock a successful Phoenix API response.
-        $this->mock(Phoenix::class)->shouldReceive('getSignupIndex')->with(['users' => ['100003']])->once()->andReturn([
+        $this->phoenixMock->shouldReceive('getSignupIndex')->with(['users' => ['100003']])->once()->andReturn([
             'data' => [
                 [
                     'user' => [
@@ -116,7 +116,7 @@ class SignupTest extends TestCase
     public function testGetSignup()
     {
         // For testing, we'll mock a successful Phoenix API response.
-        $this->mock(Phoenix::class)->shouldReceive('getSignup')->once()->andReturn([
+        $this->phoenixMock->shouldReceive('getSignup')->once()->andReturn([
             'data' => [
                 'id' => '42',
                 'user' => [
@@ -143,9 +143,8 @@ class SignupTest extends TestCase
         $user = User::create(['drupal_id' => '123451']);
 
         // For testing, we'll mock a successful Phoenix API response.
-        $mock = $this->mock(Phoenix::class);
-        $mock->shouldReceive('createSignup')->with('123451', '123', 'test')->once()->andReturn(['1307']);
-        $mock->shouldReceive('getSignup')->with('1307')->once()->andReturn([
+        $this->phoenixMock->shouldReceive('createSignup')->with('123451', '123', 'test')->once()->andReturn(['1307']);
+        $this->phoenixMock->shouldReceive('getSignup')->with('1307')->once()->andReturn([
             'data' => [
                 'id' => '1307',
                 // ...

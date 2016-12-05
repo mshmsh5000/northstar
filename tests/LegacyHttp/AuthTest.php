@@ -253,7 +253,7 @@ class AuthTest extends TestCase
     {
         $this->withLegacyApiKeyScopes(['user'])->json('POST', 'v1/auth/register', [
             'email' => 'test-registration@dosomething.org',
-            'drupal_id' => '123456', // <-- we should ignore this!
+            'drupal_id' => 'secret_dries_admin_id', // <-- we should ignore this!
             'password' => 'secret',
             'role' => 'admin',
         ]);
@@ -261,7 +261,7 @@ class AuthTest extends TestCase
         $this->assertResponseStatus(200);
 
         // The provided `drupal_id` and `role` should have been ignored.
-        $this->assertEquals(null, $this->decodeResponseJson()['data']['user']['data']['drupal_id']);
+        $this->assertNotEquals('secret_dries_admin_id', $this->decodeResponseJson()['data']['user']['data']['drupal_id']);
         $this->assertEquals('user', $this->decodeResponseJson()['data']['user']['data']['role']);
     }
 
@@ -413,7 +413,7 @@ class AuthTest extends TestCase
     {
         $user = User::create(['email' => $this->faker->email, 'drupal_id' => '12345']);
 
-        $this->mock(Phoenix::class)
+        $this->phoenixMock
             ->shouldReceive('createMagicLogin')
             ->with('12345')->once()
             ->andReturn([

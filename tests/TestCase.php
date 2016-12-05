@@ -8,6 +8,7 @@ use Northstar\Auth\Scope;
 use Northstar\Models\Client;
 use Northstar\Models\Token;
 use Northstar\Models\User;
+use Northstar\Services\Phoenix;
 
 abstract class TestCase extends Illuminate\Foundation\Testing\TestCase
 {
@@ -24,6 +25,13 @@ abstract class TestCase extends Illuminate\Foundation\Testing\TestCase
      * @var \Faker\Generator
      */
     protected $faker;
+
+    /**
+     * The Phoenix API client mock.
+     *
+     * @var Mockery\Mock
+     */
+    protected $phoenixMock;
 
     /**
      * Make a new authenticated web user.
@@ -51,6 +59,11 @@ abstract class TestCase extends Illuminate\Foundation\Testing\TestCase
 
         // Get a new Faker generator from Laravel.
         $this->faker = app(\Faker\Generator::class);
+
+        $this->phoenixMock = $this->mock(Phoenix::class);
+        $this->phoenixMock->shouldReceive('register')->andReturnUsing(function() {
+            return $this->faker->unique()->numberBetween(1, 30000000);
+        });
 
         // Reset the testing database & run migrations.
         $this->app->make('db')->getMongoDB()->drop();
