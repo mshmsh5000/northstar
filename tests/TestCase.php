@@ -29,7 +29,7 @@ abstract class TestCase extends Illuminate\Foundation\Testing\TestCase
     /**
      * The Phoenix API client mock.
      *
-     * @var Mockery\Mock
+     * @var \Mockery\MockInterface
      */
     protected $phoenixMock;
 
