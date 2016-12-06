@@ -171,12 +171,6 @@ class AuthController extends Controller
 
         $user = $this->registrar->register($request->except(User::$internal), $existing);
 
-        // Should we try to make a Drupal account for this user?
-        if ($request->has('create_drupal_user') && $request->has('password') && ! $user->drupal_id) {
-            $user = $this->registrar->createDrupalUser($user, $request->input('password'));
-            $user->save();
-        }
-
         // Create a legacy token & set the user for this request.
         $token = Token::create(['user_id' => $user->id]);
         $this->auth->setUser($user);

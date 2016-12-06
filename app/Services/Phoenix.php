@@ -7,6 +7,7 @@ use GuzzleHttp\Client;
 use GuzzleHttp\Cookie\CookieJar;
 use GuzzleHttp\Exception\ClientException;
 use Illuminate\Support\Str;
+use Northstar\Models\User;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Cache;
 
@@ -108,18 +109,21 @@ class Phoenix
      * @see: https://github.com/DoSomething/dosomething/wiki/API#create-a-user
      *
      * @param \Northstar\Models\User $user - User to be registered on Drupal site
-     * @param string $password - Password to register with
      *
      * @return int - Created Drupal user UID
      */
-    public function register($user, $password)
+    public function createDrupalUser($user)
     {
         $payload = $user->toArray();
 
         // Format user object for consumption by Drupal API.
         $payload['birthdate'] = format_date($user->birthdate, 'Y-m-d');
         $payload['user_registration_source'] = $user->source;
-        $payload['password'] = $password;
+
+        // Drupal requires an email on every account, but Northstar does not.
+        if (empty($payload['email'])) {
+            $payload['email'] = $user->id.'@dosomething.import';
+        }
 
         $response = $this->client->post('users', [
             'query' => [
@@ -141,16 +145,19 @@ class Phoenix
      * Get a user uid by email.
      * @see: https://github.com/DoSomething/dosomething/wiki/API#find-a-user
      *
-     * @param string $email - Email of user to search for
+     * @param User $user
      *
-     * @return string - Drupal User ID
+     * @return string|null - Drupal User ID
      * @throws Exception
      */
-    public function getUidByEmail($email)
+    public function getDrupalIdForNorthstarUser($user)
     {
+        // Phoenix supports lookup by either email or mobile
+        $primaryField = ! empty($user->email) ? 'email' : 'mobile';
+
         $response = $this->client->get('users', [
             'query' => [
-                'parameters[email]' => $email,
+                'parameters['.$primaryField.']' => $user->{$primaryField},
             ],
             'cookies' => $this->getAuthenticationCookie(),
             'headers' => [
@@ -160,11 +167,7 @@ class Phoenix
 
         $json = json_decode($response->getBody()->getContents(), true);
 
-        if (count($json) > 0) {
-            return $json[0]['uid'];
-        } else {
-            throw new Exception('Drupal user not found.', $response->getStatusCode());
-        }
+        return data_get($json, '0.uid');
     }
 
     /**

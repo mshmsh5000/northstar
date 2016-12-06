@@ -166,7 +166,6 @@ Either a mobile number or email is required.
 
 **Additional Query Parameters:**
 
-- `create_drupal_user`: Will send a request to create a drupal user in the main DS app.
 - `upsert`: Should this request upsert an existing account, if matched? Defaults to `true`.
 
 <details>

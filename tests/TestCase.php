@@ -29,7 +29,7 @@ abstract class TestCase extends Illuminate\Foundation\Testing\TestCase
     /**
      * The Phoenix API client mock.
      *
-     * @var Mockery\Mock
+     * @var \Mockery\MockInterface
      */
     protected $phoenixMock;
 
@@ -61,7 +61,7 @@ abstract class TestCase extends Illuminate\Foundation\Testing\TestCase
         $this->faker = app(\Faker\Generator::class);
 
         $this->phoenixMock = $this->mock(Phoenix::class);
-        $this->phoenixMock->shouldReceive('register')->andReturnUsing(function () {
+        $this->phoenixMock->shouldReceive('createDrupalUser')->andReturnUsing(function () {
             return $this->faker->unique()->numberBetween(1, 30000000);
         });
 
