@@ -111,7 +111,7 @@ class Phoenix
      *
      * @return int - Created Drupal user UID
      */
-    public function register($user)
+    public function createDrupalUser($user)
     {
         $payload = $user->toArray();
 

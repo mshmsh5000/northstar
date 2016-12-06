@@ -204,7 +204,7 @@ class Registrar
     public function createDrupalUser($user)
     {
         try {
-            $drupal_id = $this->phoenix->register($user);
+            $drupal_id = $this->phoenix->createDrupalUser($user);
             $user->drupal_id = $drupal_id;
         } catch (ClientException $e) {
             // If user already exists (403 Forbidden), try to find the user to get the UID.
