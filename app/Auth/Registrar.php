@@ -208,7 +208,7 @@ class Registrar
             $user->drupal_id = $drupal_id;
         } catch (ClientException $e) {
             // If user already exists (403 Forbidden), try to find the user to get the UID.
-            if ($e->getCode() == 403) {
+            if ($e->getCode() === 403) {
                 $drupal_id = $this->phoenix->getDrupalIdForNorthstarUser($user);
                 $user->drupal_id = $drupal_id;
             }
