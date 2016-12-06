@@ -178,13 +178,6 @@ class UserController extends Controller
 
         $this->registrar->register($request->all(), $user);
 
-        // Should we try to make a Drupal account for this user?
-        if ($request->has('create_drupal_user') && $request->has('password') && ! $user->drupal_id) {
-            $user = $this->registrar->createDrupalUser($user, $request->input('password'));
-        }
-
-        $user->save();
-
         return $this->item($user);
     }
 

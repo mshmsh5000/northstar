@@ -209,12 +209,14 @@ class Registrar
         } catch (ClientException $e) {
             // If user already exists (403 Forbidden), try to find the user to get the UID.
             if ($e->getCode() == 403) {
-                try {
-                    $drupal_id = $this->phoenix->getUidByEmail($user->email);
-                    $user->drupal_id = $drupal_id;
-                } catch (\Exception $e) {
-                    // @TODO: still ok to just continue and allow the user to be saved?
-                }
+                $drupal_id = $this->phoenix->getDrupalIdForNorthstarUser($user);
+                $user->drupal_id = $drupal_id;
+            }
+
+            // Since getDrupalIdForNorthstarUser may still return null, track that here.
+            if (empty($user->drupal_id)) {
+                logger('Encountered error when creating Drupal user', ['user' => $user, 'error' => $e]);
+                app('stathat')->ezCount('error creating drupal uid for user');
             }
         }
 
