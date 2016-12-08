@@ -118,6 +118,13 @@ class AuthController extends BaseController
             'password' => 'required',
         ]);
 
+        // Check if that user needs to reset their password in order to log in.
+        $user = $this->registrar->resolve(['username' => $request['username']]);
+        if ($user && ! $user->hasPassword()) {
+            return redirect()->back()->withInput($request->only('username'))->with('request_reset', true);
+        }
+
+        // Attempt to log in the user to Northstar!
         $credentials = $request->only('username', 'password');
         if (! $this->auth->guard('web')->attempt($credentials, true)) {
             return redirect()->back()
