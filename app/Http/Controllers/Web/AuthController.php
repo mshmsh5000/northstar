@@ -167,26 +167,16 @@ class AuthController extends BaseController
      */
     public function postRegister(Request $request)
     {
-        // If a user exists but has not set a password yet, allow them to
-        // "register" to set a new password on their account.
-        $existing = $this->registrar->resolve($request);
-
-        if ($existing && $existing->hasPassword()) {
-            throw new NorthstarValidationException(['email' => 'A user with that email or mobile has already been registered.']);
-        }
-
-        $existingId = isset($existing->id) ? $existing->id : 'null';
-
-        $this->registrar->validate($request, $existing, [
+        $this->registrar->validate($request, null, [
             'first_name' => 'required',
             'birthdate' => 'required|date',
-            'email' => 'required|email|unique:users,email,'.$existingId.',_id',
-            'mobile' => 'mobile|unique:users,mobile,'.$existingId.',_id',
+            'email' => 'required|email|unique:users',
+            'mobile' => 'mobile|unique:users',
             'password' => 'required|confirmed|min:6',
         ]);
 
         // Register and login the user.
-        $user = $this->registrar->register($request->except(User::$internal), $existing);
+        $user = $this->registrar->register($request->except(User::$internal));
         $this->auth->guard('web')->login($user, true);
 
         return redirect()->intended('/');

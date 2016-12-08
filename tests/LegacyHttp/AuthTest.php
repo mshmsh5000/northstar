@@ -266,42 +266,6 @@ class AuthTest extends TestCase
     }
 
     /**
-     * Test that you can "register" to complete the registration
-     * flow for a user who has an email/mobile account but no
-     * password stored.
-     * POST /auth/register
-     *
-     * @return void
-     */
-    public function testRegisterExistingUserWithoutPassword()
-    {
-        // Given an account that doesn't have a password (for example,
-        // someone who voted in Celebs Gone Good).
-        $user = factory(User::class)->create([
-            'email' => 'poe.dameron@resistance.org',
-            'first_name' => 'Poe',
-            'password' => null,
-            'source' => 'cgg',
-        ]);
-
-        // Try to register to "complete" their profile.
-        $this->withLegacyApiKeyScopes(['user'])->json('POST', 'v1/auth/register', [
-            'email' => 'Poe.Dameron@Resistance.org',
-            'password' => 'finn&p0e4ever',
-            'source' => 'phpunit',
-        ]);
-
-        $this->assertResponseStatus(200);
-
-        $user = $user->fresh();
-
-        // Ensure that we've stored new fields on the existing user record.
-        $this->assertEquals($user->first_name, 'Poe');
-        $this->assertEquals($user->source, 'cgg'); // Should be immutable.
-        $this->assertNotEmpty($user->password, 'Hashed password should be stored.');
-    }
-
-    /**
      * Test that you can't register a duplicate user.
      * POST /auth/register
      *
