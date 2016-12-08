@@ -159,17 +159,9 @@ class AuthController extends Controller
     {
         $request = normalize('credentials', $request);
 
-        // If a user exists but has not set a password yet, allow them to
-        // "register" to set a new password on their account.
-        $credentials = $request->only('email', 'mobile');
-        $existing = $this->registrar->resolve($credentials);
-        if ($existing && $existing->hasPassword()) {
-            throw new HttpException(422, 'A user with that email or mobile has already been registered.');
-        }
+        $this->registrar->validate($request, null, ['password' => 'required']);
 
-        $this->registrar->validate($request, $existing, ['password' => 'required']);
-
-        $user = $this->registrar->register($request->except(User::$internal), $existing);
+        $user = $this->registrar->register($request->except(User::$internal));
 
         // Create a legacy token & set the user for this request.
         $token = Token::create(['user_id' => $user->id]);
