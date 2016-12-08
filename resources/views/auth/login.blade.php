@@ -3,6 +3,10 @@
 @section('title', 'Log In | DoSomething.org')
 
 @section('content')
+    @if (session('request_reset'))
+        <div class="messages -padded">You need to <a href="{{ url('password/reset') }}">reset your password</a> before you can log in.</div>
+    @endif
+
     <div class="container__block -centered">
         <h2 class="heading -alpha">Let's do this!</h2>
         <h3>Log in to continue to {{ session('destination', 'DoSomething.org') }}.</h3>
