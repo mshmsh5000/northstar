@@ -119,7 +119,7 @@ class AuthController extends BaseController
         ]);
 
         // Check if that user needs to reset their password in order to log in.
-        $user = $this->registrar->resolve($request);
+        $user = $this->registrar->resolve(['username' => $request['username']]);
         if ($user && ! $user->hasPassword()) {
             return redirect()->back()->withInput($request->only('username'))->with('request_reset', true);
         }
