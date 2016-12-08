@@ -73,6 +73,24 @@ class WebAuthenticationTest extends TestCase
     }
 
     /**
+     * Test that users who do not have a password on their account
+     * are asked to reset it.
+     */
+    public function testLoginWithoutPasswordSet()
+    {
+        factory(User::class)->create(['email' => 'puppet-sloth@dosomething.org', 'password' => null]);
+
+        // Puppet Sloth doesn't have a DS.org password yet, but he tries to enter
+        // "next-question" because that's his password everywhere else.
+        $this->visit('login')->submitForm('Log In', [
+            'username' => 'puppet-sloth@dosomething.org',
+            'password' => 'next-question',
+        ]);
+
+        $this->seeText('You need to reset your password before you can log in.');
+    }
+
+    /**
      * Test that an authenticated user can log out.
      */
     public function testLogout()
