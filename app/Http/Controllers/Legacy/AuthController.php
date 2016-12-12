@@ -86,6 +86,8 @@ class AuthController extends Controller
         $user = $this->registrar->resolve($credentials);
 
         if (! $this->registrar->validateCredentials($user, $credentials)) {
+            event(\Illuminate\Auth\Events\Failed::class);
+
             throw new UnauthorizedHttpException(null, 'Invalid credentials.');
         }
 
@@ -112,6 +114,8 @@ class AuthController extends Controller
         $user = $this->registrar->resolve($credentials);
 
         if (! $this->registrar->validateCredentials($user, $credentials)) {
+            event(\Illuminate\Auth\Events\Failed::class);
+
             throw new UnauthorizedHttpException(null, 'Invalid credentials.');
         }
 
