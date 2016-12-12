@@ -57,7 +57,7 @@ $router->group(['prefix' => 'v2', 'middleware' => ['api']], function () use ($ro
     $router->resource('clients', 'ClientController');
 
     // Password Reset
-    $router->resource('resets', 'ResetController');
+    $router->resource('resets', 'ResetController', ['only' => 'store']);
 
     // Public Key
     $router->get('key', 'KeyController@show');
