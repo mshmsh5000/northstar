@@ -6,6 +6,7 @@ use Carbon\Carbon;
 use Exception;
 use InvalidArgumentException;
 use Jenssegers\Mongodb\Eloquent\Model as BaseModel;
+use MongoDB\BSON\UTCDateTime;
 
 /**
  * Base model class
@@ -45,11 +46,9 @@ class Model extends BaseModel
      */
     public function fromDateTime($value)
     {
-        $format = $this->getDateFormat();
-
         $value = $this->asDateTime($value);
 
-        return $value->format($format);
+        return new UTCDateTime($value->getTimestamp() * 1000);
     }
 
     /**
