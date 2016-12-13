@@ -58,6 +58,11 @@ Endpoint                                     | Functionality                    
 
 > __Note:__ These endpoints are lightweight proxies to their Phoenix equivalents.
 
+#### Resets
+Endpoint                                     | Functionality                                            | Required Scope
+-------------------------------------------- | -------------------------------------------------------- | --------------
+`POST v2/resets`                             | [Create a Password Reset Link](endpoints/resets.md#create-a-password-reset-link) | `role:admin` or `admin`
+
 #### Clients
 Endpoint                                     | Functionality                                                       | Required Scope
 -------------------------------------------- | ------------------------------------------------------------------- | --------------

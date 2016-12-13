@@ -352,4 +352,25 @@ class Phoenix
 
         return json_decode($response->getBody()->getContents(), true);
     }
+
+    /**
+     * Get a password reset link for the given user.
+     * @see: https://github.com/DoSomething/phoenix/blob/dev/documentation/endpoints/users.md#create-password-reset-url
+     *
+     * @param $drupal_id - UID of user on the Drupal site
+     *
+     * @return string - password reset URL
+     * @throws Exception
+     */
+    public function createPasswordResetLink($drupal_id)
+    {
+        $response = $this->client->post('users/'.$drupal_id.'/password_reset_url', [
+            'cookies' => $this->getAuthenticationCookie(),
+            'headers' => [
+                'X-CSRF-Token' => $this->getAuthenticationToken(),
+            ],
+        ]);
+
+        return json_decode($response->getBody()->getContents(), true)[0];
+    }
 }
