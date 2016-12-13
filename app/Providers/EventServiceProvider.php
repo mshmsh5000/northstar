@@ -2,9 +2,11 @@
 
 namespace Northstar\Providers;
 
+use Illuminate\Auth\Events\Failed;
 use Illuminate\Contracts\Events\Dispatcher as DispatcherContract;
 use Illuminate\Foundation\Support\Providers\EventServiceProvider as ServiceProvider;
 use Illuminate\Routing\Events\RouteMatched;
+use Northstar\Listeners\FailedAuthenticationAttempt;
 
 class EventServiceProvider extends ServiceProvider
 {
@@ -14,7 +16,7 @@ class EventServiceProvider extends ServiceProvider
      * @var array
      */
     protected $listen = [
-        // ...
+        Failed::class => [FailedAuthenticationAttempt::class],
     ];
 
     /**

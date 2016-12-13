@@ -41,6 +41,8 @@ class UserRepository implements UserRepositoryInterface
         $user = $this->registrar->resolve($credentials);
 
         if (! $this->registrar->validateCredentials($user, $credentials)) {
+            event(\Illuminate\Auth\Events\Failed::class);
+
             return null;
         }
 
