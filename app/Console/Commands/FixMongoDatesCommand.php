@@ -54,6 +54,18 @@ class FixMongoDatesCommand extends Command
             /** @var \Carbon\Carbon $carbon */
             $carbon = $user->{$field};
 
+            // If we get null from the getter, explicitly set that to the field.
+            if (! $carbon) {
+                /** @var \Jenssegers\Mongodb\Query\Builder $collection */
+                $collection = app('db')->collection('users');
+                $collection->where('_id', $user->id)
+                    ->update([$field => null]);
+
+                $this->warn('Removed invalid `'.$field.'` field for '.$user->id.'!');
+
+                continue;
+            }
+
             /** @var \Jenssegers\Mongodb\Query\Builder $collection */
             $collection = app('db')->collection('users');
             $success = $collection
