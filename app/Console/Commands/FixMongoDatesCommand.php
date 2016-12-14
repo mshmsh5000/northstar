@@ -30,7 +30,7 @@ class FixMongoDatesCommand extends Command
      */
     public function fire()
     {
-        $dateFields = ['birthdate', 'created_at', 'updated_at'];
+        $dateFields = ['created_at', 'updated_at', 'birthdate'];
 
         foreach ($dateFields as $field) {
             $this->reformatField($field);
