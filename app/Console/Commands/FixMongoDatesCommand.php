@@ -48,7 +48,7 @@ class FixMongoDatesCommand extends Command
 
         // Find all users where the given field is stored as a string type.
         // @see: https://docs.mongodb.com/manual/reference/operator/query/type/#op._S_type
-        $users = User::where($field, 'type', 2)->options(['allowDiskUse' => true])->get();
+        $users = User::where($field, 'type', 2)->forPage(1, 100000)->options(['allowDiskUse' => true])->get();
 
         foreach ($users as $user) {
             /** @var \Carbon\Carbon $carbon */
