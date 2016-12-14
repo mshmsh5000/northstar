@@ -14,6 +14,7 @@ class Kernel extends ConsoleKernel
      */
     protected $commands = [
         \Northstar\Console\Commands\CleanDrupalIdsCommand::class,
+        \Northstar\Console\Commands\FixMongoDatesCommand::class,
     ];
 
     /**
