@@ -30,7 +30,7 @@ class FixMongoDatesCommand extends Command
      */
     public function fire()
     {
-        $dateFields = ['birthdate', 'created_at', 'updated_at'];
+        $dateFields = ['created_at', 'updated_at', 'birthdate'];
 
         foreach ($dateFields as $field) {
             $this->reformatField($field);
@@ -48,7 +48,7 @@ class FixMongoDatesCommand extends Command
 
         // Find all users where the given field is stored as a string type.
         // @see: https://docs.mongodb.com/manual/reference/operator/query/type/#op._S_type
-        $users = User::where($field, 'type', 2)->get();
+        $users = User::where($field, 'type', 2)->forPage(1, 100000)->options(['allowDiskUse' => true])->get();
 
         foreach ($users as $user) {
             /** @var \Carbon\Carbon $carbon */
