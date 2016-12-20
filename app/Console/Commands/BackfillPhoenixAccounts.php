@@ -30,8 +30,7 @@ class BackfillPhoenixAccounts extends Command
      */
     public function fire(Registrar $registrar)
     {
-        // Find all users where the given field is stored as a string type.
-        // @see: https://docs.mongodb.com/manual/reference/operator/query/type/#op._S_type
+        // Find all users with a null `drupal_id` but a non-null `mobile`.
         $users = User::whereNull('drupal_id')
             ->whereNotNull('mobile')
             ->forPage(1, 100000)
