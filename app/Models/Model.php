@@ -12,6 +12,7 @@ use MongoDB\BSON\UTCDateTime;
  * Base model class
  *
  * @method static \Jenssegers\Mongodb\Query\Builder where(string $field, string $comparison = '=', string $value)
+ * @method static \Jenssegers\Mongodb\Query\Builder whereNull(string $field)
  * @method static \Jenssegers\Mongodb\Query\Builder find(string $id, array $columns=['*'])
  * @method static \Jenssegers\Mongodb\Query\Builder findMany(array $ids)
  * @method static \Jenssegers\Mongodb\Query\Builder findOrFail(string $id, array $columns=['*'])
