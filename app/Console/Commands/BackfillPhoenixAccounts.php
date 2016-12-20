@@ -38,6 +38,8 @@ class BackfillPhoenixAccounts extends Command
             ->options(['allowDiskUse' => true])
             ->get();
 
+        $this->comment('Found '.count($users).' with a mobile but no Phoenix account! :(');
+
         foreach ($users as $user) {
             /** @var User $user */
             $user = $registrar->createDrupalUser($user);
@@ -50,6 +52,6 @@ class BackfillPhoenixAccounts extends Command
             }
         }
 
-        $this->line('Nice job, we\'re done!');
+        $this->line('Nice job, we\'re done! :)');
     }
 }
