@@ -2,6 +2,7 @@
 
 namespace Northstar\Auth;
 
+use Closure;
 use GuzzleHttp\Exception\ClientException;
 use Illuminate\Contracts\Hashing\Hasher;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
@@ -174,9 +175,10 @@ class Registrar
      *
      * @param array $input - Profile fields
      * @param User $user - Optionally, user to update
+     * @param Closure $customizer
      * @return User|null
      */
-    public function register($input, $user = null)
+    public function register($input, $user = null, Closure $customizer = null)
     {
         // If there is no user provided, create a new one.
         if (! $user) {
@@ -185,6 +187,10 @@ class Registrar
 
         $user->fill($input);
         $user->save();
+
+        if (! is_null($customizer)) {
+            $customizer($user);
+        }
 
         // If this user doesn't have a `drupal_id`, try to make one.
         if (! $user->drupal_id) {
