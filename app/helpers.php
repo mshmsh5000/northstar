@@ -37,6 +37,10 @@ function normalize($type = null, $value = null)
  */
 function format_date($date, $format = 'M j, Y')
 {
+    if (is_null($date)) {
+        return null;
+    }
+
     try {
         $date = new Carbon($date);
     } catch (InvalidArgumentException $e) {
