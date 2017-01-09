@@ -1,9 +1,25 @@
 <?php
 
+use Carbon\Carbon;
 use Northstar\Models\Client;
 
 class HelpersTest extends TestCase
 {
+    /** @test */
+    public function testFormatDate()
+    {
+        // It should format strings that PHP can parse as DateTimes.
+        $this->assertEquals(format_date('10/25/1990'), 'Oct 25, 1990');
+        $this->assertEquals(format_date('1990-10-25'), 'Oct 25, 1990');
+
+        // It should also format Carbon objects.
+        $carbonDate = Carbon::create(1990, 10, 25);
+        $this->assertEquals(format_date($carbonDate), 'Oct 25, 1990');
+
+        // It should return null if null is passed.
+        $this->assertEquals(format_date(null), null);
+    }
+
     /** @test */
     public function testRouteHasAttachedMiddleware()
     {
