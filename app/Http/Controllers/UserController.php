@@ -106,27 +106,23 @@ class UserController extends Controller
             }
         }
 
-        $upserting = ! is_null($existingUser);
-        $user = $this->registrar->register($request->except('role'), $existingUser);
+        $user = $this->registrar->register($request->except('role'), $existingUser, function ($user) use ($request, $existingUser) {
+            // Optionally, allow setting a custom "created_at" (useful for back-filling from other services).
+            // We'll only update this value on existing records if it's earlier than the existing timestamp.
+            $created_at = $request->input('created_at');
+            $existingUserHasEarlierCreatedTimestamp = $existingUser && $existingUser->created_at->lt(Carbon::createFromTimestamp($created_at));
+            if ($created_at && ! $existingUserHasEarlierCreatedTimestamp) {
+                $user->created_at = $created_at;
+                $user->source = $request->input('source') ?: client_id();
+            }
 
-        // Optionally, allow setting a custom "created_at" (useful for back-filling from other services).
-        // We'll only update this value on existing records if it's earlier than the existing timestamp.
-        $created_at = $request->input('created_at');
-        $existingUserHasEarlierCreatedTimestamp = $existingUser && $existingUser->created_at->lt(Carbon::createFromTimestamp($created_at));
-        if ($created_at && ! $existingUserHasEarlierCreatedTimestamp) {
-            $user->created_at = $created_at;
-            $user->source = $request->input('source') ?: client_id();
+            // Only save a source if not upserting a user (unless back-filling, see above).
+            if ($request->has('source') && ! $existingUser) {
+                $user->source = $request->input('source');
+            }
+        });
 
-            $user->save();
-        }
-
-        // Only save a source if not upserting a user (unless back-filling, see above).
-        if ($request->has('source') && ! $existingUser) {
-            $user->source = $request->input('source');
-            $user->save();
-        }
-
-        $code = $upserting ? 200 : 201;
+        $code = ! is_null($existingUser) ? 200 : 201;
 
         return $this->item($user, $code);
     }
