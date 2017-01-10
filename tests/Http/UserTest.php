@@ -166,6 +166,33 @@ class UserTest extends TestCase
     }
 
     /**
+     * Test that an admin can create a new user.
+     * GET /users/:term/:id
+     *
+     * @return void
+     */
+    public function testCreateUser()
+    {
+        $this->asAdminUser()->json('POST', 'v1/users', [
+            'first_name' => 'Hercules',
+            'last_name' => 'Mulligan',
+            'email' => $this->faker->email,
+            'source' => 'historical',
+            'source_detail' => 'american-revolution',
+        ]);
+
+        $this->assertResponseStatus(201);
+        $this->seeJsonSubset([
+            'data' => [
+                'first_name' => 'Hercules',
+                'last_name' => 'Mulligan',
+                'source' => 'historical',
+                'source_detail' => 'american-revolution',
+            ],
+        ]);
+    }
+
+    /**
      * Test that an admin can update a user's profile, including their role.
      * GET /users/:term/:id
      *
@@ -272,7 +299,12 @@ class UserTest extends TestCase
      */
     public function testUpsertCreatedAtField()
     {
-        $user = factory(User::class)->create(['first_name' => 'Daisy', 'last_name' => 'Johnson', 'source' => 'television']);
+        $user = factory(User::class)->create([
+            'first_name' => 'Daisy',
+            'last_name' => 'Johnson',
+            'source' => 'television',
+            'source_detail' => 'agents-of-shield',
+        ]);
 
         // We finally read Secret War #2, and want to update her 'created_at' date to match her first appearance.
         $this->asAdminUser()->json('POST', 'v1/users', [
@@ -280,6 +312,7 @@ class UserTest extends TestCase
             'first_name' => 'Daisy',
             'created_at' => '1088640000', // first comic book appearance!
             'source' => 'comic',
+            'source_detail' => 'secret-war/2',
         ]);
 
         $this->assertResponseStatus(200);
@@ -288,6 +321,38 @@ class UserTest extends TestCase
                 'email' => $user->email,
                 'first_name' => 'Daisy',
                 'source' => 'comic',
+                'source_detail' => 'secret-war/2',
+                'created_at' => '2004-07-01T00:00:00+0000',
+            ],
+        ]);
+    }
+
+    /**
+     * Test that we can only upsert created_at to be earlier.
+     * POST /v1/users/
+     *
+     * @return void
+     */
+    public function testUpsertSourceWithoutDetail()
+    {
+        $user = factory(User::class)->create([
+            'source' => 'factory',
+            'source_detail' => 'user-factory',
+        ]);
+
+        // We finally read Secret War #2, and want to update her 'created_at' date to match her first appearance.
+        $this->asAdminUser()->json('POST', 'v1/users', [
+            'email' => $user->email,
+            'created_at' => '1088640000',
+            'source' => 'phpunit',
+        ]);
+
+        $this->assertResponseStatus(200);
+        $this->seeJsonSubset([
+            'data' => [
+                'email' => $user->email,
+                'source' => 'phpunit',
+                'source_detail' => null,
                 'created_at' => '2004-07-01T00:00:00+0000',
             ],
         ]);

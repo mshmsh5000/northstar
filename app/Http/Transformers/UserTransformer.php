@@ -45,6 +45,7 @@ class UserTransformer extends TransformerAbstract
 
             // Signup source (e.g. drupal, cgg, mobile...)
             $response['source'] = $user->source;
+            $response['source_detail'] = $user->source_detail;
 
             // Internal & third-party service IDs:
             $response['slack_id'] = $user->slack_id;
