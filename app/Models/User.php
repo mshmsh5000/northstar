@@ -27,6 +27,7 @@ use Northstar\Auth\Role;
  * @property string $photo
  * @property array  $interests
  * @property string $source
+ * @property string $source_detail
  * @property string $role - The user's role, e.g. 'user', 'staff', or 'admin'
  *
  * @property string $addr_street1
