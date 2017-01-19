@@ -4,6 +4,7 @@ namespace Northstar\Auth;
 
 use Closure;
 use GuzzleHttp\Exception\ClientException;
+use GuzzleHttp\Exception\ServerException;
 use Illuminate\Contracts\Hashing\Hasher;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Validation\Factory as Validation;
@@ -224,6 +225,9 @@ class Registrar
                 logger('Encountered error when creating Drupal user', ['user' => $user, 'error' => $e]);
                 app('stathat')->ezCount('error creating drupal uid for user');
             }
+        } catch (ServerException $e) {
+            logger('Encountered error when creating Drupal user', ['user' => $user, 'error' => $e]);
+            app('stathat')->ezCount('error creating drupal uid for user');
         }
 
         return $user;
