@@ -322,7 +322,7 @@ class UserTest extends TestCase
                 'first_name' => 'Daisy',
                 'source' => 'comic',
                 'source_detail' => 'secret-war/2',
-                'created_at' => '2004-07-01T00:00:00+0000',
+                'created_at' => '2004-07-01T00:00:00+00:00',
             ],
         ]);
     }
@@ -353,7 +353,7 @@ class UserTest extends TestCase
                 'email' => $user->email,
                 'source' => 'phpunit',
                 'source_detail' => null,
-                'created_at' => '2004-07-01T00:00:00+0000',
+                'created_at' => '2004-07-01T00:00:00+00:00',
             ],
         ]);
     }
