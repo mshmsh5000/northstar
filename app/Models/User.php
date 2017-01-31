@@ -236,7 +236,10 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
             $this->drop('drupal_password');
         }
 
-        logger('Saving a new password for '.$this->id.' via '.client_id());
+        if (! empty($this->attributes['password'])) {
+            logger('Saving a new password for '.$this->id.' via '.client_id());
+        }
+
         $this->attributes['password'] = bcrypt($value);
     }
 
