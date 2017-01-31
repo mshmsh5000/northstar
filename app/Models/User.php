@@ -74,7 +74,7 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
      * @var array
      */
     protected $fillable = [
-        'email', 'mobile', 'password', 'drupal_password', 'role',
+        'email', 'mobile', 'password', 'role',
 
         'first_name', 'last_name', 'birthdate', 'photo', 'interests',
         'race', 'religion',
@@ -98,7 +98,7 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
      * @var array
      */
     public static $internal = [
-        'mobilecommons_id', 'mobilecommons_status', 'cgg_id', 'drupal_id', 'agg_id', 'drupal_password', 'role', 'facebook_id', 'slack_id',
+        'mobilecommons_id', 'mobilecommons_status', 'cgg_id', 'drupal_id', 'agg_id', 'role', 'facebook_id', 'slack_id',
     ];
 
     /**
@@ -222,23 +222,6 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
         $ids = is_array($value) ? $value : array_map('trim', explode(',', $value));
 
         $this->push('parse_installation_ids', $ids, true);
-    }
-
-    /**
-     * Mutator to remove any existing password if we migrate a hashed password.
-     * This is a one-time thing for syncing users from Phoenix and ensuring that
-     * we *only* keep their latest hashed Drupal password.
-     *
-     * @param string $value
-     */
-    public function setDrupalPasswordAttribute($value)
-    {
-        if (isset($this->password)) {
-            $this->drop('password');
-        }
-
-        // The Drupal password is already hashed, don't do it again!
-        $this->attributes['drupal_password'] = $value;
     }
 
     /**
