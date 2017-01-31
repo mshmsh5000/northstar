@@ -74,7 +74,7 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
      * @var array
      */
     protected $fillable = [
-        'email', 'mobile', 'password', 'drupal_password', 'role',
+        'email', 'mobile', 'password', 'role',
 
         'first_name', 'last_name', 'birthdate', 'photo', 'interests',
         'race', 'religion',
@@ -98,7 +98,7 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
      * @var array
      */
     public static $internal = [
-        'mobilecommons_id', 'mobilecommons_status', 'cgg_id', 'drupal_id', 'agg_id', 'drupal_password', 'role', 'facebook_id', 'slack_id',
+        'mobilecommons_id', 'mobilecommons_status', 'cgg_id', 'drupal_id', 'agg_id', 'role', 'facebook_id', 'slack_id',
     ];
 
     /**
@@ -225,23 +225,6 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
     }
 
     /**
-     * Mutator to remove any existing password if we migrate a hashed password.
-     * This is a one-time thing for syncing users from Phoenix and ensuring that
-     * we *only* keep their latest hashed Drupal password.
-     *
-     * @param string $value
-     */
-    public function setDrupalPasswordAttribute($value)
-    {
-        if (isset($this->password)) {
-            $this->drop('password');
-        }
-
-        // The Drupal password is already hashed, don't do it again!
-        $this->attributes['drupal_password'] = $value;
-    }
-
-    /**
      * Mutator to automatically hash any value saved to the password field,
      * and remove the hashed Drupal password if one exists.
      *
@@ -251,6 +234,10 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
     {
         if (isset($this->drupal_password)) {
             $this->drop('drupal_password');
+        }
+
+        if (! empty($this->attributes['password'])) {
+            logger('Saving a new password for '.$this->id.' via '.client_id());
         }
 
         $this->attributes['password'] = bcrypt($value);

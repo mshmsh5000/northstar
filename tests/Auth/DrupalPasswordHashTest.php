@@ -10,7 +10,7 @@ class DrupalPasswordHashTest extends TestCase
      */
     public function testAuthenticatingWithDrupalPassword()
     {
-        $user = User::create([
+        $user = User::forceCreate([
             'email' => 'dries.buytaert@example.com',
             'drupal_password' => '$S$DOQoztwlGzTeaobeBZKNzlDttbZscuCkkZPv8yeoEvrn26H/GN5b',
         ]);
