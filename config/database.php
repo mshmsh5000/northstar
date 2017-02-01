@@ -56,7 +56,7 @@ return [
             'options'  => [
                 env('DB_REPL_SET_NAME') ? ['replicaSet' => env('DB_REPL_SET_NAME', 'rs0')] : [],
                 'database' => env('DB_NAME', 'userapi'),
-            ] ,
+            ],
         ],
 
     ],
