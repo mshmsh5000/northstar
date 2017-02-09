@@ -54,7 +54,7 @@ return [
             'password' => env('DB_PASSWORD', ''),
             'database' => env('DB_NAME', 'userapi'),
             'options'  => [
-                env('DB_REPL_SET_NAME') ? ['replicaSet' => env('DB_REPL_SET_NAME', 'rs0')] : [],
+                'replicaSet' => env('DB_REPL_SET_NAME', 'rs0'),
                 'database' => env('DB_NAME', 'userapi'),
             ],
         ],
