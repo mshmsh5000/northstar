@@ -3,6 +3,7 @@
 return [
     'greeting' => [
         'lets_do_this' => '¡Hagámoslo!',
+        'continue' => 'Accede con tu cuenta para ingresar al sitio de',
     ],
     'log_in' => [
         'default' => 'Iniciar Sesión',
@@ -15,7 +16,7 @@ return [
         'create_account' => 'Para comenzar, ¡crea una cuenta DoSomething.org!',
     ],
     'validation' => [
-        'issues' => 'Hmm, there were some issues with that submission:',
+        'issues' => 'Hmmm, hubo algunos problemas con la información que nos enviaste:',
         'optional' => '(opcional)',
         'auth' => [
             'email' => 'Proporciona una dirección válida de correo electrónico.',
@@ -46,7 +47,7 @@ return [
     ],
     'forgot_password' => [
         'header' => '¿Olvidaste la contraseña?',
-        'instructions' => 'We\'ve all been there. Reset by entering your email.',
+        'instructions' => 'A todos nos ha pasado. Ingresa tu cuenta de correo para restablecer tu contraseña.',
         'request' => 'Request New Password',
     ],
     'footnote' => [
