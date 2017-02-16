@@ -19,10 +19,13 @@ window.Drupal = {
 // Utilities
 import Analytics from './utilities/Analytics';
 import DeLorean from './utilities/DeLorean';
+import Validation from './validators/auth';
 
 // Register validation rules for en lang only.
-if (document.documentElement.lang === 'en') require('./validators/auth');
-
+if (document.documentElement.lang !== 'en') {
+  const $ = require('jquery');
+  $('input').attr('data-validate', null);
+}
 
 // Initialize analytics.
 Analytics.init();
