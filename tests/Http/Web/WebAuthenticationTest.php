@@ -49,6 +49,8 @@ class WebAuthenticationTest extends TestCase
             'password' => 'secret',
         ]);
 
+        $this->expectsEvents(\Illuminate\Auth\Events\Login::class);
+
         $this->visit('login')
             ->type('Login-Test@dosomething.org', 'username')
             ->type('secret', 'password')
@@ -63,6 +65,8 @@ class WebAuthenticationTest extends TestCase
     public function testLoginWithInvalidCredentials()
     {
         factory(User::class)->create(['email' => 'login-test@dosomething.org', 'password' => 'secret']);
+
+        $this->expectsEvents(\Illuminate\Auth\Events\Failed::class);
 
         $this->visit('login')
             ->type('Login-Test@dosomething.org', 'username')

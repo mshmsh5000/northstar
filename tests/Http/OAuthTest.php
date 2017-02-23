@@ -80,6 +80,8 @@ class OAuthTest extends TestCase
         $user = User::create(['email' => 'login-test@dosomething.org', 'password' => 'secret']);
         $client = Client::create(['client_id' => 'phpunit', 'scope' => ['admin', 'user']]);
 
+        $this->expectsEvents(\Illuminate\Auth\Events\Login::class);
+
         $this->post('v2/auth/token', [
             'grant_type' => 'password',
             'client_id' => $client->client_id,
@@ -122,6 +124,8 @@ class OAuthTest extends TestCase
     {
         $user = User::create(['email' => 'login-test@dosomething.org', 'password' => 'secret']);
         $client = Client::create(['client_id' => 'phpunit']);
+
+        $this->expectsEvents(\Illuminate\Auth\Events\Failed::class);
 
         $this->post('v2/auth/token', [
             'grant_type' => 'password',
