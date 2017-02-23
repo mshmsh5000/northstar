@@ -152,10 +152,14 @@ class Registrar
     public function validateCredentials($user, array $credentials)
     {
         if (! $user) {
+            event(\Illuminate\Auth\Events\Failed::class);
+
             return false;
         }
 
         if ($this->hasher->check($credentials['password'], $user->password)) {
+            event(\Illuminate\Auth\Events\Login::class);
+
             return true;
         }
 
@@ -165,10 +169,14 @@ class Registrar
             $user->password = $credentials['password'];
             $user->save();
 
+            event(\Illuminate\Auth\Events\Login::class);
+
             return true;
         }
 
         // Well, looks like we couldn't authenticate...
+        event(\Illuminate\Auth\Events\Failed::class);
+
         return false;
     }
 
