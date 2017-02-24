@@ -148,7 +148,7 @@ class RegistrarTest extends TestCase
     }
 
     /**
-     * Test that we throw an exception if using resolveOrFail().
+     * Test that we can validate a user's credentials.
      */
     public function testValidateCredentials()
     {
@@ -162,5 +162,33 @@ class RegistrarTest extends TestCase
 
         // ... but it should accept the correct ones. Security!
         $this->assertTrue($registrar->validateCredentials($user, ['password' => 'secret']));
+    }
+
+    /**
+     * Test that we trigger the correct events when validating credentials.
+     */
+    public function testSuccessfulAuthenticationEvent()
+    {
+        $registrar = $this->app->make(Registrar::class);
+        $user = factory(User::class)->create(['password' => 'secret']);
+
+        $this->expectsEvents(\Illuminate\Auth\Events\Login::class)
+            ->doesntExpectEvents(\Illuminate\Auth\Events\Failed::class);
+
+        $registrar->validateCredentials($user, ['password' => 'secret']);
+    }
+
+    /**
+     * Test that we trigger the correct events when rejecting credentials.
+     */
+    public function testFailedAuthenticationEvent()
+    {
+        $registrar = $this->app->make(Registrar::class);
+        $user = factory(User::class)->create(['password' => 'secret']);
+
+        $this->doesntExpectEvents(\Illuminate\Auth\Events\Login::class)
+            ->expectsEvents(\Illuminate\Auth\Events\Failed::class);
+
+        $registrar->validateCredentials($user, ['password' => 'not-the-password']);
     }
 }

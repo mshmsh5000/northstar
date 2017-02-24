@@ -61,6 +61,10 @@ class UserTransformer extends TransformerAbstract
         $response['drupal_id'] = $user->drupal_id;
         $response['role'] = $user->role;
 
+        if (Scope::allows('admin') || Gate::allows('view-full-profile', $user)) {
+            $response['last_authenticated_at'] = $user->last_authenticated_at ? $user->last_authenticated_at->toIso8601String() : null;
+        }
+
         $response['updated_at'] = $user->updated_at->toIso8601String();
         $response['created_at'] = $user->created_at->toIso8601String();
 
