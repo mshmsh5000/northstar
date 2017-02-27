@@ -7,7 +7,7 @@ build:
         name: start mongodb
         code: |-
           sudo /usr/bin/mongod --quiet --config /etc/mongod.conf --fork --logpath /var/log/mongod.log
-    - leipert/composer-install@0.0.1
+    - leipert/composer-install@0.9.1
     - script:
         name: create test keys
         code: |-
