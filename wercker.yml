@@ -23,7 +23,7 @@ build:
         code: |-
           mkdir -p $WERCKER_CACHE_DIR/wercker/npm
           npm config set cache $WERCKER_CACHE_DIR/wercker/npm
-          sudo npm install
+          npm install
     - script:
         name: build front-end assets
         code: npm run build
