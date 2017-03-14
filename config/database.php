@@ -56,6 +56,7 @@ return [
             'options'  => [
                 'replicaSet' => env('DB_REPL_SET_NAME'),
                 'database' => env('DB_NAME', 'userapi'),
+                'ssl' => env('DB_SSL'),
             ],
         ],
 
