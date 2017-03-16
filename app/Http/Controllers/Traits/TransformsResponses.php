@@ -90,7 +90,7 @@ trait TransformsResponses
         $pages = (int) $request->query('limit', 20);
 
         // Experimental: Should we go at warp speed?
-        $fastMode = $request->query('speed') === 'fast';
+        $fastMode = $request->query('pagination') === 'cursor';
         if ($fastMode) {
             $paginator = $query->simplePaginate(min($pages, 100));
         } else {

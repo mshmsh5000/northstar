@@ -9,6 +9,7 @@ GET /v1/users
 
 **Additional Query Parameters:**
 
+- `pagination`: __[Experimental]__ Either "standard" or "cursor". Cursor pagination is _significantly_ faster, but does not provide any information on the total number of results (only whether another page exists).
 - `limit`: Set the number of results to include per page. Default is 20. Maximum is 100.
 - `page`: Set the page number to get results from.
 - `filter`: Filter the collection to include _only_ users matching the following comma-separated values. For example, `/v1/users?filter[drupal_id]=10123,10124,10125` would return users whose Drupal ID is either 10123, 10124, or 10125. You can filter by one or more indexed fields.
