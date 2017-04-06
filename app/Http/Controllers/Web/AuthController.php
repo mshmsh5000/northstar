@@ -57,6 +57,9 @@ class AuthController extends BaseController
         $this->middleware('session_vars');
     }
 
+    public function unsubcribe (){
+        return view('auth.subscriptions');
+    }
     /**
      * Authorize an application via OAuth 2.
      *
