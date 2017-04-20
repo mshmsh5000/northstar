@@ -10,12 +10,9 @@ use League\OAuth2\Server\AuthorizationServer;
 use Northstar\Auth\Entities\UserEntity;
 use Northstar\Auth\Registrar;
 use Northstar\Exceptions\NorthstarValidationException;
-use Northstar\Http\Requests\UnsubscribeRequest;
 use Northstar\Models\User;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
-use Illuminate\Support\Facades\Redirect;
-
 
 class AuthController extends BaseController
 {
