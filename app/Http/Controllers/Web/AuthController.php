@@ -10,9 +10,12 @@ use League\OAuth2\Server\AuthorizationServer;
 use Northstar\Auth\Entities\UserEntity;
 use Northstar\Auth\Registrar;
 use Northstar\Exceptions\NorthstarValidationException;
+use Northstar\Http\Requests\UnsubscribeRequest;
 use Northstar\Models\User;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
+use Illuminate\Support\Facades\Redirect;
+
 
 class AuthController extends BaseController
 {
@@ -57,9 +60,16 @@ class AuthController extends BaseController
         $this->middleware('session_vars');
     }
 
-    public function unsubcribe (){
+    /**
+    *
+    * Displays the subscriptions page
+    *
+    */
+    public function unsubscribe()
+    {
         return view('auth.subscriptions');
     }
+
     /**
      * Authorize an application via OAuth 2.
      *

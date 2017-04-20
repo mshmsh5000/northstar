@@ -22,7 +22,10 @@ $router->group(['namespace' => 'Web', 'guard' => 'web', 'middleware' => ['web']]
     $router->get('login', 'AuthController@getLogin');
     $router->post('login', 'AuthController@postLogin');
     $router->get('logout', 'AuthController@getLogout');
+
+    //Unsubscribe
     $router->get('unsubscribe', 'AuthController@unsubscribe');
+
     // Registration
     $router->get('register', 'AuthController@getRegister');
     $router->post('register', 'AuthController@postRegister');
