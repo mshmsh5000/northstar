@@ -71,7 +71,11 @@ class MergeController extends Controller
 
         // Are we "pretending" for this request? If so, short-circuit and display the (unsaved) result.
         if ($request->query('pretend', false)) {
-            return $this->item($target, 200, ['updated' => array_keys($duplicateFields)]);
+            return $this->item($target, 200, [
+                'pretending' => true,
+                'updated' => array_keys($duplicateFields),
+                'duplicate' => $duplicate->toArray(),
+            ]);
         }
 
         // Save the changes to the two accounts.
@@ -80,7 +84,7 @@ class MergeController extends Controller
 
         return $this->item($target, 200, [
             'updated' => array_keys($duplicateFields),
-            'duplicate' => $duplicate,
+            'duplicate' => $duplicate->toArray(),
         ]);
     }
 }
