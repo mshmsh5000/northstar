@@ -55,7 +55,9 @@ class MergeController extends Controller
 
         // Copy the "duplicate" account's fields to the target & unset on the dupe account.
         $target->fill($duplicateFields);
-        $duplicate->unset($duplicateFieldNames);
+        foreach ($duplicateFieldNames as $field) {
+            $duplicate->$field = null;
+        }
 
         if (empty($duplicate->email) && empty($duplicate->mobile)) {
             $duplicate->email = 'merged-account-'.$target->id.'@dosomething.invalid';
