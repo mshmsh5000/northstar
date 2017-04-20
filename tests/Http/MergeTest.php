@@ -51,8 +51,8 @@ class MergeTest extends TestCase
             'source' => 'sms',
         ]);
 
-        $this->asAdminUser()->json('POST','v1/users/'.$user->id.'/merge', [
-            'id' => $duplicate->id
+        $this->asAdminUser()->json('POST', 'v1/users/'.$user->id.'/merge', [
+            'id' => $duplicate->id,
         ]);
 
         // The "target" user should have the dupe's profile fields.

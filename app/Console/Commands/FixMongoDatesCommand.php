@@ -4,7 +4,6 @@ namespace Northstar\Console\Commands;
 
 use Illuminate\Console\Command;
 use MongoDB\BSON\UTCDateTime;
-use MongoDB\Collection;
 use Northstar\Models\User;
 
 class FixMongoDatesCommand extends Command

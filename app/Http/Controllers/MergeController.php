@@ -80,7 +80,7 @@ class MergeController extends Controller
 
         return $this->item($target, 200, [
             'updated' => array_keys($duplicateFields),
-            'duplicate' => $duplicate
+            'duplicate' => $duplicate,
         ]);
     }
 }
