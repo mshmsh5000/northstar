@@ -58,10 +58,8 @@ class AuthController extends BaseController
     }
 
     /**
-    *
-    * Displays the subscriptions page
-    *
-    */
+     * Displays the subscriptions page
+     */
     public function unsubscribe()
     {
         return view('auth.subscriptions');
