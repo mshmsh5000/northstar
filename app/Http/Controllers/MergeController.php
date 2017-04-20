@@ -79,8 +79,8 @@ class MergeController extends Controller
         }
 
         // Save the changes to the two accounts.
-        $target->save();
         $duplicate->save();
+        $target->save();
 
         return $this->item($target, 200, [
             'updated' => array_keys($duplicateFields),
