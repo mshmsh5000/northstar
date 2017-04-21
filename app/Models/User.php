@@ -235,14 +235,15 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
     public function setPasswordAttribute($value)
     {
         if (isset($this->drupal_password)) {
-            $this->drop('drupal_password');
+            $this->drupal_password = null;
         }
 
         if (! empty($this->attributes['password'])) {
             logger('Saving a new password for '.$this->id.' via '.client_id());
         }
 
-        $this->attributes['password'] = bcrypt($value);
+        // Only hash and set password if not empty.
+        $this->attributes['password'] = $value ? bcrypt($value) : null;
     }
 
     /**

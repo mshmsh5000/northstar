@@ -33,7 +33,6 @@ class MergeTest extends TestCase
             'email' => 'target-account@example.com',
             'first_name' => 'Phil',
             'last_name' => 'Dunfy',
-            'birthdate' => '1994-02-26',
             'addr_street1' => '19 W 21st St',
             'city' => 'New York',
             'addr_state' => 'NY',

@@ -55,7 +55,9 @@ class MergeController extends Controller
 
         // Copy the "duplicate" account's fields to the target & unset on the dupe account.
         $target->fill($duplicateFields);
-        $duplicate->unset($duplicateFieldNames);
+        foreach ($duplicateFieldNames as $field) {
+            $duplicate->$field = null;
+        }
 
         if (empty($duplicate->email) && empty($duplicate->mobile)) {
             $duplicate->email = 'merged-account-'.$target->id.'@dosomething.invalid';
@@ -71,16 +73,20 @@ class MergeController extends Controller
 
         // Are we "pretending" for this request? If so, short-circuit and display the (unsaved) result.
         if ($request->query('pretend', false)) {
-            return $this->item($target, 200, ['updated' => array_keys($duplicateFields)]);
+            return $this->item($target, 200, [
+                'pretending' => true,
+                'updated' => array_keys($duplicateFields),
+                'duplicate' => $duplicate->toArray(),
+            ]);
         }
 
         // Save the changes to the two accounts.
-        $target->save();
         $duplicate->save();
+        $target->save();
 
         return $this->item($target, 200, [
             'updated' => array_keys($duplicateFields),
-            'duplicate' => $duplicate,
+            'duplicate' => $duplicate->toArray(),
         ]);
     }
 }
