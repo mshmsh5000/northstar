@@ -214,6 +214,16 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
     }
 
     /**
+     * Mutator for the `country` field.
+     *
+     * @param $value
+     */
+    public function setCountryAttribute($value)
+    {
+        $this->attributes['country'] = Str::upper($value);
+    }
+
+    /**
      * Mutator to add new Parse IDs to the user's installation IDs array,
      * either by passing an array or a comma-separated list of values.
      *

@@ -177,6 +177,7 @@ class UserTest extends TestCase
             'first_name' => 'Hercules',
             'last_name' => 'Mulligan',
             'email' => $this->faker->email,
+            'country' => 'us',
             'source' => 'historical',
             'source_detail' => 'american-revolution',
         ]);
@@ -186,6 +187,7 @@ class UserTest extends TestCase
             'data' => [
                 'first_name' => 'Hercules',
                 'last_name' => 'Mulligan',
+                'country' => 'US', // mutator should capitalize country codes!
                 'source' => 'historical',
                 'source_detail' => 'american-revolution',
             ],
@@ -239,6 +241,29 @@ class UserTest extends TestCase
             'email' => 'batman@example.com',
             'mobile' => '2223335555',
         ]);
+    }
+
+    /**
+     * Test that the `country` field is validated.
+     * GET /users/:term/:id
+     *
+     * @return void
+     */
+    public function testValidatesCountryCode()
+    {
+        $this->asAdminUser()->json('POST', 'v1/users', [
+            'email' => 'american@example.com',
+            'country' => 'united states',
+        ]);
+
+        $this->assertResponseStatus(422);
+
+        $this->asAdminUser()->json('POST', 'v1/users', [
+            'email' => 'american@example.com',
+            'country' => 'us',
+        ]);
+
+        $this->assertResponseStatus(201);
     }
 
     /**

@@ -36,6 +36,11 @@ class ValidationServiceProvider extends ServiceProvider
         $this->validator->extend('scope', function ($attribute, $value, $parameters) {
             return Scope::validateScopes($value);
         }, 'Invalid scope(s) provided.');
+
+        // Add custom validator for country codes.
+        $this->validator->extend('country', function ($attribute, $value, $parameters) {
+            return get_countries()->has(strtoupper($value));
+        }, 'The :attribute must be a valid ISO-3166 country code.');
     }
 
     /**
