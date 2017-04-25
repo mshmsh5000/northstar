@@ -79,7 +79,14 @@
 
             <div class="form-item">
                 <label for="country" class="field-label">Country</label>
-                <input type="text" id="country" class="text-field" name="country" value="{{ old('country') ?: $user->country }}" />
+                <div class="select">
+                    <select id="country" name="country">
+                        <option>---</option>
+                        @foreach (get_countries() as $code => $country)
+                            <option value="{{ $code }}" {{ $user->country === $code ? 'selected' : null }}>{{ $country }}</option>
+                        @endforeach
+                    </select>
+                </div>
             </div>
         </div>
 

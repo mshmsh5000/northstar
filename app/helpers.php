@@ -93,3 +93,13 @@ function client_id()
     // If not an API request, use Client ID from `/authorize` call or just 'northstar'.
     return session('authorize_client_id', 'northstar');
 }
+
+/**
+ * Get a list of countries keyed by ISO country code.
+ */
+function get_countries()
+{
+    $iso = (new League\ISO3166\ISO3166)->getAll();
+
+    return collect($iso)->pluck('name', 'alpha2');
+}
