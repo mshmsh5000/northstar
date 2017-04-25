@@ -96,6 +96,8 @@ function client_id()
 
 /**
  * Get a list of countries keyed by ISO country code.
+ *
+ * @return \Illuminate\Support\Collection
  */
 function get_countries()
 {

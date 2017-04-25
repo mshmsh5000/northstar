@@ -69,6 +69,7 @@ class Registrar
             'mobile' => 'mobile|unique:users,mobile,'.$existingId.',_id|required_without:email',
             'drupal_id' => 'unique:users,drupal_id,'.$existingId.',_id',
             'birthdate' => 'date',
+            'country' => 'country',
             'password' => 'min:6|max:512',
         ];
 
