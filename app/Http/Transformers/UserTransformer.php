@@ -55,7 +55,9 @@ class UserTransformer extends TransformerAbstract
         }
 
         $response['language'] = $user->language;
-        $response['country'] = $user->country;
+
+        // Ensure we only return 2-letter country codes.
+        $response['country'] = strlen($user->country) <= 2 ? $user->country : null;
 
         // Drupal ID for this user. Used in the mobile app.
         $response['drupal_id'] = $user->drupal_id;
