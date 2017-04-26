@@ -186,7 +186,7 @@ class Registrar
      *
      * @param array $input - Profile fields
      * @param User $user - Optionally, user to update
-     * @param Closure $customizer
+     * @param Closure $customizer - Customize the user instance before saving.
      * @return User|null
      */
     public function register($input, $user = null, Closure $customizer = null)
@@ -210,6 +210,16 @@ class Registrar
         }
 
         return $user;
+    }
+
+    /**
+     * Send a "welcome" email to the given user.
+     *
+     * @param $user
+     */
+    public function sendWelcomeEmail($user)
+    {
+        $this->phoenix->sendTransactional($user->id, 'register');
     }
 
     /**
