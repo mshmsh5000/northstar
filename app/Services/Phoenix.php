@@ -171,6 +171,27 @@ class Phoenix
     }
 
     /**
+     * Trigger a transactional message.
+     *
+     * @param string $id
+     * @param string $template
+     * @return void
+     */
+    public function sendTransactional($id, $template)
+    {
+        $this->client->post('transactionals', [
+            'cookies' => $this->getAuthenticationCookie(),
+            'headers' => [
+                'X-CSRF-Token' => $this->getAuthenticationToken(),
+            ],
+            'json' => [
+                'id' => $id,
+                'template' => $template,
+            ],
+        ]);
+    }
+
+    /**
      * Get an index of (optionally filtered) campaign signups from Phoenix.
      * @see: https://github.com/DoSomething/phoenix/wiki/API#retrieve-a-signup-collection
      *
