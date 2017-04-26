@@ -13,7 +13,7 @@
     <link rel="apple-touch-icon-precomposed" href="{{ asset('apple-touch-icon-precomposed.png') }}">
 
     <link rel="stylesheet" href="{{ elixir('app.css', 'dist') }}">
-    <script src="{{ asset('build/modernizr.js') }}"></script>
+    <script src="{{ asset('dist/modernizr.js') }}"></script>
     <meta name="csrf-token" content="{{ csrf_token() }}">
 </head>
 
