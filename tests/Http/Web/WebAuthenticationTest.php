@@ -130,6 +130,8 @@ class WebAuthenticationTest extends TestCase
      */
     public function testRegister()
     {
+        $this->phoenixMock->shouldReceive('sendTransactional')->once();
+
         $this->visit('register')
             ->type('Puppet', 'first_name')
             ->type('test@dosomething.org', 'email')
