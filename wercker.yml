@@ -4,6 +4,9 @@ build:
   # The steps that will be executed on build
   steps:
     - script:
+        name: install npm 3.x
+        code: npm install -g npm@3.x-latest
+    - script:
         name: start mongodb
         code: |-
           sudo /usr/bin/mongod --quiet --config /etc/mongod.conf --fork --logpath /var/log/mongod.log
