@@ -28,7 +28,7 @@ class UserInfoTransformer extends TransformerAbstract
                 'locality' => $user->addr_city,
                 'region' => $user->addr_state,
                 'postal_code' => $user->addr_zip,
-                'country' => strlen($user->country) === 2 ? $user->country : null,
+                'country' => $user->country,
             ],
 
             'updated_at' => $user->updated_at->timestamp,
