@@ -244,6 +244,34 @@ class UserTest extends TestCase
     }
 
     /**
+     * Test that the `country` field is removed if it
+     * does not contain a valid ISO-3166 country code.
+     * GET /users/:term/:id
+     *
+     * @return void
+     */
+    public function testSanitizesInvalidCountryCode()
+    {
+        $user = factory(User::class)->create([
+            'email' => 'antonia.anderson@example.com',
+            'country' => 'United States',
+        ]);
+
+        $this->asAdminUser()->json('POST', 'v1/users', [
+            'email' => 'antonia.anderson@example.com',
+            'first_name' => 'Antonia',
+        ]);
+
+        // We should not see a validation error.
+        $this->assertResponseStatus(200);
+
+        // The user should be updated & their invalid country removed.
+        $user = $user->fresh();
+        $this->assertEquals('Antonia', $user->first_name);
+        $this->assertEquals(null, $user->country);
+    }
+
+    /**
      * Test that the `country` field is validated.
      * GET /users/:term/:id
      *
