@@ -214,6 +214,23 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
     }
 
     /**
+     * Accessor for the `country` field.
+     *
+     * @return string
+     */
+    public function getCountryAttribute()
+    {
+        if (empty($this->attributes['country'])) {
+            return null;
+        }
+
+        $countryCode = Str::upper($this->attributes['country']);
+        $isValid = get_countries()->has($countryCode);
+
+        return $isValid ? $countryCode : null;
+    }
+
+    /**
      * Mutator for the `country` field.
      *
      * @param $value
