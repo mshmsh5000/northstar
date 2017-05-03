@@ -58,14 +58,6 @@ class AuthController extends BaseController
     }
 
     /**
-     * Displays the subscriptions page
-     */
-    public function unsubscribe()
-    {
-        return view('auth.subscriptions');
-    }
-
-    /**
      * Authorize an application via OAuth 2.
      *
      * @param ServerRequestInterface $request

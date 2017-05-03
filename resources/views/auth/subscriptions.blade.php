@@ -5,10 +5,10 @@
 @section('content')
 
 	<div class="container__block -centered ">
-		To unsubscribe from this competition , click 'Unsubscribe' !
+		<p> To unsubscribe from this competition , click 'Unsubscribe' ! </p>
 
 		<form role="form" method="POST" action="  ">
-			<a class="button :hover"> Unsubscribe </a>
+			<a class="button"> Unsubscribe </a>
 		</form>
 	</div>
 
