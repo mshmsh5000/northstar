@@ -186,6 +186,9 @@ class AuthController extends BaseController
         $user = $this->registrar->register($request->except(User::$internal));
         $this->auth->guard('web')->login($user, true);
 
+        // Send them a welcome email!
+        $this->registrar->sendWelcomeEmail($user);
+
         return redirect()->intended('/');
     }
 }

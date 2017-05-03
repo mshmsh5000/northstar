@@ -6,7 +6,7 @@
   "require": {
     "laravel/framework": "5.2.*",
     "guzzlehttp/guzzle": "~6.2.1",
-    "jenssegers/mongodb": "~3.0",
+    "jenssegers/mongodb": "3.1.*",
     "league/flysystem-aws-s3-v3": "~1.0",
     "parse/php-sdk" : "1.1.*",
     "league/fractal": "0.13.*",
@@ -14,7 +14,9 @@
     "dosomething/stathat": "^2.0.0",
     "symfony/psr-http-message-bridge": "^0.2.0",
     "zendframework/zend-diactoros": "^1.3",
-    "laracasts/utilities": "^2.1"
+    "laracasts/utilities": "^2.1",
+    "league/iso3166": "^1.0",
+    "fideloper/proxy": "^3.3"
   },
   "require-dev": {
     "phpunit/phpunit": "~4.0",

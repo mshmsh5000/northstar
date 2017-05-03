@@ -12,7 +12,7 @@
     <link rel="shortcut icon" href="{{ asset('favicon.ico') }}">
     <link rel="apple-touch-icon-precomposed" href="{{ asset('apple-touch-icon-precomposed.png') }}">
 
-    <link rel="stylesheet" href="{{ asset('dist/app.css') }}">
+    <link rel="stylesheet" href="{{ elixir('app.css', 'dist') }}">
     <script src="{{ asset('dist/modernizr.js') }}"></script>
     <meta name="csrf-token" content="{{ csrf_token() }}">
 </head>
@@ -38,7 +38,7 @@
     </div>
 
     @include('layouts.variables')
-    <script src="{{ asset('/dist/app.js') }}"></script>
+    <script src="{{ elixir('app.js', 'dist') }}"></script>
     @include('layouts.google_analytics')
 </body>
 

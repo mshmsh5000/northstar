@@ -2,7 +2,6 @@
 
 namespace Northstar\Http\Controllers\Web;
 
-use Illuminate\Contracts\Auth\Factory as Auth;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller as BaseController;
 use Northstar\Auth\Registrar;
@@ -51,9 +50,8 @@ class UserController extends BaseController
      */
     public function show($id)
     {
-        $user = User::findOrFail($id);
-
-        $authUser = auth()->guard('web')->user()->toArray();
+        // @TODO: Implement this route.
+        return redirect('/');
     }
 
     /**
@@ -100,6 +98,6 @@ class UserController extends BaseController
 
         $user->fill($values)->save();
 
-        return redirect()->route('users.show', $user->id);
+        return redirect('/');
     }
 }

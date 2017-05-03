@@ -177,6 +177,7 @@ class UserTest extends TestCase
             'first_name' => 'Hercules',
             'last_name' => 'Mulligan',
             'email' => $this->faker->email,
+            'country' => 'us',
             'source' => 'historical',
             'source_detail' => 'american-revolution',
         ]);
@@ -186,6 +187,7 @@ class UserTest extends TestCase
             'data' => [
                 'first_name' => 'Hercules',
                 'last_name' => 'Mulligan',
+                'country' => 'US', // mutator should capitalize country codes!
                 'source' => 'historical',
                 'source_detail' => 'american-revolution',
             ],
@@ -239,6 +241,57 @@ class UserTest extends TestCase
             'email' => 'batman@example.com',
             'mobile' => '2223335555',
         ]);
+    }
+
+    /**
+     * Test that the `country` field is removed if it
+     * does not contain a valid ISO-3166 country code.
+     * GET /users/:term/:id
+     *
+     * @return void
+     */
+    public function testSanitizesInvalidCountryCode()
+    {
+        $user = factory(User::class)->create([
+            'email' => 'antonia.anderson@example.com',
+            'country' => 'United States',
+        ]);
+
+        $this->asAdminUser()->json('POST', 'v1/users', [
+            'email' => 'antonia.anderson@example.com',
+            'first_name' => 'Antonia',
+        ]);
+
+        // We should not see a validation error.
+        $this->assertResponseStatus(200);
+
+        // The user should be updated & their invalid country removed.
+        $user = $user->fresh();
+        $this->assertEquals('Antonia', $user->first_name);
+        $this->assertEquals(null, $user->country);
+    }
+
+    /**
+     * Test that the `country` field is validated.
+     * GET /users/:term/:id
+     *
+     * @return void
+     */
+    public function testValidatesCountryCode()
+    {
+        $this->asAdminUser()->json('POST', 'v1/users', [
+            'email' => 'american@example.com',
+            'country' => 'united states',
+        ]);
+
+        $this->assertResponseStatus(422);
+
+        $this->asAdminUser()->json('POST', 'v1/users', [
+            'email' => 'american@example.com',
+            'country' => 'us',
+        ]);
+
+        $this->assertResponseStatus(201);
     }
 
     /**

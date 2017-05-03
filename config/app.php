@@ -151,6 +151,7 @@ return [
         /*
          * Third Party Service Providers...
          */
+        Fideloper\Proxy\TrustedProxyServiceProvider::class,
         Jenssegers\Mongodb\MongodbServiceProvider::class,
         Jenssegers\Mongodb\Auth\PasswordResetServiceProvider::class,
         DoSomething\StatHat\StatHatServiceProvider::class,

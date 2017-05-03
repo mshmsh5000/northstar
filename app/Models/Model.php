@@ -4,6 +4,7 @@ namespace Northstar\Models;
 
 use Carbon\Carbon;
 use Exception;
+use Illuminate\Database\Eloquent\Builder;
 use InvalidArgumentException;
 use Jenssegers\Mongodb\Eloquent\Model as BaseModel;
 use MongoDB\BSON\UTCDateTime;
@@ -24,18 +25,74 @@ class Model extends BaseModel
      *
      * @param  string  $key
      * @param  mixed   $value
-     * @return mixed
+     * @return $this
      */
     public function setAttribute($key, $value)
     {
-        // Drop field if attribute is empty string or null.
-        if (empty($value)) {
-            $this->drop($key);
+        parent::setAttribute($key, $value);
 
-            return null;
+        // Empty strings should be saved as `null`.
+        if (empty($this->attributes[$key])) {
+            $this->attributes[$key] = null;
         }
 
-        return parent::setAttribute($key, $value);
+        return $this;
+    }
+
+    /**
+     * Get the attributes that have been unset since the last sync.
+     *
+     * @return array
+     */
+    public function getClearable()
+    {
+        $clearable = [];
+
+        foreach ($this->original as $key => $value) {
+            if (! array_key_exists($key, $this->attributes) || is_null($this->attributes[$key])) {
+                $clearable[$key] = null;
+            }
+        }
+
+        return $clearable;
+    }
+
+    /**
+     * Perform a model insert operation.
+     *
+     * @param  \Illuminate\Database\Eloquent\Builder  $query
+     * @param  array  $options
+     * @return bool
+     */
+    protected function performInsert(Builder $query, array $options = [])
+    {
+        // Remove `null` values from the attributes before inserting.
+        $this->attributes = array_filter($this->attributes, function ($value) {
+            return ! is_null($value);
+        });
+
+        return parent::performInsert($query, $options);
+    }
+
+    /**
+     * Perform a model update operation.
+     * @see \Illuminate\Database\Eloquent\Model::performUpdate()
+     *
+     * @param  \Illuminate\Database\Eloquent\Builder  $query
+     * @param  array  $options
+     * @return bool
+     */
+    protected function performUpdate(Builder $query, array $options = [])
+    {
+        $success = parent::performUpdate($query, $options);
+        $clearable = $this->getClearable();
+
+        // If any attributes can be cleared, do so.
+        if ($success && count($clearable) > 0) {
+            $this->drop(array_keys($clearable));
+        }
+
+        return true;
     }
 
     /**
