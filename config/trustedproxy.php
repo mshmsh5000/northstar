@@ -18,7 +18,7 @@ return [
      * no matter how many proxies that client's request has subsequently passed through.
      */
     'proxies' => [
-        '*',
+        env('TRUSTED_PROXY_IP_ADDRESS'),
     ],
 
     /*
