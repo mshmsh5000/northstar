@@ -17,9 +17,7 @@ return [
      * It will mean that $request->getClientIp() always gets the originating client IP,
      * no matter how many proxies that client's request has subsequently passed through.
      */
-    'proxies' => [
-        env('TRUSTED_PROXY_IP_ADDRESS'),
-    ],
+    'proxies' => explode(',', env('TRUSTED_PROXY_IP_ADDRESSES')),
 
     /*
      * Default Header Names
