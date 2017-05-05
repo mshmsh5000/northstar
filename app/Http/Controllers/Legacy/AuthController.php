@@ -66,6 +66,7 @@ class AuthController extends Controller
 
         $this->middleware('scope:user');
         $this->middleware('auth', ['only' => ['invalidateToken', 'phoenix']]);
+        $this->middleware('throttle', ['only' => ['createToken', 'verify', 'register']]);
         $this->middleware('guest', ['except' => ['invalidateToken', 'phoenix']]);
     }
 

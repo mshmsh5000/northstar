@@ -54,6 +54,7 @@ class AuthController extends BaseController
         $this->oauth = $oauth;
 
         $this->middleware('guest:web', ['only' => ['getLogin', 'postLogin', 'getRegister', 'postRegister']]);
+        $this->middleware('throttle', ['only' => ['postLogin', 'postRegister']]);
         $this->middleware('session_vars');
     }
 
@@ -129,7 +130,9 @@ class AuthController extends BaseController
         if (! $this->auth->guard('web')->attempt($credentials, true)) {
             return redirect()->back()
                 ->withInput($request->only('username'))
-                ->withErrors(['username' => 'These credentials do not match our records.']);
+                ->withErrors([
+                    $this->loginUsername() => 'These credentials do not match our records.'
+                ]);
         }
 
         // If we had stored a destination name, reset it.
@@ -190,5 +193,15 @@ class AuthController extends BaseController
         $this->registrar->sendWelcomeEmail($user);
 
         return redirect()->intended('/');
+    }
+
+    /**
+     * Get the login username to be used by the controller.
+     *
+     * @return string
+     */
+    public function loginUsername()
+    {
+        return 'username';
     }
 }

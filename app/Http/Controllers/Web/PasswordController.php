@@ -18,6 +18,15 @@ class PasswordController extends BaseController
     protected $guard = 'web';
 
     /**
+     * Make a new PasswordController, inject dependencies,
+     * and set middleware for this controller's methods.
+     */
+    public function __construct()
+    {
+        $this->middleware('throttle', ['only' => ['postEmail']]);
+    }
+
+    /**
      * Reset the given user's password.
      *
      * @param  \Northstar\Models\User  $user
