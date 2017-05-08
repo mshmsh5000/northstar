@@ -18,8 +18,12 @@ class ThrottleRequests extends BaseThrottler
      * @param  int $decayMinutes
      * @return mixed
      */
-    public function handle($request, Closure $next, $maxAttempts = 15, $decayMinutes = 1)
+    public function handle($request, Closure $next, $maxAttempts = 10, $decayMinutes = 1)
     {
+        if (! config('features.rate-limiting')) {
+            return $next($request);
+        }
+
         return parent::handle($request, $next, $maxAttempts, $decayMinutes);
     }
 
