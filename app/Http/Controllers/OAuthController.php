@@ -2,12 +2,15 @@
 
 namespace Northstar\Http\Controllers;
 
+use Illuminate\Cache\RateLimiter;
 use Illuminate\Contracts\Auth\Factory as Auth;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use League\OAuth2\Server\AuthorizationServer;
 use League\OAuth2\Server\Exception\OAuthServerException;
 use Northstar\Auth\Encrypter;
 use Northstar\Http\Transformers\UserInfoTransformer;
+use Northstar\Listeners\RateLimitedRequest;
 use Northstar\Models\RefreshToken;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
@@ -29,6 +32,13 @@ class OAuthController extends Controller
     protected $auth;
 
     /**
+     * The rate limiter.
+     *
+     * @var RateLimiter
+     */
+    protected $limiter;
+
+    /**
      * The encrypter/decrypter.
      * @var Encrypter
      */
@@ -40,12 +50,14 @@ class OAuthController extends Controller
      *
      * @param AuthorizationServer $oauth
      * @param Auth $auth
+     * @param RateLimiter $limiter
      * @param Encrypter $encrypter
      */
-    public function __construct(AuthorizationServer $oauth, Auth $auth, Encrypter $encrypter)
+    public function __construct(AuthorizationServer $oauth, Auth $auth, RateLimiter $limiter, Encrypter $encrypter)
     {
         $this->oauth = $oauth;
         $this->auth = $auth;
+        $this->limiter = $limiter;
         $this->encrypter = $encrypter;
 
         $this->middleware('auth:api', ['only' => ['info', 'invalidateToken']]);
@@ -72,10 +84,24 @@ class OAuthController extends Controller
      *
      * @param ServerRequestInterface $request
      * @param ResponseInterface $response
-     * @return \Illuminate\Http\Response
+     * @return ResponseInterface
+     * @throws OAuthServerException
      */
     public function createToken(ServerRequestInterface $request, ResponseInterface $response)
     {
+        $shouldRateLimit = config('features.rate-limiting');
+
+        // If this IP has given incorrect client credentials too many times, take a break.
+        // @see: EventServiceProvider `client.authentication.failed` listener.
+        if ($shouldRateLimit && $this->limiter->tooManyAttempts(request()->fingerprint(), 10)) {
+            event(RateLimitedRequest::class);
+
+            $seconds = $this->limiter->availableIn(request()->ip());
+            $message = 'Too many failed attempts. Please try again in '.$seconds.' seconds.';
+
+            throw new OAuthServerException($message, 429, 'rate_limit', 429);
+        }
+
         return $this->oauth->respondToAccessTokenRequest($request, $response);
     }
 

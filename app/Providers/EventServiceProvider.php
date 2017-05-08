@@ -4,9 +4,11 @@ namespace Northstar\Providers;
 
 use Illuminate\Auth\Events\Failed;
 use Illuminate\Auth\Events\Login;
+use Illuminate\Cache\RateLimiter;
 use Illuminate\Contracts\Events\Dispatcher as DispatcherContract;
 use Illuminate\Foundation\Support\Providers\EventServiceProvider as ServiceProvider;
 use Illuminate\Routing\Events\RouteMatched;
+use League\OAuth2\Server\AuthorizationServer;
 use Northstar\Listeners\FailedAuthenticationAttempt;
 use Northstar\Listeners\SuccessfulAuthentication;
 
@@ -31,6 +33,14 @@ class EventServiceProvider extends ServiceProvider
     public function boot(DispatcherContract $events)
     {
         parent::boot($events);
+
+        // Rate limit failed client authentication attempts.
+        // @see: OAuthController::createToken
+        $oauth = app(AuthorizationServer::class);
+        $oauth->getEmitter()->addListener('client.authentication.failed', function () {
+            // Increment number of failed requests for this route & IP address.
+            app(RateLimiter::class)->hit(request()->fingerprint(), 1);
+        });
 
         // Update count on StatHat every time a route is hit.
         // e.g. will increment the "northstar - v1/users/{term}/{id}" stat each
