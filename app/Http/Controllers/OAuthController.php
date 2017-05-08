@@ -95,8 +95,9 @@ class OAuthController extends Controller
         if ($shouldRateLimit && $this->limiter->tooManyAttempts(request()->fingerprint(), 10, 15)) {
             event(RateLimitedRequest::class);
 
-            $seconds = $this->limiter->availableIn(request()->ip());
-            $message = 'Too many failed attempts. Please try again in '.$seconds.' seconds.';
+            $minutes = ceil($this->limiter->availableIn(request()->fingerprint()) / 60);
+            $pluralizedNoun = $minutes === 1 ? 'minute' : 'minutes';
+            $message = 'Too many attempts. Please try again in '.$minutes.' '.$pluralizedNoun.'.';
 
             throw new OAuthServerException($message, 429, 'rate_limit', 429);
         }
