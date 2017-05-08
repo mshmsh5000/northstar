@@ -77,6 +77,30 @@ class WebAuthenticationTest extends TestCase
     }
 
     /**
+     * Test that users can't brute-force the login form.
+     */
+    public function testLoginRateLimited()
+    {
+        for ($i = 0; $i < 10; $i++) {
+            $this->visit('login');
+            $this->submitForm('Log In', [
+                'username' => 'target@example.com',
+                'password' => 'password'.$i,
+            ]);
+
+            $this->see('These credentials do not match our records.');
+        }
+
+        $this->visit('login');
+        $this->submitForm('Log In', [
+            'username' => 'target@example.com',
+            'password' => 'password11', // our attacker is very methodical.
+        ]);
+
+        $this->see('Too many attempts.');
+    }
+
+    /**
      * Test that users who do not have a password on their account
      * are asked to reset it.
      */
@@ -131,15 +155,26 @@ class WebAuthenticationTest extends TestCase
     public function testRegister()
     {
         $this->phoenixMock->shouldReceive('sendTransactional')->once();
-
-        $this->visit('register')
-            ->type('Puppet', 'first_name')
-            ->type('test@dosomething.org', 'email')
-            ->type('1/20/1993', 'birthdate')
-            ->type('secret', 'password')
-            ->type('secret', 'password_confirmation')
-            ->press('Create New Account');
+        $this->register();
 
         $this->seeIsAuthenticated('web');
+    }
+
+    /**
+     * Test that users can't brute-force the login form.
+     */
+    public function testRegisterRateLimited()
+    {
+        $this->phoenixMock->shouldReceive('sendTransactional')->times(10);
+
+        for ($i = 0; $i < 10; $i++) {
+            $this->register();
+            $this->seeIsAuthenticated('web');
+        }
+
+        $this->register();
+
+        $this->dontSeeIsAuthenticated('web');
+        $this->see('Too many attempts.');
     }
 }

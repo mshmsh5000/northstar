@@ -187,6 +187,44 @@ class OAuthTest extends TestCase
     }
 
     /**
+     * Test that we do not rate limit valid credentials.
+     */
+    public function testValidClientCredentialsAreNotRateLimited()
+    {
+        $client = Client::create(['client_id' => 'phpunit']);
+        $credentials = [
+            'grant_type' => 'client_credentials',
+            'client_id' => $client->client_id,
+            'client_secret' => $client->client_secret,
+        ];
+
+        for ($i = 0; $i < 15; $i++) {
+            $this->post('v2/auth/token', $credentials);
+            $this->assertResponseOk();
+        }
+    }
+
+    /**
+     * Test that requests are rate limited after 10 invalid attempts.
+     */
+    public function testInvalidClientCredentialsAreRateLimited()
+    {
+        $invalidCredentials = [
+            'grant_type' => 'client_credentials',
+            'client_id' => 'phpunit',
+            'client_secret' => 'banana',
+        ];
+
+        for ($i = 0; $i < 10; $i++) {
+            $this->post('v2/auth/token', $invalidCredentials);
+            $this->assertResponseStatus(401);
+        }
+
+        $this->post('v2/auth/token', $invalidCredentials);
+        $this->assertResponseStatus(429);
+    }
+
+    /**
      * Test that clients can be granted a subset of their allowed scopes.
      */
     public function testRequestSubsetOfClientScopes()
