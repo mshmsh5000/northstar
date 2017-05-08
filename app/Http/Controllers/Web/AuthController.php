@@ -131,7 +131,7 @@ class AuthController extends BaseController
             return redirect()->back()
                 ->withInput($request->only('username'))
                 ->withErrors([
-                    $this->loginUsername() => 'These credentials do not match our records.'
+                    $this->loginUsername() => 'These credentials do not match our records.',
                 ]);
         }
 

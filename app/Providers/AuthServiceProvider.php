@@ -16,7 +16,6 @@ use League\OAuth2\Server\Repositories\RefreshTokenRepositoryInterface;
 use League\OAuth2\Server\Repositories\ScopeRepositoryInterface;
 use League\OAuth2\Server\Repositories\UserRepositoryInterface;
 use League\OAuth2\Server\AuthorizationServer;
-use League\OAuth2\Server\RequestEvent;
 use League\OAuth2\Server\ResourceServer;
 use Northstar\Auth\NorthstarTokenGuard;
 use Northstar\Auth\NorthstarUserProvider;

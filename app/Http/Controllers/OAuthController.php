@@ -4,7 +4,6 @@ namespace Northstar\Http\Controllers;
 
 use Illuminate\Cache\RateLimiter;
 use Illuminate\Contracts\Auth\Factory as Auth;
-use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use League\OAuth2\Server\AuthorizationServer;
 use League\OAuth2\Server\Exception\OAuthServerException;
