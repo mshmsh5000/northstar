@@ -18,7 +18,7 @@ class ThrottleRequests extends BaseThrottler
      * @param  int $decayMinutes
      * @return mixed
      */
-    public function handle($request, Closure $next, $maxAttempts = 10, $decayMinutes = 1)
+    public function handle($request, Closure $next, $maxAttempts = 10, $decayMinutes = 15)
     {
         if (! config('features.rate-limiting')) {
             return $next($request);
@@ -39,8 +39,7 @@ class ThrottleRequests extends BaseThrottler
         // Report the rate-limited request to StatHat.
         event(RateLimitedRequest::class);
 
-        $seconds = $this->limiter->availableIn($key);
-        $message = 'Too many attempts. Please try again in '.$seconds.' seconds.';
+        $message = 'Too many attempts. Please try again in a few minutes.';
 
         if (request()->wantsJson() || request()->ajax()) {
             return new JsonResponse($message, 429);

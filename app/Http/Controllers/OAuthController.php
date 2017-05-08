@@ -92,7 +92,7 @@ class OAuthController extends Controller
 
         // If this IP has given incorrect client credentials too many times, take a break.
         // @see: EventServiceProvider `client.authentication.failed` listener.
-        if ($shouldRateLimit && $this->limiter->tooManyAttempts(request()->fingerprint(), 10)) {
+        if ($shouldRateLimit && $this->limiter->tooManyAttempts(request()->fingerprint(), 10, 15)) {
             event(RateLimitedRequest::class);
 
             $seconds = $this->limiter->availableIn(request()->ip());
