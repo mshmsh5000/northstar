@@ -39,7 +39,9 @@ class ThrottleRequests extends BaseThrottler
         // Report the rate-limited request to StatHat.
         event(RateLimitedRequest::class);
 
-        $message = 'Too many attempts. Please try again in a few minutes.';
+        $minutes = ceil($this->limiter->availableIn($key) / 60);
+        $pluralizedNoun = $minutes === 1 ? 'minute' : 'minutes';
+        $message = 'Too many attempts. Please try again in '.$minutes.' '.$pluralizedNoun.'.';
 
         if (request()->wantsJson() || request()->ajax()) {
             return new JsonResponse($message, 429);
