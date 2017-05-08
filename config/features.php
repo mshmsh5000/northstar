@@ -14,4 +14,6 @@ return [
 
     'password-reset' => env('DS_ENABLE_PASSWORD_RESET'),
 
+    'rate-limiting' => env('DS_ENABLE_RATE_LIMITING'),
+
 ];

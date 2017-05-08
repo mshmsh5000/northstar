@@ -122,6 +122,7 @@ Code | Meaning
 404  | __Not Found__ – The specified resource could not be found.
 418  | __I'm a teapot__ – The user [needs more caffeine](https://www.ietf.org/rfc/rfc2324.txt).
 422  | __Unprocessable Entity__ – The request couldn't be completed due to validation errors. See the `error.fields` property on the response.
+429  | __Too Many Requests__ – The user/client has sent too many requests in the past minute. See [Rate Limiting](#rate-limiting).
 500  | __Internal Server Error__ – Northstar has encountered an internal error. Please [make a bug report](https://github.com/DoSomething/northstar/issues/new) with as much detail as possible about what led to the error!
 503  | __Service Unavailable__ – Northstar is temporarily unavailable.
 
@@ -162,6 +163,19 @@ OAuth authentication errors are formatted slightly differently (to conform to [t
   "hint": "..."
 }
 ```
+
+## Rate Limiting
+Authentication and registration attempts are rate limited to prevent abuse. Users are limited by IP
+address to 10 logins or registrations per 15 minutes, and 10 failed client authentication attempts.
+
+The currently applied rate limit and remaining requests are returned as headers on each response:
+
+Header                  | Description
+----------------------- | -------------------------------------------------------------------------
+`X-RateLimit-Limit`     |	The maximum number of requests that this client may make per hour.
+`X-RateLimit-Remaining` |	The number of requests remaining of your provided limit.
+`Retry-After`           | If rate limit is exceeded, this is the amount of time until you may make another request.
+
 
 ## Libraries
 We have a [PHP API client](https://github.com/DoSomething/northstar-php) for simplified usage of the API in PHP clients.

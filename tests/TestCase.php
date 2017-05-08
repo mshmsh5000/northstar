@@ -257,4 +257,22 @@ abstract class TestCase extends Illuminate\Foundation\Testing\TestCase
 
         return $this;
     }
+
+    /**
+     * Register a new user account.
+     */
+    public function register()
+    {
+        // Make sure we're logged out before trying to register.
+        auth('web')->logout();
+
+        $this->visit('register');
+        $this->submitForm('Create New Account', [
+            'first_name' => $this->faker->firstName,
+            'email' => $this->faker->unique->email,
+            'birthdate' => $this->faker->date('m/d/Y', '5 years ago'),
+            'password' => 'secret',
+            'password_confirmation' => 'secret',
+        ]);
+    }
 }

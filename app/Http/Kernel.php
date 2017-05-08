@@ -46,5 +46,6 @@ class Kernel extends HttpKernel
         'scope' => \Northstar\Http\Middleware\RequireScope::class,
         'role' => \Northstar\Http\Middleware\RequireRole::class,
         'session_vars' => \Northstar\Http\Middleware\SessionVariablesToJavaScript::class,
+        'throttle' => \Northstar\Http\Middleware\ThrottleRequests::class,
     ];
 }
