@@ -166,7 +166,7 @@ OAuth authentication errors are formatted slightly differently (to conform to [t
 
 ## Rate Limiting
 Authentication and registration attempts are rate limited to prevent abuse. Users are limited by IP
-address to 10 logins or registrations per minute, and 10 failed client authentication attempts.
+address to 10 logins or registrations per 15 minutes, and 10 failed client authentication attempts.
 
 The currently applied rate limit and remaining requests are returned as headers on each response:
 
