@@ -16,7 +16,7 @@ class UserModelTest extends TestCase
             'first_name' => $user->first_name,
             'last_name' => $user->last_name,
             'email' => $user->email,
-            'mobile' => null,
+            'mobile' => $user->mobile,
             'mobile_status' => $user->mobilecommons_status,
             'addr_city' => $user->addr_city,
             'addr_state' => $user->addr_state,
