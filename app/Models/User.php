@@ -332,7 +332,7 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
         return [
             'id' => $this->id,
             'email' => $this->email,
-            'mobile' => null, // <-- send once verified.
+            'mobile' => $this->mobile,
             'mobile_status' => $this->mobilecommons_status,
             'first_name' => $this->first_name,
             'last_name' => $this->last_name,
