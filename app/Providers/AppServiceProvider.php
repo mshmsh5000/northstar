@@ -2,6 +2,7 @@
 
 namespace Northstar\Providers;
 
+use DoSomething\Gateway\Blink;
 use Illuminate\Support\ServiceProvider;
 use Northstar\Models\User;
 
@@ -14,9 +15,16 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-        User::creating(function ($user) {
+        User::creating(function (User $user) {
             // Set source automatically if not provided.
             $user->source = $user->source ?: client_id();
+        });
+
+        User::created(function (User $user) {
+            // Send payload to Blink for Customer.io profile.
+            if (config('features.blink')) {
+                app(Blink::class)->userCreate($user->toBlinkPayload());
+            }
         });
     }
 
@@ -27,6 +35,9 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register()
     {
-        //
+        // @TODO: This should be registered in Gateway's service provider!
+        $this->app->singleton(Blink::class, function () {
+            return new Blink(config('services.blink'));
+        });
     }
 }
