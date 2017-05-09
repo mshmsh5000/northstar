@@ -10,16 +10,6 @@
 // Web Experience for https://northstar.dosomething.org/
 
 $router->group(['namespace' => 'Web', 'guard' => 'web', 'middleware' => ['web']], function () use ($router) {
-    // @TODO: Temporarily added for testing. Remove this.
-    $router->get('test', function (\Illuminate\Http\Request $request) {
-        return [
-            'ip' => $request->ip(),
-            'remote_addr' => $request->server->get('REMOTE_ADDR'),
-            'forwarded' => $request->header('forwarded'),
-            'x-forwarded-for' => $request->header('x-forwarded-for'),
-        ];
-    });
-
     $router->get('/', 'UserController@home');
 
     // Users

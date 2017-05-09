@@ -344,7 +344,7 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
             'source' => $this->source,
             'source_detail' => $this->source_detail,
             'last_authenticated_at' => $this->last_authenticated_at ? $this->last_authenticated_at->toIso8601String() : null,
-            'updated_at' => $this->created_at->toIso8601String(),
+            'updated_at' => $this->updated_at->toIso8601String(),
             'created_at' => $this->created_at->toIso8601String(),
         ];
     }
