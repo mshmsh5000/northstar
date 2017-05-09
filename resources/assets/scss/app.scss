@@ -2,8 +2,8 @@
 @import "_utilities/_variables";
 
 // Import DoSomething.org modules
-@import "~@dosomething/forge/scss/forge";
-@import "../../../node_modules/dosomething-validation/src/validation";
+@import "~@dosomething/forge/scss/forge.scss";
+@import "~dosomething-validation/src/validation.scss";
 
 // @TODO: move some of the patterns below into Forge!
 
