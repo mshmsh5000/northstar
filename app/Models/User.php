@@ -323,6 +323,34 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
     }
 
     /**
+     * Transform the user model for Blink.
+     *
+     * @return array
+     */
+    public function toBlinkPayload()
+    {
+        return [
+            'id' => $this->id,
+            'email' => $this->email,
+            'mobile' => null, // <-- send once verified.
+            'first_name' => $this->first_name,
+            'last_name' => $this->last_name,
+            'addr_street1' => $this->addr_street1,
+            'addr_street2' => $this->addr_street2,
+            'addr_city' => $this->addr_city,
+            'addr_state' => $this->addr_state,
+            'addr_zip' => $this->addr_zip,
+            'language' => $this->language,
+            'country' => $this->country,
+            'source' => $this->source,
+            'source_detail' => $this->source_detail,
+            'last_authenticated_at' => $this->last_authenticated_at ? $this->last_authenticated_at->toIso8601String() : null,
+            'updated_at' => $this->created_at->toIso8601String(),
+            'created_at' => $this->created_at->toIso8601String(),
+        ];
+    }
+
+    /**
      * Scope a query to get all of the users in a group.
      *
      * @return \Illuminate\Database\Eloquent\Builder

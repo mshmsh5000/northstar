@@ -76,6 +76,8 @@ abstract class TestCase extends Illuminate\Foundation\Testing\TestCase
 
         // Configure a mock for Blink model events.
         $this->blinkMock = $this->mock(Blink::class);
+        $this->blinkMock->shouldReceive('userCreate')->andReturn(true);
+
         // Reset the testing database & run migrations.
         $this->app->make('db')->getMongoDB()->drop();
         $this->artisan('migrate');

@@ -15,9 +15,16 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-        User::creating(function ($user) {
+        User::creating(function (User $user) {
             // Set source automatically if not provided.
             $user->source = $user->source ?: client_id();
+        });
+
+        User::created(function (User $user) {
+            // Send payload to Blink for Customer.io profile.
+            if (config('features.blink')) {
+                app(Blink::class)->userCreate($user->toBlinkPayload());
+            }
         });
     }
 

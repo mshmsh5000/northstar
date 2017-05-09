@@ -56,6 +56,6 @@ return [
         'url' => env('BLINK_URL'),
         'user' => env('BLINK_USERNAME'),
         'password' => env('BLINK_PASSWORD'),
-    ]
+    ],
 
 ];
