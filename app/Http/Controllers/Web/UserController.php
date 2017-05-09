@@ -29,7 +29,6 @@ class UserController extends BaseController
 
         $this->middleware('auth:web');
         $this->middleware('role:admin,staff', ['only' => ['show']]);
-        $this->middleware('session_vars');
     }
 
     /**

@@ -55,7 +55,6 @@ class AuthController extends BaseController
 
         $this->middleware('guest:web', ['only' => ['getLogin', 'postLogin', 'getRegister', 'postRegister']]);
         $this->middleware('throttle', ['only' => ['postLogin', 'postRegister']]);
-        $this->middleware('session_vars');
     }
 
     /**

@@ -7,43 +7,14 @@ const $ = require('jquery');
 
 function init(element = 'back') {
   $(document).ready(() => {
+    const backLink = document.getElementById(element);
+    backLink.addEventListener('click', (event) => {
+      event.preventDefault();
 
-    let backLink = document.getElementById(element);
-    let referrerUri = document.referrer;
-
-    if (isSpecifiedRoute('/login') || isSpecifiedRoute('/')) {
-      if (window.Northstar) {
-        referrerUri = Northstar.referrerUri;
-      } else {
-        return;
-      }
-    }
-
-    if (backLink && referrerUri) {
-      return backLink.setAttribute('href', referrerUri);
-    }
-
+      analyze('Redirect', 'Clicked', 'Back To DoSomething Site');
+      window.history.back();
+    });
   });
-}
-
-/**
- * Determine if the specified string matches the current pathname route.
- *
- * @param  {String}  pathname
- * @return {Boolean}
- */
-function isSpecifiedRoute(pathname) {
-  if (!pathname) {
-    console.error('Please provide a route path to check against in the isSpecifiedRoute() method.');
-
-    return false;
-  }
-
-  if (window.location.pathname !== pathname) {
-    return false;
-  }
-
-  return true;
 }
 
 export default { init };
