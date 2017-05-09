@@ -52,4 +52,10 @@ return [
         'client_id' => env('FACEBOOK_APP_ID'),
     ],
 
+    'blink' => [
+        'url' => env('BLINK_URL'),
+        'user' => env('BLINK_USERNAME'),
+        'password' => env('BLINK_PASSWORD'),
+    ]
+
 ];
