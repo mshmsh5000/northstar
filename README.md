@@ -19,7 +19,8 @@ $ composer install && npm install
 # Copy the default environment variables:
 $ cp .env.example .env
 
-# Make public & private RSA keys:
+# Make app key, public & private RSA keys:
+$ php artisan key:generate
 $ openssl genrsa -out storage/keys/private.key 1024
 $ openssl rsa -in storage/keys/private.key -pubout -out storage/keys/public.key
 
