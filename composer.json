@@ -12,11 +12,12 @@
     "league/fractal": "0.13.*",
     "league/oauth2-server": "^5.1.2",
     "dosomething/stathat": "^2.0.0",
-    "symfony/psr-http-message-bridge": "^0.2.0",
+    "symfony/psr-http-message-bridge": "^1.0.0",
     "zendframework/zend-diactoros": "^1.3",
     "laracasts/utilities": "^2.1",
     "league/iso3166": "^1.0",
-    "fideloper/proxy": "^3.3"
+    "fideloper/proxy": "^3.3",
+    "dosomething/gateway": "^1.2"
   },
   "require-dev": {
     "phpunit/phpunit": "~4.0",
