@@ -19,6 +19,7 @@ class UserModelTest extends TestCase
             'mobile' => null,
             'addr_street1' => $user->addr_street1,
             'addr_street2' => $user->addr_street2,
+            'mobile_status' => $user->mobilecommons_status,
             'addr_city' => $user->addr_city,
             'addr_state' => $user->addr_state,
             'addr_zip' => $user->addr_zip,
