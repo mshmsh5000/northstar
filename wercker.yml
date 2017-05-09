@@ -29,6 +29,7 @@ build:
         name: phpunit
         code: |-
           cp .env.example .env
+          php artisan key:generate
           vendor/bin/phpunit
 
 deploy:
