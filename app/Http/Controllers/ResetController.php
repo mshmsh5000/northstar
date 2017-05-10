@@ -62,7 +62,7 @@ class ResetController extends Controller
         $email = $user->getEmailForPasswordReset();
 
         return [
-            'url' => url(config('app.url').'/password/reset/'.$token.'?email='.urlencode($email)),
+            'url' => config('app.url').'/password/reset/'.$token.'?email='.urlencode($email),
         ];
     }
 
