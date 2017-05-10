@@ -8,13 +8,16 @@ class UserModelTest extends TestCase
     public function it_should_send_new_users_to_blink()
     {
         /** @var User $user */
-        $user = factory(User::class)->create();
+        $user = factory(User::class)->create([
+            'birthdate' => '1/2/1990',
+        ]);
 
         // We should have made one "create" request to Blink.
         $this->blinkMock->shouldHaveReceived('userCreate')->once()->with([
             'id' => $user->id,
             'first_name' => $user->first_name,
             'last_name' => $user->last_name,
+            'birthdate' => '1990-01-02',
             'email' => $user->email,
             'mobile' => $user->mobile,
             'mobile_status' => $user->mobilecommons_status,
