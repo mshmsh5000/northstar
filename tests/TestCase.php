@@ -21,6 +21,13 @@ abstract class TestCase extends Illuminate\Foundation\Testing\TestCase
     protected $baseUrl = 'http://localhost';
 
     /**
+     * Default headers for this test case.
+     *
+     * @var array
+     */
+    protected $headers = [];
+
+    /**
      * The Faker generator, for creating test data.
      *
      * @var \Faker\Generator
@@ -64,6 +71,8 @@ abstract class TestCase extends Illuminate\Foundation\Testing\TestCase
     public function setUp()
     {
         parent::setUp();
+
+        $this->serverVariables = $this->transformHeadersToServerVars($this->headers);
 
         // Get a new Faker generator from Laravel.
         $this->faker = app(\Faker\Generator::class);
@@ -267,6 +276,21 @@ abstract class TestCase extends Illuminate\Foundation\Testing\TestCase
         $form = $this->fillForm($buttonText, $inputs);
 
         $this->call($form->getMethod(), $form->getUri(), $this->extractParametersFromForm($form));
+
+        return $this;
+    }
+
+    /**
+     * Set a header on the request.
+     *
+     * @param $name
+     * @param $value
+     * @return $this
+     */
+    public function withHeader($name, $value)
+    {
+        $header = $this->transformHeadersToServerVars([$name => $value]);
+        $this->serverVariables = array_merge($this->serverVariables, $header);
 
         return $this;
     }

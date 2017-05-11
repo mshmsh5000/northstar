@@ -5,6 +5,15 @@ use Northstar\Models\User;
 class WebUserTest extends TestCase
 {
     /**
+     * Default headers for this test case.
+     *
+     * @var array
+     */
+    protected $headers = [
+        'Accept' => 'text/html',
+    ];
+
+    /**
      * Test that an authenticated, unauthorized user cannot see the
      * /users/:id page and is redirected to view their profile on
      * the homepage.

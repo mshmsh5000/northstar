@@ -6,11 +6,11 @@ use Northstar\Models\User;
 class PasswordResetTest extends TestCase
 {
     /**
-     * Reset the server variables for the request.
+     * Default headers for this test case.
      *
      * @var array
      */
-    protected $serverVariables = [
+    protected $headers = [
         'Accept' => 'text/html',
     ];
 
