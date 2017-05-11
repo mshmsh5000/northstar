@@ -304,7 +304,7 @@ abstract class TestCase extends Illuminate\Foundation\Testing\TestCase
         auth('web')->logout();
 
         $this->visit('register');
-        $this->submitForm('Create New Account', [
+        $this->submitForm('register-submit', [
             'first_name' => $this->faker->firstName,
             'email' => $this->faker->unique->email,
             'birthdate' => $this->faker->date('m/d/Y', '5 years ago'),
