@@ -185,7 +185,15 @@ class AuthController extends BaseController
         ]);
 
         // Register and login the user.
-        $user = $this->registrar->register($request->except(User::$internal));
+        $editableFields = $request->except(User::$internal);
+        $user = $this->registrar->register($editableFields, null, function ($user) {
+            // Set the user's country code by Fastly geo-location header.
+            $user->country = country_code();
+
+            // Set language based on locale (either 'en', 'es-mx')
+            $user->language = app()->getLocale();
+        });
+
         $this->auth->guard('web')->login($user, true);
 
         // Send them a welcome email!

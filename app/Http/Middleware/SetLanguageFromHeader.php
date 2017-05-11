@@ -16,13 +16,13 @@ class SetLanguageFromHeader
      */
     public function handle($request, Closure $next)
     {
-        $countryCode = strtolower($request->header('X-Fastly-Country-Code'));
+        $countryCode = country_code();
 
         switch ($countryCode) {
-            case 'us':
+            case 'US':
                 App::setLocale('en');
                 break;
-            case 'mx':
+            case 'MX':
                 App::setLocale('es-mx');
                 break;
             default:
