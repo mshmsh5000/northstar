@@ -202,12 +202,13 @@ class Registrar
             $customizer($user);
         }
 
+        $user->save();
+
         // If this user doesn't have a `drupal_id`, try to make one.
         if (! $user->drupal_id) {
             $user = $this->createDrupalUser($user);
+            $user->save();
         }
-
-        $user->save();
 
         return $user;
     }
