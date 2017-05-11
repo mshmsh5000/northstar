@@ -21,6 +21,13 @@ abstract class TestCase extends Illuminate\Foundation\Testing\TestCase
     protected $baseUrl = 'http://localhost';
 
     /**
+     * Default headers for this test case.
+     *
+     * @var array
+     */
+    protected $headers = [];
+
+    /**
      * The Faker generator, for creating test data.
      *
      * @var \Faker\Generator
@@ -64,6 +71,8 @@ abstract class TestCase extends Illuminate\Foundation\Testing\TestCase
     public function setUp()
     {
         parent::setUp();
+
+        $this->serverVariables = $this->transformHeadersToServerVars($this->headers);
 
         // Get a new Faker generator from Laravel.
         $this->faker = app(\Faker\Generator::class);
@@ -272,6 +281,21 @@ abstract class TestCase extends Illuminate\Foundation\Testing\TestCase
     }
 
     /**
+     * Set a header on the request.
+     *
+     * @param $name
+     * @param $value
+     * @return $this
+     */
+    public function withHeader($name, $value)
+    {
+        $header = $this->transformHeadersToServerVars([$name => $value]);
+        $this->serverVariables = array_merge($this->serverVariables, $header);
+
+        return $this;
+    }
+
+    /**
      * Register a new user account.
      */
     public function register()
@@ -280,7 +304,7 @@ abstract class TestCase extends Illuminate\Foundation\Testing\TestCase
         auth('web')->logout();
 
         $this->visit('register');
-        $this->submitForm('Create New Account', [
+        $this->submitForm('register-submit', [
             'first_name' => $this->faker->firstName,
             'email' => $this->faker->unique->email,
             'birthdate' => $this->faker->date('m/d/Y', '5 years ago'),

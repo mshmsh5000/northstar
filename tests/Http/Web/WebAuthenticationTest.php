@@ -5,11 +5,11 @@ use Northstar\Models\User;
 class WebAuthenticationTest extends TestCase
 {
     /**
-     * Reset the server variables for the request.
+     * Default headers for this test case.
      *
      * @var array
      */
-    protected $serverVariables = [
+    protected $headers = [
         'Accept' => 'text/html',
     ];
 
@@ -155,9 +155,35 @@ class WebAuthenticationTest extends TestCase
     public function testRegister()
     {
         $this->phoenixMock->shouldReceive('sendTransactional')->once();
-        $this->register();
+        $this->withHeader('X-Fastly-Country-Code', 'US')
+            ->register();
 
         $this->seeIsAuthenticated('web');
+
+        /** @var User $user */
+        $user = auth()->user();
+
+        $this->assertEquals('US', $user->country);
+        $this->assertEquals('en', $user->language);
+    }
+
+    /**
+     * Test that users can register from other countries
+     * and get the correct `country` and `language` fields.
+     */
+    public function testRegisterFromMexico()
+    {
+        $this->phoenixMock->shouldReceive('sendTransactional')->once();
+        $this->withHeader('X-Fastly-Country-Code', 'MX')
+            ->register();
+
+        $this->seeIsAuthenticated('web');
+
+        /** @var User $user */
+        $user = auth()->user();
+
+        $this->assertEquals('MX', $user->country);
+        $this->assertEquals('es-mx', $user->language);
     }
 
     /**

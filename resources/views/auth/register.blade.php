@@ -80,7 +80,7 @@
             </div>
 
             <div class="form-actions -padded">
-                <input type="submit" class="button" value="{{ trans('auth.log_in.submit') }}">
+                <input type="submit" id="register-submit" class="button" value="{{ trans('auth.log_in.submit') }}">
             </div>
         </form>
     </div>

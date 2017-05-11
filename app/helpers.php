@@ -1,6 +1,7 @@
 <?php
 
 use Carbon\Carbon;
+use Illuminate\Support\Str;
 use Northstar\Auth\Normalizer;
 use Northstar\Models\Client;
 
@@ -104,4 +105,16 @@ function get_countries()
     $iso = (new League\ISO3166\ISO3166)->getAll();
 
     return collect($iso)->pluck('name', 'alpha2');
+}
+
+/**
+ * Get the country code from the `X-Fastly-Country-Code` header.
+ *
+ * @return string|null
+ */
+function country_code()
+{
+    $code = request()->header('X-Fastly-Country-Code');
+
+    return $code ? Str::upper($code) : null;
 }
