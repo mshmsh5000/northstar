@@ -197,7 +197,6 @@ class Registrar
         }
 
         $user->fill($input);
-        $user->save();
 
         if (! is_null($customizer)) {
             $customizer($user);
@@ -206,8 +205,9 @@ class Registrar
         // If this user doesn't have a `drupal_id`, try to make one.
         if (! $user->drupal_id) {
             $user = $this->createDrupalUser($user);
-            $user->save();
         }
+
+        $user->save();
 
         return $user;
     }
