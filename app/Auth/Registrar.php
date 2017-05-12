@@ -73,10 +73,10 @@ class Registrar
             'password' => 'min:6|max:512',
         ];
 
-        // If a user is provided, merge it into the request so we can validate
-        // the state of the "updated" document, rather than just the changes.
+        // If existing user is provided, merge indexes into the request so
+        // that we can validate that they exist on the "updated" document.
         if ($existingUser) {
-            $fields = array_merge($existingUser->toArray(), $fields);
+            $fields = array_merge($existingUser->indexes(), $fields);
         }
 
         $validator = $this->validation->make($fields, array_merge($rules, $additionalRules));

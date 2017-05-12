@@ -323,6 +323,16 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
     }
 
     /**
+     * Return indexes for the model.
+     *
+     * @return array
+     */
+    public function indexes()
+    {
+        return array_only($this->toArray(), static::$uniqueIndexes);
+    }
+
+    /**
      * Transform the user model for Blink.
      *
      * @return array
