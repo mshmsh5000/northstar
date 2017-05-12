@@ -55,15 +55,15 @@ class Registrar
      * Validate the given user and request.
      *
      * @param Request $request
-     * @param User $user
+     * @param User $existingUser
      * @param array $additionalRules
      * @throws NorthstarValidationException
      */
-    public function validate(Request $request, User $user = null, array $additionalRules = [])
+    public function validate(Request $request, User $existingUser = null, array $additionalRules = [])
     {
         $fields = normalize('credentials', $request->all());
 
-        $existingId = isset($user->id) ? $user->id : 'null';
+        $existingId = isset($existingUser->id) ? $existingUser->id : 'null';
         $rules = [
             'email' => 'email|unique:users,email,'.$existingId.',_id|required_without:mobile',
             'mobile' => 'mobile|unique:users,mobile,'.$existingId.',_id|required_without:email',
@@ -75,8 +75,8 @@ class Registrar
 
         // If a user is provided, merge it into the request so we can validate
         // the state of the "updated" document, rather than just the changes.
-        if ($user) {
-            $fields = array_merge($user->toArray(), $fields);
+        if ($existingUser) {
+            $fields = array_merge($existingUser->toArray(), $fields);
         }
 
         $validator = $this->validation->make($fields, array_merge($rules, $additionalRules));
