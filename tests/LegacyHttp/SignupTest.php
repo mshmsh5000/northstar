@@ -13,8 +13,8 @@ class SignupTest extends TestCase
      */
     public function testSignupIndex()
     {
-        $user = User::create(['drupal_id' => '100001', 'first_name' => 'Chloe']);
-        $user2 = User::create(['drupal_id' => '100002', 'first_name' => 'Dave']);
+        $user = factory(User::class)->create(['drupal_id' => '100001', 'first_name' => 'Chloe']);
+        $user2 = factory(User::class)->create(['drupal_id' => '100002', 'first_name' => 'Dave']);
 
         // For testing, we'll mock a successful Phoenix API response.
         $this->phoenixMock->shouldReceive('getSignupIndex')->with(['users' => ['100001', '100002']])->once()->andReturn([
@@ -58,8 +58,8 @@ class SignupTest extends TestCase
      */
     public function testSignupIndexWherePhoenixDoesntGiveDrupalId()
     {
-        $user = User::create(['drupal_id' => '100001', 'first_name' => 'Chloe']);
-        $user2 = User::create(['drupal_id' => '100002', 'first_name' => 'Dave']);
+        $user = factory(User::class)->create(['drupal_id' => '100001', 'first_name' => 'Chloe']);
+        $user2 = factory(User::class)->create(['drupal_id' => '100002', 'first_name' => 'Dave']);
 
         // For testing, we'll mock a successful Phoenix API response.
         $this->phoenixMock->shouldReceive('getSignupIndex')->with(['users' => ['100001', '100002']])->once()->andReturn([
@@ -87,7 +87,7 @@ class SignupTest extends TestCase
      */
     public function testSignupIndexUserInfo()
     {
-        $user = User::create(['drupal_id' => '100003', 'first_name' => 'Name']);
+        $user = factory(User::class)->create(['drupal_id' => '100003', 'first_name' => 'Name']);
 
         // For testing, we'll mock a successful Phoenix API response.
         $this->phoenixMock->shouldReceive('getSignupIndex')->with(['users' => ['100003']])->once()->andReturn([
@@ -100,7 +100,7 @@ class SignupTest extends TestCase
             ],
         ]);
 
-        $response = $this->asUserUsingLegacyAuth($user)->withLegacyApiKeyScopes(['user'])->get('v1/signups?users='.$user->_id);
+        $this->asUserUsingLegacyAuth($user)->withLegacyApiKeyScopes(['user'])->get('v1/signups?users='.$user->_id);
         $this->assertResponseStatus(200);
         $this->seeJson();
 
@@ -140,7 +140,7 @@ class SignupTest extends TestCase
      */
     public function testSubmitSignup()
     {
-        $user = User::create(['drupal_id' => '123451']);
+        $user = factory(User::class)->create(['drupal_id' => '123451']);
 
         // For testing, we'll mock a successful Phoenix API response.
         $this->phoenixMock->shouldReceive('createSignup')->with('123451', '123', 'test')->once()->andReturn(['1307']);

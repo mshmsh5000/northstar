@@ -92,11 +92,14 @@ class AuthServiceProvider extends ServiceProvider
 
             // Define which OAuth grants we'll accept.
             $grants = [
-                PasswordGrant::class,
                 AuthCodeGrant::class,
-                ClientCredentialsGrant::class,
                 RefreshTokenGrant::class,
+                ClientCredentialsGrant::class,
             ];
+
+            if (config('features.password-grant')) {
+                $grants[] = PasswordGrant::class;
+            }
 
             // Enable each grant w/ an access token TTL of 1 hour.
             foreach ($grants as $grant) {

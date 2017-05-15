@@ -375,7 +375,7 @@ class AuthTest extends TestCase
      */
     public function testMagicLogin()
     {
-        $user = User::create(['email' => $this->faker->email, 'drupal_id' => '12345']);
+        $user = factory(User::class)->create(['email' => $this->faker->email, 'drupal_id' => '12345']);
 
         $this->phoenixMock
             ->shouldReceive('createMagicLogin')

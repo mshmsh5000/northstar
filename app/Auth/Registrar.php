@@ -3,8 +3,7 @@
 namespace Northstar\Auth;
 
 use Closure;
-use GuzzleHttp\Exception\ClientException;
-use GuzzleHttp\Exception\ServerException;
+use Exception;
 use Illuminate\Contracts\Hashing\Hasher;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Validation\Factory as Validation;
@@ -55,15 +54,15 @@ class Registrar
      * Validate the given user and request.
      *
      * @param Request $request
-     * @param User $user
+     * @param User $existingUser
      * @param array $additionalRules
      * @throws NorthstarValidationException
      */
-    public function validate(Request $request, User $user = null, array $additionalRules = [])
+    public function validate(Request $request, User $existingUser = null, array $additionalRules = [])
     {
         $fields = normalize('credentials', $request->all());
 
-        $existingId = isset($user->id) ? $user->id : 'null';
+        $existingId = isset($existingUser->id) ? $existingUser->id : 'null';
         $rules = [
             'email' => 'email|unique:users,email,'.$existingId.',_id|required_without:mobile',
             'mobile' => 'mobile|unique:users,mobile,'.$existingId.',_id|required_without:email',
@@ -73,10 +72,10 @@ class Registrar
             'password' => 'min:6|max:512',
         ];
 
-        // If a user is provided, merge it into the request so we can validate
-        // the state of the "updated" document, rather than just the changes.
-        if ($user) {
-            $fields = array_merge($user->toArray(), $fields);
+        // If existing user is provided, merge indexes into the request so
+        // that we can validate that they exist on the "updated" document.
+        if ($existingUser) {
+            $fields = array_merge($existingUser->indexes(), $fields);
         }
 
         $validator = $this->validation->make($fields, array_merge($rules, $additionalRules));
@@ -234,19 +233,7 @@ class Registrar
         try {
             $drupal_id = $this->phoenix->createDrupalUser($user);
             $user->drupal_id = $drupal_id;
-        } catch (ClientException $e) {
-            // If user already exists (403 Forbidden), try to find the user to get the UID.
-            if ($e->getCode() === 403) {
-                $drupal_id = $this->phoenix->getDrupalIdForNorthstarUser($user);
-                $user->drupal_id = $drupal_id;
-            }
-
-            // Since getDrupalIdForNorthstarUser may still return null, track that here.
-            if (empty($user->drupal_id)) {
-                logger('Encountered error when creating Drupal user', ['user' => $user, 'error' => $e]);
-                app('stathat')->ezCount('error creating drupal uid for user');
-            }
-        } catch (ServerException $e) {
+        } catch (Exception $e) {
             logger('Encountered error when creating Drupal user', ['user' => $user, 'error' => $e]);
             app('stathat')->ezCount('error creating drupal uid for user');
         }

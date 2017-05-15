@@ -116,9 +116,7 @@ class LegacyUserTest extends TestCase
      */
     public function testRetrieveUser()
     {
-        $user = User::create([
-            'drupal_id' => '100010',
-        ]);
+        $user = factory(User::class)->create(['drupal_id' => '100010']);
 
         // GET /users/drupal_id/<drupal_id>
         $this->get('v1/users/drupal_id/100010');
@@ -265,9 +263,9 @@ class LegacyUserTest extends TestCase
      */
     public function testFilterUsersById()
     {
-        $user1 = User::create(['email' => $this->faker->unique()->email, 'drupal_id' => '123411']);
-        $user2 = User::create(['email' => $this->faker->unique()->email, 'drupal_id' => '123412']);
-        $user3 = User::create(['mobile' => $this->faker->unique()->phoneNumber, 'drupal_id' => '123413']);
+        $user1 = factory(User::class)->create(['email' => $this->faker->unique()->email, 'drupal_id' => '123411']);
+        $user2 = factory(User::class)->create(['email' => $this->faker->unique()->email, 'drupal_id' => '123412']);
+        $user3 = factory(User::class)->create(['mobile' => $this->faker->unique()->phoneNumber, 'drupal_id' => '123413']);
 
         // Retrieve multiple users by _id
         $this->withLegacyApiKeyScopes(['admin'])->get('v1/users?filter[id]='.$user1->id.','.$user2->id.',FAKE_ID');
@@ -485,7 +483,7 @@ class LegacyUserTest extends TestCase
      */
     public function testCanUpsertByDrupalId()
     {
-        $user = User::create([
+        $user = factory(User::class)->create([
             'email' => 'existing-person@example.com',
             'drupal_id' => '123123',
         ]);
@@ -510,12 +508,12 @@ class LegacyUserTest extends TestCase
      */
     public function testCantCreateDuplicateDrupalUser()
     {
-        User::create([
+        factory(User::class)->create([
             'email' => 'existing-person@example.com',
             'drupal_id' => '123123',
         ]);
 
-        User::create([
+        factory(User::class)->create([
             'email' => 'other-existing-user@example.com',
         ]);
 
@@ -688,14 +686,12 @@ class LegacyUserTest extends TestCase
         // Update an existing user
         $this->withLegacyApiKeyScopes(['admin'])->json('PUT', 'v1/users/_id/'.$user->id, [
             'email' => 'NewEmail@dosomething.org',
-            'parse_installation_ids' => 'parse-abc123',
         ]);
 
         $this->assertResponseStatus(200);
         $this->seeJsonSubset([
             'data' => [
                 'email' => 'newemail@dosomething.org',
-                'parse_installation_ids' => ['parse-abc123'],
                 'mobile' => $user->mobile, // unchanged user values should remain unchanged
             ],
         ]);
@@ -705,7 +701,6 @@ class LegacyUserTest extends TestCase
             '_id' => $user->id,
             'mobile' => $user->mobile,
             'email' => 'newemail@dosomething.org',
-            'parse_installation_ids' => ['parse-abc123'],
         ]);
     }
 
@@ -760,9 +755,8 @@ class LegacyUserTest extends TestCase
      */
     public function testUpdateWithDrupalIDConflict()
     {
-        User::create(['drupal_id' => '123456']);
-
-        $user = User::create(['email' => 'admiral.ackbar@example.com']);
+        factory(User::class)->create(['drupal_id' => '123456']);
+        $user = factory(User::class)->create(['email' => 'admiral.ackbar@example.com']);
 
         $this->withLegacyApiKeyScopes(['admin'])->json('PUT', 'v1/users/_id/'.$user->id, [
             'drupal_id' => '123456', // the existing user account

@@ -12,7 +12,7 @@ class ProfileTest extends TestCase
      */
     public function testGetProfile()
     {
-        $user = User::create([
+        $user = factory(User::class)->create([
             'email' => $this->faker->email,
             'first_name' => $this->faker->firstName,
             'last_name' => $this->faker->lastName,
@@ -39,7 +39,7 @@ class ProfileTest extends TestCase
      */
     public function testUpdateProfile()
     {
-        $user = User::create([
+        $user = factory(User::class)->create([
             'email' => $this->faker->email,
             'first_name' => $this->faker->firstName,
             'last_name' => $this->faker->lastName,

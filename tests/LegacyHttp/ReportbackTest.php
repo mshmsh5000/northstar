@@ -12,7 +12,7 @@ class ReportbackTest extends TestCase
      */
     public function testSubmitCampaignReportback()
     {
-        $user = User::create(['drupal_id' => '512312']);
+        $user = factory(User::class)->create(['drupal_id' => '512312']);
 
         // For testing, we'll mock successful Phoenix API responses.
         $this->phoenixMock->shouldReceive('createReportback')->once()->andReturn(['127']);

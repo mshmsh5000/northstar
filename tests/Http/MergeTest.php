@@ -29,7 +29,7 @@ class MergeTest extends TestCase
      */
     public function testMergingAccounts()
     {
-        $user = User::create([
+        $user = User::forceCreate([
             'email' => 'target-account@example.com',
             'first_name' => 'Phil',
             'last_name' => 'Dunfy',
@@ -42,7 +42,7 @@ class MergeTest extends TestCase
             'source' => 'phoenix',
         ]);
 
-        $duplicate = User::create([
+        $duplicate = User::forceCreate([
             'mobile' => '5551234567',
             'mobilecommons_id' => '199483623',
             'mobilecommons_status' => 'active',

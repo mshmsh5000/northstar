@@ -25,6 +25,10 @@ class AppServiceProvider extends ServiceProvider
             if (config('features.blink')) {
                 app(Blink::class)->userCreate($user->toBlinkPayload());
             }
+
+            // Send metrics to StatHat.
+            app('stathat')->ezCount('user created');
+            app('stathat')->ezCount('user created - '.$user->source);
         });
     }
 
