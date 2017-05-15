@@ -755,14 +755,17 @@ class LegacyUserTest extends TestCase
      */
     public function testUpdateWithDrupalIDConflict()
     {
-        factory(User::class)->create(['drupal_id' => '123456']);
-        $user = factory(User::class)->create(['email' => 'admiral.ackbar@example.com']);
+        $user1 = factory(User::class)->create(['drupal_id' => '123456']);
+        $user2 = factory(User::class)->create(['drupal_id' => '555123']);
 
-        $this->withLegacyApiKeyScopes(['admin'])->json('PUT', 'v1/users/_id/'.$user->id, [
+        $this->withLegacyApiKeyScopes(['admin'])->json('PUT', 'v1/users/_id/'.$user2->id, [
             'drupal_id' => '123456', // the existing user account
         ]);
 
-        $this->assertResponseStatus(422);
+        // The `drupal_id` field is ignored as un-fillable.
+        $this->assertResponseStatus(200);
+        $this->assertEquals('123456', $user1->fresh()->drupal_id);
+        $this->assertEquals('555123', $user2->fresh()->drupal_id);
     }
 
     /**
