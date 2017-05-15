@@ -78,10 +78,10 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
         'email', 'mobile', 'password', 'role',
 
         'first_name', 'last_name', 'birthdate', 'photo', 'interests',
-        'race', 'religion',
 
+        // @TODO: Remove these? We get these from Niche but don't use anywhere.
         'school_id', 'college_name', 'degree_type', 'major_name', 'hs_gradyear', 'hs_name',
-        'sat_math', 'sat_verbal', 'sat_writing',
+        'sat_math', 'sat_verbal', 'sat_writing', 'race', 'religion',
 
         'addr_street1', 'addr_street2', 'addr_city', 'addr_state', 'addr_zip',
         'country', 'language',
