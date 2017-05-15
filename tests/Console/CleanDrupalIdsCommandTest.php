@@ -14,14 +14,14 @@ class CleanDrupalIdsCommandTest extends TestCase
     public function testThatItDeletesTheDupes()
     {
         // Make two users that we'll create a bunch of duplicates for.
-        $tony = User::create(['first_name' => 'Tony', 'last_name' => 'Stark', 'drupal_id' => '12345']);
+        $tony = User::forceCreate(['first_name' => 'Tony', 'last_name' => 'Stark', 'drupal_id' => '12345']);
         $tony->setCreatedAt(new Carbon('March 10 1963'))->save();
 
-        $steve = User::create(['first_name' => 'Steve', 'last_name' => 'Rogers', 'drupal_id' => '12346']);
+        $steve = User::forceCreate(['first_name' => 'Steve', 'last_name' => 'Rogers', 'drupal_id' => '12346']);
         $steve->setCreatedAt(new Carbon('July 4 1920'))->save();
 
         // Make a user with a Drupal ID, but no duplicates.
-        $kamala = User::create(['first_name' => 'Kamala', 'last_name' => 'Khan', 'drupal_id' => '55555']);
+        $kamala = User::forceCreate(['first_name' => 'Kamala', 'last_name' => 'Khan', 'drupal_id' => '55555']);
 
         // Make some users with no Drupal ID.
         factory(User::class, 7)->create();
@@ -29,7 +29,7 @@ class CleanDrupalIdsCommandTest extends TestCase
         // Make 5 duplicates for Tony Stark & Steve Rogers' Drupal IDs.
         foreach ([$tony->drupal_id, $steve->drupal_id] as $drupalId) {
             for ($i = 0; $i < 5; $i++) {
-                User::create([
+                User::forceCreate([
                     'first_name' => $this->faker->firstName,
                     'email' => $this->faker->email,
                     'drupal_id' => $drupalId,
@@ -39,7 +39,7 @@ class CleanDrupalIdsCommandTest extends TestCase
 
         // Make 5 users with explicitly null Drupal ID. Trouble-makers!
         for ($i = 0; $i < 5; $i++) {
-            User::create([
+            User::forceCreate([
                 'first_name' => $this->faker->firstName,
                 'email' => $this->faker->email,
                 'drupal_id' => null,
