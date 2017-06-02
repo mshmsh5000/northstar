@@ -9,8 +9,16 @@ class UnsubscribeController extends BaseController
     /**
      * Displays the subscriptions page
      */
-    public function unsubscribe()
+    public function show()
     {
         return view('auth.subscriptions');
+    }
+
+    /**
+     * Unsubscribes user from competition emails.
+     */
+    public function unsubscribeFromCompetition()
+    {
+        dd('hi');
     }
 }
