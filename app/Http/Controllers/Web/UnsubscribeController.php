@@ -2,6 +2,7 @@
 
 namespace Northstar\Http\Controllers\Web;
 
+use Illuminate\Http\Request;
 use Illuminate\Routing\Controller as BaseController;
 
 class UnsubscribeController extends BaseController
@@ -9,16 +10,16 @@ class UnsubscribeController extends BaseController
     /**
      * Displays the subscriptions page
      */
-    public function show()
+    public function getSubscriptions()
     {
         return view('auth.subscriptions');
     }
 
     /**
-     * Unsubscribes user from competition emails.
+     *
      */
-    public function unsubscribeFromCompetition()
+    public function postSubscriptions(Request $request)
     {
-        dd('hi');
+        dd($request->input('competition'));
     }
 }
