@@ -2,6 +2,7 @@
 
 namespace Northstar\Auth\Repositories;
 
+use Carbon\Carbon;
 use League\OAuth2\Server\Entities\AccessTokenEntityInterface;
 use League\OAuth2\Server\Entities\ClientEntityInterface;
 use League\OAuth2\Server\Repositories\AccessTokenRepositoryInterface;
@@ -24,6 +25,12 @@ class AccessTokenRepository implements AccessTokenRepositoryInterface
 
         if ($userIdentifier) {
             $user = User::find($userIdentifier);
+
+            // Update the user's "last accessed at" timestamp.
+            $user->last_accessed_at = Carbon::now();
+            $user->save();
+
+            // Embed the user's role in the token.
             $accessToken->setRole($user->role);
         }
 

@@ -61,6 +61,9 @@ class OAuthTest extends TestCase
         $code = urldecode(str_replace('http://example.com/?code=', '', $redirect));
         $this->assertNotEmpty($code, 'A code was returned to the redirect URI.');
 
+        // Freeze time so we can assert when we made this token.
+        $now = $this->mockTime('+1 minute');
+
         // Finally, use that code to request a token:
         $this->post('v2/auth/token', [
             'grant_type' => 'authorization_code',
@@ -69,7 +72,9 @@ class OAuthTest extends TestCase
             'code' => $code,
         ]);
 
+        // A valid JWT should be returned, and the user's "last accessed" timestamp should update.
         $this->assertValidJwtToken($user, $client, ['user', 'role:staff']);
+        $this->assertEquals((string) $now, (string) $user->fresh()->last_accessed_at);
     }
 
     /**
@@ -328,6 +333,9 @@ class OAuthTest extends TestCase
         // Get the provided refresh token.
         $refreshToken = $this->decodeResponseJson()['refresh_token'];
 
+        // Freeze time so we can assert when we made this token.
+        $now = $this->mockTime('+1 minute');
+
         // Get a new access token using the refresh token.
         $this->post('v2/auth/token', [
             'grant_type' => 'refresh_token',
@@ -343,6 +351,9 @@ class OAuthTest extends TestCase
             'access_token',
             'refresh_token',
         ]);
+
+        // The user's `last_accessed_at` timestamp should be updated.
+        $this->assertEquals((string) $now, (string) $user->fresh()->last_accessed_at);
 
         // And now, verify that that refresh token has been consumed.
         $this->post('v2/auth/token', [

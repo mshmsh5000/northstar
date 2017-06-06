@@ -143,6 +143,7 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
     protected $casts = [
         'cgg_id' => 'integer',
         'birthdate' => 'date',
+        'last_accessed_at' => 'datetime',
         'last_authenticated_at' => 'datetime',
     ];
 
