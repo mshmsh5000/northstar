@@ -20,6 +20,7 @@ class UnsubscribeController extends BaseController
      */
     public function postSubscriptions(Request $request)
     {
+        // make sure to check that inputs exist.
         dd($request->input('competition'));
     }
 }
