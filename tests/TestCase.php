@@ -1,5 +1,6 @@
 <?php
 
+use Carbon\Carbon;
 use DoSomething\Gateway\Blink;
 use League\OAuth2\Server\CryptKey;
 use Northstar\Auth\Entities\AccessTokenEntity;
@@ -261,6 +262,19 @@ abstract class TestCase extends Illuminate\Foundation\Testing\TestCase
         $this->app->instance($class, $mock);
 
         return $mock;
+    }
+
+    /**
+     * "Freeze" time so we can make assertions based on it.
+     *
+     * @param string $time
+     * @return Carbon
+     */
+    public function mockTime($time = 'now')
+    {
+        Carbon::setTestNow((string) new Carbon($time));
+
+        return Carbon::getTestNow();
     }
 
     /**
