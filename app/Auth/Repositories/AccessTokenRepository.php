@@ -38,7 +38,11 @@ class AccessTokenRepository implements AccessTokenRepositoryInterface
     public function persistNewAccessToken(AccessTokenEntityInterface $accessTokenEntity)
     {
         // Since access tokens are not checked against the database, but instead
-        // verified by their hash, we won't bother persisting them.
+        // verified by their hash, we'll just make a record in the log.
+        logger('issued access token', [
+            'id' => $accessTokenEntity->getUserIdentifier(),
+            'jti' => $accessTokenEntity->getIdentifier(),
+        ]);
     }
 
     /**

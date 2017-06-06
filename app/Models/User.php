@@ -61,6 +61,7 @@ use Northstar\Auth\Role;
  * @property string $facebook_id
  * @property string $slack_id
  *
+ * @property Carbon $last_accessed_at - The timestamp of the user's last token refresh
  * @property Carbon $last_authenticated_at - The timestamp of the user's last successful login
  * @property Carbon $created_at
  * @property Carbon $updated_at
