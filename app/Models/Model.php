@@ -12,11 +12,11 @@ use MongoDB\BSON\UTCDateTime;
 /**
  * Base model class
  *
- * @method static \Jenssegers\Mongodb\Query\Builder where(string $field, string $comparison = '=', string $value)
- * @method static \Jenssegers\Mongodb\Query\Builder whereNull(string $field)
- * @method static \Jenssegers\Mongodb\Query\Builder find(string $id, array $columns=['*'])
- * @method static \Jenssegers\Mongodb\Query\Builder findMany(array $ids)
- * @method static \Jenssegers\Mongodb\Query\Builder findOrFail(string $id, array $columns=['*'])
+ * @method static \Jenssegers\Mongodb\Query\Builder|$this where(string $field, string $comparison = '=', string $value)
+ * @method static \Jenssegers\Mongodb\Query\Builder|$this whereNull(string $field)
+ * @method static \Jenssegers\Mongodb\Query\Builder|$this find(string $id, array $columns=['*'])
+ * @method static \Jenssegers\Mongodb\Query\Builder|$this findMany(array $ids)
+ * @method static \Jenssegers\Mongodb\Query\Builder|$this findOrFail(string $id, array $columns=['*'])
  */
 class Model extends BaseModel
 {
