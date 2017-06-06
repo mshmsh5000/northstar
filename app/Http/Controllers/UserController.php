@@ -110,7 +110,7 @@ class UserController extends Controller
             // Optionally, allow setting a custom "created_at" (useful for back-filling from other services).
             // We'll only update this value on existing records if it's earlier than the existing timestamp.
             $created_at = $request->input('created_at');
-            $existingUserHasEarlierCreatedTimestamp = $existingUser && $existingUser->created_at->lt(Carbon::createFromTimestamp($created_at));
+            $existingUserHasEarlierCreatedTimestamp = $existingUser && $existingUser->created_at->lte(Carbon::createFromTimestamp($created_at));
             if ($created_at && ! $existingUserHasEarlierCreatedTimestamp) {
                 $user->created_at = $created_at;
                 $user->source = $request->input('source') ?: client_id();
