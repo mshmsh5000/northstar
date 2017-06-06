@@ -386,6 +386,41 @@ class UserTest extends TestCase
      *
      * @return void
      */
+    public function testUpsertSameCreatedAtField()
+    {
+        $user = factory(User::class)->create([
+            'email' => $this->faker->email,
+            'source' => 'phpunit',
+            'source_detail' => 'upsert-test',
+            'created_at' => '2017-06-06T19:39:17+00:00',
+        ]);
+
+        // Try to upsert the user's source, but given the same created_at.
+        $this->asAdminUser()->json('POST', 'v1/users', [
+            'email' => $user->email,
+            'created_at' => $user->created_at->timestamp, // <-- same time!
+            'source' => 'sms',
+            'source_detail' => 'opt-in-path/38383',
+        ]);
+
+        // The "upserted" source should be ignored.
+        $this->assertResponseStatus(200);
+        $this->seeJsonSubset([
+            'data' => [
+                'email' => $user->email,
+                'source' => 'phpunit',
+                'source_detail' => 'upsert-test',
+                'created_at' => '2017-06-06T19:39:17+00:00',
+            ],
+        ]);
+    }
+
+    /**
+     * Test that we can only upsert created_at to be earlier.
+     * POST /v1/users/
+     *
+     * @return void
+     */
     public function testUpsertSourceWithoutDetail()
     {
         $user = factory(User::class)->create([
