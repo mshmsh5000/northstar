@@ -9,6 +9,23 @@ use Illuminate\Routing\Controller as BaseController;
 class UnsubscribeController extends BaseController
 {
     /**
+     * Gladiator instance.
+     *
+     * @var \DoSomething\Gateway\Gladiator
+     */
+    protected $gladiator;
+
+    /**
+     * Create the controller instance.
+     *
+     * @param \DoSomething\Gateway\Gladiator $gladiator
+     */
+    public function __construct(Gladiator $gladiator)
+    {
+        $this->gladiator = $gladiator;
+    }
+
+    /**
      * Displays the subscriptions page
      */
     public function getSubscriptions()
@@ -21,7 +38,7 @@ class UnsubscribeController extends BaseController
      */
     public function postSubscriptions(Request $request)
     {
-        dd(app(Gladiator::class));
+        dd($this->gladiator);
         // make sure to check that inputs exist.
         dd($request->input('competition'));
     }
