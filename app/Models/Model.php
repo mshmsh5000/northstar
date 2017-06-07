@@ -49,12 +49,25 @@ class Model extends BaseModel
         $clearable = [];
 
         foreach ($this->original as $key => $value) {
+            // If a field was unset from the model's attributes or assigned null, mark it as clearable.
             if (! array_key_exists($key, $this->attributes) || is_null($this->attributes[$key])) {
                 $clearable[$key] = null;
             }
         }
 
         return $clearable;
+    }
+
+    /**
+     * Remove any null values from the model's attributes.
+     *
+     * @return void
+     */
+    public function removeNullAttributes()
+    {
+        $this->attributes = array_filter($this->attributes, function ($value) {
+            return ! is_null($value);
+        });
     }
 
     /**
@@ -67,9 +80,7 @@ class Model extends BaseModel
     protected function performInsert(Builder $query, array $options = [])
     {
         // Remove `null` values from the attributes before inserting.
-        $this->attributes = array_filter($this->attributes, function ($value) {
-            return ! is_null($value);
-        });
+        $this->removeNullAttributes();
 
         return parent::performInsert($query, $options);
     }
@@ -84,8 +95,12 @@ class Model extends BaseModel
      */
     protected function performUpdate(Builder $query, array $options = [])
     {
-        $success = parent::performUpdate($query, $options);
+        // Mark existing attributes that can be cleared, and remove any null values that
+        // may have been added in this "update" operation.
         $clearable = $this->getClearable();
+        $this->removeNullAttributes();
+
+        $success = parent::performUpdate($query, $options);
 
         // If any attributes can be cleared, do so.
         if ($success && count($clearable) > 0) {
