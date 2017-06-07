@@ -6,7 +6,6 @@ use Jenssegers\Mongodb\Auth\DatabaseTokenRepository;
 use Northstar\Models\User;
 use Illuminate\Http\Request;
 use Northstar\Services\Phoenix;
-use Symfony\Component\HttpKernel\Exception\HttpException;
 
 class ResetController extends Controller
 {
@@ -45,17 +44,6 @@ class ResetController extends Controller
 
         /** @var \Northstar\Models\User $user */
         $user = User::findOrFail($request['id']);
-
-        // If Northstar's password reset flow isn't enabled, send this request to Drupal.
-        if (! config('features.password-reset')) {
-            if (! $user->drupal_id) {
-                throw new HttpException(401, 'The user must have a Drupal ID to reset their Phoenix password.');
-            }
-
-            return [
-                'url' => $this->phoenix->createPasswordResetLink($user->drupal_id),
-            ];
-        }
 
         $tokenRepository = $this->createTokenRepository();
         $token = $tokenRepository->create($user);
