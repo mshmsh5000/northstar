@@ -8,7 +8,8 @@ GET /v1/profile
 ```
 
 <details>
-<summary>**Example Request**</summary>
+<summary><strong>Example Request</strong></summary>
+
 ```sh
 curl -X GET \
   -H "Authorization: Bearer ${ACCESS_TOKEN}" \
@@ -18,7 +19,8 @@ curl -X GET \
 </details>
 
 <details>
-<summary>**Example Response**</summary>
+<summary><strong>Example Response</strong></summary>
+
 ```js
 // 200 OK
 
@@ -90,7 +92,7 @@ POST /v1/profile
 ```
 
 <details>
-<summary>**Example Request**</summary>
+<summary><strong>Example Request</strong></summary>
 
 ```sh
 curl -X POST \
@@ -101,7 +103,7 @@ curl -X POST \
 </details>
 
 <details>
-<summary>**Example Response**</summary>
+<summary><strong>Example Response</strong></summary>
 
 ```js
 // 200 OK

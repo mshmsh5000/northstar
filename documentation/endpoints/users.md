@@ -16,7 +16,7 @@ GET /v1/users
 - `search`: Search the collection for users with fields whose value match the query. For example, `/v1/users?search[id]=test@example.com&search[email]=test@example.org` would return all users with either an ID or email address matching `test@example.org`. You can search by one or more indexed fields.
 
 <details>
-<summary>**Example Request**</summary>
+<summary><strong>Example Request</strong></summary>
 
 ```sh
 curl -X GET \
@@ -27,7 +27,7 @@ curl -X GET \
 </details>
 
 <details>
-<summary>**Example Response**</summary>
+<summary><strong>Example Response</strong></summary>
 
 ```js
 // 200 OK
@@ -172,7 +172,7 @@ Either a mobile number or email is required.
 - `upsert`: Should this request upsert an existing account, if matched? Defaults to `true`.
 
 <details>
-<summary>**Example Request**</summary>
+<summary><strong>Example Request</strong></summary>
 
 ```sh
 curl -X POST \
@@ -186,7 +186,7 @@ curl -X POST \
 </details>
 
 <details>
-<summary>**Example Response**</summary>
+<summary><strong>Example Response</strong></summary>
 
 ```js
 // 200 Okay (or) 201 Created
@@ -226,7 +226,7 @@ GET /v1/users/facebook_id/<facebook_id>
 ```
 
 <details>
-<summary>**Example Request**</summary>
+<summary><strong>Example Request</strong></summary>
 ```sh
 curl -X GET \
   -H "Authorization: Bearer ${ACCESS_TOKEN}" \
@@ -236,7 +236,7 @@ curl -X GET \
 </details>
 
 <details>
-<summary>**Example Response**</summary>
+<summary><strong>Example Response</strong></summary>
 
 ```js
 // 200 OK
@@ -318,7 +318,7 @@ PUT /v1/users/drupal_id/<drupal_id>
 ```
 
 <details>
-<summary>**Example Request**</summary>
+<summary><strong>Example Request</strong></summary>
 
 ```sh
 curl -X PUT \
@@ -330,7 +330,7 @@ curl -X PUT \
 </details>
 
 <details>
-<summary>**Example Response**</summary>
+<summary><strong>Example Response</strong></summary>
 
 ```js
 // 200 Okay
@@ -354,7 +354,7 @@ DELETE /v1/users/:user_id
 ```
 
 <details>
-<summary>**Example Request**</summary>
+<summary><strong>Example Request</strong></summary>
 
 ```sh
 curl -X DELETE \
@@ -365,7 +365,7 @@ curl -X DELETE \
 </details>
 
 <details>
-<summary>**Example Response**</summary>
+<summary><strong>Example Response</strong></summary>
 
 ```js
 // 200 OK
@@ -400,7 +400,7 @@ POST /v1/users/:user_id/avatar
 ```
 
 <details>
-<summary>**Example Request**</summary>
+<summary><strong>Example Request</strong></summary>
 
 ```sh
 curl -X POST \
@@ -414,7 +414,7 @@ curl -X POST \
 </details>
 
 <details>
-<summary>**Example Response**</summary>
+<summary><strong>Example Response</strong></summary>
 
 ```js
 // 200 OK

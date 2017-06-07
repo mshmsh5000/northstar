@@ -8,7 +8,7 @@ POST /v2/resets
 ```
 
 <details>
-<summary>**Example Request**</summary>
+<summary><strong>Example Request</strong></summary>
 
 ```sh
 curl -X POST \
@@ -20,7 +20,7 @@ curl -X POST \
 </details>
 
 <details>
-<summary>**Example Response**</summary>
+<summary><strong>Example Response</strong></summary>
 
 ```js
 // 200 OK
