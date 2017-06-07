@@ -4,8 +4,8 @@ build:
   # The steps that will be executed on build
   steps:
     - script:
-        name: install npm 3.x
-        code: npm install -g npm@3.x-latest
+        name: install npm 4.x
+        code: npm install -g npm@4
     - script:
         name: start mongodb
         code: |-
