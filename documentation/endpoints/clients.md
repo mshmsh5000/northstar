@@ -8,7 +8,8 @@ GET /v2/clients
 ```
 
 <details>
-<summary>**Example Request**</summary>
+<summary><strong>Example Request</strong></summary>
+
 **Example Request:**
 ```sh
 curl -X GET \
@@ -18,7 +19,8 @@ curl -X GET \
 </details>
 
 <details>
-<summary>**Example Response**</summary>
+<summary><strong>Example Response</strong></summary>
+
 ```js
 // 200 OK
 
@@ -97,7 +99,8 @@ POST /v2/clients
 ```
 
 <details>
-<summary>**Example Request**</summary>
+<summary><strong>Example Request</strong></summary>
+
 ```sh
 curl -X POST \
   -H "Authorization: Bearer ${ACCESS_TOKEN}" \
@@ -109,7 +112,8 @@ curl -X POST \
 </details>
 
 <details>
-<summary>**Example Response**</summary>
+<summary><strong>Example Response</strong></summary>
+
 ```js
 // 200 OK
 
@@ -138,7 +142,8 @@ GET /v2/clients/:client_id
 ```
 
 <details>
-<summary>**Example Request**</summary>
+<summary><strong>Example Request</strong></summary>
+
 ```sh
 curl -X GET\
   -H "Authorization: Bearer ${ACCESS_TOKEN}" \
@@ -150,7 +155,8 @@ curl -X GET\
 
 
 <details>
-<summary>**Example Response**</summary>
+<summary><strong>Example Response</strong></summary>
+
 ```js
 // 200 OK
 
@@ -201,7 +207,8 @@ PUT /v2/clients/:client_id
 ```
 
 <details>
-<summary>**Example Request**</summary>
+<summary><strong>Example Request</strong></summary>
+
 ```sh
 curl -X PUT \
   -H "Authorization: Bearer ${ACCESS_TOKEN}" \
@@ -214,7 +221,8 @@ curl -X PUT \
 
 
 <details>
-<summary>**Example Response**</summary>
+<summary><strong>Example Response</strong></summary>
+
 ```js
 // 200 OK
 
@@ -247,7 +255,8 @@ DELETE /v2/clients/:client_id
 
 
 <details>
-<summary>**Example Request**</summary>
+<summary><strong>Example Request</strong></summary>
+
 ```sh
 curl -X DELETE \
   -H "Authorization: Bearer ${ACCESS_TOKEN}" \
@@ -259,7 +268,8 @@ curl -X DELETE \
 
 
 <details>
-<summary>**Example Response**</summary>
+<summary><strong>Example Response</strong></summary>
+
 ```js
 // 200 OK
 
@@ -280,13 +290,15 @@ GET /v2/scopes
 ```
 
 <details>
-<summary>**Example Request**</summary>
+<summary><strong>Example Request</strong></summary>
+
 ```sh
 curl -X GET https://northstar.dosomething.org/v2/scopes
 ```
 
 <details>
-<summary>**Example Response**</summary>
+<summary><strong>Example Response</strong></summary>
+
 ```js
 // 200 OK
 
@@ -318,7 +330,8 @@ GET /v2/key
 ```
 
 <details>
-<summary>**Example Request**</summary>
+<summary><strong>Example Request</strong></summary>
+
 ```sh
 curl -X GET https://northstar.dosomething.org/v2/key \
   -H "Authorization: Bearer ${ACCESS_TOKEN}" \
@@ -327,7 +340,8 @@ curl -X GET https://northstar.dosomething.org/v2/key \
 </details>
 
 <details>
-<summary>**Example Response**</summary>
+<summary><strong>Example Response</strong></summary>
+
 ```js
 // 200 OK
 
