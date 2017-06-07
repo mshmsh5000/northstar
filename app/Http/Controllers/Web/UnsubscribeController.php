@@ -38,8 +38,11 @@ class UnsubscribeController extends BaseController
      */
     public function postSubscriptions(Request $request)
     {
-        dd($this->gladiator);
-        // make sure to check that inputs exist.
-        dd($request->input('competition'));
+        $user = $request->input('user');
+        $competition = $request->input('competition');
+
+        if ($user && $competition) {
+            $response = $this->gladiator->unsubscribeUser($user, $competition);
+        }
     }
 }
