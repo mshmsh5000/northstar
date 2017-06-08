@@ -221,7 +221,6 @@ class OAuthTest extends TestCase
         ];
 
         for ($i = 0; $i < 10; $i++) {
-            $this->doesntExpectEvents(\Northstar\Events\Throttled::class);
             $this->post('v2/auth/token', $invalidCredentials);
             $this->assertResponseStatus(401);
         }
