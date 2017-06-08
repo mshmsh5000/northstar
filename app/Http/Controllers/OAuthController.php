@@ -9,7 +9,7 @@ use League\OAuth2\Server\AuthorizationServer;
 use League\OAuth2\Server\Exception\OAuthServerException;
 use Northstar\Auth\Encrypter;
 use Northstar\Http\Transformers\UserInfoTransformer;
-use Northstar\Listeners\RateLimitedRequest;
+use Northstar\Events\Throttled;
 use Northstar\Models\RefreshToken;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
@@ -93,7 +93,7 @@ class OAuthController extends Controller
         // If this IP has given incorrect client credentials too many times, take a break.
         // @see: EventServiceProvider `client.authentication.failed` listener.
         if ($shouldRateLimit && $this->limiter->tooManyAttempts(request()->fingerprint(), 10, 15)) {
-            event(RateLimitedRequest::class);
+            event(Throttled::class);
 
             $minutes = ceil($this->limiter->availableIn(request()->fingerprint()) / 60);
             $pluralizedNoun = $minutes === 1 ? 'minute' : 'minutes';

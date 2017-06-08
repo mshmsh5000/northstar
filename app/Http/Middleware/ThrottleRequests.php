@@ -3,7 +3,7 @@
 namespace Northstar\Http\Middleware;
 
 use Closure;
-use Northstar\Listeners\RateLimitedRequest;
+use Northstar\Events\Throttled;
 use Illuminate\Routing\Middleware\ThrottleRequests as BaseThrottler;
 use Illuminate\Http\JsonResponse;
 
@@ -37,7 +37,7 @@ class ThrottleRequests extends BaseThrottler
     protected function buildResponse($key, $maxAttempts)
     {
         // Report the rate-limited request to StatHat.
-        event(RateLimitedRequest::class);
+        event(Throttled::class);
 
         $minutes = ceil($this->limiter->availableIn($key) / 60);
         $pluralizedNoun = $minutes === 1 ? 'minute' : 'minutes';
