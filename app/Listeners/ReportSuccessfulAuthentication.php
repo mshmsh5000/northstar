@@ -7,7 +7,7 @@ use DoSomething\StatHat\Client as StatHat;
 use Illuminate\Auth\Events\Login;
 use Northstar\Models\User;
 
-class SuccessfulAuthentication
+class ReportSuccessfulAuthentication
 {
     /**
      * The StatHat client.

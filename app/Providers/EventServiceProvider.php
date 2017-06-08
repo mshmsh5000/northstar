@@ -9,8 +9,8 @@ use Illuminate\Contracts\Events\Dispatcher as DispatcherContract;
 use Illuminate\Foundation\Support\Providers\EventServiceProvider as ServiceProvider;
 use Illuminate\Routing\Events\RouteMatched;
 use League\OAuth2\Server\AuthorizationServer;
-use Northstar\Listeners\FailedAuthenticationAttempt;
-use Northstar\Listeners\SuccessfulAuthentication;
+use Northstar\Listeners\ReportFailedAuthenticationAttempt;
+use Northstar\Listeners\ReportSuccessfulAuthentication;
 
 class EventServiceProvider extends ServiceProvider
 {
@@ -20,8 +20,8 @@ class EventServiceProvider extends ServiceProvider
      * @var array
      */
     protected $listen = [
-        Login::class => [SuccessfulAuthentication::class],
-        Failed::class => [FailedAuthenticationAttempt::class],
+        Login::class => [ReportSuccessfulAuthentication::class],
+        Failed::class => [ReportFailedAuthenticationAttempt::class],
     ];
 
     /**
