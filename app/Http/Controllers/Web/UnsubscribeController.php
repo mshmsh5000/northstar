@@ -45,7 +45,7 @@ class UnsubscribeController extends BaseController
 
         if ($user && $competition) {
             try {
-                $response = $this->gladiator->unsubscribeUser($user, $competition);
+                $this->gladiator->unsubscribeUser($user, $competition);
 
                 return redirect()->back()->with('status', 'You have successfully unsubscribed!');
             } catch (\Exception $e) {
