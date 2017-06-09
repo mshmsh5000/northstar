@@ -2,9 +2,10 @@
 
 namespace Northstar\Providers;
 
-use DoSomething\Gateway\Blink;
-use Illuminate\Support\ServiceProvider;
 use Northstar\Models\User;
+use DoSomething\Gateway\Blink;
+use DoSomething\Gateway\Gladiator;
+use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -42,6 +43,10 @@ class AppServiceProvider extends ServiceProvider
         // @TODO: This should be registered in Gateway's service provider!
         $this->app->singleton(Blink::class, function () {
             return new Blink(config('services.blink'));
+        });
+
+        $this->app->singleton(Gladiator::class, function () {
+            return new Gladiator(config('services.gladiator'));
         });
     }
 }

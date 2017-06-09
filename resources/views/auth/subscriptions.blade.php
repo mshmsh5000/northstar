@@ -4,12 +4,16 @@
 
 @section('content')
 
-	<div class="container__block -centered ">
-		<p> To unsubscribe from this competition , click 'Unsubscribe' ! </p>
+    <div class="container__block -centered ">
+        <p>Don’t want to receive emails about this competition?</p>
 
-		<form role="form" method="POST" action="  ">
-			<a class="button"> Unsubscribe </a>
-		</form>
-	</div>
+        <form role="form" method="POST" class="form-actions -padded" action="{{ url('unsubscribe') }}">
+            <input name="_token" type="hidden" value="{{ csrf_token() }}">
+
+            <input type="hidden" name="competition" value="{{ Request::get('competition_id') }}">
+            <input type="hidden" name="user" value="{{ Request::get('northstar_id') }}">
+            <input type="submit" class="button" value="{{ trans('Unsubscribe') }}" />
+        </form>
+    </div>
 
 @stop

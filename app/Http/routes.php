@@ -24,7 +24,8 @@ $router->group(['namespace' => 'Web', 'guard' => 'web', 'middleware' => ['web']]
     $router->get('logout', 'AuthController@getLogout');
 
     //Unsubscribe
-    $router->get('unsubscribe', 'UnsubscribeController@unsubscribe');
+    $router->get('unsubscribe', 'UnsubscribeController@getSubscriptions');
+    $router->post('unsubscribe', 'UnsubscribeController@postSubscriptions');
 
     // Registration
     $router->get('register', 'AuthController@getRegister');
