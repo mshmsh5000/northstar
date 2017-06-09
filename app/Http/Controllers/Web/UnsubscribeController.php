@@ -34,7 +34,9 @@ class UnsubscribeController extends BaseController
     }
 
     /**
+     * Post unsubscribe requests to gladiator.
      *
+     * @param \Illuminate\Http\Request $request
      */
     public function postSubscriptions(Request $request)
     {
