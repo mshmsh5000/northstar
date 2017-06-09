@@ -4,7 +4,7 @@ namespace Northstar\Listeners;
 
 use DoSomething\StatHat\Client as StatHat;
 
-class RateLimitedRequest
+class ReportThrottledRequest
 {
     /**
      * The StatHat client.
@@ -30,6 +30,6 @@ class RateLimitedRequest
      */
     public function handle()
     {
-        $this->stathat->ezCount('rate-limited user authentication attempt');
+        $this->stathat->ezCount('rate limited request');
     }
 }

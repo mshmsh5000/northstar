@@ -4,7 +4,7 @@ namespace Northstar\Listeners;
 
 use DoSomething\StatHat\Client as StatHat;
 
-class FailedAuthenticationAttempt
+class ReportFailedAuthenticationAttempt
 {
     /**
      * The StatHat client.

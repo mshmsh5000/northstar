@@ -225,6 +225,9 @@ class OAuthTest extends TestCase
             $this->assertResponseStatus(401);
         }
 
+        // This next request should trigger a StatHat counter.
+        $this->expectsEvents(\Northstar\Events\Throttled::class);
+
         $this->post('v2/auth/token', $invalidCredentials);
         $this->assertResponseStatus(429);
     }

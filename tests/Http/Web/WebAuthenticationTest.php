@@ -91,6 +91,9 @@ class WebAuthenticationTest extends TestCase
             $this->see('These credentials do not match our records.');
         }
 
+        // This next request should trigger a StatHat counter.
+        $this->expectsEvents(\Northstar\Events\Throttled::class);
+
         $this->visit('login');
         $this->submitForm('Log In', [
             'username' => 'target@example.com',
