@@ -23,7 +23,7 @@ $router->group(['namespace' => 'Web', 'guard' => 'web', 'middleware' => ['web']]
     $router->post('login', 'AuthController@postLogin');
     $router->get('logout', 'AuthController@getLogout');
 
-    //Unsubscribe
+    // Unsubscribes
     $router->get('unsubscribe', 'UnsubscribeController@getSubscriptions');
     $router->post('unsubscribe', 'UnsubscribeController@postSubscriptions');
 
