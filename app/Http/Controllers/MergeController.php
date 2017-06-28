@@ -14,9 +14,15 @@ class MergeController extends Controller
      */
     protected $transformer;
 
-    public function __construct()
+    /**
+     * Make a new MergeController, inject dependencies,
+     * and set middleware for this controller's methods.
+     *
+     * @param UserTransformer $transformer
+     */
+    public function __construct(UserTransformer $transformer)
     {
-        $this->transformer = new UserTransformer();
+        $this->transformer = $transformer;
         $this->middleware('role:admin,staff');
     }
 
