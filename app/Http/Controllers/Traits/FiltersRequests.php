@@ -36,7 +36,7 @@ trait FiltersRequests
         // You can filter by multiple values, e.g. `filter[source]=agg,cgg`
         // to get records that have a source value of either `agg` or `cgg`.
         foreach ($filters as $filter => $values) {
-            $values = explode(',', $values);
+            $values = is_string($values) ? explode(',', $values) : [$values];
 
             // For the first `where` query, we want to limit results... from then on,
             // we want to append (e.g. `SELECT * WHERE _ OR WHERE _ OR WHERE _`)
