@@ -2,6 +2,8 @@
 
 namespace Northstar\Auth;
 
+use Carbon\Carbon;
+
 class Normalizer
 {
     /**
@@ -69,6 +71,21 @@ class Normalizer
         }
 
         return $sanitizedValue;
+    }
+
+    /**
+     * Parse a string into a Carbon date.
+     *
+     * @param string[] $strings
+     * @return string
+     */
+    public function dates($strings)
+    {
+        $dates = collect($strings)->map(function ($string) {
+            return new Carbon($string);
+        });
+
+        return $dates->toArray();
     }
 
     /**
