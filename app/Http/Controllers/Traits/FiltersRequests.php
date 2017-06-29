@@ -17,14 +17,14 @@ trait FiltersRequests
     }
 
     /**
-     * Limit results to users exactly matching a set of filters.
+     * Limit results to records exactly matching a set of filters.
      *
      * @param $query
      * @param $filters
      * @param $indexes - Indexed fields (whitelisted for filtering)
      * @return mixed
      */
-    public function filter($query, $filters, $indexes)
+    public function filter($query, $filters, $indexes, $operator = '=')
     {
         if (! $filters) {
             return $query;
@@ -42,7 +42,7 @@ trait FiltersRequests
             // we want to append (e.g. `SELECT * WHERE _ OR WHERE _ OR WHERE _`)
             $firstWhere = true;
             foreach ($values as $value) {
-                $query->where($filter, '=', $value, ($firstWhere ? 'and' : 'or'));
+                $query->where($filter, $operator, $value, ($firstWhere ? 'and' : 'or'));
                 $firstWhere = false;
             }
         }
@@ -51,7 +51,7 @@ trait FiltersRequests
     }
 
     /**
-     * Limit results to users matching a set of search terms.
+     * Limit results to records matching a set of search terms.
      *
      * @param $query - Query to apply search to
      * @param array $searches - Key/value array of fields and search terms
