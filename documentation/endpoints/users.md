@@ -12,6 +12,8 @@ GET /v1/users
 - `pagination`: __[Experimental]__ Either "standard" or "cursor". Cursor pagination is _significantly_ faster, but does not provide any information on the total number of results (only whether another page exists).
 - `limit`: Set the number of results to include per page. Default is 20. Maximum is 100.
 - `page`: Set the page number to get results from.
+- `before`: Filter the collection to include _only_ users with timestamps before the given date or datetime. For example, `/v1/users?before[created_at]=1/1/2015`. 
+- `after`: Filter the collection to include _only_ users with timestamps after the given date or datetime. For example, `/v1/users?after[created_at]=1/1/2015`. 
 - `filter`: Filter the collection to include _only_ users matching the following comma-separated values. For example, `/v1/users?filter[drupal_id]=10123,10124,10125` would return users whose Drupal ID is either 10123, 10124, or 10125. You can filter by one or more indexed fields.
 - `search`: Search the collection for users with fields whose value match the query. For example, `/v1/users?search[id]=test@example.com&search[email]=test@example.org` would return all users with either an ID or email address matching `test@example.org`. You can search by one or more indexed fields.
 

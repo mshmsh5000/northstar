@@ -56,6 +56,28 @@ class UserTest extends TestCase
     }
 
     /**
+     * Test that we can filter records by date range.
+     * GET /v1/users/
+     *
+     * @return void
+     */
+    public function testFilterByDateField()
+    {
+        factory(User::class, 4)->create(['updated_at' => $this->faker->dateTimeBetween('1/1/2000', '12/31/2009')]);
+        factory(User::class, 5)->create(['updated_at' => $this->faker->dateTimeBetween('1/1/2010', '1/1/2015')]);
+        factory(User::class, 6)->create(['updated_at' => $this->faker->dateTimeBetween('1/2/2015', '1/1/2017')]);
+
+        $this->withAccessToken(['admin'])->json('GET', 'v1/users?before[updated_at]=1/1/2010');
+        $this->assertCount(4, $this->decodeResponseJson()['data'], 'can filter `updated_at` before timestamp');
+
+        $this->withAccessToken(['admin'])->json('GET', 'v1/users?after[updated_at]=1/1/2015');
+        $this->assertCount(6, $this->decodeResponseJson()['data'], 'can filter `updated_at` after timestamp');
+
+        $this->withAccessToken(['admin'])->json('GET', 'v1/users?before[updated_at]=1/2/2015&after[updated_at]=12/31/2009');
+        $this->assertCount(5, $this->decodeResponseJson()['data'], 'can filter `updated_at` between two timestamps');
+    }
+
+    /**
      * Test that retrieving a user as a non-admin returns limited profile.
      * GET /users/:term/:id
      *

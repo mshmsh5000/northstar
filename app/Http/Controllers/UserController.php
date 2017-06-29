@@ -54,9 +54,19 @@ class UserController extends Controller
         // or paginate to retrieve all user records.
         $query = $this->newQuery(User::class);
 
-        $filters = $request->query('filter');
-        $query = $this->filter($query, normalize('credentials', $filters), User::$indexes);
+        // Use `?filter[column]=value` for exact matches.
+        $filters = normalize('credentials', $request->query('filter'));
+        $query = $this->filter($query, $filters, User::$indexes);
 
+        // Use `?before[column]=time` to get records before given value.
+        $befores = normalize('dates', $request->query('before'));
+        $query = $this->filter($query, $befores, [User::CREATED_AT, User::UPDATED_AT], '<');
+
+        // Use `?after[column]=time` to get records after given value.
+        $afters = normalize('dates', $request->query('after'));
+        $query = $this->filter($query, $afters, [User::CREATED_AT, User::UPDATED_AT], '>');
+
+        // Use `?search[column]=value` to find users matching one or more criteria.
         $searches = $request->query('search');
         $query = $this->search($query, normalize('credentials', $searches), User::$indexes);
 
