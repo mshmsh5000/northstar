@@ -169,15 +169,17 @@ abstract class TestCase extends Illuminate\Foundation\Testing\TestCase
      * @param array $scopes
      * @return $this
      */
-    public function asUser($user, $scopes = [])
+    public function withAccessToken($scopes = [], $user = null)
     {
         $accessToken = new AccessTokenEntity();
         $accessToken->setClient(new ClientEntity('phpunit', 'PHPUnit', $scopes));
         $accessToken->setIdentifier(bin2hex(random_bytes(40)));
         $accessToken->setExpiryDateTime((new \DateTime())->add(new DateInterval('PT1H')));
 
-        $accessToken->setUserIdentifier($user->id);
-        $accessToken->setRole($user->role);
+        if ($user) {
+            $accessToken->setUserIdentifier($user->id);
+            $accessToken->setRole($user->role);
+        }
 
         foreach ($scopes as $identifier) {
             if (! array_key_exists($identifier, Scope::all())) {
@@ -195,6 +197,18 @@ abstract class TestCase extends Illuminate\Foundation\Testing\TestCase
         ]);
 
         return $this;
+    }
+
+    /**
+     * Create a signed JWT to authorize resource requests.
+     *
+     * @param User $user
+     * @param array $scopes
+     * @return $this
+     */
+    public function asUser($user, $scopes = [])
+    {
+        return $this->withAccessToken($scopes, $user);
     }
 
     /**
