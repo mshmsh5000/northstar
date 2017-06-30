@@ -77,7 +77,7 @@ class Normalizer
      * Parse a string into a Carbon date.
      *
      * @param string[] $strings
-     * @return string
+     * @return Carbon[]
      */
     public function dates($strings)
     {
