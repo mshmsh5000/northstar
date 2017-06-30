@@ -118,3 +118,21 @@ function country_code()
 
     return $code ? Str::upper($code) : null;
 }
+
+/**
+ * Replace the given keys with a value.
+ *
+ * @param $array
+ * @param $keys
+ * @return mixed
+ */
+function array_replace_keys($array, $keys, $value)
+{
+    foreach ($keys as $key) {
+        if (isset($array[$key])) {
+            $array[$key] = $value;
+        }
+    }
+
+    return $array;
+}
