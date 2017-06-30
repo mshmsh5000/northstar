@@ -265,6 +265,21 @@ abstract class TestCase extends Illuminate\Foundation\Testing\TestCase
     }
 
     /**
+     * Spy on a class.
+     *
+     * @param $class String - Class name to mock
+     * @return \Mockery\MockInterface
+     */
+    public function spy($class)
+    {
+        $spy = Mockery::spy($class);
+
+        $this->app->instance($class, $spy);
+
+        return $spy;
+    }
+
+    /**
      * "Freeze" time so we can make assertions based on it.
      *
      * @param string $time
