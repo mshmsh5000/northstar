@@ -7,6 +7,8 @@ class UserModelTest extends TestCase
     /** @test */
     public function it_should_send_new_users_to_blink()
     {
+        config(['features.blink' => true]);
+
         /** @var User $user */
         $user = factory(User::class)->create([
             'birthdate' => '1/2/1990',
