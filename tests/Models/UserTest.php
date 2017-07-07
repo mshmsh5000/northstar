@@ -7,6 +7,8 @@ class UserModelTest extends TestCase
     /** @test */
     public function it_should_send_new_users_to_blink()
     {
+        config(['features.blink' => true]);
+
         /** @var User $user */
         $user = factory(User::class)->create([
             'birthdate' => '1/2/1990',
@@ -31,6 +33,26 @@ class UserModelTest extends TestCase
             'last_authenticated_at' => null,
             'updated_at' => $user->updated_at->toIso8601String(),
             'created_at' => $user->created_at->toIso8601String(),
+        ]);
+    }
+
+    /** @test */
+    public function it_should_log_changes()
+    {
+        $logger = $this->spy('log');
+        $user = User::create();
+
+        $user->first_name = 'Caroline';
+        $user->password = 'secret';
+        $user->save();
+
+        $logger->shouldHaveReceived('debug')->once()->with('updated user', [
+            'id' => $user->id,
+            'client_id' => 'northstar',
+            'changed' => [
+                'first_name' => 'Caroline',
+                'password' => '*****',
+            ],
         ]);
     }
 }

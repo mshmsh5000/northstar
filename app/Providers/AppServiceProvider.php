@@ -31,6 +31,12 @@ class AppServiceProvider extends ServiceProvider
             app('stathat')->ezCount('user created');
             app('stathat')->ezCount('user created - '.$user->source);
         });
+
+        User::updating(function (User $user) {
+            // Write profile changes to the log, with redacted values for hidden fields.
+            $changed = array_replace_keys($user->getDirty(), $user->getHidden(), '*****');
+            logger('updated user', ['id' => $user->id, 'client_id' => client_id(), 'changed' => $changed]);
+        });
     }
 
     /**
