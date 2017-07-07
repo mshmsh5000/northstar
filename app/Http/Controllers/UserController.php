@@ -8,20 +8,15 @@ use Northstar\Auth\Registrar;
 use Northstar\Auth\Role;
 use Northstar\Exceptions\NorthstarValidationException;
 use Northstar\Http\Transformers\UserTransformer;
-use Northstar\Services\Phoenix;
 use Northstar\Models\User;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class UserController extends Controller
 {
     /**
-     * Phoenix Drupal API wrapper.
-     * @var Phoenix
-     */
-    protected $phoenix;
-
-    /**
-     * The registrar.
+     * The registrar handles creating, updating, and
+     * validating user accounts.
+     *
      * @var Registrar
      */
     protected $registrar;
@@ -32,16 +27,16 @@ class UserController extends Controller
     protected $transformer;
 
     /**
-     * UserController constructor.
-     * @param Phoenix $phoenix
+     * Make a new UserController, inject dependencies,
+     * and set middleware for this controller's methods.
+     *
      * @param Registrar $registrar
+     * @param UserTransformer $transformer
      */
-    public function __construct(Phoenix $phoenix, Registrar $registrar)
+    public function __construct(Registrar $registrar, UserTransformer $transformer)
     {
-        $this->phoenix = $phoenix;
         $this->registrar = $registrar;
-
-        $this->transformer = new UserTransformer();
+        $this->transformer = $transformer;
 
         $this->middleware('role:admin,staff', ['except' => ['show']]);
     }
@@ -59,9 +54,19 @@ class UserController extends Controller
         // or paginate to retrieve all user records.
         $query = $this->newQuery(User::class);
 
-        $filters = $request->query('filter');
-        $query = $this->filter($query, normalize('credentials', $filters), User::$indexes);
+        // Use `?filter[column]=value` for exact matches.
+        $filters = normalize('credentials', $request->query('filter'));
+        $query = $this->filter($query, $filters, User::$indexes);
 
+        // Use `?before[column]=time` to get records before given value.
+        $befores = normalize('dates', $request->query('before'));
+        $query = $this->filter($query, $befores, [User::CREATED_AT, User::UPDATED_AT], '<');
+
+        // Use `?after[column]=time` to get records after given value.
+        $afters = normalize('dates', $request->query('after'));
+        $query = $this->filter($query, $afters, [User::CREATED_AT, User::UPDATED_AT], '>');
+
+        // Use `?search[column]=value` to find users matching one or more criteria.
         $searches = $request->query('search');
         $query = $this->search($query, normalize('credentials', $searches), User::$indexes);
 
