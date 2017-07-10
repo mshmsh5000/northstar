@@ -5,7 +5,6 @@ namespace Northstar\Providers;
 use Illuminate\Auth\Events\Failed;
 use Illuminate\Auth\Events\Login;
 use Illuminate\Cache\RateLimiter;
-use Illuminate\Contracts\Events\Dispatcher as DispatcherContract;
 use Illuminate\Foundation\Support\Providers\EventServiceProvider as ServiceProvider;
 use Illuminate\Routing\Events\RouteMatched;
 use League\OAuth2\Server\AuthorizationServer;
@@ -13,6 +12,7 @@ use Northstar\Events\Throttled;
 use Northstar\Listeners\ReportFailedAuthenticationAttempt;
 use Northstar\Listeners\ReportThrottledRequest;
 use Northstar\Listeners\ReportSuccessfulAuthentication;
+use Event;
 
 class EventServiceProvider extends ServiceProvider
 {
@@ -30,12 +30,11 @@ class EventServiceProvider extends ServiceProvider
     /**
      * Register any other events for your application.
      *
-     * @param  \Illuminate\Contracts\Events\Dispatcher $events
      * @return void
      */
-    public function boot(DispatcherContract $events)
+    public function boot()
     {
-        parent::boot($events);
+        parent::boot();
 
         // Rate limit failed client authentication attempts.
         // @see: OAuthController::createToken
@@ -48,7 +47,7 @@ class EventServiceProvider extends ServiceProvider
         // Update count on StatHat every time a route is hit.
         // e.g. will increment the "northstar - v1/users/{term}/{id}" stat each
         // time a client attempts to view a user profile through that route.
-        $events->listen(RouteMatched::class, function (RouteMatched $match) {
+        Event::listen(RouteMatched::class, function (RouteMatched $match) {
             app('stathat')->ezCount('route: '.$match->route->getUri());
         });
     }

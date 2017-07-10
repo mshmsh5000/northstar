@@ -3,7 +3,6 @@
 namespace Northstar\Providers;
 
 use DateInterval;
-use Illuminate\Contracts\Auth\Access\Gate as GateContract;
 use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
 use League\OAuth2\Server\Grant\AuthCodeGrant;
 use League\OAuth2\Server\Grant\ClientCredentialsGrant;
@@ -43,10 +42,9 @@ class AuthServiceProvider extends ServiceProvider
     /**
      * Register any application authentication / authorization services.
      *
-     * @param  \Illuminate\Contracts\Auth\Access\Gate  $gate
      * @return void
      */
-    public function boot(GateContract $gate)
+    public function boot()
     {
         /**
          * The authentication manager.
@@ -116,6 +114,6 @@ class AuthServiceProvider extends ServiceProvider
             );
         });
 
-        parent::registerPolicies($gate);
+        parent::registerPolicies();
     }
 }
