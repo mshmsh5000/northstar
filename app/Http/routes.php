@@ -32,13 +32,14 @@ $router->group(['namespace' => 'Web', 'guard' => 'web', 'middleware' => ['web']]
     $router->post('register', 'AuthController@postRegister');
 
     // Password Reset
-    $this->get('password/reset/{token?}', 'PasswordController@showResetForm');
-    $this->post('password/email', 'PasswordController@sendResetLinkEmail');
-    $this->post('password/reset', 'PasswordController@reset');
+    $this->get('password/reset', 'ForgotPasswordController@showLinkRequestForm');
+    $this->post('password/email', 'ForgotPasswordController@sendResetLinkEmail');
+    $this->get('password/reset/{token}', 'ResetPasswordController@showResetForm');
+    $this->post('password/reset', 'ResetPasswordController@reset');
 });
 
 // API experience for https://nortstar.dosomething.org/v2/
-$router->group(['prefix' => 'v2', 'middleware' => ['api']], function () use ($router) {
+$router->group(['prefix' => 'v2', 'as' => 'v2.', 'middleware' => ['api']], function () use ($router) {
     // Authentication
     $router->post('auth/token', 'OAuthController@createToken');
     $router->get('auth/info', 'OAuthController@info');
@@ -64,7 +65,7 @@ $router->group(['prefix' => 'v2', 'middleware' => ['api']], function () use ($ro
 });
 
 // API experience for https://northstar.dosomething.org/v1/
-$router->group(['prefix' => 'v1', 'middleware' => ['api']], function () use ($router) {
+$router->group(['prefix' => 'v1', 'as' => 'v1.', 'middleware' => ['api']], function () use ($router) {
     // Authentication
     $router->post('auth/token', 'Legacy\AuthController@createToken');
     $router->post('auth/invalidate', 'Legacy\AuthController@invalidateToken');

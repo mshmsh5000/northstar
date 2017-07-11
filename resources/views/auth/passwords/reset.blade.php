@@ -42,7 +42,7 @@
                     </div>
 
                     <div class="form-actions -padded">
-                        <input type="submit" class="button" value="Reset Password">
+                        <input id="reset-password" type="submit" class="button" value="Reset Password">
                     </div>
                 </form>
             </div>
