@@ -1,5 +1,8 @@
 <?php
 
+use Illuminate\Auth\Notifications\ResetPassword;
+use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\Notification;
 use Northstar\Auth\Registrar;
 use Northstar\Models\User;
 
@@ -19,16 +22,10 @@ class PasswordResetTest extends TestCase
      */
     public function testPasswordResetFlow()
     {
+        Notification::fake();
+
         $user = factory(User::class)->create(['email' => 'forgetful@example.com']);
         $token = '';
-
-        // We'll mock the email for this request & store the token for later.
-        // @TODO: Use Laravel 5.3's Mail Fakes for this. (https://laravel.com/docs/5.3/mocking#mail-fakes)
-        Mail::shouldReceive('send')->once()->with('auth.emails.password', Mockery::on(function ($array) use (&$user, &$token) {
-            $token = $array['token'];
-
-            return $user->id == $array['user']->id;
-        }), Mockery::any());
 
         // The user should be able to request a new password by entering their email.
         $this->visit('/password/reset');
@@ -36,6 +33,14 @@ class PasswordResetTest extends TestCase
         $this->submitForm('Request New Password', [
             'email' => 'forgetful@example.com',
         ]);
+
+        // We'll assert that the email was sent & take note of the token for the next step.
+        Notification::assertSentTo($user, ResetPassword::class, function ($email, $channels) use (&$token) {
+            $token = $email->token;
+
+            // The notification should have been sent via email.
+            return in_array('mail', $channels);
+        });
 
         // The user should visit the link that was sent via email & set a new password.
         $this->visit('/password/reset/'.$token.'?email='.$user->email);
