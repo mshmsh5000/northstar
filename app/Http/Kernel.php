@@ -29,9 +29,11 @@ class Kernel extends HttpKernel
             \Illuminate\View\Middleware\ShareErrorsFromSession::class,
             \Northstar\Http\Middleware\VerifyCsrfToken::class,
             \Northstar\Http\Middleware\SetLanguageFromHeader::class,
+            \Illuminate\Routing\Middleware\SubstituteBindings::class,
         ],
         'api' => [
             \Northstar\Http\Middleware\ParseOAuthHeader::class,
+            \Illuminate\Routing\Middleware\SubstituteBindings::class,
         ],
     ];
 
@@ -42,6 +44,7 @@ class Kernel extends HttpKernel
      */
     protected $routeMiddleware = [
         'auth' => \Northstar\Http\Middleware\Authenticate::class,
+        'can' => \Illuminate\Auth\Middleware\Authorize::class,
         'guest' => \Northstar\Http\Middleware\RedirectIfAuthenticated::class,
         'scope' => \Northstar\Http\Middleware\RequireScope::class,
         'role' => \Northstar\Http\Middleware\RequireRole::class,
