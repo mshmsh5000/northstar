@@ -138,6 +138,7 @@ return [
         Illuminate\Foundation\Providers\FoundationServiceProvider::class,
         Illuminate\Hashing\HashServiceProvider::class,
         Illuminate\Mail\MailServiceProvider::class,
+        Illuminate\Notifications\NotificationServiceProvider::class,
         Illuminate\Pagination\PaginationServiceProvider::class,
         Illuminate\Pipeline\PipelineServiceProvider::class,
         Illuminate\Queue\QueueServiceProvider::class,
@@ -161,6 +162,7 @@ return [
          */
         Northstar\Providers\AppServiceProvider::class,
         Northstar\Providers\AuthServiceProvider::class,
+        Northstar\Providers\BroadcastServiceProvider::class,
         Northstar\Providers\EventServiceProvider::class,
         Northstar\Providers\RouteServiceProvider::class,
         Northstar\Providers\ValidationServiceProvider::class,

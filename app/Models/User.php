@@ -9,6 +9,7 @@ use Illuminate\Contracts\Auth\Authenticatable as AuthenticatableContract;
 use Illuminate\Contracts\Auth\Access\Authorizable as AuthorizableContract;
 use Illuminate\Contracts\Auth\CanResetPassword as ResetPasswordContract;
 use Illuminate\Auth\Passwords\CanResetPassword;
+use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Str;
 use Northstar\Auth\Role;
 
@@ -68,7 +69,7 @@ use Northstar\Auth\Role;
  */
 class User extends Model implements AuthenticatableContract, AuthorizableContract, ResetPasswordContract
 {
-    use Authenticatable, Authorizable, CanResetPassword;
+    use Authenticatable, Authorizable, Notifiable, CanResetPassword;
 
     /**
      * The attributes that are mass assignable.
