@@ -136,3 +136,19 @@ function array_replace_keys($array, $keys, $value)
 
     return $array;
 }
+
+/**
+ * Get the first & last name for the given full name.
+ *
+ * @param  string $full_name
+ * @return array
+ */
+function get_first_and_last($full_name)
+{
+    $parts = explode(' ', $full_name);
+
+    return [
+        'first_name' => $parts[0],
+        'last_name' => count($parts) >= 2 ? $parts[1] : '',
+    ];
+}
