@@ -12,7 +12,7 @@
         <h3>{{ trans('auth.greeting.continue') }} {{ session('destination', 'DoSomething.org') }}.</h3>
     </div>
 
-    <div class="container__block">
+    <div class="container__block -centered">
         @if (count($errors) > 0)
             <div class="validation-error fade-in-up">
                 <h4>{{ trans('auth.validation.issues') }}</h4>
@@ -54,6 +54,10 @@
     </div>
 
     <div class="container__block -centered">
+        @if (request()->query('fb') === 'true')
+            <a href="{{ url('facebook/continue') }}" class="button facebook-login">{{ trans('auth.log_in.facebook') }}</a>
+        @endif
+
         <ul>
             <li><a href="{{ url('register') }}">{{ trans('auth.log_in.create') }}</a></li>
             <li><a href="{{ url('password/reset') }}">{{ trans('auth.forgot_password.header') }}</a></li>
