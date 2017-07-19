@@ -1,5 +1,7 @@
 <?php
 
+use Northstar\Models\User;
+
 class FacebookTest extends TestCase
 {
     /**
@@ -11,8 +13,6 @@ class FacebookTest extends TestCase
      */
     private function mockSocialiteFacade($fields, $method)
     {
-        $abstractUser = Mockery::mock('Laravel\Socialite\Two\User');
-
         $user = new Laravel\Socialite\Two\User();
         $user->map($fields);
 
@@ -104,5 +104,26 @@ class FacebookTest extends TestCase
             ->seePageIs('/login')
             ->see('Unable to verify Facebook account.');
         $this->dontSeeIsAuthenticated('web');
+    }
+
+    /**
+     * Test that an existing Northstar account can successfully login and merge
+     * with a Facebook user profile.
+     */
+    public function testFacebookAccountMerge()
+    {
+        $factoryUser = factory(User::class)->create([
+            'email' => 'test@dosomething.org',
+            'first_name' => 'Joe',
+        ]);
+
+        $this->mockSocialiteFromUser('test@dosomething.org', 'Puppet Sloth', '12345', 'token');
+        $this->mockSocialiteFromUserToken('test@dosomething.org', 'Puppet Sloth', '12345', 'token');
+
+        $this->visit('/facebook/verify');
+
+        $user = auth()->user();
+        $this->assertEquals($user->first_name, 'Puppet');
+        $this->assertEquals($user->last_name, 'Sloth');
     }
 }

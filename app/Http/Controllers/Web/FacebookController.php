@@ -66,9 +66,9 @@ class FacebookController extends Controller
         }
 
         $northstarUser = User::where('email', '=', $facebookUser->email)->first();
+        $name = get_first_and_last($facebookUser->name);
 
         if (! $northstarUser) {
-            $name = get_first_and_last($facebookUser->name);
             $fields = [
                 'email' => $facebookUser->email,
                 'facebook_id' => $facebookUser->id,
@@ -80,7 +80,12 @@ class FacebookController extends Controller
 
             $northstarUser = $this->registrar->register($fields, null);
         } else {
-            // TODO: Sync the existing user with Facebook fields.
+            $northstarUser->fillUnlessNull([
+               'facebook_id' => $facebookUser->id,
+               'first_name' => $name['first_name'],
+               'last_name' => $name['last_name'],
+            ]);
+            $northstarUser->save();
         }
 
         $this->auth->guard('web')->login($northstarUser, true);
