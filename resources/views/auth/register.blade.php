@@ -86,6 +86,8 @@
     </div>
 
     <div class="container__block -centered">
+        @include('auth.facebook')
+
         <ul>
             <li><a href="{{ url('login') }}">{{ trans('auth.log_in.existing') }}</a></li>
         </ul>
