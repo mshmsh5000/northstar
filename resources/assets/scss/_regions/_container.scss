@@ -33,6 +33,18 @@
     }
   }
 
+  &.-extended {
+    @include media($tablet) {
+      padding: 0;
+      max-width: $extended-max-width;
+
+      > .wrapper.-half {
+        width: 50%;
+        padding: $base-spacing;
+      }
+    }
+  }
+
   .container__block {
     // Add a new `.-centered` variation to the Container Block.
     &.-centered {
