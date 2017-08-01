@@ -77,9 +77,14 @@ class AuthController extends BaseController
         session(['referrer_uri' => request()->query('referrer_uri')]);
 
         if (! $this->auth->guard('web')->check()) {
-            $authorizationRoute = request()->query('mode') === 'register' ? 'register' : 'login';
-            $destination = request()->query('destination', $client->getName());
-            session(['destination' => $destination]);
+            $authorizationRoute = request()->query('mode') === 'login' ? 'login' : 'register';
+
+            session([
+                'destination' => request()->query('destination', $client->getName()),
+                'title' => request()->query('title'),
+                'callToAction' => request()->query('callToAction'),
+                'coverPhoto' => request()->query('coverPhoto'),
+            ]);
 
             return redirect()->guest($authorizationRoute);
         }
@@ -181,7 +186,7 @@ class AuthController extends BaseController
             'birthdate' => 'required|date',
             'email' => 'required|email|unique:users',
             'mobile' => 'mobile|unique:users',
-            'password' => 'required|confirmed|min:6|max:512',
+            'password' => 'required|min:6|max:512',
         ]);
 
         // Register and login the user.
