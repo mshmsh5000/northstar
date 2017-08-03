@@ -108,7 +108,9 @@ class FacebookController extends Controller
             $fields['country'] = country_code();
             $fields['language'] = app()->getLocale();
 
-            $northstarUser = $this->registrar->register($fields, null);
+            $northstarUser = $this->registrar->register($fields, null, function ($user) {
+                $user->setSource(client_id(), 'facebook');
+            });
         }
 
         $this->auth->guard('web')->login($northstarUser, true);
