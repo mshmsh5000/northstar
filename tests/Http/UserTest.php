@@ -372,7 +372,7 @@ class UserTest extends TestCase
      *
      * @return void
      */
-    public function testUpsertCreatedAtField()
+    public function testCantUpsertCreatedAtField()
     {
         $user = factory(User::class)->create([
             'first_name' => 'Daisy',
@@ -381,7 +381,7 @@ class UserTest extends TestCase
             'source_detail' => 'agents-of-shield',
         ]);
 
-        // We finally read Secret War #2, and want to update her 'created_at' date to match her first appearance.
+        // Well, we may have once wanted to backfill an earlier `created_at` but we don't now!!
         $this->asAdminUser()->json('POST', 'v1/users', [
             'email' => $user->email,
             'first_name' => 'Daisy',
@@ -390,104 +390,16 @@ class UserTest extends TestCase
             'source_detail' => 'secret-war/2',
         ]);
 
+        // It should ignore the new `source, `source_detail`, and `created_at`.
         $this->assertResponseStatus(200);
         $this->seeJsonSubset([
             'data' => [
                 'email' => $user->email,
                 'first_name' => 'Daisy',
-                'source' => 'comic',
-                'source_detail' => 'secret-war/2',
-                'created_at' => '2004-07-01T00:00:00+00:00',
+                'source' => 'television',
+                'source_detail' => 'agents-of-shield',
+                'created_at' => $user->created_at->toIso8601String(),
             ],
         ]);
-    }
-
-    /**
-     * Test that we can only upsert created_at to be earlier.
-     * POST /v1/users/
-     *
-     * @return void
-     */
-    public function testUpsertSameCreatedAtField()
-    {
-        $user = factory(User::class)->create([
-            'email' => $this->faker->email,
-            'source' => 'phpunit',
-            'source_detail' => 'upsert-test',
-            'created_at' => '2017-06-06T19:39:17+00:00',
-        ]);
-
-        // Try to upsert the user's source, but given the same created_at.
-        $this->asAdminUser()->json('POST', 'v1/users', [
-            'email' => $user->email,
-            'created_at' => $user->created_at->timestamp, // <-- same time!
-            'source' => 'sms',
-            'source_detail' => 'opt-in-path/38383',
-        ]);
-
-        // The "upserted" source should be ignored.
-        $this->assertResponseStatus(200);
-        $this->seeJsonSubset([
-            'data' => [
-                'email' => $user->email,
-                'source' => 'phpunit',
-                'source_detail' => 'upsert-test',
-                'created_at' => '2017-06-06T19:39:17+00:00',
-            ],
-        ]);
-    }
-
-    /**
-     * Test that we can only upsert created_at to be earlier.
-     * POST /v1/users/
-     *
-     * @return void
-     */
-    public function testUpsertSourceWithoutDetail()
-    {
-        $user = factory(User::class)->create([
-            'source' => 'factory',
-            'source_detail' => 'user-factory',
-        ]);
-
-        // We finally read Secret War #2, and want to update her 'created_at' date to match her first appearance.
-        $this->asAdminUser()->json('POST', 'v1/users', [
-            'email' => $user->email,
-            'created_at' => '1088640000',
-            'source' => 'phpunit',
-        ]);
-
-        $this->assertResponseStatus(200);
-        $this->seeJsonSubset([
-            'data' => [
-                'email' => $user->email,
-                'source' => 'phpunit',
-                'source_detail' => null,
-                'created_at' => '2004-07-01T00:00:00+00:00',
-            ],
-        ]);
-    }
-
-    /**
-     * Test that we can only upsert created_at to be earlier.
-     * POST /v1/users/
-     *
-     * @return void
-     */
-    public function testUpsertNewerCreatedAtField()
-    {
-        $user = factory(User::class)->create(['first_name' => 'Nathaniel', 'last_name' => 'Richards']);
-        $created_at = $user->created_at;
-
-        // We don't allow time-travelling (setting your created_at date to be later).
-        $this->asAdminUser()->json('POST', 'v1/users', [
-            'email' => $user->email,
-            'created_at' => '2540246400', // the fuuuuuuuuture!
-        ]);
-
-        $this->assertResponseStatus(200);
-
-        // The request should have completed, but the `created_at` should not have changed
-        $this->assertEquals((string) $created_at, (string) $user->fresh()->created_at);
     }
 }
