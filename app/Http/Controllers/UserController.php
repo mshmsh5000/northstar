@@ -2,7 +2,6 @@
 
 namespace Northstar\Http\Controllers;
 
-use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Northstar\Auth\Registrar;
 use Northstar\Auth\Role;
