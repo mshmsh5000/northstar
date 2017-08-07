@@ -19,6 +19,7 @@ window.Drupal = {
 // Utilities
 import Analytics from './utilities/Analytics';
 import DeLorean from './utilities/DeLorean';
+import PasswordVisibility from './utilities/PasswordVisibility';
 import './validators/auth';
 
 // Register validation rules for en lang only.
@@ -32,3 +33,6 @@ Analytics.init();
 
 // Initialize routing back to last page.
 DeLorean.init();
+
+// Initialize password visibility toggle.
+PasswordVisibility.init();
