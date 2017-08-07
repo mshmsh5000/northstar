@@ -397,7 +397,11 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
      */
     public function setSource($source, $detail = null)
     {
-        $this->source = $source;
+        if ($this->source) {
+            return;
+        }
+
+        $this->source = $source ?: client_id();
         $this->source_detail = $detail;
     }
 }
