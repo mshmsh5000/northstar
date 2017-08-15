@@ -44,7 +44,7 @@ class FixSourcesCommand extends Command
             if ($user->created_at->lt($threshold)) {
                 $this->warn('Not updating source for '.$user->id.', created'.$user->created_at->toFormattedDateString());
 
-                return;
+                continue;
             }
 
             // Otherwise, reset their source to expected 'niche'.
