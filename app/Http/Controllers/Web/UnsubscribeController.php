@@ -47,7 +47,9 @@ class UnsubscribeController extends BaseController
             try {
                 $response = $this->gladiator->unsubscribeUser($user, $competition);
 
-                return redirect()->back()->with('status', $response['message']);
+                $message = $response['message'];
+
+                return redirect()->back()->with('status', $message);
             } catch (\Exception $e) {
                 return redirect()->back()->with('status', 'There was an error processing this request, please try again later.');
             }
