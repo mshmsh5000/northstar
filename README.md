@@ -16,6 +16,7 @@ Fork and clone this repository, and [add it to your Homestead](https://github.co
 # Make public & private RSA keys:
 $ openssl genrsa -out storage/keys/private.key 1024
 $ openssl rsa -in storage/keys/private.key -pubout -out storage/keys/public.key
+$ chmod 600 storage/keys/{public,private}.key
 
 # Install dependencies:
 $ composer install && npm install
