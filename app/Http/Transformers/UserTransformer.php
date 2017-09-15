@@ -50,8 +50,12 @@ class UserTransformer extends TransformerAbstract
             // Internal & third-party service IDs:
             $response['slack_id'] = $user->slack_id;
             $response['mobilecommons_id'] = $user->mobilecommons_id;
+            $response['mobilecommons_status'] = $user->sms_status; // @DEPRECATED: Will be removed.
             $response['parse_installation_ids'] = $user->parse_installation_ids;
-            $response['mobilecommons_status'] = $user->mobilecommons_status;
+
+            // Subscription status
+            $response['sms_status'] = $user->sms_status;
+            $response['sms_paused'] = (bool) $user->sms_paused;
         }
 
         $response['language'] = $user->language;
@@ -64,6 +68,7 @@ class UserTransformer extends TransformerAbstract
         if (Scope::allows('admin') || Gate::allows('view-full-profile', $user)) {
             $response['last_accessed_at'] = $user->last_accessed_at ? $user->last_accessed_at->toIso8601String() : null;
             $response['last_authenticated_at'] = $user->last_authenticated_at ? $user->last_authenticated_at->toIso8601String() : null;
+            $response['last_messaged_at'] = $user->last_messaged_at ? $user->last_messaged_at->toIso8601String() : null;
         }
 
         $response['updated_at'] = $user->updated_at->toIso8601String();

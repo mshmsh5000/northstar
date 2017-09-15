@@ -69,6 +69,10 @@ class Registrar
             'birthdate' => 'date',
             'country' => 'country',
             'password' => 'min:6|max:512',
+            'mobilecommons_status' => 'in:active,undeliverable,unknown', // for backwards compatibility.
+            'sms_status' => 'in:active,less,undeliverable,unknown',
+            'sms_paused' => 'boolean',
+            'last_messaged_at' => 'date',
         ];
 
         // If existing user is provided, merge indexes into the request so

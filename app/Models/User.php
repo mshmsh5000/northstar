@@ -54,7 +54,6 @@ use Northstar\Auth\Role;
  *
  * And we store some external service IDs for hooking things together:
  * @property string $mobilecommons_id
- * @property string $mobilecommons_status
  * @property string $cgg_id
  * @property string $drupal_id
  * @property string $agg_id
@@ -62,8 +61,13 @@ use Northstar\Auth\Role;
  * @property string $facebook_id
  * @property string $slack_id
  *
+ * Messaging subscription status:
+ * @property string $sms_status
+ * @property bool   $sms_paused
+ *
  * @property Carbon $last_accessed_at - The timestamp of the user's last token refresh
  * @property Carbon $last_authenticated_at - The timestamp of the user's last successful login
+ * @property Carbon $last_messaged_at - The timestamp of the last message this user sent
  * @property Carbon $created_at
  * @property Carbon $updated_at
  */
@@ -93,6 +97,7 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
 
         // External profiles:
         'mobilecommons_id', 'mobilecommons_status', 'facebook_id', 'slack_id',
+        'sms_status', 'sms_paused', 'last_messaged_at',
     ];
 
     /**
@@ -102,7 +107,9 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
      * @var array
      */
     public static $internal = [
-        'mobilecommons_id', 'mobilecommons_status', 'cgg_id', 'drupal_id', 'agg_id', 'role', 'facebook_id', 'slack_id',
+        'cgg_id', 'drupal_id', 'agg_id', 'role', 'facebook_id', 'slack_id',
+        'mobilecommons_id', 'mobilecommons_status', 'sms_status', 'sms_paused',
+        'last_messaged_at',
     ];
 
     /**
@@ -144,8 +151,10 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
     protected $casts = [
         'cgg_id' => 'integer',
         'birthdate' => 'date',
+        'sms_paused' => 'boolean',
         'last_accessed_at' => 'datetime',
         'last_authenticated_at' => 'datetime',
+        'last_messaged_at' => 'datetime',
     ];
 
     /**
@@ -191,6 +200,16 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
     public function setMobileAttribute($value)
     {
         $this->attributes['mobile'] = normalize('mobile', $value);
+    }
+
+    /**
+     * Mutator to support old `mobilecommons_status` field input.
+     *
+     * @param string $value
+     */
+    public function setMobilecommonsStatusAttribute($value)
+    {
+        $this->attributes['sms_status'] = $value;
     }
 
     /**
@@ -347,7 +366,7 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
             'id' => $this->id,
             'email' => $this->email,
             'mobile' => $this->mobile,
-            'mobile_status' => $this->mobilecommons_status,
+            'mobile_status' => $this->sms_status,
             'facebook_id' => $this->facebook_id,
             'first_name' => $this->first_name,
             'last_name' => $this->last_name,
@@ -359,6 +378,7 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
             'country' => $this->country,
             'source' => $this->source,
             'source_detail' => $this->source_detail,
+            'last_messaged_at' => $this->last_messaged_at ? $this->last_messaged_at->toIso8601String() : null,
             'last_authenticated_at' => $this->last_authenticated_at ? $this->last_authenticated_at->toIso8601String() : null,
             'updated_at' => $this->updated_at->toIso8601String(),
             'created_at' => $this->created_at->toIso8601String(),

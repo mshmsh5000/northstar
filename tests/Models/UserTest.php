@@ -22,7 +22,7 @@ class UserModelTest extends TestCase
             'birthdate' => '1990-01-02',
             'email' => $user->email,
             'mobile' => $user->mobile,
-            'mobile_status' => $user->mobilecommons_status,
+            'mobile_status' => $user->sms_status,
             'facebook_id' => $user->facebook_id,
             'addr_city' => $user->addr_city,
             'addr_state' => $user->addr_state,
@@ -32,6 +32,7 @@ class UserModelTest extends TestCase
             'source' => $user->source,
             'source_detail' => $user->source_detail,
             'last_authenticated_at' => null,
+            'last_messaged_at' => null,
             'updated_at' => $user->updated_at->toIso8601String(),
             'created_at' => $user->created_at->toIso8601String(),
         ]);
