@@ -50,8 +50,11 @@ class UserTransformer extends TransformerAbstract
             // Internal & third-party service IDs:
             $response['slack_id'] = $user->slack_id;
             $response['mobilecommons_id'] = $user->mobilecommons_id;
+            $response['mobilecommons_status'] = $user->sms_status; // @DEPRECATED: Will be removed.
             $response['parse_installation_ids'] = $user->parse_installation_ids;
-            $response['mobilecommons_status'] = $user->mobilecommons_status;
+
+            // Subscription status
+            $response['sms_status'] = $user->sms_status;
         }
 
         $response['language'] = $user->language;

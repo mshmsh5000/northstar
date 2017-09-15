@@ -14,7 +14,7 @@ $factory->define(Northstar\Models\User::class, function (Faker\Generator $faker)
         'email' => $faker->unique()->safeEmail,
         'mobile' => $faker->unique()->phoneNumber,
         'mobilecommons_id' => $faker->randomNumber(5),
-        'mobilecommons_status' => $faker->randomElement(['active', 'undeliverable']),
+        'sms_status' => $faker->randomElement(['active', 'undeliverable']),
         'facebook_id' => $faker->unique()->randomNumber(),
         'password' => $faker->password,
         'birthdate' => $faker->date($format = 'm/d/Y', $max = 'now'),

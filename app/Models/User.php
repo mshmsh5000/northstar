@@ -54,13 +54,15 @@ use Northstar\Auth\Role;
  *
  * And we store some external service IDs for hooking things together:
  * @property string $mobilecommons_id
- * @property string $mobilecommons_status
  * @property string $cgg_id
  * @property string $drupal_id
  * @property string $agg_id
  * @property array  $parse_installation_ids
  * @property string $facebook_id
  * @property string $slack_id
+ *
+ * Messaging subscription status:
+ * @property string $sms_status
  *
  * @property Carbon $last_accessed_at - The timestamp of the user's last token refresh
  * @property Carbon $last_authenticated_at - The timestamp of the user's last successful login
@@ -191,6 +193,16 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
     public function setMobileAttribute($value)
     {
         $this->attributes['mobile'] = normalize('mobile', $value);
+    }
+
+    /**
+     * Mutator to support old `mobilecommons_status` field input.
+     *
+     * @param string $value
+     */
+    public function setMobilecommonsStatusAttribute($value)
+    {
+        $this->attributes['sms_status'] = $value;
     }
 
     /**
@@ -347,7 +359,7 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
             'id' => $this->id,
             'email' => $this->email,
             'mobile' => $this->mobile,
-            'mobile_status' => $this->mobilecommons_status,
+            'mobile_status' => $this->sms_status,
             'facebook_id' => $this->facebook_id,
             'first_name' => $this->first_name,
             'last_name' => $this->last_name,

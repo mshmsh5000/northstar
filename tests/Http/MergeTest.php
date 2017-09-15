@@ -45,7 +45,7 @@ class MergeTest extends TestCase
         $duplicate = User::forceCreate([
             'mobile' => '5551234567',
             'mobilecommons_id' => '199483623',
-            'mobilecommons_status' => 'active',
+            'sms_status' => 'active',
             'drupal_id' => '7175144',
             'source' => 'sms',
         ]);
@@ -60,7 +60,7 @@ class MergeTest extends TestCase
             'email' => $user->email,
             'mobile' => $duplicate->mobile,
             'mobilecommons_id' => $duplicate->mobilecommons_id,
-            'mobilecommons_status' => $duplicate->mobilecommons_status,
+            'sms_status' => $duplicate->sms_status,
             'drupal_id' => '1234567',
         ]);
 
@@ -70,7 +70,7 @@ class MergeTest extends TestCase
             'email' => 'merged-account-'.$user->id.'@dosomething.invalid',
             'mobile' => null,
             'mobilecommons_id' => null,
-            'mobilecommons_status' => null,
+            'sms_status' => null,
             'drupal_id' => '7175144',
         ]);
     }

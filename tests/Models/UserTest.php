@@ -22,7 +22,7 @@ class UserModelTest extends TestCase
             'birthdate' => '1990-01-02',
             'email' => $user->email,
             'mobile' => $user->mobile,
-            'mobile_status' => $user->mobilecommons_status,
+            'mobile_status' => $user->sms_status,
             'facebook_id' => $user->facebook_id,
             'addr_city' => $user->addr_city,
             'addr_state' => $user->addr_state,
