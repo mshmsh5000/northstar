@@ -67,6 +67,7 @@ use Northstar\Auth\Role;
  *
  * @property Carbon $last_accessed_at - The timestamp of the user's last token refresh
  * @property Carbon $last_authenticated_at - The timestamp of the user's last successful login
+ * @property Carbon $last_messaged_at - The timestamp of the last message this user sent
  * @property Carbon $created_at
  * @property Carbon $updated_at
  */
@@ -96,7 +97,7 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
 
         // External profiles:
         'mobilecommons_id', 'mobilecommons_status', 'facebook_id', 'slack_id',
-        'sms_status', 'sms_paused',
+        'sms_status', 'sms_paused', 'last_messaged_at',
     ];
 
     /**
@@ -108,6 +109,7 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
     public static $internal = [
         'cgg_id', 'drupal_id', 'agg_id', 'role', 'facebook_id', 'slack_id',
         'mobilecommons_id', 'mobilecommons_status', 'sms_status', 'sms_paused',
+        'last_messaged_at',
     ];
 
     /**
@@ -152,6 +154,7 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
         'sms_paused' => 'boolean',
         'last_accessed_at' => 'datetime',
         'last_authenticated_at' => 'datetime',
+        'last_messaged_at' => 'datetime',
     ];
 
     /**
@@ -375,6 +378,7 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
             'country' => $this->country,
             'source' => $this->source,
             'source_detail' => $this->source_detail,
+            'last_messaged_at' => $this->last_messaged_at ? $this->last_messaged_at->toIso8601String() : null,
             'last_authenticated_at' => $this->last_authenticated_at ? $this->last_authenticated_at->toIso8601String() : null,
             'updated_at' => $this->updated_at->toIso8601String(),
             'created_at' => $this->created_at->toIso8601String(),
