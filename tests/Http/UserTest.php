@@ -266,6 +266,26 @@ class UserTest extends TestCase
     }
 
     /**
+     * Test that we can still set old `mobilecommons_status` field.
+     * POST /users
+     *
+     * @return void
+     */
+    public function testMobileCommonsStatusFieldTransform()
+    {
+        $this->asAdminUser()->json('POST', 'v1/users', [
+            'mobile' => '1 (222) 333-5555',
+            'mobilecommons_status' => 'active',
+        ]);
+
+        $this->assertResponseStatus(201);
+        $this->seeInDatabase('users', [
+            'mobile' => '2223335555',
+            'sms_status' => 'active',
+        ]);
+    }
+
+    /**
      * Test that the `country` field is removed if it
      * does not contain a valid ISO-3166 country code.
      * GET /users/:term/:id
