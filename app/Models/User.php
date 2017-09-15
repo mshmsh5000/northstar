@@ -63,6 +63,7 @@ use Northstar\Auth\Role;
  *
  * Messaging subscription status:
  * @property string $sms_status
+ * @property bool   $sms_paused
  *
  * @property Carbon $last_accessed_at - The timestamp of the user's last token refresh
  * @property Carbon $last_authenticated_at - The timestamp of the user's last successful login
@@ -95,6 +96,7 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
 
         // External profiles:
         'mobilecommons_id', 'mobilecommons_status', 'facebook_id', 'slack_id',
+        'sms_status', 'sms_paused',
     ];
 
     /**
@@ -104,7 +106,8 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
      * @var array
      */
     public static $internal = [
-        'mobilecommons_id', 'mobilecommons_status', 'cgg_id', 'drupal_id', 'agg_id', 'role', 'facebook_id', 'slack_id',
+        'cgg_id', 'drupal_id', 'agg_id', 'role', 'facebook_id', 'slack_id',
+        'mobilecommons_id', 'mobilecommons_status', 'sms_status', 'sms_paused',
     ];
 
     /**
@@ -146,6 +149,7 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
     protected $casts = [
         'cgg_id' => 'integer',
         'birthdate' => 'date',
+        'sms_paused' => 'boolean',
         'last_accessed_at' => 'datetime',
         'last_authenticated_at' => 'datetime',
     ];
