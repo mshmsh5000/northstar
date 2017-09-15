@@ -151,6 +151,8 @@ Either a mobile number or email is required.
   slack_id: String
   parse_installation_ids: String // CSV values or array will be appended to existing interests
   interests: String, Array // CSV values or array will be appended to existing interests
+  sms_status: String // Either 'active', 'less', 'undeliverable' or 'unknown'
+  sms_paused: Boolean // Whether a user is in a support conversation.
   source: String // Immutable. Will only be set on new records.
   source_detail: String // Only accepted alongside a valid 'source'.
   created_at: Number // timestamp
@@ -304,6 +306,8 @@ PUT /v1/users/drupal_id/<drupal_id>
   parse_installation_ids: String // CSV values or array will be appended to existing interests
   interests: String, Array // CSV values or array will be appended to existing interests
   role: String // Can only be modified by admins. Either 'user' (default), 'staff', or 'admin'.
+  sms_status: String // Either 'active', 'less', 'undeliverable' or 'unknown'
+  sms_paused: Boolean // Whether a user is in a support conversation.
 
   // Hidden fields (optional):
   race: String
@@ -500,7 +504,8 @@ curl -X POST \
     "slack_id": null,
     "mobilecommons_id": null,
     "parse_installation_ids": null,
-    "mobilecommons_status": null,
+    "sms_status": null,
+    "sms_paused": false,
     "language": null,
     "country": null,
     "drupal_id": "187",
