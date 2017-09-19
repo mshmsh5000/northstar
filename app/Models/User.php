@@ -11,7 +11,6 @@ use Illuminate\Contracts\Auth\CanResetPassword as ResetPasswordContract;
 use Illuminate\Auth\Passwords\CanResetPassword;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Str;
-use libphonenumber\PhoneNumberFormat;
 use Northstar\Auth\Role;
 
 /**
@@ -201,26 +200,7 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
      */
     public function setMobileAttribute($value)
     {
-        $parser = \libphonenumber\PhoneNumberUtil::getInstance();
-
-        // If empty, null out both fields.
-        if (empty($value)) {
-            $this->attributes['mobile'] = null;
-            $this->attributes['e164'] = null;
-
-            return;
-        }
-
-        try {
-            $number = $parser->parse($value, 'US');
-            $formattedNumber = $parser->format($number, PhoneNumberFormat::E164);
-
-            // Parse & save as both non-standard normalized format & E.164.
-            $this->attributes['mobile'] = normalize('mobile', $value);
-            $this->attributes['e164'] = $formattedNumber;
-        } catch (\libphonenumber\NumberParseException $e) {
-            // ...
-        }
+        $this->attributes['mobile'] = normalize('mobile', $value);
     }
 
     /**
