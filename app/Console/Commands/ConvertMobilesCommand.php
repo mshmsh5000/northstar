@@ -47,7 +47,7 @@ class ConvertMobilesCommand extends Command
 
                     // Save to the `e164` field. We'll swap this with `mobile` later.
                     $user->e164 = $formattedNumber;
-                    $user->save();
+                    $user->save(['touch' => false]);
 
                     $this->info('['.$counter.'] '.$user->id.' - Formatted as '.$formattedNumber);
                 } catch (\libphonenumber\NumberParseException $e) {
