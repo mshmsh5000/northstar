@@ -7,27 +7,27 @@ class ConvertMobilesCommandTest extends TestCase
     /** @test */
     public function it_should_convert_numbers()
     {
-        // Create users with some pre-generated numbers.
-        $user1 = factory(User::class)->create(['mobile' => '7455559417']);
-        $user2 = factory(User::class)->create(['mobile' => '6965552100']);
+        $this->createMongoDocument('users', ['mobile' => '7455559417']);
+        $this->createMongoDocument('users', ['mobile' => '6965552100']);
 
         // Run the command to convert to E.164 format.
         $this->artisan('northstar:e164');
 
-        $this->assertEquals('+17455559417', $user1->fresh()->e164);
-        $this->assertEquals('+16965552100', $user2->fresh()->e164);
+        $this->seeInDatabase('users', ['mobile' => '7455559417', 'e164' => '+17455559417']);
+        $this->seeInDatabase('users', ['mobile' => '6965552100', 'e164' => '+16965552100']);
     }
 
     /** @test */
     public function it_should_handle_invalid_mobiles()
     {
-        $user = factory(User::class)->create(['mobile' => '3', 'email' => null]);
+        $this->createMongoDocument('users', ['mobile' => '3']);
 
         // Run the command to convert to E.164 format.
         $this->artisan('northstar:e164');
 
-        $this->assertEquals(null, $user->fresh()->e164);
-        $this->assertNotNull($user->fresh()->email);
+        $user = User::first();
+        $this->assertEquals(null, $user->e164);
+        $this->assertNotNull($user->email);
     }
 
     /** @test */
