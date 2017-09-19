@@ -235,6 +235,20 @@ abstract class TestCase extends Illuminate\Foundation\Testing\TestCase
      * Get the raw Mongo document for inspection.
      *
      * @param $collection - Mongo Collection name
+     * @param array $contents
+     * @return bool
+     */
+    public function createMongoDocument($collection, array $contents)
+    {
+        $document = $this->app->make('db')->collection($collection)->insert($contents);
+
+        return $document;
+    }
+
+    /**
+     * Get the raw Mongo document for inspection.
+     *
+     * @param $collection - Mongo Collection name
      * @param $id - The _id of the document to fetch
      * @return array
      */
