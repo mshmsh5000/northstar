@@ -68,6 +68,12 @@ class Normalizer
             return null;
         }
 
+        // Normalize "1 (555) 555-5555" format without leading "+".
+        $digits = preg_replace('/[^0-9]/', '', $mobile);
+        if (strlen($digits) === 11 && $digits[0] === '1') {
+            $mobile = '+'.$mobile;
+        }
+
         try {
             $parser = PhoneNumberUtil::getInstance();
             $number = $parser->parse($mobile, 'US');
