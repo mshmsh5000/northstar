@@ -14,7 +14,7 @@ class ConvertMobilesCommand extends Command
      *
      * @var string
      */
-    protected $signature = 'northstar:e164';
+    protected $signature = 'northstar:e164 {skip=0}';
 
     /**
      * The console command description.
@@ -30,10 +30,11 @@ class ConvertMobilesCommand extends Command
      */
     public function handle()
     {
-        $counter = 1;
+        $skip = $this->argument('skip');
+        $counter = $skip + 1;
 
         // Iterate over users where the `mobile` field is not null.
-        User::whereNotNull('mobile')->chunk(200, function ($users) use (&$counter) {
+        User::whereNotNull('mobile')->skip($skip)->chunk(200, function ($users) use (&$counter) {
             $parser = PhoneNumberUtil::getInstance();
 
             /** @var User $user */
