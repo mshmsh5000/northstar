@@ -657,7 +657,7 @@ class LegacyUserTest extends TestCase
         $this->seeInDatabase('users', [
             '_id' => $user->id,
             'email' => 'upsert-me@dosomething.org',
-            'mobile' => '5556667777',
+            'mobile' => '+15556667777',
         ]);
 
         // The response should indicate a validation conflict!
@@ -681,7 +681,7 @@ class LegacyUserTest extends TestCase
      */
     public function testUpdateUser()
     {
-        $user = User::create(['mobile' => $this->faker->unique()->phoneNumber]);
+        $user = User::create(['mobile' => '+15543694724']);
 
         // Update an existing user
         $this->withLegacyApiKeyScopes(['admin'])->json('PUT', 'v1/users/_id/'.$user->id, [
@@ -692,7 +692,7 @@ class LegacyUserTest extends TestCase
         $this->seeJsonSubset([
             'data' => [
                 'email' => 'newemail@dosomething.org',
-                'mobile' => $user->mobile, // unchanged user values should remain unchanged
+                'mobile' => '5543694724', // unchanged user values should remain unchanged
             ],
         ]);
 

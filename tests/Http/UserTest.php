@@ -261,7 +261,7 @@ class UserTest extends TestCase
         $this->seeInDatabase('users', [
             'first_name' => 'Batman',
             'email' => 'batman@example.com',
-            'mobile' => '2223335555',
+            'mobile' => '+12223335555',
         ]);
     }
 
@@ -280,7 +280,7 @@ class UserTest extends TestCase
 
         $this->assertResponseStatus(201);
         $this->seeInDatabase('users', [
-            'mobile' => '2223335555',
+            'mobile' => '+12223335555',
             'sms_status' => 'active',
         ]);
     }
