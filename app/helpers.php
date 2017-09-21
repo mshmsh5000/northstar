@@ -2,6 +2,8 @@
 
 use Carbon\Carbon;
 use Illuminate\Support\Str;
+use libphonenumber\PhoneNumberFormat;
+use libphonenumber\PhoneNumberUtil;
 use Northstar\Auth\Normalizer;
 use Northstar\Models\Client;
 
@@ -156,4 +158,17 @@ function format_birthdate($birthdate)
     }
 
     return format_date($birthdate, 'Y-m-d');
+}
+
+function format_legacy_mobile($mobile)
+{
+    try {
+        $parser = PhoneNumberUtil::getInstance();
+        $number = $parser->parse($mobile, 'US');
+        $formatted = $parser->format($number, PhoneNumberFormat::NATIONAL);
+
+        return preg_replace('#[^0-9]+#', '', $formatted);
+    } catch (\libphonenumber\NumberParseException $e) {
+        return null;
+    }
 }
