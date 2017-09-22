@@ -46,11 +46,12 @@ class ConvertMobilesCommandTest extends TestCase
     {
         $this->createMongoDocument('users', ['mobile' => '7455559417']);
         $this->createMongoDocument('users', ['mobile' => '6965552100']);
-        $this->createMongoDocument('users', ['mobile' => '2225559999']);
+        $this->createMongoDocument('users', ['mobile' => '2225559999']); // start!
         $this->createMongoDocument('users', ['mobile' => '8145551234']);
 
         // Run the command to convert to E.164 format.
-        $this->artisan('northstar:e164', ['skip' => '2']);
+        $id = User::where('mobile', '2225559999')->first()->id;
+        $this->artisan('northstar:e164', ['start' => $id]);
 
         $this->seeInDatabase('users', ['mobile' => '7455559417', 'e164' => null]); // skipped!
         $this->seeInDatabase('users', ['mobile' => '6965552100', 'e164' => null]); // skipped!
