@@ -13,6 +13,7 @@ use MongoDB\BSON\UTCDateTime;
  * Base model class
  *
  * @mixin \Jenssegers\Mongodb\Query\Builder
+ * @method chunkFromId($count, $startId, \Closure $callback, $column)
  */
 class Model extends BaseModel
 {

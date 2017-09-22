@@ -41,24 +41,32 @@ class AppServiceProvider extends ServiceProvider
 
         // Add 'chunkWithLimit' method to the query builder.
         // @see: https://github.com/laravel/internals/issues/103
-        Builder::macro('chunkWithOffset', function ($count, $from, callable $callback) {
+        Builder::macro('chunkFromId', function ($count, $startId, callable $callback, $column) {
             /** @var Builder $this */
-            $page = 1;
+
+            // Literally copy-pasting `chunkById` so we can override this value... :'(
+            $lastId = $startId;
 
             do {
-                $offset = ($page - 1) * $count + $from;
-                $results = $this->offset($offset)->limit($count)->get();
+                $clone = clone $this;
+
+                // ... and switch this `>` to a `>=`. Oy.
+                $results = $clone->where($column, '>=', $lastId)
+                    ->orderBy($column, 'asc')
+                    ->take($count)
+                    ->get();
+
                 $countResults = $results->count();
 
                 if ($countResults == 0) {
                     break;
                 }
 
-                if ($callback($results) === false) {
+                if (call_user_func($callback, $results) === false) {
                     return false;
                 }
 
-                $page++;
+                $lastId = $results->last()[$column];
             } while ($countResults == $count);
 
             return true;
