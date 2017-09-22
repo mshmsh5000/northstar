@@ -40,4 +40,21 @@ class ConvertMobilesCommandTest extends TestCase
 
         $this->assertEquals(null, $user->fresh()->e164);
     }
+
+    /** @test */
+    public function it_should_restart_based_on_skip_argument()
+    {
+        $this->createMongoDocument('users', ['mobile' => '7455559417']);
+        $this->createMongoDocument('users', ['mobile' => '6965552100']);
+        $this->createMongoDocument('users', ['mobile' => '2225559999']);
+        $this->createMongoDocument('users', ['mobile' => '8145551234']);
+
+        // Run the command to convert to E.164 format.
+        $this->artisan('northstar:e164', ['skip' => '2']);
+
+        $this->seeInDatabase('users', ['mobile' => '7455559417', 'e164' => null]); // skipped!
+        $this->seeInDatabase('users', ['mobile' => '6965552100', 'e164' => null]); // skipped!
+        $this->seeInDatabase('users', ['mobile' => '8145551234', 'e164' => '+18145551234']);
+        $this->seeInDatabase('users', ['mobile' => '2225559999', 'e164' => '+12225559999']);
+    }
 }

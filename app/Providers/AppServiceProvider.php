@@ -2,6 +2,7 @@
 
 namespace Northstar\Providers;
 
+use Illuminate\Database\Query\Builder;
 use Northstar\Models\User;
 use DoSomething\Gateway\Blink;
 use DoSomething\Gateway\Gladiator;
@@ -36,6 +37,31 @@ class AppServiceProvider extends ServiceProvider
             // Write profile changes to the log, with redacted values for hidden fields.
             $changed = array_replace_keys($user->getDirty(), $user->getHidden(), '*****');
             logger('updated user', ['id' => $user->id, 'client_id' => client_id(), 'changed' => $changed]);
+        });
+
+        // Add 'chunkWithLimit' method to the query builder.
+        // @see: https://github.com/laravel/internals/issues/103
+        Builder::macro('chunkWithOffset', function ($count, $from, callable $callback) {
+            /** @var Builder $this */
+            $page = 1;
+
+            do {
+                $offset = ($page - 1) * $count + $from;
+                $results = $this->offset($offset)->limit($count)->get();
+                $countResults = $results->count();
+
+                if ($countResults == 0) {
+                    break;
+                }
+
+                if ($callback($results) === false) {
+                    return false;
+                }
+
+                $page++;
+            } while ($countResults == $count);
+
+            return true;
         });
     }
 
