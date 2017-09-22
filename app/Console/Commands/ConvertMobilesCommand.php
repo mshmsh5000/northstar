@@ -2,6 +2,7 @@
 
 namespace Northstar\Console\Commands;
 
+use Illuminate\Support\Collection;
 use Northstar\Models\User;
 use Illuminate\Console\Command;
 use libphonenumber\PhoneNumberUtil;
@@ -34,8 +35,10 @@ class ConvertMobilesCommand extends Command
         $counter = $skip + 1;
 
         // Iterate over users where the `mobile` field is not null.
-        User::whereNotNull('mobile')->skip($skip)->chunk(200, function ($users) use (&$counter) {
+        $query = User::whereNotNull('mobile')->orderBy('created_at');
+        $query->chunkWithOffset(200, (int) $skip, function (Collection $users) use (&$counter) {
             $parser = PhoneNumberUtil::getInstance();
+            $users = User::hydrate($users->toArray());
 
             /** @var User $user */
             foreach ($users as $user) {
