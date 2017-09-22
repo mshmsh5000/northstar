@@ -36,6 +36,7 @@ class ConvertMobilesCommand extends Command
             $firstMatch = User::whereNull('e164')->whereNotNull('mobile')->orderBy('_id')->first();
             if (! $firstMatch) {
                 $this->error('No users need to be converted.');
+
                 return;
             }
 
