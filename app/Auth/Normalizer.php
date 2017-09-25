@@ -3,6 +3,8 @@
 namespace Northstar\Auth;
 
 use Carbon\Carbon;
+use libphonenumber\PhoneNumberUtil;
+use libphonenumber\PhoneNumberFormat;
 
 class Normalizer
 {
@@ -62,15 +64,24 @@ class Normalizer
      */
     public function mobile($mobile)
     {
-        // Remove all non-numeric characters.
-        $sanitizedValue = preg_replace('/[^0-9]/', '', $mobile);
-
-        // If it's 11-digits and the leading digit is a 1, then remove country code.
-        if (strlen($sanitizedValue) === 11 && $sanitizedValue[0] === '1') {
-            $sanitizedValue = substr($sanitizedValue, 1);
+        if (empty($mobile)) {
+            return null;
         }
 
-        return $sanitizedValue;
+        // Normalize "1 (555) 555-5555" format without leading "+".
+        $digits = preg_replace('/[^0-9]/', '', $mobile);
+        if (strlen($digits) === 11 && $digits[0] === '1') {
+            $mobile = '+'.$mobile;
+        }
+
+        try {
+            $parser = PhoneNumberUtil::getInstance();
+            $number = $parser->parse($mobile, 'US');
+
+            return $parser->format($number, PhoneNumberFormat::E164);
+        } catch (\libphonenumber\NumberParseException $e) {
+            return null;
+        }
     }
 
     /**

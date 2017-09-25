@@ -20,7 +20,7 @@ class UserInfoTransformer extends TransformerAbstract
             'given_name' => $user->first_name,
             'family_name' => $user->last_name,
             'email' => $user->email,
-            'phone_number' => $user->mobile,
+            'phone_number' => format_legacy_mobile($user->mobile),
             'birthdate' => format_date($user->birthdate, 'Y-m-d'),
 
             'address' => [

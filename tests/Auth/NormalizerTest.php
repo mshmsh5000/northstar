@@ -35,7 +35,7 @@ class NormalizerTest extends TestCase
     {
         $normalized = normalize('mobile', '1 (555) 123-4567');
 
-        $this->assertSame('5551234567', $normalized);
+        $this->assertSame('+15551234567', $normalized);
     }
 
     /**
@@ -65,7 +65,7 @@ class NormalizerTest extends TestCase
         $this->assertArrayNotHasKey('username', $normalized);
         $this->assertArrayNotHasKey('email', $normalized);
 
-        $this->assertSame('5551234567', $normalized['mobile']);
+        $this->assertSame('+15551234567', $normalized['mobile']);
     }
 
     /**
