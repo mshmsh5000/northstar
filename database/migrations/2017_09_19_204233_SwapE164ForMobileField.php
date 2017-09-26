@@ -21,7 +21,7 @@ class SwapE164ForMobileField extends Migration
         $this->renameField('users', 'e164', 'mobile');
 
         Schema::table('users', function (Blueprint $collection) {
-            $collection->index('mobile', ['sparse' => true, 'unique' => true]);
+            $collection->index('mobile', null, null, ['sparse' => true, 'unique' => true]);
         });
     }
 
@@ -40,7 +40,7 @@ class SwapE164ForMobileField extends Migration
         $this->renameField('users', '_old_mobile', 'mobile');
 
         Schema::table('users', function (Blueprint $collection) {
-            $collection->index('mobile', ['sparse' => true, 'unique' => true]);
+            $collection->index('mobile', null, null, ['sparse' => true, 'unique' => true]);
         });
     }
 

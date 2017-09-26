@@ -13,7 +13,7 @@ class AddIndexToFacebookId extends Migration
     public function up()
     {
         Schema::table('users', function (Blueprint $collection) {
-            $collection->index('facebook_id', ['sparse' => true]);
+            $collection->index('facebook_id', null, null, ['sparse' => true]);
         });
     }
 

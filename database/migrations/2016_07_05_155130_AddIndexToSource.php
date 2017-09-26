@@ -13,7 +13,7 @@ class AddIndexToSource extends Migration
     public function up()
     {
         Schema::table('users', function (Blueprint $collection) {
-            $collection->index('source', ['sparse' => true]);
+            $collection->index('source', null, null, ['sparse' => true]);
         });
     }
 
