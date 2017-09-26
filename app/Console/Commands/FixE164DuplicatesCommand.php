@@ -45,7 +45,7 @@ class FixE164DuplicatesCommand extends Command
         $duplicates = $collection->aggregate([
             [
                 '$match' => [
-                    'mobile' => ['$ne' => null],
+                    $mobileColumn => ['$ne' => null],
                 ],
             ],
             [
