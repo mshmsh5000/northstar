@@ -44,6 +44,11 @@ class FixE164DuplicatesCommand extends Command
         $collection = $mongo->selectCollection('users');
         $duplicates = $collection->aggregate([
             [
+                '$match' => [
+                    $mobileColumn => ['$ne' => null],
+                ],
+            ],
+            [
                 '$group' => [
                     '_id' => [$mobileColumn => '$'.$mobileColumn],
                     'uniqueIds' => ['$addToSet' => '$_id'],
