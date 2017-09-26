@@ -13,7 +13,7 @@ class AddIndexToRole extends Migration
     public function up()
     {
         Schema::table('users', function (Blueprint $collection) {
-            $collection->index('role', ['sparse' => true]);
+            $collection->index('role', null, null, ['sparse' => true]);
         });
     }
 

@@ -12,7 +12,7 @@ class AddDrupalIDIndex extends Migration
     public function up()
     {
         Schema::table('users', function ($collection) {
-            $collection->index('drupal_id', ['sparse' => true]);
+            $collection->index('drupal_id', null, null, ['sparse' => true]);
         });
     }
 
