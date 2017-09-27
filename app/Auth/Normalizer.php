@@ -35,7 +35,7 @@ class Normalizer
         }
 
         if (! empty($credentials['mobile'])) {
-            $credentials ['mobile'] = $this->mobile($credentials['mobile']);
+            $credentials['mobile'] = $this->mobile($credentials['mobile']);
         }
 
         return $credentials;

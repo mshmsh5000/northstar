@@ -296,18 +296,18 @@ class LegacyUserTest extends TestCase
      */
     public function testSearchUsers()
     {
-        // Make a test user to search for.
-        User::create([
-            'email' => 'search-result@dosomething.org',
-        ]);
+        // Make a target user to search for & some others.
+        factory(User::class)->create(['email' => 'search-result@dosomething.org']);
+        factory(User::class, 2)->create(['mobile' => null]);
 
         // Search should be limited to `admin` scoped keys.
         $this->get('v1/users?search[email]=search-result@dosomething.org');
         $this->assertResponseStatus(403);
 
-        // Query by a "known" search term
+        // Query by a "known" search term.
+        $query = 'search-result@dosomething.org';
         $this->withLegacyApiKeyScopes(['admin'])
-            ->get('v1/users?search[_id]=search-result@dosomething.org&search[email]=search-result@dosomething.org');
+            ->get('v1/users?search[id]='.$query.'&search[email]='.$query.'&search[mobile]='.$query);
         $this->assertResponseStatus(200);
 
         // There should be one match (a user with the provided email)
