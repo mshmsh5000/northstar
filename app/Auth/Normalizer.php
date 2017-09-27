@@ -35,7 +35,8 @@ class Normalizer
         }
 
         if (! empty($credentials['mobile'])) {
-            $credentials ['mobile'] = $this->mobile($credentials['mobile']);
+            $mobile = $this->mobile($credentials['mobile']);
+            $credentials['mobile'] = $mobile ?: '';
         }
 
         return $credentials;
@@ -65,7 +66,7 @@ class Normalizer
     public function mobile($mobile)
     {
         if (empty($mobile)) {
-            return null;
+            return '';
         }
 
         // Normalize "1 (555) 555-5555" format without leading "+".
@@ -80,7 +81,7 @@ class Normalizer
 
             return $parser->format($number, PhoneNumberFormat::E164);
         } catch (\libphonenumber\NumberParseException $e) {
-            return null;
+            return '';
         }
     }
 
