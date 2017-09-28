@@ -34,7 +34,7 @@ function normalize($type = null, $value = null)
 /**
  * Format a Carbon date if available to a specified format.
  *
- * @param  string $date
+ * @param Carbon|string $date
  * @param string $format
  * @return null|string
  */
@@ -51,6 +51,19 @@ function format_date($date, $format = 'M j, Y')
     }
 
     return $date->format($format);
+}
+
+/**
+ * Format a date as an ISO-8601 timestamp.
+ *
+ * @param Carbon|string $date
+ * @return null|string
+ */
+function iso8601($date)
+{
+    // Fun fact: PHP's built-in DateTime::ISO8601 constant is wrong,
+    // so that's why we use Carbon::ATOM here. (https://goo.gl/MzIaqP)
+    return format_date($date, Carbon::ATOM);
 }
 
 /**
