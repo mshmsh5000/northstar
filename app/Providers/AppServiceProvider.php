@@ -32,6 +32,11 @@ class AppServiceProvider extends ServiceProvider
         });
 
         User::updating(function (User $user) {
+            // Send payload to Blink for Customer.io profile.
+            if (config('features.blink')) {
+                app(Blink::class)->userCreate($user->toBlinkPayload());
+            }
+
             // Write profile changes to the log, with redacted values for hidden fields.
             $changed = array_replace_keys($user->getDirty(), $user->getHidden(), '*****');
             logger('updated user', ['id' => $user->id, 'client_id' => client_id(), 'changed' => $changed]);
