@@ -2,10 +2,8 @@
 
 namespace Northstar\Providers;
 
-use Illuminate\Database\Query\Builder;
 use Northstar\Models\User;
 use DoSomething\Gateway\Blink;
-use DoSomething\Gateway\Gladiator;
 use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider

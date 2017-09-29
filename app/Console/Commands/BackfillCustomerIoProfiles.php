@@ -34,7 +34,8 @@ class BackfillCustomerIoProfiles extends Command
     {
         $start = new Carbon($this->argument('start'));
 
-        // Iterate over users where the `mobile` field is not null.
+        // Iterate over users where the `mobile` field is not null
+        // or their profile was updated after the given date.
         $query = User::whereNotNull('mobile')
             ->orWhere('updated_at', '>', $start);
 
