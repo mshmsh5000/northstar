@@ -38,39 +38,6 @@ class AppServiceProvider extends ServiceProvider
             $changed = array_replace_keys($user->getDirty(), $user->getHidden(), '*****');
             logger('updated user', ['id' => $user->id, 'client_id' => client_id(), 'changed' => $changed]);
         });
-
-        // Add 'chunkWithLimit' method to the query builder.
-        // @see: https://github.com/laravel/internals/issues/103
-        Builder::macro('chunkFromId', function ($count, $startId, callable $callback, $column) {
-            /** @var Builder $this */
-
-            // Literally copy-pasting `chunkById` so we can override this value... :'(
-            $lastId = $startId;
-
-            do {
-                $clone = clone $this;
-
-                // ... and switch this `>` to a `>=`. Oy.
-                $results = $clone->where($column, '>=', $lastId)
-                    ->orderBy($column, 'asc')
-                    ->take($count)
-                    ->get();
-
-                $countResults = $results->count();
-
-                if ($countResults == 0) {
-                    break;
-                }
-
-                if (call_user_func($callback, $results) === false) {
-                    return false;
-                }
-
-                $lastId = $results->last()[$column];
-            } while ($countResults == $count);
-
-            return true;
-        });
     }
 
     /**
