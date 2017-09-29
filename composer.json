@@ -3,10 +3,16 @@
   "description": "The DoSomething.org user & activity API.",
   "license": "MIT",
   "type": "project",
+  "repositories": [
+    {
+      "type": "vcs",
+      "url": "https://github.com/dosomething/laravel-mongodb"
+    }
+  ],
   "require": {
     "laravel/framework": "5.3.*",
     "guzzlehttp/guzzle": "~6.2.1",
-    "jenssegers/mongodb": "3.2.*",
+    "jenssegers/mongodb": "dev-chunkById",
     "league/flysystem-aws-s3-v3": "~1.0",
     "parse/php-sdk" : "1.1.*",
     "league/fractal": "0.13.*",

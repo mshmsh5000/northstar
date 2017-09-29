@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "content-hash": "d80b2c16c7b9cd278e59a3d75caaaa52",
+    "content-hash": "46a7e6a3fe51bf3b8d4db46d9b1f4231",
     "packages": [
         {
             "name": "aws/aws-sdk-php",
@@ -828,16 +828,16 @@
         },
         {
             "name": "jenssegers/mongodb",
-            "version": "v3.2.3",
+            "version": "dev-chunkById",
             "source": {
                 "type": "git",
-                "url": "https://github.com/jenssegers/laravel-mongodb.git",
-                "reference": "c0cae3e187999ea80f92cc5ab169de4baa784f2e"
+                "url": "https://github.com/DoSomething/laravel-mongodb.git",
+                "reference": "82fad701bb254fde9aba949fb26c8e4905eca954"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/jenssegers/laravel-mongodb/zipball/c0cae3e187999ea80f92cc5ab169de4baa784f2e",
-                "reference": "c0cae3e187999ea80f92cc5ab169de4baa784f2e",
+                "url": "https://api.github.com/repos/DoSomething/laravel-mongodb/zipball/82fad701bb254fde9aba949fb26c8e4905eca954",
+                "reference": "82fad701bb254fde9aba949fb26c8e4905eca954",
                 "shasum": ""
             },
             "require": {
@@ -871,7 +871,13 @@
                     "Jenssegers\\Mongodb": "src/"
                 }
             },
-            "notification-url": "https://packagist.org/downloads/",
+            "autoload-dev": {
+                "classmap": [
+                    "tests/TestCase.php",
+                    "tests/models",
+                    "tests/seeds"
+                ]
+            },
             "license": [
                 "MIT"
             ],
@@ -892,7 +898,10 @@
                 "mongo",
                 "mongodb"
             ],
-            "time": "2017-09-05T11:17:05+00:00"
+            "support": {
+                "source": "https://github.com/DoSomething/laravel-mongodb/tree/chunkById"
+            },
+            "time": "2017-09-29T21:14:12+00:00"
         },
         {
             "name": "jeremeamia/SuperClosure",
@@ -4936,7 +4945,9 @@
     ],
     "aliases": [],
     "minimum-stability": "stable",
-    "stability-flags": [],
+    "stability-flags": {
+        "jenssegers/mongodb": 20
+    },
     "prefer-stable": false,
     "prefer-lowest": false,
     "platform": [],
