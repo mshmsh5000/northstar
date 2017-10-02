@@ -2,10 +2,8 @@
 
 namespace Northstar\Providers;
 
-use Illuminate\Database\Query\Builder;
 use Northstar\Models\User;
 use DoSomething\Gateway\Blink;
-use DoSomething\Gateway\Gladiator;
 use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
@@ -38,39 +36,6 @@ class AppServiceProvider extends ServiceProvider
             $changed = array_replace_keys($user->getDirty(), $user->getHidden(), '*****');
             logger('updated user', ['id' => $user->id, 'client_id' => client_id(), 'changed' => $changed]);
         });
-
-        // Add 'chunkWithLimit' method to the query builder.
-        // @see: https://github.com/laravel/internals/issues/103
-        Builder::macro('chunkFromId', function ($count, $startId, callable $callback, $column) {
-            /** @var Builder $this */
-
-            // Literally copy-pasting `chunkById` so we can override this value... :'(
-            $lastId = $startId;
-
-            do {
-                $clone = clone $this;
-
-                // ... and switch this `>` to a `>=`. Oy.
-                $results = $clone->where($column, '>=', $lastId)
-                    ->orderBy($column, 'asc')
-                    ->take($count)
-                    ->get();
-
-                $countResults = $results->count();
-
-                if ($countResults == 0) {
-                    break;
-                }
-
-                if (call_user_func($callback, $results) === false) {
-                    return false;
-                }
-
-                $lastId = $results->last()[$column];
-            } while ($countResults == $count);
-
-            return true;
-        });
     }
 
     /**
@@ -80,13 +45,6 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register()
     {
-        // @TODO: This should be registered in Gateway's service provider!
-        $this->app->singleton(Blink::class, function () {
-            return new Blink(config('services.blink'));
-        });
-
-        $this->app->singleton(Gladiator::class, function () {
-            return new Gladiator(config('services.gladiator'));
-        });
+        //
     }
 }

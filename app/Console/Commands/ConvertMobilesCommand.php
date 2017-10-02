@@ -15,7 +15,7 @@ class ConvertMobilesCommand extends Command
      *
      * @var string
      */
-    protected $signature = 'northstar:e164 {start?}';
+    protected $signature = 'northstar:e164';
 
     /**
      * The console command description.
@@ -31,22 +31,11 @@ class ConvertMobilesCommand extends Command
      */
     public function handle()
     {
-        $start = $this->argument('start');
-        if (! $start) {
-            $firstMatch = User::whereNull('e164')->whereNotNull('mobile')->orderBy('_id')->first();
-            if (! $firstMatch) {
-                $this->error('No users need to be converted.');
-
-                return;
-            }
-
-            $start = $firstMatch->id;
-        }
-
         $counter = 1;
 
         // Iterate over users where the `mobile` field is not null.
-        User::whereNull('e164')->whereNotNull('mobile')->chunkFromId(200, $start, function (Collection $records) use (&$counter, $start) {
+        $query = User::whereNull('e164')->whereNotNull('mobile');
+        $query->chunkById(200, function (Collection $records) use (&$counter) {
             $parser = PhoneNumberUtil::getInstance();
             $users = User::hydrate($records->toArray());
 
@@ -76,6 +65,6 @@ class ConvertMobilesCommand extends Command
 
                 $counter++;
             }
-        }, '_id');
+        });
     }
 }

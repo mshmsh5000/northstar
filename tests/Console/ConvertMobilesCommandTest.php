@@ -42,19 +42,18 @@ class ConvertMobilesCommandTest extends TestCase
     }
 
     /** @test */
-    public function it_should_restart_based_on_skip_argument()
+    public function it_should_not_reprocess_existing_e164_values()
     {
-        $this->createMongoDocument('users', ['mobile' => '7455559417']);
-        $this->createMongoDocument('users', ['mobile' => '6965552100']);
+        $this->createMongoDocument('users', ['mobile' => '7455559417', 'e164' => 'skip']);
+        $this->createMongoDocument('users', ['mobile' => '6965552100', 'e164' => 'skip']);
         $this->createMongoDocument('users', ['mobile' => '2225559999']); // start!
         $this->createMongoDocument('users', ['mobile' => '8145551234']);
 
         // Run the command to convert to E.164 format.
-        $id = User::where('mobile', '2225559999')->first()->id;
-        $this->artisan('northstar:e164', ['start' => $id]);
+        $this->artisan('northstar:e164');
 
-        $this->seeInDatabase('users', ['mobile' => '7455559417', 'e164' => null]); // skipped!
-        $this->seeInDatabase('users', ['mobile' => '6965552100', 'e164' => null]); // skipped!
+        $this->seeInDatabase('users', ['mobile' => '7455559417', 'e164' => 'skip']); // skipped!
+        $this->seeInDatabase('users', ['mobile' => '6965552100', 'e164' => 'skip']); // skipped!
         $this->seeInDatabase('users', ['mobile' => '8145551234', 'e164' => '+18145551234']);
         $this->seeInDatabase('users', ['mobile' => '2225559999', 'e164' => '+12225559999']);
     }
