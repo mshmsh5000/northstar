@@ -42,7 +42,7 @@ class UserModelTest extends TestCase
     /** @test */
     public function it_should_send_updated_users_to_blink()
     {
-        config(['features.blink' => true]);
+        config(['features.blink' => true, 'features.blink-updates' => true]);
 
         /** @var User $user */
         $user = factory(User::class)->create();
