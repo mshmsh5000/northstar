@@ -78,16 +78,6 @@ abstract class TestCase extends Illuminate\Foundation\Testing\TestCase
         // Get a new Faker generator from Laravel.
         $this->faker = app(\Faker\Generator::class);
 
-        // Configure a mock for Phoenix & default `createDrupalUser` response.
-        $this->phoenixMock = $this->mock(Phoenix::class);
-        $this->phoenixMock->shouldReceive('createDrupalUser')->andReturnUsing(function () {
-            return $this->faker->unique()->numberBetween(1, 30000000);
-        });
-
-        // Configure a mock for Blink model events.
-        $this->blinkMock = $this->mock(Blink::class);
-        $this->blinkMock->shouldReceive('userCreate')->andReturn(true);
-
         // Reset the testing database & run migrations.
         $this->app->make('db')->getMongoDB()->drop();
         $this->artisan('migrate');
@@ -270,11 +260,21 @@ abstract class TestCase extends Illuminate\Foundation\Testing\TestCase
      */
     public function createApplication()
     {
-        $app = require __DIR__.'/../bootstrap/app.php';
+        $this->app = require __DIR__.'/../bootstrap/app.php';
 
-        $app->make('Illuminate\Contracts\Console\Kernel')->bootstrap();
+        $this->app->make('Illuminate\Contracts\Console\Kernel')->bootstrap();
 
-        return $app;
+        // Configure a mock for Phoenix & default `createDrupalUser` response.
+        $this->phoenixMock = $this->mock(Phoenix::class);
+        $this->phoenixMock->shouldReceive('createDrupalUser')->andReturnUsing(function () {
+            return $this->faker->unique()->numberBetween(1, 30000000);
+        });
+
+        // Configure a mock for Blink model events.
+        $this->blinkMock = $this->mock(Blink::class);
+        $this->blinkMock->shouldReceive('userCreate')->andReturn(true);
+
+        return $this->app;
     }
 
     /**

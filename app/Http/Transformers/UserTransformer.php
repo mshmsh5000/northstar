@@ -66,13 +66,13 @@ class UserTransformer extends TransformerAbstract
         $response['role'] = $user->role;
 
         if (Scope::allows('admin') || Gate::allows('view-full-profile', $user)) {
-            $response['last_accessed_at'] = $user->last_accessed_at ? $user->last_accessed_at->toIso8601String() : null;
-            $response['last_authenticated_at'] = $user->last_authenticated_at ? $user->last_authenticated_at->toIso8601String() : null;
-            $response['last_messaged_at'] = $user->last_messaged_at ? $user->last_messaged_at->toIso8601String() : null;
+            $response['last_accessed_at'] = iso8601($user->last_accessed_at);
+            $response['last_authenticated_at'] = iso8601($user->last_authenticated_at);
+            $response['last_messaged_at'] = iso8601($user->last_messaged_at);
         }
 
-        $response['updated_at'] = $user->updated_at->toIso8601String();
-        $response['created_at'] = $user->created_at->toIso8601String();
+        $response['updated_at'] = iso8601($user->updated_at);
+        $response['created_at'] = iso8601($user->created_at);
 
         return $response;
     }

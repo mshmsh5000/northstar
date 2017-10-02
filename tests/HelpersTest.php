@@ -21,6 +21,14 @@ class HelpersTest extends TestCase
     }
 
     /** @test */
+    public function testIso8601()
+    {
+        $this->assertEquals('2017-12-15T22:00:00+00:00', iso8601('December 15 2017 10:00pm'));
+        $this->assertEquals('2017-12-15T22:00:00+00:00', iso8601(new Carbon('December 15 2017 10:00pm')));
+        $this->assertEquals(null, iso8601(null), 'handles null values safely');
+    }
+
+    /** @test */
     public function testRouteHasAttachedMiddleware()
     {
         $this->get('/login');

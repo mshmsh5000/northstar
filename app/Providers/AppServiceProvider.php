@@ -36,6 +36,13 @@ class AppServiceProvider extends ServiceProvider
             $changed = array_replace_keys($user->getDirty(), $user->getHidden(), '*****');
             logger('updated user', ['id' => $user->id, 'client_id' => client_id(), 'changed' => $changed]);
         });
+
+        User::updated(function (User $user) {
+            // Send payload to Blink for Customer.io profile.
+            if (config('features.blink') && config('features.blink-updates')) {
+                app(Blink::class)->userCreate($user->toBlinkPayload());
+            }
+        });
     }
 
     /**
