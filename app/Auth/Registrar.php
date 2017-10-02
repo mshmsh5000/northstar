@@ -64,6 +64,7 @@ class Registrar
 
         $existingId = isset($existingUser->id) ? $existingUser->id : 'null';
         $rules = [
+            'first_name' => 'max:50',
             'email' => 'email|unique:users,email,'.$existingId.',_id|required_without:mobile',
             'mobile' => 'mobile|unique:users,mobile,'.$existingId.',_id|required_without:email',
             'birthdate' => 'date',
