@@ -172,6 +172,27 @@ class WebAuthenticationTest extends TestCase
     }
 
     /**
+     * Test that users can't enter invalid profile info.
+     */
+    public function testRegisterInvalid()
+    {
+        $this->withHeader('X-Fastly-Country-Code', 'US');
+
+        $this->visit('register');
+        $this->submitForm('register-submit', [
+            'first_name' => $this->faker->text(150),
+            'email' => $this->faker->unique->email,
+            'birthdate' => '1/15/2130',
+            'password' => 'secret',
+        ]);
+
+        $this->see('The first name may not be greater than 50 characters');
+        $this->see('The birthdate must be a date before now');
+
+        $this->dontSeeIsAuthenticated('web');
+    }
+
+    /**
      * Test that users can register from other countries
      * and get the correct `country` and `language` fields.
      */
