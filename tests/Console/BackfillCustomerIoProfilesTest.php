@@ -13,8 +13,8 @@ class BackfillCustomerIoProfilesTest extends TestCase
         factory(User::class, 3)->create(['mobile' => null, 'updated_at' => new Carbon('1/15/2016')]);
         factory(User::class, 2)->create(['updated_at' => new Carbon('3/14/2017')]);
 
-        // Reset our Blink mock & set expectation that it'll be called twice - once
-        // for each of the users updated between 1/1/2017 and now.
+        // Reset our Blink mock & set expectation that it'll be called 4 times - once
+        // for each of the users updated after 1/1/2017, & once for each w/ a phone #.
         $this->mock(Blink::class)->shouldReceive('userCreate')->times(4);
 
         // Run the Customer.io backfill command.
