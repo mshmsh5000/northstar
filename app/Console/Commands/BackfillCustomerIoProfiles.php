@@ -38,7 +38,7 @@ class BackfillCustomerIoProfiles extends Command
 
         // Iterate over users who we have not already backfilled, and where the `mobile` field
         // is not null (we skipped originally) or their profile was updated after the given date.
-        $query = User::whereNull('cio_backfilled')->where(function (Builder $query) use ($start) {
+        $query = User::where('cio_backfilled', '!=', true)->where(function (Builder $query) use ($start) {
             $query->whereNotNull('mobile')
                   ->orWhere('updated_at', '>', $start);
         });
@@ -53,7 +53,7 @@ class BackfillCustomerIoProfiles extends Command
 
                     // Mark this user as processed.
                     $user->cio_backfilled = true;
-                    $user->save();
+                    $user->save(['touch' => false]);
 
                     $this->line('Successfully backfilled user '.$user->id);
                 } catch (Exception $e) {
