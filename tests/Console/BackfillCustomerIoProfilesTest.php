@@ -19,5 +19,8 @@ class BackfillCustomerIoProfilesTest extends TestCase
 
         // Run the Customer.io backfill command.
         $this->artisan('northstar:cio', ['start' => '1/1/2017']);
+
+        // Re-running the command should not re-backfill!
+        $this->artisan('northstar:cio', ['start' => '1/1/2017']);
     }
 }
