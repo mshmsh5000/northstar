@@ -36,16 +36,13 @@ class BackfillCustomerIoProfiles extends Command
     {
         $start = new Carbon($this->argument('start'));
 
-        // Iterate over users who we have not already backfilled, and where the `mobile` field
-        // is not null (we skipped originally) or their profile was updated after the given date.
-        $query = User::where('cio_backfilled', '!=', true)->where(function (Builder $query) use ($start) {
-            $query->whereNotNull('mobile')
-                  ->orWhere('updated_at', '>', $start);
-        });
+        // Iterate over users where the `mobile` field is not null (we skipped originally) or their
+        // profile was updated after the given date, skipping ones we have already backfilled.
+        $query = User::where(function (Builder $query) use ($start) {
+            $query->whereNotNull('mobile')->orWhere('updated_at', '>', $start);
+        })->where('cio_backfilled', '!=', true);
 
-        $query->chunkById(200, function (Collection $records) use ($blink) {
-            $users = User::hydrate($records->toArray());
-
+        $query->chunkById(200, function (Collection $users) use ($blink) {
             // Send each of the loaded users to Blink's user queue.
             $users->each(function (User $user) {
                 try {
