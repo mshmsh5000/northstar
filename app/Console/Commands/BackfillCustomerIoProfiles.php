@@ -4,6 +4,7 @@ namespace Northstar\Console\Commands;
 
 use Carbon\Carbon;
 use DoSomething\Gateway\Blink;
+use Exception;
 use Illuminate\Console\Command;
 use Illuminate\Support\Collection;
 use Northstar\Models\User;
@@ -44,7 +45,12 @@ class BackfillCustomerIoProfiles extends Command
 
             // Send each of the loaded users to Blink's user queue.
             $users->each(function ($user) {
-                gateway('blink')->userCreate($user->toBlinkPayload());
+                try {
+                    gateway('blink')->userCreate($user->toBlinkPayload());
+                    $this->line('Successfully backfilled user '.$user->id);
+                } catch (Exception $e) {
+                    $this->error('Failed to backfill user '.$user->id);
+                }
             });
         });
     }
