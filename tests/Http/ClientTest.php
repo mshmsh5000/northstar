@@ -26,7 +26,7 @@ class ClientTest extends TestCase
         $this->seeJsonStructure([
             'data' => [
                 '*' => [
-                    'client_id', 'client_secret', 'scope', 'allowed_grants', 'redirect_uri',
+                    'client_id', 'client_secret', 'scope', 'allowed_grant', 'redirect_uri',
                 ],
             ],
         ]);
@@ -56,7 +56,7 @@ class ClientTest extends TestCase
             'title' => 'Dog',
             'description' => 'hello this is doge',
             'client_id' => 'dog',
-            'allowed_grants' => ['password', 'client_credentials'],
+            'allowed_grant' => 'client_credentials',
             'scope' => ['admin'],
         ]);
 
@@ -121,12 +121,12 @@ class ClientTest extends TestCase
      */
     public function testUpdateAsAdminUser()
     {
-        $client = Client::create(['client_id' => 'update_key', 'allowed_grants' => ['password']]);
+        $client = Client::create(['client_id' => 'update_key', 'allowed_grant' => 'password']);
 
         $this->asAdminUser()->json('PUT', 'v2/clients/'.$client->client_id, [
             'title' => 'New Title',
             'scope' => ['admin', 'user'],
-            'allowed_grants' => ['authorization_code'],
+            'allowed_grant' => 'authorization_code',
             'redirect_uri' => 'http://example.com/callback',
         ]);
 
@@ -135,7 +135,7 @@ class ClientTest extends TestCase
             'title' => 'New Title',
             'client_id' => 'update_key',
             'scope' => ['admin', 'user'],
-            'allowed_grants' => ['authorization_code'],
+            'allowed_grant' => 'authorization_code',
             'redirect_uri' => 'http://example.com/callback',
         ]);
     }
