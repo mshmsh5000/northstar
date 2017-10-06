@@ -50,8 +50,8 @@ class ClientController extends Controller
             'title' => 'required|string',
             'description' => 'string',
             'scope' => 'array|scope', // @see Scope::validateScopes
-            'allowed_grants' => 'array|in:authorization_code,password,client_credentials,legacy',
             'redirect_uri' => 'url',
+            'allowed_grant' => 'string|in:authorization_code,password,client_credentials',
         ]);
 
         $key = Client::create($request->except('client_secret'));
