@@ -58,7 +58,8 @@ class PasswordResetTest extends TestCase
     }
 
     /**
-     * Test that users can't brute-force resetting a user's password via enumeration.
+     * Test that users can't request a password reset for another user and flood their email,
+     * and mitigate brute-force guessing an existing email via enumeration.
      */
     public function testPasswordResetRateLimited()
     {
