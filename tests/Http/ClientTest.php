@@ -127,7 +127,7 @@ class ClientTest extends TestCase
             'title' => 'New Title',
             'scope' => ['admin', 'user'],
             'allowed_grant' => 'authorization_code',
-            'redirect_uri' => 'http://example.com/callback',
+            'redirect_uri' => ['http://example.com/callback'],
         ]);
 
         $this->assertResponseStatus(200);
@@ -136,7 +136,7 @@ class ClientTest extends TestCase
             'client_id' => 'update_key',
             'scope' => ['admin', 'user'],
             'allowed_grant' => 'authorization_code',
-            'redirect_uri' => 'http://example.com/callback',
+            'redirect_uri' => ['http://example.com/callback'],
         ]);
     }
 
