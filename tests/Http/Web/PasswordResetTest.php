@@ -56,4 +56,29 @@ class PasswordResetTest extends TestCase
         // And their account should be updated with their new password.
         $this->assertTrue(app(Registrar::class)->validateCredentials($user->fresh(), ['password' => 'top_secret']));
     }
+
+    /**
+     * Test that users can't request a password reset for another user and flood their email,
+     * and mitigate brute-force guessing an existing email via enumeration.
+     */
+    public function testPasswordResetRateLimited()
+    {
+        for ($i = 0; $i < 10; $i++) {
+            $this->visit('password/reset');
+            $this->submitForm('Request New Password', [
+                'email' => 'nonexistant@example.com',
+            ]);
+
+            $this->see('We can\'t find a user with that e-mail address.');
+        }
+
+        $this->expectsEvents(\Northstar\Events\Throttled::class);
+
+        $this->visit('password/reset');
+        $this->submitForm('Request New Password', [
+            'email' => 'nonexistant@example.com',
+        ]);
+
+        $this->see('Too many attempts.');
+    }
 }
