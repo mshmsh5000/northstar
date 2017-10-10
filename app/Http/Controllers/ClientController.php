@@ -51,7 +51,8 @@ class ClientController extends Controller
             'description' => 'string',
             'scope' => 'array|scope', // @see Scope::validateScopes
             'allowed_grant' => 'string|in:authorization_code,password,client_credentials',
-            'redirect_uri' => 'url|required_if:allowed_grant,authorization_code',
+            'redirect_uri' => 'array|required_if:allowed_grant,authorization_code',
+            'redirect_uri.*' => 'url',
         ]);
 
         $key = Client::create($request->except('client_secret'));
@@ -88,7 +89,8 @@ class ClientController extends Controller
             'description' => 'string',
             'scope' => 'array|scope', // @see Scope::validateScopes
             'allowed_grant' => 'string|in:authorization_code,password,client_credentials',
-            'redirect_uri' => 'url|required_if:allowed_grant,authorization_code',
+            'redirect_uri' => 'array|required_if:allowed_grant,authorization_code',
+            'redirect_uri.*' => 'url',
         ]);
 
         $client = Client::findOrFail($client_id);
