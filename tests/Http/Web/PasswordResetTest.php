@@ -65,7 +65,7 @@ class PasswordResetTest extends TestCase
     {
         for ($i = 0; $i < 10; $i++) {
             $this->visit('password/reset');
-            $this->submitForm('Request New Password',[
+            $this->submitForm('Request New Password', [
                 'email' => 'nonexistant@example.com',
             ]);
 
@@ -75,7 +75,7 @@ class PasswordResetTest extends TestCase
         $this->expectsEvents(\Northstar\Events\Throttled::class);
 
         $this->visit('password/reset');
-        $this->submitForm('Request New Password',[
+        $this->submitForm('Request New Password', [
             'email' => 'nonexistant@example.com',
         ]);
 
