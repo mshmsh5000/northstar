@@ -8,11 +8,18 @@
         <p>{{ session('callToAction', trans('auth.get_started.call_to_action')) }}
     </div>
 
-    <div class="container__block -centered">
-        @include('auth.facebook')
-        <a href="{{ url('login') }}" class="button std-login">{{ trans('auth.log_in.default') }}</a>
+    <div class="container__block">
+        <ul class="form-actions -inline">
+            <li>@include('auth.facebook')</li>
+            <li><a href="{{ url('login') }}" class="button">{{ trans('auth.log_in.default') }}</a></li>
+        </ul>
         <span class="divider"></span>
     </div>
+
+    <!-- <div class="contain">
+        @include('auth.facebook')
+        <a href="{{ url('login') }}" class="button">{{ trans('auth.log_in.default') }}</a>
+    </div> -->
 
     <div class="container__block -centered">
         @if (count($errors) > 0)
