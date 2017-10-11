@@ -16,11 +16,6 @@
         <span class="divider"></span>
     </div>
 
-    <!-- <div class="contain">
-        @include('auth.facebook')
-        <a href="{{ url('login') }}" class="button">{{ trans('auth.log_in.default') }}</a>
-    </div> -->
-
     <div class="container__block -centered">
         @if (count($errors) > 0)
             <div class="validation-error fade-in-up">
