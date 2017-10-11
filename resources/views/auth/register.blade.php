@@ -8,8 +8,9 @@
         <p>{{ session('callToAction', trans('auth.get_started.call_to_action')) }}
     </div>
 
-    <div class="container__block">
+    <div class="container__block -centered">
         @include('auth.facebook')
+        <a href="{{ url('login') }}" class="button std-login">{{ trans('auth.log_in.default') }}</a>
         <span class="divider"></span>
     </div>
 
@@ -62,12 +63,6 @@
                 <input type="submit" id="register-submit" class="button" value="{{ trans('auth.log_in.submit') }}">
             </div>
         </form>
-    </div>
-
-    <div class="container__block -centered">
-        <ul>
-            <li><a href="{{ url('login') }}">{{ trans('auth.log_in.existing') }}</a></li>
-        </ul>
     </div>
 
     <div class="container__block -centered">
