@@ -9,7 +9,10 @@
     </div>
 
     <div class="container__block">
-        @include('auth.facebook')
+        <ul class="form-actions -inline">
+            <li>@include('auth.facebook')</li>
+            <li><a href="{{ url('login') }}" class="button">{{ trans('auth.log_in.default') }}</a></li>
+        </ul>
         <span class="divider"></span>
     </div>
 
@@ -62,12 +65,6 @@
                 <input type="submit" id="register-submit" class="button" value="{{ trans('auth.log_in.submit') }}">
             </div>
         </form>
-    </div>
-
-    <div class="container__block -centered">
-        <ul>
-            <li><a href="{{ url('login') }}">{{ trans('auth.log_in.existing') }}</a></li>
-        </ul>
     </div>
 
     <div class="container__block -centered">
