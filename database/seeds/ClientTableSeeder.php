@@ -15,24 +15,23 @@ class ClientTableSeeder extends Seeder
     {
         DB::table('clients')->delete();
 
-        // For easy testing, we'll seed one client with all scopes...
-        Client::create([
-            'title' => 'Trusted Test Client',
-            'description' => 'This is an example OAuth client seeded with your local Northstar installation. It was automatically given all scopes that were defined when it was created.',
-            'client_id' => 'trusted-test-client',
+        // For easy testing, we'll seed one client for web authentication:
+        factory(Client::class, 'authorization_code')->create([
+            'title' => 'Local Development',
+            'description' => 'This is an example web OAuth client seeded with your local Northstar installation.',
+            'client_id' => 'oauth-test-client',
             'client_secret' => 'secret1',
-            'allowed_grants' => ['authorization_code', 'password', 'client_credentials'],
-            'scope' => collect(Scope::all())->keys()->toArray(),
+            'scope' => collect(Scope::all())->except('admin')->keys()->toArray(),
+            // @NOTE: We're omitting 'redirect_uri' here for easy local dev.
         ]);
 
-        // ..and one with limited scopes.
-        Client::create([
-            'title' => 'Untrusted Test Client',
-            'description' => 'This is an example OAuth client seeded with your local Northstar installation. It is only given the user scope, and can be used to simulate untrusted clients (for example, the mobile app).',
-            'client_id' => 'untrusted-test-client',
+        // ..and one for machine authentication:
+        factory(Client::class, 'client_credentials')->create([
+            'title' => 'Local Development (Machine)',
+            'description' => 'This is an example machine OAuth client seeded with your local Northstar installation.',
+            'client_id' => 'machine-test-client',
             'client_secret' => 'secret2',
-            'allowed_grants' => ['password'],
-            'scope' => ['user'],
+            'scope' => collect(Scope::all())->keys()->toArray(),
         ]);
     }
 }

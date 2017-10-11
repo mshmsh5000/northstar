@@ -10,7 +10,8 @@ namespace Northstar\Models;
  * @property string $description
  * @property string $client_id
  * @property string $client_secret
- * @property string $redirect_uri
+ * @property string $allowed_grant
+ * @property array $redirect_uri
  * @property array $scope
  */
 class Client extends Model

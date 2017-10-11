@@ -254,7 +254,7 @@ class WebAuthenticationTest extends TestCase
      */
     public function testAuthorizeSessionVariablesExist()
     {
-        $client = Client::create(['client_id' => 'phpunit', 'scope' => ['user'], 'redirect_uri' => 'http://example.com/']);
+        $client = factory(Client::class, 'authorization_code')->create();
 
         $this->get('authorize?'.http_build_query([
             'response_type' => 'code',
