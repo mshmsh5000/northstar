@@ -50,7 +50,12 @@ class ClientRepository implements ClientRepositoryInterface
      */
     public function clientCanUseGrant($client, $grantType)
     {
-        // @TODO: Limit this based on the 'allowed_grants' field on the Client.
-        return true;
+        // The refresh token grant can be used by password or auth code tokens.
+        if ($grantType === 'refresh_token') {
+            return in_array($client->allowed_grant, ['password', 'authorization_code']);
+        }
+
+        // Otherwise, the client must always match the grant being used.
+        return $client->allowed_grant === $grantType;
     }
 }
