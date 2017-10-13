@@ -62,7 +62,8 @@ $router->group(['prefix' => 'v2', 'as' => 'v2.', 'middleware' => ['api']], funct
     $router->resource('resets', 'ResetController', ['only' => 'store']);
 
     // Public Key
-    $router->get('key', 'KeyController@show');
+    $router->get('keys', 'KeyController@index');
+    $router->get('key', 'KeyController@show'); // Deprecated.
 
     // Scopes
     $router->get('scopes', 'ScopeController@index');
