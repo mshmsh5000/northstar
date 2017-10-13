@@ -29,10 +29,9 @@ class BackfillCustomerIoProfiles extends Command
     /**
      * Execute the console command.
      *
-     * @param Blink $blink
      * @return mixed
      */
-    public function handle(Blink $blink)
+    public function handle()
     {
         $start = new Carbon($this->argument('start'));
 
@@ -42,7 +41,7 @@ class BackfillCustomerIoProfiles extends Command
             $query->whereNotNull('mobile')->orWhere('updated_at', '>', $start);
         })->where('cio_backfilled', '!=', true);
 
-        $query->chunkById(200, function (Collection $users) use ($blink) {
+        $query->chunkById(200, function (Collection $users) {
             // Send each of the loaded users to Blink's user queue.
             $users->each(function (User $user) {
                 try {
