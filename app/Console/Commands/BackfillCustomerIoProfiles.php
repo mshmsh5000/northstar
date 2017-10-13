@@ -17,7 +17,9 @@ class BackfillCustomerIoProfiles extends Command
      *
      * @var string
      */
-    protected $signature = 'northstar:cio {start}';
+    protected $signature = 'northstar:cio
+                            {start : The date to begin back-filling records from.}
+                            {--throughput= : The maximum number of records to process per minute.}';
 
     /**
      * The console command description.
@@ -29,12 +31,12 @@ class BackfillCustomerIoProfiles extends Command
     /**
      * Execute the console command.
      *
-     * @param Blink $blink
-     * @return mixed
+     * @return void
      */
-    public function handle(Blink $blink)
+    public function handle()
     {
         $start = new Carbon($this->argument('start'));
+        $throughput = $this->option('throughput');
 
         // Iterate over users where the `mobile` field is not null (we skipped originally) or their
         // profile was updated after the given date, skipping ones we have already backfilled.
@@ -42,9 +44,9 @@ class BackfillCustomerIoProfiles extends Command
             $query->whereNotNull('mobile')->orWhere('updated_at', '>', $start);
         })->where('cio_backfilled', '!=', true);
 
-        $query->chunkById(200, function (Collection $users) use ($blink) {
+        $query->chunkById(200, function (Collection $users) use ($throughput) {
             // Send each of the loaded users to Blink's user queue.
-            $users->each(function (User $user) {
+            $users->each(function (User $user) use ($throughput) {
                 try {
                     gateway('blink')->userCreate($user->toBlinkPayload());
 
@@ -55,6 +57,12 @@ class BackfillCustomerIoProfiles extends Command
                     $this->line('Successfully backfilled user '.$user->id);
                 } catch (Exception $e) {
                     $this->error('Failed to backfill user '.$user->id);
+                }
+
+                // If the `--throughput #` parameter is set, make sure we can't
+                // process more than # users per minute by taking a little nap.
+                if ($throughput) {
+                    sleep(60 / $throughput);
                 }
             });
         });
