@@ -95,6 +95,11 @@ $router->group(['prefix' => 'v1', 'as' => 'v1.', 'middleware' => ['api']], funct
     $router->resource('reportbacks', 'Legacy\ReportbackController', ['only' => ['index', 'show', 'store']]);
 });
 
+// Discovery
+$router->group(['prefix' => '.well-known'], function () use ($router) {
+    $router->get('openid-configuration', 'DiscoveryController@index');
+});
+
 // Simple health check endpoint
 $router->get('/status', function () {
     return ['status' => 'good'];
