@@ -62,7 +62,8 @@ $router->group(['prefix' => 'v2', 'as' => 'v2.', 'middleware' => ['api']], funct
     $router->resource('resets', 'ResetController', ['only' => 'store']);
 
     // Public Key
-    $router->get('key', 'KeyController@show');
+    $router->get('keys', 'KeyController@index');
+    $router->get('key', 'KeyController@show'); // Deprecated.
 
     // Scopes
     $router->get('scopes', 'ScopeController@index');
@@ -93,6 +94,11 @@ $router->group(['prefix' => 'v1', 'as' => 'v1.', 'middleware' => ['api']], funct
     // Signups & Reportbacks (Phoenix)
     $router->resource('signups', 'Legacy\SignupController', ['only' => ['index', 'show', 'store']]);
     $router->resource('reportbacks', 'Legacy\ReportbackController', ['only' => ['index', 'show', 'store']]);
+});
+
+// Discovery
+$router->group(['prefix' => '.well-known'], function () use ($router) {
+    $router->get('openid-configuration', 'DiscoveryController@index');
 });
 
 // Simple health check endpoint
