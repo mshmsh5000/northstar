@@ -66,9 +66,7 @@ class FixSourcesCommand extends Command
 
             // If the `--throughput #` parameter is set, make sure we can't
             // process more than # users per minute by taking a little nap.
-            if ($throughput) {
-                sleep(60 / $throughput);
-            }
+            throttle($throughput);
         }
 
         $this->info('Done!');
