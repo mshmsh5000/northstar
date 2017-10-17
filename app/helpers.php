@@ -208,3 +208,25 @@ function is_dosomething_domain($url)
 
     return ends_with($parsed['host'], 'dosomething.org') !== false;
 }
+
+/**
+ * Throttle a script by setting a limit on the number of
+ * times something can happen per minute.
+ *
+ * @param int $throughput
+ * @return void
+ */
+function throttle($throughput)
+{
+    // Refuse to throttle non-console contexts.
+    if (! app()->runningInConsole()) {
+        throw new InvalidArgumentException('Cannot use throttle() outside of console scripts.');
+    }
+
+    if (empty($throughput)) {
+        return;
+    }
+
+    $seconds = 60 / $throughput;
+    usleep($seconds * 1000000);
+}
