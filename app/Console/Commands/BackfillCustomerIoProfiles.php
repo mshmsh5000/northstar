@@ -19,6 +19,8 @@ class BackfillCustomerIoProfiles extends Command
      */
     protected $signature = 'northstar:cio
                             {start : The date to begin back-filling records from.}
+                            {end=now : The date to back-fill records until.}
+                            {--created_at : Process records based on their created_at timestamp.}
                             {--throughput= : The maximum number of records to process per minute.}';
 
     /**
@@ -36,13 +38,23 @@ class BackfillCustomerIoProfiles extends Command
     public function handle()
     {
         $start = new Carbon($this->argument('start'));
+        $end = new Carbon($this->argument('end'));
+
+        $byCreatedAt = $this->option('created_at');
         $throughput = $this->option('throughput');
 
-        // Iterate over users where the `mobile` field is not null (we skipped originally) or their
-        // profile was updated after the given date, skipping ones we have already backfilled.
-        $query = User::where(function (Builder $query) use ($start) {
-            $query->whereNotNull('mobile')->orWhere('updated_at', '>', $start);
-        })->where('cio_backfilled', '!=', true);
+        if ($byCreatedAt) {
+            // If we pass `--created_at` flag, iterate over all users created in that time frame.
+            $query = User::where(function (Builder $query) use ($start, $end) {
+                $query->where('created_at', '>', $start)->where('created_at', '<', $end);
+            });
+        } else {
+            // Iterate over users where the `mobile` field is not null (we skipped originally) or their
+            // profile was updated in the given time frame, skipping ones we have already backfilled.
+            $query = User::where(function (Builder $query) use ($start, $end) {
+                $query->whereNotNull('mobile')->orWhere('updated_at', '>', $start);
+            })->where('updated_at', '<', $end)->where('cio_backfilled', '!=', true);
+        }
 
         $query->chunkById(200, function (Collection $users) use ($throughput) {
             // Send each of the loaded users to Blink's user queue.
