@@ -23,6 +23,7 @@ class ClientTableSeeder extends Seeder
             'client_secret' => 'secret1',
             'scope' => collect(Scope::all())->except('admin')->keys()->toArray(),
             // @NOTE: We're omitting 'redirect_uri' here for easy local dev.
+            'redirect_uri' => null,
         ]);
 
         // ..and one for machine authentication:
