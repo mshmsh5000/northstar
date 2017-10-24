@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "content-hash": "bdb156d9163abaef53087747dc80b4bc",
+    "content-hash": "143682a00f40b70160d2ee14642ee52d",
     "packages": [
         {
             "name": "aws/aws-sdk-php",
@@ -202,6 +202,39 @@
                 "symmetric key cryptography"
             ],
             "time": "2017-05-18T21:28:48+00:00"
+        },
+        {
+            "name": "dfurnes/environmentalist",
+            "version": "v0.0.2",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/DFurnes/environmentalist.git",
+                "reference": "d9cef13786c4f4396262040e90506256a8f2804c"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/DFurnes/environmentalist/zipball/d9cef13786c4f4396262040e90506256a8f2804c",
+                "reference": "d9cef13786c4f4396262040e90506256a8f2804c",
+                "shasum": ""
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "DFurnes\\Environmentalist\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "David Furnes",
+                    "email": "david@dfurnes.com"
+                }
+            ],
+            "description": "Dead-simple setup for Laravel apps.",
+            "time": "2017-10-23T20:12:57+00:00"
         },
         {
             "name": "dnoegel/php-xdg-base-dir",

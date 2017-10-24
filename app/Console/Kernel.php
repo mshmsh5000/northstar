@@ -21,6 +21,7 @@ class Kernel extends ConsoleKernel
         \Northstar\Console\Commands\FixMongoDatesCommand::class,
         \Northstar\Console\Commands\FixSourcesCommand::class,
         \Northstar\Console\Commands\KeysCommand::class,
+        \Northstar\Console\Commands\SetupCommand::class,
     ];
 
     /**

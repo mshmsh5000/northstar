@@ -26,7 +26,8 @@
     "laravel/socialite": "~2.0.20",
     "league/csv": "^8.0",
     "giggsey/libphonenumber-for-php": "^7.0",
-    "gree/jose": "^2.2"
+    "gree/jose": "^2.2",
+    "dfurnes/environmentalist": "^0.0.2"
   },
   "require-dev": {
     "phpunit/phpunit": "~4.0",
