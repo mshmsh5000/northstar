@@ -30,14 +30,14 @@ class CustomerIoMobileUserImport extends Command
     /**
      * Count of items to chunk the query by.
      *
-     * @var integer
+     * @var int
      */
     protected $chunkCount = 200;
 
     /**
      * Chunk iteration number.
      *
-     * @var integer
+     * @var int
      */
     protected $chunkNumber = 0;
 
