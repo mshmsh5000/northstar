@@ -7,7 +7,6 @@ use Northstar\Models\User;
 use Illuminate\Console\Command;
 use Illuminate\Support\Collection;
 use Northstar\Services\CustomerIo;
-use Jenssegers\Mongodb\Eloquent\Builder;
 
 class CustomerIoMobileUserImport extends Command
 {
