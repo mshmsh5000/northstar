@@ -88,16 +88,16 @@ class CustomerIoMobileUserImport extends Command
                 if ($dryRun) {
                     $this->line('Dry run to backfill user '.$user->id.' #'.$itemNumber);
                 } else {
-                    try {
-                        // Send user data to CustomerIo.
-                        // $this->customerIo->updateProfile($user);
+                    // Send user data to CustomerIo.
+                    $response = $this->customerIo->updateProfile($user);
 
+                    if ($response) {
                         // Mark this user as processed.
-                        // $user->cio_backfilled = true;
-                        // $user->save(['touch' => false]);
+                        $user->cio_backfilled = true;
+                        $user->save(['touch' => false]);
 
                         $this->line('Successfully backfilled user '.$user->id.' #'.$itemNumber);
-                    } catch (Exception $e) {
+                    } else {
                         $this->error('Failed to backfill user '.$user->id.' #'.$itemNumber);
                     }
                 }
