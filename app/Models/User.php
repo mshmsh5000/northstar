@@ -402,6 +402,7 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
         $unsubscribed = ($this->email && $isNewUser) ? false : null;
 
         $data = collect([
+            'id' => $this->id,
             'email' => $this->email,
             'phone' => $this->mobile,
             'sms_status' => $this->sms_status,
@@ -436,10 +437,7 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
             return true;
         });
 
-        return [
-            'id' => $this->id,
-            'data' => $data->toArray(),
-        ];
+        return $data->toArray();
     }
 
     /**
