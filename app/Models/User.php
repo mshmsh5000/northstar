@@ -12,6 +12,7 @@ use Illuminate\Auth\Passwords\CanResetPassword;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Str;
 use Northstar\Auth\Role;
+use Northstar\Auth\Notifications\ResetPassword as ResetPasswordNotification;
 
 /**
  * The User model. (Fight for the user!)
@@ -425,5 +426,17 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
 
         $this->source = $source ?: client_id();
         $this->source_detail = $detail;
+    }
+
+    /**
+     * Overriding the default method to send a password reset notification email,
+     * using our own custom class for some overrides to the email message.
+     *
+     * @param  string  $token
+     * @return void
+     */
+    public function sendPasswordResetNotification($token)
+    {
+        $this->notify(new ResetPasswordNotification($token));
     }
 }
