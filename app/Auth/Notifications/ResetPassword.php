@@ -17,9 +17,9 @@ class ResetPassword extends ResetPasswordNotification
     public function toMail($notifiable)
     {
         return (new MailMessage)
-            ->line('You are receiving this email because we received a password reset request for your account.')
+            ->line('You are receiving this email because we received a password reset request for your DoSomething.org account. Here is the link to reset your password:')
             ->action('Reset Password', url(config('app.url').route('password.reset', $this->token, false)))
-            ->line('This token will expire in 24 hours.')
-            ->line('If you did not request a password reset, no further action is required.');
+            ->line('This link will expire in 24 hours. Once you click the button above, you will be asked to reset your password on the page. If you did not request a password reset, you can ignore this email. Your password will not change and your account is safe.')
+            ->line('If you have further questions, please reach out to help@dosomething.org.');
     }
 }
