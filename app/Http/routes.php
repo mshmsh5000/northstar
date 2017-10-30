@@ -36,7 +36,7 @@ $router->group(['namespace' => 'Web', 'guard' => 'web', 'middleware' => ['web']]
     $router->post('register', 'AuthController@postRegister');
 
     // Password Reset
-    $this->get('password/reset', 'ForgotPasswordController@showLinkRequestForm');
+    $this->get('password/reset', ['as' => 'password.reset', 'uses' => 'ForgotPasswordController@showLinkRequestForm']);
     $this->post('password/email', 'ForgotPasswordController@sendResetLinkEmail');
     $this->get('password/reset/{token}', 'ResetPasswordController@showResetForm');
     $this->post('password/reset', 'ResetPasswordController@reset');
