@@ -13,6 +13,7 @@ class Kernel extends ConsoleKernel
      * @var array
      */
     protected $commands = [
+        \Northstar\Console\Commands\CustomerIoMobileUserImport::class,
         \Northstar\Console\Commands\BackfillCustomerIoProfiles::class,
         \Northstar\Console\Commands\BackfillPhoenixAccounts::class,
         \Northstar\Console\Commands\CleanDrupalIdsCommand::class,
@@ -21,6 +22,7 @@ class Kernel extends ConsoleKernel
         \Northstar\Console\Commands\FixMongoDatesCommand::class,
         \Northstar\Console\Commands\FixSourcesCommand::class,
         \Northstar\Console\Commands\KeysCommand::class,
+        \Northstar\Console\Commands\RevertCustomerIoImport::class,
         \Northstar\Console\Commands\SetupCommand::class,
     ];
 

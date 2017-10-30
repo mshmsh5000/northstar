@@ -20,16 +20,20 @@ class AppServiceProvider extends ServiceProvider
             $user->source = $user->source ?: client_id();
         });
 
-        User::created(function (User $user) {
-            // Send payload to Blink for Customer.io profile.
-            if (config('features.blink')) {
-                app(Blink::class)->userCreate($user->toBlinkPayload());
-            }
+        // @TODO: Remove after the weekend of scripting!
+        // 2017/10/27
+        if (! $this->app->runningInConsole()) {
+            User::created(function (User $user) {
+                // Send payload to Blink for Customer.io profile.
+                if (config('features.blink')) {
+                    app(Blink::class)->userCreate($user->toBlinkPayload());
+                }
 
-            // Send metrics to StatHat.
-            app('stathat')->ezCount('user created');
-            app('stathat')->ezCount('user created - '.$user->source);
-        });
+                // Send metrics to StatHat.
+                app('stathat')->ezCount('user created');
+                app('stathat')->ezCount('user created - '.$user->source);
+            });
+        }
 
         User::updating(function (User $user) {
             // Write profile changes to the log, with redacted values for hidden fields.
@@ -37,12 +41,16 @@ class AppServiceProvider extends ServiceProvider
             logger('updated user', ['id' => $user->id, 'client_id' => client_id(), 'changed' => $changed]);
         });
 
-        User::updated(function (User $user) {
-            // Send payload to Blink for Customer.io profile.
-            if (config('features.blink') && config('features.blink-updates')) {
-                app(Blink::class)->userCreate($user->toBlinkPayload());
-            }
-        });
+        // @TODO: Remove after the weekend of scripting!
+        // 2017/10/27
+        if (! $this->app->runningInConsole()) {
+            User::updated(function (User $user) {
+                // Send payload to Blink for Customer.io profile.
+                if (config('features.blink') && config('features.blink-updates')) {
+                    app(Blink::class)->userCreate($user->toBlinkPayload());
+                }
+            });
+        }
     }
 
     /**
