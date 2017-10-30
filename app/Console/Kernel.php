@@ -13,6 +13,7 @@ class Kernel extends ConsoleKernel
      * @var array
      */
     protected $commands = [
+        \Northstar\Console\Commands\AddAddressesCommand::class,
         \Northstar\Console\Commands\CustomerIoMobileUserImport::class,
         \Northstar\Console\Commands\BackfillCustomerIoProfiles::class,
         \Northstar\Console\Commands\BackfillPhoenixAccounts::class,
