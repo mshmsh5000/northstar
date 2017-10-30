@@ -1,13 +1,13 @@
 <?php
 
-    namespace Northstar\Auth\Notifications;
+namespace Northstar\Auth\Notifications;
 
-    use Illuminate\Auth\Notifications\ResetPassword as ResetPasswordNotification;
-    use Illuminate\Notifications\Messages\MailMessage;
+use Illuminate\Auth\Notifications\ResetPassword as ResetPasswordNotification;
+use Illuminate\Notifications\Messages\MailMessage;
 
 class ResetPassword extends ResetPasswordNotification
 {
-   /**
+    /**
      * Build the mail representation of the notification.
      * (This is our custom override of the default email message.)
      *
