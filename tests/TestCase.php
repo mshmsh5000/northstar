@@ -181,7 +181,7 @@ abstract class TestCase extends Illuminate\Foundation\Testing\TestCase
             $accessToken->addScope($entity);
         }
 
-        $header = 'Bearer '.$accessToken->convertToJWT(new CryptKey(base_path('storage/keys/private.key')));
+        $header = 'Bearer '.$accessToken->convertToJWT(new CryptKey(storage_path('keys/private.key'), null, false));
         $this->serverVariables = array_replace($this->serverVariables, [
             'HTTP_Authorization' => $header,
         ]);

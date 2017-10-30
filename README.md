@@ -13,20 +13,11 @@ Northstar! :sparkles:
 Fork and clone this repository, and [add it to your Homestead](https://github.com/DoSomething/communal-docs/blob/master/Homestead/readme.md).
 
 ```sh
-# Make public & private RSA keys:
-$ openssl genrsa -out storage/keys/private.key 1024
-$ openssl rsa -in storage/keys/private.key -pubout -out storage/keys/public.key
-$ chmod 600 storage/keys/{public,private}.key
-
 # Install dependencies:
 $ composer install && npm install
     
-# Copy the default environment variables:
-$ cp .env.example .env
-
-# Make app key & run database migrations:
-$ php artisan key:generate
-$ php artisan migrate
+# Configure application & run migrations:
+$ php artisan northstar:setup
 
 # And finally, build the frontend assets:
 $ npm run build

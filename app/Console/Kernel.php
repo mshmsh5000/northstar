@@ -21,7 +21,9 @@ class Kernel extends ConsoleKernel
         \Northstar\Console\Commands\FixE164DuplicatesCommand::class,
         \Northstar\Console\Commands\FixMongoDatesCommand::class,
         \Northstar\Console\Commands\FixSourcesCommand::class,
+        \Northstar\Console\Commands\KeysCommand::class,
         \Northstar\Console\Commands\RevertCustomerIoImport::class,
+        \Northstar\Console\Commands\SetupCommand::class,
     ];
 
     /**
