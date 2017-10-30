@@ -1,6 +1,6 @@
 <?php
 
-use Illuminate\Auth\Notifications\ResetPassword;
+use Northstar\Auth\Notifications\ResetPassword;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Notification;
 use Northstar\Auth\Registrar;
