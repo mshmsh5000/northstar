@@ -419,10 +419,10 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
             'country' => $this->country,
             'source' => $this->source,
             'source_detail' => $this->source_detail,
-            'last_messaged_at' => iso8601($this->last_messaged_at),
-            'last_authenticated_at' => iso8601($this->last_authenticated_at),
-            'updated_at' => iso8601($this->updated_at),
-            'created_at' => iso8601($this->created_at),
+            'last_messaged_at' => format_date($this->last_messaged_at, 'U'),
+            'last_authenticated_at' => format_date($this->last_authenticated_at, 'U'),
+            'updated_at' => format_date($this->updated_at, 'U'),
+            'created_at' => format_date($this->created_at, 'U'),
             'unsubscribed' => $unsubscribed,
         ])->filter(function ($value, $key) use ($requiredCustomerIoFields) {
             // If it's an address field that isn't a string, get rid of it.
