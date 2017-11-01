@@ -2,7 +2,7 @@
 
 use Northstar\Models\User;
 
-class ConvertMobilesCommandTest extends TestCase
+class ConvertMobilesCommandTest extends BrowserKitTestCase
 {
     /** @test */
     public function it_should_convert_numbers()

@@ -1,6 +1,6 @@
 <?php
 
-class LocalizationTest extends TestCase
+class LocalizationTest extends BrowserKitTestCase
 {
     /**
      * Test that the correct language is applied for the supported header.

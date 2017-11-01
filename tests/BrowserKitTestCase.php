@@ -12,7 +12,7 @@ use Northstar\Models\Token;
 use Northstar\Models\User;
 use Northstar\Services\Phoenix;
 
-abstract class TestCase extends Illuminate\Foundation\Testing\TestCase
+abstract class BrowserKitTestCase extends Laravel\BrowserKitTesting\TestCase
 {
     /**
      * The base URL to use while testing the application.
@@ -79,7 +79,7 @@ abstract class TestCase extends Illuminate\Foundation\Testing\TestCase
         $this->faker = app(\Faker\Generator::class);
 
         // Reset the testing database & run migrations.
-        app()->make('db')->getMongoDB()->drop();
+        app('db')->getMongoDB()->drop();
         $this->artisan('migrate');
     }
 
@@ -262,7 +262,7 @@ abstract class TestCase extends Illuminate\Foundation\Testing\TestCase
     {
         $app = require __DIR__.'/../bootstrap/app.php';
 
-        $app->make('Illuminate\Contracts\Console\Kernel')->bootstrap();
+        $app->make(Illuminate\Contracts\Console\Kernel::class)->bootstrap();
 
         // Configure a mock for Phoenix & default `createDrupalUser` response.
         $this->phoenixMock = $this->mock(Phoenix::class);

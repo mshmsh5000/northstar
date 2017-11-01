@@ -3,7 +3,7 @@
 use Northstar\Models\User;
 use Northstar\Models\Client;
 
-class WebAuthenticationTest extends TestCase
+class WebAuthenticationTest extends BrowserKitTestCase
 {
     /**
      * Default headers for this test case.

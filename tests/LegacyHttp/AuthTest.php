@@ -3,7 +3,7 @@
 use Northstar\Models\User;
 use Northstar\Services\Phoenix;
 
-class AuthTest extends TestCase
+class AuthTest extends BrowserKitTestCase
 {
     /**
      * Test for logging in a user by username.

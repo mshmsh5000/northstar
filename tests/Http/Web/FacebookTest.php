@@ -2,7 +2,7 @@
 
 use Northstar\Models\User;
 
-class FacebookTest extends TestCase
+class FacebookTest extends BrowserKitTestCase
 {
     /**
      * Mock a Socialite user for the given

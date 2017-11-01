@@ -5,6 +5,7 @@ namespace Northstar\Providers;
 use Northstar\Models\User;
 use DoSomething\Gateway\Blink;
 use Illuminate\Support\ServiceProvider;
+use Jenssegers\Mongodb\Eloquent\Builder;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -60,6 +61,9 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register()
     {
-        //
+        // Fix missing method in laravel-mongodb.
+        Builder::macro('getName', function() {
+            return 'mongodb';
+        });
     }
 }

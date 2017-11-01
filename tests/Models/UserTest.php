@@ -2,7 +2,7 @@
 
 use Northstar\Models\User;
 
-class UserModelTest extends TestCase
+class UserModelTest extends BrowserKitTestCase
 {
     // @TODO: Uncomment after the weekend of scripting!
     // 2017/10/27

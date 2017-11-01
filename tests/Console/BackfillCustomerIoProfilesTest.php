@@ -4,7 +4,7 @@ use Carbon\Carbon;
 use DoSomething\Gateway\Blink;
 use Northstar\Models\User;
 
-class BackfillCustomerIoProfilesTest extends TestCase
+class BackfillCustomerIoProfilesTest extends BrowserKitTestCase
 {
     /** @test */
     public function it_should_backfill_users()

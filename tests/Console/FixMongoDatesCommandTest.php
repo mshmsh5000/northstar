@@ -2,7 +2,7 @@
 
 use MongoDB\BSON\UTCDateTime;
 
-class FixMongoDatesCommandTest extends TestCase
+class FixMongoDatesCommandTest extends BrowserKitTestCase
 {
     /**
      * Test that it does the thing its supposed to.

@@ -3,7 +3,7 @@
 use Carbon\Carbon;
 use Northstar\Models\User;
 
-class AuthenticationEventsTest extends TestCase
+class AuthenticationEventsTest extends BrowserKitTestCase
 {
     /** @test */
     public function testSuccessfulLoginEvent()

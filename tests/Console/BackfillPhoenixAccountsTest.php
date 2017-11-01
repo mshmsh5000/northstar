@@ -2,7 +2,7 @@
 
 use Northstar\Models\User;
 
-class BackfillPhoenixAccountsTest extends TestCase
+class BackfillPhoenixAccountsTest extends BrowserKitTestCase
 {
     /**
      * Test that it does the thing its supposed to.
