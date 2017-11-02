@@ -359,6 +359,25 @@ class UserTest extends BrowserKitTestCase
     }
 
     /**
+     * Test that ISO-8601 formatted date strings are accepted.
+     * PUT /v1/users/id/:id
+     *
+     * @return void
+     */
+    public function testDateFields()
+    {
+        $user = factory(User::class)->create();
+
+        $newTimestamp = '2017-10-23T02:09:20+00:00';
+        $this->asAdminUser()->putJson('v1/users/id/'.$user->id, [
+            'last_messaged_at' => $newTimestamp,
+        ]);
+
+        $this->assertResponseStatus(200);
+        $this->assertEquals($newTimestamp, $user->fresh()->last_messaged_at->toIso8601String());
+    }
+
+    /**
      * Test that users get created_at & updated_at fields.
      * POST /v1/users/
      *
