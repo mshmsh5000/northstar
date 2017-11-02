@@ -1,6 +1,7 @@
 <?php
 
 use Northstar\Models\User;
+use Laravel\Socialite\AbstractUser;
 
 class FacebookTest extends BrowserKitTestCase
 {
@@ -46,7 +47,7 @@ class FacebookTest extends BrowserKitTestCase
      * @param  string  $id         id
      * @param  string  $token      token
      * @param  string  $birthday   birthday
-     * @return array
+     * @return \Laravel\Socialite\Two\User
      */
     private function mockSocialiteAbstractUser($email, $first_name, $last_name, $id, $token, $birthday = null)
     {
@@ -78,11 +79,12 @@ class FacebookTest extends BrowserKitTestCase
 
     /**
      * Test that a user is redirected to Facebook
-     * @expectedException \Illuminate\Foundation\Testing\HttpException
+     * @expectedException \Laravel\BrowserKitTesting\HttpException
      * @expectedExceptionMessageRegExp /www\.facebook\.com/
      */
     public function testFacebookRedirect()
     {
+        // @TODO: Why do we need these two magic annotations?
         $this->visit('/facebook/continue');
         $this->assertRedirectedTo('https://www.facebook.com/');
     }
