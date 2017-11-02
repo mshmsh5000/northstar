@@ -202,26 +202,6 @@ abstract class BrowserKitTestCase extends Laravel\BrowserKitTesting\TestCase
     }
 
     /**
-     * Set the currently logged in user for the application. Use this instead of Laravel's
-     * built-in $this->actingAs() or $this->be() because it will create an actual token in
-     * the database to be manipulated/checked & set proper authentication header.
-     *
-     * @param User $user
-     * @return $this
-     */
-    public function asUserUsingLegacyAuth(User $user)
-    {
-        // Create a legacy token.
-        $token = Token::create(['user_id' => $user->id]);
-
-        $this->serverVariables = array_replace($this->serverVariables, [
-            'HTTP_Authorization' => 'Bearer '.$token->key,
-        ]);
-
-        return $this;
-    }
-
-    /**
      * Get the raw Mongo document for inspection.
      *
      * @param $collection - Mongo Collection name
