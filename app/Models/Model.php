@@ -2,12 +2,8 @@
 
 namespace Northstar\Models;
 
-use Carbon\Carbon;
-use Exception;
 use Illuminate\Database\Eloquent\Builder;
-use InvalidArgumentException;
 use Jenssegers\Mongodb\Eloquent\Model as BaseModel;
-use MongoDB\BSON\UTCDateTime;
 
 /**
  * Base model class

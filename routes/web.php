@@ -9,6 +9,7 @@
  * @see \Northstar\Providers\RouteServiceProvider
  */
 
+// Homepage
 $router->get('/', 'UserController@home');
 
 // Users

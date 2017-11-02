@@ -62,7 +62,7 @@ class AppServiceProvider extends ServiceProvider
     public function register()
     {
         // Fix missing method in laravel-mongodb.
-        Builder::macro('getName', function() {
+        Builder::macro('getName', function () {
             return 'mongodb';
         });
     }
