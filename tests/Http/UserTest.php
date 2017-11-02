@@ -368,13 +368,13 @@ class UserTest extends BrowserKitTestCase
     {
         $user = factory(User::class)->create();
 
-        $newTimestamp = '2017-10-23T02:09:20+00:00';
+        $newTimestamp = '2017-11-02T18:42:00.000Z';
         $this->asAdminUser()->putJson('v1/users/id/'.$user->id, [
             'last_messaged_at' => $newTimestamp,
         ]);
 
         $this->assertResponseStatus(200);
-        $this->assertEquals($newTimestamp, $user->fresh()->last_messaged_at->toIso8601String());
+        $this->assertEquals('2017-11-02T18:42:00+00:00', $user->fresh()->last_messaged_at->toIso8601String());
     }
 
     /**
