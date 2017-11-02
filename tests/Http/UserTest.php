@@ -3,7 +3,7 @@
 use Carbon\Carbon;
 use Northstar\Models\User;
 
-class UserTest extends TestCase
+class UserTest extends BrowserKitTestCase
 {
     /**
      * Test retrieving multiple users.

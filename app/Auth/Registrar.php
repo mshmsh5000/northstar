@@ -65,11 +65,11 @@ class Registrar
         $existingId = isset($existingUser->id) ? $existingUser->id : 'null';
         $rules = [
             'first_name' => 'max:50',
-            'email' => 'email|unique:users,email,'.$existingId.',_id|required_without:mobile',
-            'mobile' => 'mobile|unique:users,mobile,'.$existingId.',_id|required_without:email',
-            'birthdate' => 'date',
-            'country' => 'country',
-            'password' => 'min:6|max:512',
+            'email' => 'email|nullable|unique:users,email,'.$existingId.',_id|required_without:mobile',
+            'mobile' => 'mobile|nullable|unique:users,mobile,'.$existingId.',_id|required_without:email',
+            'birthdate' => 'nullable|date',
+            'country' => 'nullable|country',
+            'password' => 'nullable|min:6|max:512',
             'mobilecommons_status' => 'in:active,undeliverable,unknown', // for backwards compatibility.
             'sms_status' => 'in:active,less,undeliverable,unknown',
             'sms_paused' => 'boolean',

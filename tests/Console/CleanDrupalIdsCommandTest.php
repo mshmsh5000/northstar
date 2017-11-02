@@ -3,7 +3,7 @@
 use Carbon\Carbon;
 use Northstar\Models\User;
 
-class CleanDrupalIdsCommandTest extends TestCase
+class CleanDrupalIdsCommandTest extends BrowserKitTestCase
 {
     /**
      * Test that it does the thing its supposed to.

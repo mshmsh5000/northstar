@@ -10,9 +10,9 @@
     }
   ],
   "require": {
-    "laravel/framework": "5.3.*",
+    "laravel/framework": "5.4.*",
     "guzzlehttp/guzzle": "~6.2.1",
-    "jenssegers/mongodb": "dev-chunkById",
+    "jenssegers/mongodb": "dev-chunkById-5.4",
     "league/flysystem-aws-s3-v3": "~1.0",
     "parse/php-sdk" : "1.1.*",
     "league/fractal": "0.13.*",
@@ -23,14 +23,16 @@
     "league/iso3166": "^1.0",
     "fideloper/proxy": "^3.3",
     "dosomething/gateway": "^1.7.0",
-    "laravel/socialite": "~2.0.20",
+    "laravel/socialite": "^3.0.0",
     "league/csv": "^8.0",
     "giggsey/libphonenumber-for-php": "^7.0",
     "gree/jose": "^2.2",
-    "dfurnes/environmentalist": "^0.0.2"
+    "dfurnes/environmentalist": "0.0.2",
+    "laravel/tinker": "^1.0",
+    "laravel/browser-kit-testing": "1.*"
   },
   "require-dev": {
-    "phpunit/phpunit": "~4.0",
+    "phpunit/phpunit": "~5.7",
     "phpspec/phpspec": "~2.1",
     "fzaninotto/faker": "~1.4",
     "mockery/mockery": "^0.9.4",
@@ -50,21 +52,21 @@
   },
   "autoload-dev": {
     "classmap": [
+      "tests/BrowserKitTestCase.php",
       "tests/TestCase.php"
-    ]
+    ],
+    "psr-4": {
+      "Tests\\": "tests/"
+    }
   },
   "scripts": {
     "post-install-cmd": [
-      "php artisan clear-compiled",
+      "Illuminate\\Foundation\\ComposerScripts::postInstall",
       "php artisan optimize"
     ],
     "post-update-cmd": [
-      "php artisan clear-compiled",
+      "Illuminate\\Foundation\\ComposerScripts::postUpdate",
       "php artisan optimize"
-    ],
-    "post-create-project-cmd": [
-      "php -r \"copy('.env.example', '.env');\"",
-      "php artisan key:generate"
     ]
   },
   "config": {

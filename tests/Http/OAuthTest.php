@@ -3,7 +3,7 @@
 use Northstar\Models\Client;
 use Northstar\Models\User;
 
-class OAuthTest extends TestCase
+class OAuthTest extends BrowserKitTestCase
 {
     /**
      * A custom PHPUnit assertion to validate an OAuth response & JWT token claims.

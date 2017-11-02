@@ -2,7 +2,7 @@
 
 use Northstar\Models\Client;
 
-class ClientTest extends TestCase
+class ClientTest extends BrowserKitTestCase
 {
     /**
      * Verify a non-admin user is not able to list clients.

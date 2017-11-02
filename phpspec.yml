@@ -1,5 +1,0 @@
-suites:
-    main:
-        namespace: Northstar
-        psr4_prefix: Northstar
-        src_path: app

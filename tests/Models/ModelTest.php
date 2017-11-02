@@ -2,7 +2,7 @@
 
 use Northstar\Models\User;
 
-class ModelTest extends TestCase
+class ModelTest extends BrowserKitTestCase
 {
     /** @test */
     public function it_should_unset_null_fields()

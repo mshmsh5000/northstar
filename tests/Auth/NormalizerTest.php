@@ -1,6 +1,6 @@
 <?php
 
-class NormalizerTest extends TestCase
+class NormalizerTest extends BrowserKitTestCase
 {
     /**
      * Test that we can normalize the ID field name.

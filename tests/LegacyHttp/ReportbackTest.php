@@ -2,7 +2,7 @@
 
 use Northstar\Models\User;
 
-class ReportbackTest extends TestCase
+class ReportbackTest extends BrowserKitTestCase
 {
     /**
      * Test for submitting a new campaign report back.

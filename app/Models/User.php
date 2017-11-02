@@ -8,11 +8,11 @@ use Illuminate\Auth\Authenticatable;
 use Illuminate\Contracts\Auth\Authenticatable as AuthenticatableContract;
 use Illuminate\Contracts\Auth\Access\Authorizable as AuthorizableContract;
 use Illuminate\Contracts\Auth\CanResetPassword as ResetPasswordContract;
+use Northstar\Auth\Notifications\ResetPassword as ResetPasswordNotification;
 use Illuminate\Auth\Passwords\CanResetPassword;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Str;
 use Northstar\Auth\Role;
-use Northstar\Auth\Notifications\ResetPassword as ResetPasswordNotification;
 
 /**
  * The User model. (Fight for the user!)
@@ -212,6 +212,27 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
     public function setMobilecommonsStatusAttribute($value)
     {
         $this->attributes['sms_status'] = $value;
+    }
+
+    /**
+     * Mutator to parse non-standard date strings into MongoDates.
+     *
+     * @param string|Carbon $value
+     */
+    public function setBirthdateAttribute($value)
+    {
+        if (is_null($value)) {
+            $this->attributes['birthdate'] = null;
+
+            return;
+        }
+
+        // Parse user-entered strings like '10/31/1990' or `October 31st 1990'.
+        if (is_string($value)) {
+            $value = strtotime($value);
+        }
+
+        $this->attributes['birthdate'] = $this->fromDateTime($value);
     }
 
     /**

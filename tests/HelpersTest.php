@@ -3,7 +3,7 @@
 use Carbon\Carbon;
 use Northstar\Models\Client;
 
-class HelpersTest extends TestCase
+class HelpersTest extends BrowserKitTestCase
 {
     /** @test */
     public function testFormatDate()

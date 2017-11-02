@@ -2,7 +2,7 @@
 
 use Northstar\Models\User;
 
-class ResetTest extends TestCase
+class ResetTest extends BrowserKitTestCase
 {
     /**
      * Test that anonymous and non-admin keys/users cannot create

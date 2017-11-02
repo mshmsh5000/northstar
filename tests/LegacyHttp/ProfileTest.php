@@ -2,7 +2,7 @@
 
 use Northstar\Models\User;
 
-class ProfileTest extends TestCase
+class ProfileTest extends BrowserKitTestCase
 {
     /**
      * Test that a user can see their own profile.

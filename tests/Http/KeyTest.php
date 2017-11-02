@@ -2,7 +2,7 @@
 
 use Northstar\Models\User;
 
-class KeyTest extends TestCase
+class KeyTest extends BrowserKitTestCase
 {
     /**
      * Test retrieving multiple users.

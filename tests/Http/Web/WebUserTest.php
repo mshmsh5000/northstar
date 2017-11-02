@@ -2,7 +2,7 @@
 
 use Northstar\Models\User;
 
-class WebUserTest extends TestCase
+class WebUserTest extends BrowserKitTestCase
 {
     /**
      * Default headers for this test case.

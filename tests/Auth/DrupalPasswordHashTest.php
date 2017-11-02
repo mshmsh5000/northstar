@@ -3,7 +3,7 @@
 use Northstar\Auth\DrupalPasswordHash;
 use Northstar\Models\User;
 
-class DrupalPasswordHashTest extends TestCase
+class DrupalPasswordHashTest extends BrowserKitTestCase
 {
     /**
      * Tests that Drupal password hasher is working correctly.

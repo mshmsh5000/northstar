@@ -2,7 +2,7 @@
 
 use Northstar\Models\User;
 
-class MergeTest extends TestCase
+class MergeTest extends BrowserKitTestCase
 {
     /**
      * Test that anonymous and normal users can't merge accounts.

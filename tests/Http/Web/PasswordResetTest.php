@@ -6,7 +6,7 @@ use Illuminate\Support\Facades\Notification;
 use Northstar\Auth\Registrar;
 use Northstar\Models\User;
 
-class PasswordResetTest extends TestCase
+class PasswordResetTest extends BrowserKitTestCase
 {
     /**
      * Default headers for this test case.

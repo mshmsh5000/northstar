@@ -2,7 +2,7 @@
 
 use Northstar\Models\User;
 
-class LegacyUserTest extends TestCase
+class LegacyUserTest extends BrowserKitTestCase
 {
     /**
      * Test for retrieving a user by their ID.

@@ -1,6 +1,6 @@
 <?php
 
-class FixE164DuplicatesTest extends TestCase
+class FixE164DuplicatesTest extends BrowserKitTestCase
 {
     /** @test */
     public function it_should_remove_duplicates()

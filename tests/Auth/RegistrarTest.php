@@ -5,7 +5,7 @@ use Illuminate\Support\Str;
 use Northstar\Auth\Registrar;
 use Northstar\Models\User;
 
-class RegistrarTest extends TestCase
+class RegistrarTest extends BrowserKitTestCase
 {
     /**
      * Test that we can resolve by ID.

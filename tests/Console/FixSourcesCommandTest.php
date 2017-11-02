@@ -2,7 +2,7 @@
 
 use Northstar\Models\User;
 
-class FixSourcesCommandTest extends TestCase
+class FixSourcesCommandTest extends BrowserKitTestCase
 {
     /** @test */
     public function it_should_fix_incorrect_sources()

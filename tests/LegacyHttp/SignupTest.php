@@ -3,7 +3,7 @@
 use Northstar\Models\User;
 use Northstar\Services\Phoenix;
 
-class SignupTest extends TestCase
+class SignupTest extends BrowserKitTestCase
 {
     /**
      * Test for retrieving a user's campaigns

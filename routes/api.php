@@ -1,49 +1,16 @@
 <?php
 
 /**
- * Set routes for the application.
+ * Here is where you can register API routes for your application. These
+ * routes are loaded by the RouteServiceProvider within a group which
+ * contains the "api" middleware group. Now create something great!
  *
  * @var \Illuminate\Routing\Router $router
  * @see \Northstar\Providers\RouteServiceProvider
  */
 
-// Web Experience for https://northstar.dosomething.org/
-
-$router->group(['namespace' => 'Web', 'guard' => 'web', 'middleware' => ['web']], function () use ($router) {
-    $router->get('/', 'UserController@home');
-
-    // Users
-    $router->resource('users', 'UserController', ['except' => ['index', 'create', 'delete']]);
-
-    // Authorization flow for the Auth Code OAuth grant.
-    $router->get('authorize', 'AuthController@authorize');
-
-    // Login & Logout
-    $router->get('login', 'AuthController@getLogin');
-    $router->post('login', 'AuthController@postLogin');
-    $router->get('logout', 'AuthController@getLogout');
-
-    // Facebook Continue
-    $router->get('facebook/continue', 'FacebookController@redirectToProvider');
-    $router->get('facebook/verify', 'FacebookController@handleProviderCallback');
-
-    // Unsubscribes
-    $router->get('unsubscribe', 'UnsubscribeController@getSubscriptions');
-    $router->post('unsubscribe', 'UnsubscribeController@postSubscriptions');
-
-    // Registration
-    $router->get('register', 'AuthController@getRegister');
-    $router->post('register', 'AuthController@postRegister');
-
-    // Password Reset
-    $this->get('password/reset', 'ForgotPasswordController@showLinkRequestForm');
-    $this->post('password/email', 'ForgotPasswordController@sendResetLinkEmail');
-    $this->get('password/reset/{token}', ['as' => 'password.reset', 'uses' => 'ResetPasswordController@showResetForm']);
-    $this->post('password/reset', 'ResetPasswordController@reset');
-});
-
-// API experience for https://nortstar.dosomething.org/v2/
-$router->group(['prefix' => 'v2', 'as' => 'v2.', 'middleware' => ['api']], function () use ($router) {
+// https://profile.dosomething.org/v2/
+$router->group(['prefix' => 'v2', 'as' => 'v2.'], function () use ($router) {
     // Authentication
     $router->post('auth/token', 'OAuthController@createToken');
     $router->get('auth/info', 'OAuthController@info');
@@ -69,8 +36,8 @@ $router->group(['prefix' => 'v2', 'as' => 'v2.', 'middleware' => ['api']], funct
     $router->get('scopes', 'ScopeController@index');
 });
 
-// API experience for https://northstar.dosomething.org/v1/
-$router->group(['prefix' => 'v1', 'as' => 'v1.', 'middleware' => ['api']], function () use ($router) {
+// https://profile.dosomething.org/v1/
+$router->group(['prefix' => 'v1', 'as' => 'v1.'], function () use ($router) {
     // Authentication
     $router->post('auth/token', 'Legacy\AuthController@createToken');
     $router->post('auth/invalidate', 'Legacy\AuthController@invalidateToken');
