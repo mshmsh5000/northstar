@@ -28,7 +28,7 @@
 
                     <div class="form-item">
                         <label for="email" class="field-label">{{ trans('auth.fields.email') }}</label>
-                        <input name="email" type="text" class="text-field" placeholder="puppet-sloth@example.org" value="{{ $email or old('email') }}">
+                        <input name="email" readonly type="text" class="text-field is-disabled" placeholder="puppet-sloth@example.org" value="{{ $email }}">
                     </div>
 
                     <div class="form-item">
