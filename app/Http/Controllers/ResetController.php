@@ -63,6 +63,7 @@ class ResetController extends Controller
     {
         return new DatabaseTokenRepository(
             app('db')->connection(),
+            app('hash'),
             config('auth.passwords.users.table'),
             config('app.key'),
             config('auth.passwords.users.expire')
