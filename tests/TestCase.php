@@ -8,7 +8,6 @@ use Northstar\Auth\Entities\ClientEntity;
 use Northstar\Auth\Entities\ScopeEntity;
 use Northstar\Auth\Scope;
 use Northstar\Models\Client;
-use Northstar\Models\Token;
 use Northstar\Models\User;
 use Northstar\Services\Phoenix;
 
