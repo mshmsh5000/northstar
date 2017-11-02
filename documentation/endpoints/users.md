@@ -386,57 +386,6 @@ curl -X DELETE \
 
 </details>
 
-## Set User Avatar
-Save an avatar to the user's Northstar profile. Accepts a file or Base64 string in the data request. This will return
-the updated User profile document, with a `photo` attribute pointing to the newly created image.
-
-```
-POST /v1/users/:user_id/avatar
-```
-
-**Request Parameters:**
-```js
-// Content-Type: multipart/form-data --or-- application/json
-// Accept: application/json
-
-{
-  /* Required */
-  photo: File or String
-}
-```
-
-<details>
-<summary><strong>Example Request</strong></summary>
-
-```sh
-curl -X POST \
-  -H "Authorization: Bearer ${ACCESS_TOKEN}" \
-  -H "Content-Type: multipart-form-data: \
-  -H "Accept: application/json" \
-  -d '{"photo": "profile_pic.jpeg"}' \
-  https://northstar.dosomething.org/v1/users/{id}/avatar
-```
-
-</details>
-
-<details>
-<summary><strong>Example Response</strong></summary>
-
-```js
-// 200 OK
-
-{
-    "data": {
-        "id": "5430e850dt8hbc541c37tt3d",
-        "photo": "https://avatar.dosomething.org/uploads/avatars/55566327bffebc0b3e8b45a5-1456498835.jpeg"
-        // the rest of the user object...
-        "updated_at": "2016-02-25T18:33:25+0000"
-    }
-}
-```
-
-</details>
-
 ## Merge User Accounts
 Merge two user accounts. The `id` of the "target" user must be provided in the URL path, and the "duplicate" ID should be provided in the body. This requires either the `admin` scope, or "admin" or "staff" role with the appropriate scope.
 

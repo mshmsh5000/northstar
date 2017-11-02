@@ -28,7 +28,6 @@ Endpoint                                     | Functionality                    
 `GET v1/users/:term/:identifier`             | [Retrieve a User](endpoints/users.md#retrieve-a-user) 
 `PUT v1/users/:term/:id`                     | [Update a User](endpoints/users.md#update-a-user) | `role:admin` or `admin`
 `DELETE v1/users/:user_id`                   | [Delete a User](endpoints/users.md#delete-a-user) | `role:admin` or `admin`
-`POST v1/users/:user_id/avatar`              | [Set User Avatar](endpoints/users.md#set-user-avatar) | `user`
 `POST v1/users/:user_id/merge`               | [Merge User Accounts](endpoints/users.md#merge-user-accounts) | `role:admin,staff` or `admin`
 
 #### Profile

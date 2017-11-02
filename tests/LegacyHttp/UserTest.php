@@ -769,56 +769,6 @@ class LegacyUserTest extends BrowserKitTestCase
     }
 
     /**
-     * Test for creating a user's profile image with a file
-     * POST /users/:user_id/avatar
-     *
-     * @return void
-     */
-    public function testCreateUserAvatarWithFile()
-    {
-        $user = User::create();
-
-        // Mock successful response from AWS API
-        $this->mock('Northstar\Services\AWS')->shouldReceive('storeImage')->once()->andReturn('http://bucket.s3.amazonaws.com/'.$user->id.'-1234567.jpg');
-
-        $this->asUserUsingLegacyAuth($user)->withLegacyApiKeyScopes(['user'])->json('POST', 'v1/users/'.$user->id.'/avatar', [
-            'photo' => 'example.jpeg',
-        ]);
-
-        $this->assertResponseStatus(200);
-        $this->seeJsonSubset([
-            'data' => [
-                'photo' => 'http://bucket.s3.amazonaws.com/'.$user->id.'-1234567.jpg',
-            ],
-        ]);
-    }
-
-    /**
-     * Test for creating a user's profile image with a Base64 string
-     * POST /users/:user_id/avatar
-     *
-     * @return void
-     */
-    public function testCreateUserAvatarWithBase64()
-    {
-        $user = User::create();
-
-        // Mock successful response from AWS API
-        $this->mock('Northstar\Services\AWS')->shouldReceive('storeImage')->once()->andReturn('http://bucket.s3.amazonaws.com/'.$user->id.'-123415.jpg');
-
-        $this->asUserUsingLegacyAuth($user)->withLegacyApiKeyScopes(['user'])->json('POST', 'v1/users/'.$user->id.'/avatar', [
-            'photo' => '123456789',
-        ]);
-
-        $this->assertResponseStatus(200);
-        $this->seeJsonSubset([
-            'data' => [
-                'photo' => 'http://bucket.s3.amazonaws.com/'.$user->id.'-123415.jpg',
-            ],
-        ]);
-    }
-
-    /**
      * Test for deleting an existing user
      * DELETE /users
      *
