@@ -2,13 +2,8 @@
 
 namespace Northstar\Services;
 
-use Exception;
 use GuzzleHttp\Client;
 use GuzzleHttp\Cookie\CookieJar;
-use GuzzleHttp\Exception\ClientException;
-use Illuminate\Support\Str;
-use Northstar\Models\User;
-use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Cache;
 
 class Phoenix
@@ -85,26 +80,6 @@ class Phoenix
     }
 
     /**
-     * Get list of campaigns, or individual campaign information.
-     * @see https://github.com/DoSomething/dosomething/wiki/API#campaigns
-     *
-     * @param int $id - Optional campaign ID to get information on.
-     *
-     * @return mixed
-     */
-    public function campaigns($id = null)
-    {
-        // Get all campaigns if there's no id set.
-        if (! $id) {
-            $response = $this->client->get('campaigns.json');
-        } else {
-            $response = $this->client->get('content/'.$id.'.json');
-        }
-
-        return json_decode($response->getBody()->getContents(), true);
-    }
-
-    /**
      * Forward registration to Drupal.
      * @see: https://github.com/DoSomething/dosomething/wiki/API#create-a-user
      *
@@ -142,35 +117,6 @@ class Phoenix
     }
 
     /**
-     * Get a user uid by email.
-     * @see: https://github.com/DoSomething/dosomething/wiki/API#find-a-user
-     *
-     * @param User $user
-     *
-     * @return string|null - Drupal User ID
-     * @throws Exception
-     */
-    public function getDrupalIdForNorthstarUser($user)
-    {
-        // Phoenix supports lookup by either email or mobile
-        $primaryField = ! empty($user->email) ? 'email' : 'mobile';
-
-        $response = $this->client->get('users', [
-            'query' => [
-                'parameters['.$primaryField.']' => $user->{$primaryField},
-            ],
-            'cookies' => $this->getAuthenticationCookie(),
-            'headers' => [
-                'X-CSRF-Token' => $this->getAuthenticationToken(),
-            ],
-        ]);
-
-        $json = json_decode($response->getBody()->getContents(), true);
-
-        return data_get($json, '0.uid');
-    }
-
-    /**
      * Trigger a transactional message.
      *
      * @param string $id
@@ -189,209 +135,5 @@ class Phoenix
                 'template' => $template,
             ],
         ]);
-    }
-
-    /**
-     * Get an index of (optionally filtered) campaign signups from Phoenix.
-     * @see: https://github.com/DoSomething/phoenix/wiki/API#retrieve-a-signup-collection
-     *
-     * @param array $query - query string, for filtering results
-     * @return array - JSON response
-     */
-    public function getSignupIndex(array $query = [])
-    {
-        $response = $this->client->get('signups', [
-            'query' => $query,
-            'cookies' => $this->getAuthenticationCookie(),
-            'headers' => [
-                'X-CSRF-Token' => $this->getAuthenticationToken(),
-            ],
-        ]);
-
-        return json_decode($response->getBody()->getContents(), true);
-    }
-
-    /**
-     * Get details for a particular campaign signup from Phoenix.
-     * @see: https://github.com/DoSomething/phoenix/wiki/API#retrieve-a-specific-signup
-     *
-     * @return array - JSON response
-     * @throws NotFoundHttpException
-     * @throws Exception
-     */
-    public function getSignup($signup_id)
-    {
-        try {
-            $response = $this->client->get('signups/'.$signup_id, [
-                'cookies' => $this->getAuthenticationCookie(),
-                'headers' => [
-                    'X-CSRF-Token' => $this->getAuthenticationToken(),
-                ],
-            ]);
-
-            return json_decode($response->getBody()->getContents(), true);
-        } catch (ClientException $e) {
-            if ($e->getCode() === 404) {
-                throw new NotFoundHttpException('That signup could not be found.');
-            }
-
-            throw new Exception('Unknown error getting signup: '.$e->getMessage());
-        }
-    }
-
-    /**
-     * Create a new campaign signup on the Drupal site.
-     * @see: https://github.com/DoSomething/dosomething/wiki/API#campaign-signup
-     *
-     * @param string $user_id - UID of user on the Drupal site
-     * @param string $campaign_id - NID of campaign on the Drupal site
-     * @param string $source - Sign up source (e.g. web, iPhone, etc.)
-     *
-     * @return string - Signup ID
-     * @throws Exception
-     */
-    public function createSignup($user_id, $campaign_id, $source)
-    {
-        $payload = [
-            'uid' => $user_id,
-            'source' => $source,
-        ];
-
-        $response = $this->client->post('campaigns/'.$campaign_id.'/signup', [
-            'json' => $payload,
-            'cookies' => $this->getAuthenticationCookie(),
-            'headers' => [
-                'X-CSRF-Token' => $this->getAuthenticationToken(),
-            ],
-        ]);
-
-        return json_decode($response->getBody()->getContents(), true);
-    }
-
-    /**
-     * Get an index of (optionally filtered) campaign reportbacks from Phoenix.
-     * @see: https://github.com/DoSomething/phoenix/wiki/API#retrieve-a-reportback-collection
-     *
-     * @param array|string $query - query string, for filtering results
-     * @return array - JSON response
-     */
-    public function getReportbackIndex(array $query = [])
-    {
-        $response = $this->client->get('reportbacks', [
-            'query' => $query,
-            'cookies' => $this->getAuthenticationCookie(),
-            'headers' => [
-                'X-CSRF-Token' => $this->getAuthenticationToken(),
-            ],
-        ]);
-
-        return json_decode($response->getBody()->getContents(), true);
-    }
-
-    /**
-     * Get details for a particular campaign signup from Phoenix.
-     * @see: https://github.com/DoSomething/phoenix/wiki/API#retrieve-a-specific-reportback
-     *
-     * @return array - JSON response
-     * @throws NotFoundHttpException
-     * @throws Exception
-     */
-    public function getReportback($reportback_id)
-    {
-        try {
-            $response = $this->client->get('reportbacks/'.$reportback_id, [
-                'cookies' => $this->getAuthenticationCookie(),
-                'headers' => [
-                    'X-CSRF-Token' => $this->getAuthenticationToken(),
-                ],
-            ]);
-
-            return json_decode($response->getBody()->getContents(), true);
-        } catch (ClientException $e) {
-            if ($e->getCode() === 404) {
-                throw new NotFoundHttpException('That reportback could not be found.');
-            }
-
-            throw new Exception('Unknown error getting signup: '.$e->getMessage());
-        }
-    }
-
-    /**
-     * Create or update a user's reportback on the Drupal site.
-     * @see: https://github.com/DoSomething/dosomething/wiki/API#campaign-reportback
-     *
-     * @param string $user_id - UID of user on the Drupal site
-     * @param string $campaign_id - NID of campaign on the Drupal site
-     * @param array $contents - Contents of reportback
-     *   @option string $quantity - Quantity of reportback
-     *   @option string $why_participated - Why the user participated in this campaign
-     *   @option string $file - Reportback image as a Data URL
-     *
-     * @return array - API response
-     * @throws Exception
-     */
-    public function createReportback($user_id, $campaign_id, $contents)
-    {
-        $payload = [
-            'uid' => $user_id,
-            'quantity' => $contents['quantity'],
-            'why_participated' => $contents['why_participated'],
-            'file' => $contents['file'],
-            'filename' => Str::random(10).'.jpg', // Hackz. This sets the filename Phoenix saves reportback with.
-            'caption' => $contents['caption'],
-            'source' => $contents['source'],
-        ];
-
-        $response = $this->client->post('campaigns/'.$campaign_id.'/reportback', [
-            'json' => $payload,
-            'cookies' => $this->getAuthenticationCookie(),
-            'headers' => [
-                'X-CSRF-Token' => $this->getAuthenticationToken(),
-            ],
-        ]);
-
-        return json_decode($response->getBody()->getContents(), true);
-    }
-
-    /**
-     * Get a magic login link for the given user ID.
-     * @see: https://github.com/DoSomething/phoenix/blob/dev/documentation/endpoints/users.md#create-magic-login-url
-     *
-     * @param string $user_id - UID of user on the Drupal site
-     *
-     * @return array - API response
-     * @throws Exception
-     */
-    public function createMagicLogin($user_id)
-    {
-        $response = $this->client->post('users/'.$user_id.'/magic_login_url', [
-            'cookies' => $this->getAuthenticationCookie(),
-            'headers' => [
-                'X-CSRF-Token' => $this->getAuthenticationToken(),
-            ],
-        ]);
-
-        return json_decode($response->getBody()->getContents(), true);
-    }
-
-    /**
-     * Get a password reset link for the given user.
-     * @see: https://github.com/DoSomething/phoenix/blob/dev/documentation/endpoints/users.md#create-password-reset-url
-     *
-     * @param $drupal_id - UID of user on the Drupal site
-     *
-     * @return string - password reset URL
-     * @throws Exception
-     */
-    public function createPasswordResetLink($drupal_id)
-    {
-        $response = $this->client->post('users/'.$drupal_id.'/password_reset_url', [
-            'cookies' => $this->getAuthenticationCookie(),
-            'headers' => [
-                'X-CSRF-Token' => $this->getAuthenticationToken(),
-            ],
-        ]);
-
-        return json_decode($response->getBody()->getContents(), true)[0];
     }
 }
