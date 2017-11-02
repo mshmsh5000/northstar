@@ -215,14 +215,34 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
     }
 
     /**
-     * Mutator to parse non-standard date strings into MongoDates.
+     * Mutator for setting the birthdate field.
      *
      * @param string|Carbon $value
      */
     public function setBirthdateAttribute($value)
     {
+        $this->setArbitraryDateString('birthdate', $value);
+    }
+
+    /**
+     * Mutator for setting the last_messaged_at field.
+     *
+     * @param string|Carbon $value
+     */
+    public function setLastMessagedAtAttribute($value)
+    {
+        $this->setArbitraryDateString('last_messaged_at', $value);
+    }
+
+    /**
+     * Mutator to parse non-standard date strings into MongoDates.
+     *
+     * @param string|Carbon $value
+     */
+    public function setArbitraryDateString($attribute, $value)
+    {
         if (is_null($value)) {
-            $this->attributes['birthdate'] = null;
+            $this->attributes[$attribute] = null;
 
             return;
         }
@@ -232,7 +252,7 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
             $value = strtotime($value);
         }
 
-        $this->attributes['birthdate'] = $this->fromDateTime($value);
+        $this->attributes[$attribute] = $this->fromDateTime($value);
     }
 
     /**
