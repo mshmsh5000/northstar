@@ -7,7 +7,6 @@ use Illuminate\Http\Request;
 use Illuminate\Contracts\Auth\Guard;
 use Illuminate\Contracts\Auth\UserProvider;
 use Mockery\CountValidator\Exception;
-use Northstar\Models\Token;
 use Northstar\Models\User;
 
 class NorthstarTokenGuard extends TokenGuard implements Guard
@@ -42,54 +41,18 @@ class NorthstarTokenGuard extends TokenGuard implements Guard
 
         $user = null;
 
-        $token = $this->getTokenForRequest();
-        $user = $this->getUserForToken($token);
+        $user = $this->getUserForToken();
 
         return $this->user = $user;
-    }
-
-    /**
-     * Get the associated user for a given token string.
-     *
-     * @param string $tokenKey
-     * @return \Northstar\Models\User|null
-     */
-    public function getUserForToken($tokenKey = '')
-    {
-        // If the provided token is 32 characters long, it's a legacy
-        // database token. Otherwise, it must be a JWT access token.
-        if (strlen($tokenKey) === 32) {
-            return $this->getUserFromLegacyToken($tokenKey);
-        }
-
-        return $this->getUserFromJWTAccessToken();
-    }
-
-    /**
-     * Fetch a legacy authentication token from the database to
-     * get it's corresponding user.
-     *
-     * @param $tokenKey
-     * @return User|null
-     */
-    public function getUserFromLegacyToken($tokenKey)
-    {
-        $token = Token::where($this->storageKey, $tokenKey)->first();
-
-        if (empty($token)) {
-            return null;
-        }
-
-        return User::find($token->user_id);
     }
 
     /**
      * Retrieve the user from a parsed JWT access token that
      * was provided with the current request.
      *
-     * @return User|null
+     * @return \Northstar\Models\User|null
      */
-    public function getUserFromJWTAccessToken()
+    public function getUserForToken()
     {
         $id = request()->attributes->get('oauth_user_id');
 
@@ -98,23 +61,6 @@ class NorthstarTokenGuard extends TokenGuard implements Guard
         }
 
         return User::find($id);
-    }
-
-    /**
-     * Get the token key for the current request.
-     *
-     * @return string
-     */
-    public function getTokenForRequest()
-    {
-        // Support deprecated "Session" header authentication.
-        $tokenKey = $this->request->header('Session');
-
-        if (! empty($tokenKey)) {
-            return $tokenKey;
-        }
-
-        return parent::getTokenForRequest();
     }
 
     /**
@@ -128,25 +74,6 @@ class NorthstarTokenGuard extends TokenGuard implements Guard
         $user = $this->provider->retrieveByCredentials($credentials);
 
         return $this->provider->validateCredentials($user, $credentials);
-    }
-
-    /**
-     * Get the legacy Token instance for the current request.
-     *
-     * @return Token|null
-     */
-    public function token()
-    {
-        $tokenKey = $this->getTokenForRequest();
-
-        // If the provided token is 32 characters long, it's a legacy
-        // database token. Otherwise, it must be a JWT access token,
-        // which does not have a corresponding database record.
-        if (strlen($tokenKey) === 32) {
-            return Token::where($this->storageKey, $tokenKey)->first();
-        }
-
-        return null;
     }
 
     /**
