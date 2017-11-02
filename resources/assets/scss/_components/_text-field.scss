@@ -1,0 +1,7 @@
+
+// Fixes readonly text appearence.
+.text-field.is-disabled {
+  color: $med-gray;
+  background-color: lighten($light-gray, $tint);
+  cursor: not-allowed;
+}
