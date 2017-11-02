@@ -9,10 +9,16 @@ use Jenssegers\Mongodb\Eloquent\Model as BaseModel;
  * Base model class
  *
  * @mixin \Jenssegers\Mongodb\Query\Builder
- * @method chunkFromId($count, $startId, \Closure $callback, $column)
  */
 class Model extends BaseModel
 {
+    /**
+     * The expected format for stringified dates.
+     *
+     * @var string
+     */
+    protected $dateFormat = 'Y-m-d\TH:i:sP';
+
     /**
      * Set a given attribute on the model.
      *
