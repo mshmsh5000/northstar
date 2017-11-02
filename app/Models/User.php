@@ -236,6 +236,27 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
     }
 
     /**
+     * Mutator to parse non-standard date strings into MongoDates.
+     *
+     * @param string|Carbon $value
+     */
+    public function setLastMessagedAtAttribute($value)
+    {
+        if (is_null($value)) {
+            $this->attributes['last_messaged_at'] = null;
+
+            return;
+        }
+
+        // Parse user-entered strings like '10/31/1990' or `October 31st 1990'.
+        if (is_string($value)) {
+            $value = strtotime($value);
+        }
+
+        $this->attributes['last_messaged_at'] = $this->fromDateTime($value);
+    }
+
+    /**
      * Accessor for the `role` field.
      *
      * @return string
