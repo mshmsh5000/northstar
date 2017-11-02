@@ -9,7 +9,7 @@
  * @see \Northstar\Providers\RouteServiceProvider
  */
 
-// API experience for https://nortstar.dosomething.org/v2/
+// https://profile.dosomething.org/v2/
 $router->group(['prefix' => 'v2', 'as' => 'v2.'], function () use ($router) {
     // Authentication
     $router->post('auth/token', 'OAuthController@createToken');
@@ -36,7 +36,7 @@ $router->group(['prefix' => 'v2', 'as' => 'v2.'], function () use ($router) {
     $router->get('scopes', 'ScopeController@index');
 });
 
-// API experience for https://northstar.dosomething.org/v1/
+// https://profile.dosomething.org/v1/
 $router->group(['prefix' => 'v1', 'as' => 'v1.'], function () use ($router) {
     // Authentication
     $router->post('auth/token', 'Legacy\AuthController@createToken');
