@@ -189,7 +189,7 @@ class AuthController extends BaseController
             'first_name' => 'required|max:50',
             'birthdate' => 'required|date|before:now',
             'email' => 'required|email|unique:users',
-            'mobile' => 'mobile|unique:users',
+            'mobile' => 'mobile|nullable|unique:users',
             'password' => 'required|min:6|max:512',
         ]);
 
