@@ -4,7 +4,6 @@ namespace Northstar\Http\Controllers\Legacy;
 
 use Illuminate\Http\Request;
 use Northstar\Http\Controllers\Controller;
-use Northstar\Http\Transformers\TokenTransformer;
 use Northstar\Http\Transformers\UserTransformer;
 use Symfony\Component\HttpKernel\Exception\UnauthorizedHttpException;
 use Northstar\Auth\Registrar;
@@ -16,11 +15,6 @@ class AuthController extends Controller
      * @var Registrar
      */
     protected $registrar;
-
-    /**
-     * @var TokenTransformer
-     */
-    protected $transformer;
 
     /**
      * Validation rules for login routes.
@@ -41,7 +35,7 @@ class AuthController extends Controller
     {
         $this->registrar = $registrar;
 
-        $this->transformer = new TokenTransformer();
+        $this->transformer = new UserTransformer;
 
         $this->middleware('scope:user');
         $this->middleware('throttle', ['only' => ['verify']]);
@@ -66,6 +60,6 @@ class AuthController extends Controller
             throw new UnauthorizedHttpException(null, 'Invalid credentials.');
         }
 
-        return $this->item($user, 200, [], new UserTransformer());
+        return $this->item($user);
     }
 }
