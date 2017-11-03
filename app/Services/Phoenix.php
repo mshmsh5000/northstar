@@ -115,25 +115,4 @@ class Phoenix
 
         return $json['uid'];
     }
-
-    /**
-     * Trigger a transactional message.
-     *
-     * @param string $id
-     * @param string $template
-     * @return void
-     */
-    public function sendTransactional($id, $template)
-    {
-        $this->client->post('transactionals', [
-            'cookies' => $this->getAuthenticationCookie(),
-            'headers' => [
-                'X-CSRF-Token' => $this->getAuthenticationToken(),
-            ],
-            'json' => [
-                'id' => $id,
-                'template' => $template,
-            ],
-        ]);
-    }
 }
