@@ -50,7 +50,12 @@ Endpoint                                     | Functionality                    
 `PUT v2/clients/:client_id`                  | [Update a Client](endpoints/clients.md#update-a-client)             | `role:admin` or `admin`
 `DELETE v2/clients/:client_id`               | [Delete a Client](endpoints/clients.md#delete-a-client)             | `role:admin` or `admin`
 `GET v2/scopes`                              | [Retrieve All Client Scopes](endpoints/clients.md#retrieve-all-client-scopes) |
-`GET v2/key`                                 | [Retrieve Public Key](endpoints/clients.md#retrieve-public-key)     | `role:admin` or `admin`
+
+#### Discovery
+Endpoint                                     | Functionality                                                                | Required Scope
+-------------------------------------------- | ---------------------------------------------------------------------------- | --------------
+`GET .well-known/openid-configuration`       | [Get OpenID Configuration](endpoints/discovery.md#get-openid-configuration)  | 
+`GET v2/keys`                                | [Retrieve Public Key](endpoints/discovery.md#retrieve-public-key)            | 
 
 <br>
 
@@ -155,4 +160,4 @@ Header                  | Description
 
 
 ## Libraries
-We have a [PHP API client](https://github.com/DoSomething/northstar-php) for simplified usage of the API in PHP clients.
+You can use __Gateway__, our standard API client, in [PHP](https://github.com/DoSomething/gateway) or [JavaScript](https://github.com/DoSomething/gateway-js) applications.
