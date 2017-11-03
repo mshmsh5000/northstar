@@ -13,13 +13,6 @@ use Jenssegers\Mongodb\Eloquent\Model as BaseModel;
 class Model extends BaseModel
 {
     /**
-     * The expected format for stringified dates.
-     *
-     * @var string
-     */
-    protected $dateFormat = 'Y-m-d\TH:i:sP';
-
-    /**
      * Set a given attribute on the model.
      *
      * @param  string  $key
