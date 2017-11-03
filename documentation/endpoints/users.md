@@ -61,7 +61,7 @@ curl -X GET \
 </details>
 
 <details>
-<summary>**Example Request (filtered)**</summary>
+<summary><strong>Example Request (filtered)</strong></summary>
 
 ```sh
 curl -X GET \
@@ -72,7 +72,7 @@ curl -X GET \
 </details>
 
 <details>
-<summary>**Example Response (filtered)**</summary>
+<summary><strong>Example Response (filtered)</strong></summary>
 
 ```js
 // 200 OK

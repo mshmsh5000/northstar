@@ -117,9 +117,3 @@ curl -X POST \
 }
 ```
 </details>
-
-## Get Authenticated User's Signups
-Hmm, documentation is coming soon! :construction:
-
-## Get Authenticated User's Reportbacks
-Hmm, documentation is coming soon! :construction:
