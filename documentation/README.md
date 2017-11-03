@@ -18,8 +18,6 @@ Endpoint                  | Functionality                                       
 `DELETE v2/auth/token`    | [Invalidate Auth Token](endpoints/auth.md#revoke-token) | 
 `GET v2/auth/info`        | [Get User Info](endpoints/auth.md#get-user-info) | 
 
-> :memo: There's also the [legacy authentication endpoints](endpoints/legacy/auth.md), but those are deprecated so don't get too attached!
-
 #### Users
 Endpoint                                     | Functionality                                            | Required Scope
 -------------------------------------------- | -------------------------------------------------------- | --------------

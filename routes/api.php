@@ -37,9 +37,6 @@ $router->group(['prefix' => 'v2', 'as' => 'v2.'], function () {
 
 // https://profile.dosomething.org/v1/
 $router->group(['prefix' => 'v1', 'as' => 'v1.'], function () {
-    // Authentication
-    $this->post('auth/verify', 'Legacy\AuthController@verify');
-
     // Users
     $this->resource('users', 'UserController', ['except' => ['show', 'update']]);
     $this->get('users/{term}/{id}', 'UserController@show');
