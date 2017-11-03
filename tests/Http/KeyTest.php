@@ -1,53 +1,22 @@
 <?php
 
-use Northstar\Models\User;
-
 class KeyTest extends BrowserKitTestCase
 {
-    /**
-     * Test retrieving multiple users.
-     * GET /users
-     *
-     * @return void
-     */
-    public function testKeyNotVisibleToUserRole()
+    /** @test */
+    public function it_should_display_public_key()
     {
-        $this->get('v2/key');
-        $this->assertResponseStatus(401);
+        $this->get('v2/keys');
 
-        $this->asNormalUser()->get('v2/key');
-        $this->assertResponseStatus(401);
-    }
-
-    /**
-     * Test retrieving multiple users.
-     * GET /users
-     *
-     * @return void
-     */
-    public function testKeyNotVisibleToStaffRole()
-    {
-        // Make a staff user & some test users.
-        $staff = factory(User::class, 'staff')->create();
-
-        $this->asUser($staff, ['role:staff'])->get('v2/key');
-        $this->assertResponseStatus(401);
-    }
-
-    /**
-     * Test retrieving multiple users.
-     * GET /users
-     *
-     * @return void
-     */
-    public function testKeyVisibleToAdminRole()
-    {
-        $this->asAdminUser()->get('v2/key');
-        $this->assertResponseStatus(200);
+        $this->assertResponseOk();
         $this->seeJsonStructure([
-            'algorithm',
-            'issuer',
-            'public_key',
+            'keys' => [
+                '*' => [
+                    'kty',
+                    'e',
+                    'n',
+                    'kid',
+                ],
+            ],
         ]);
     }
 }

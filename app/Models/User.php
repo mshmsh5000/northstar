@@ -59,7 +59,6 @@ use Northstar\Auth\Role;
  * @property string $cgg_id
  * @property string $drupal_id
  * @property string $agg_id
- * @property array  $parse_installation_ids
  * @property string $facebook_id
  * @property string $slack_id
  *
@@ -304,19 +303,6 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
     public function setCountryAttribute($value)
     {
         $this->attributes['country'] = Str::upper($value);
-    }
-
-    /**
-     * Mutator to add new Parse IDs to the user's installation IDs array,
-     * either by passing an array or a comma-separated list of values.
-     *
-     * @param array|string $value
-     */
-    public function setParseInstallationIdsAttribute($value)
-    {
-        $ids = is_array($value) ? $value : array_map('trim', explode(',', $value));
-
-        $this->push('parse_installation_ids', $ids, true);
     }
 
     /**

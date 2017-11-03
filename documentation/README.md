@@ -28,7 +28,6 @@ Endpoint                                     | Functionality                    
 `GET v1/users/:term/:identifier`             | [Retrieve a User](endpoints/users.md#retrieve-a-user) 
 `PUT v1/users/:term/:id`                     | [Update a User](endpoints/users.md#update-a-user) | `role:admin` or `admin`
 `DELETE v1/users/:user_id`                   | [Delete a User](endpoints/users.md#delete-a-user) | `role:admin` or `admin`
-`POST v1/users/:user_id/avatar`              | [Set User Avatar](endpoints/users.md#set-user-avatar) | `user`
 `POST v1/users/:user_id/merge`               | [Merge User Accounts](endpoints/users.md#merge-user-accounts) | `role:admin,staff` or `admin`
 
 #### Profile
@@ -36,28 +35,6 @@ Endpoint                                     | Functionality                    
 -------------------------------------------- | -------------------------------------------------------- | --------------
 `GET v1/profile`                             | [Get Authenticated User's Profile](endpoints/profile.md#get-profile) | `user`
 `POST v1/profile`                            | [Update Authenticated User's Profile](endpoints/profile.md#post-profile) | `user`
-`GET v1/profile/signups`                     | [Get Authenticated User's Signups](endpoints/profile.md#get-authenticated-users-signups) | `user`
-`GET v1/profile/reportbacks`                 | [Get Authenticated User's Reportbacks](endpoints/profile.md#get-authenticated-user-reportbacks) | `user`
-
-> __Note:__ The signups & reportbacks endpoints are lightweight proxies to their Phoenix equivalents.
-
-#### Signups
-Endpoint                                     | Functionality                                            | Required Scope
--------------------------------------------- | -------------------------------------------------------- | --------------
-`GET v1/signups`                             | [Retrieve All Signups](endpoints/signups.md#retrieve-all-signups) |
-`GET v1/signups/:signup_id`                  | [Retrieve a Signup](endpoints/signups.md#retrieve-a-signup)  |
-`POST v1/signups`                            | [Create a Signup](endpoints/signups.md#create-a-signup)      | `user`
-
-> __Note:__ These endpoints are lightweight proxies to their Phoenix equivalents.
-
-#### Reportbacks
-Endpoint                                     | Functionality                                            | Required Scope
--------------------------------------------- | -------------------------------------------------------- | --------------
-`GET v1/reportbacks`                         | [Retrieve All Reportbacks](endpoints/reportbacks.md#retrieve-all-reportbacks) |
-`GET v1/reportbacks/:reportback_id`          | [Retrieve a Reportback](endpoints/reportbacks.md#retrieve-a-reportback) |
-`POST v1/reportbacks`                        | [Create a Reportback](endpoints/reportbacks.md#create-a-reportback) | `user`
-
-> __Note:__ These endpoints are lightweight proxies to their Phoenix equivalents.
 
 #### Resets
 Endpoint                                     | Functionality                                            | Required Scope

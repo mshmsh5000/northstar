@@ -177,7 +177,6 @@ class WebAuthenticationTest extends BrowserKitTestCase
      */
     public function testRegister()
     {
-        $this->phoenixMock->shouldReceive('sendTransactional')->once();
         $this->withHeader('X-Fastly-Country-Code', 'US')
             ->register();
 
@@ -217,7 +216,6 @@ class WebAuthenticationTest extends BrowserKitTestCase
      */
     public function testRegisterFromMexico()
     {
-        $this->phoenixMock->shouldReceive('sendTransactional')->once();
         $this->withHeader('X-Fastly-Country-Code', 'MX')
             ->register();
 
@@ -235,8 +233,6 @@ class WebAuthenticationTest extends BrowserKitTestCase
      */
     public function testRegisterRateLimited()
     {
-        $this->phoenixMock->shouldReceive('sendTransactional')->times(10);
-
         for ($i = 0; $i < 10; $i++) {
             $this->register();
             $this->seeIsAuthenticated('web');

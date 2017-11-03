@@ -217,16 +217,6 @@ class Registrar
     }
 
     /**
-     * Send a "welcome" email to the given user.
-     *
-     * @param $user
-     */
-    public function sendWelcomeEmail($user)
-    {
-        $this->phoenix->sendTransactional($user->id, 'register');
-    }
-
-    /**
      * Create a Drupal user for the given account.
      *
      * @param User $user
