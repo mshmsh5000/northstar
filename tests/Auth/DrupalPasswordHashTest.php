@@ -1,6 +1,7 @@
 <?php
 
 use Northstar\Auth\DrupalPasswordHash;
+use Northstar\Auth\Registrar;
 use Northstar\Models\User;
 
 class DrupalPasswordHashTest extends BrowserKitTestCase
@@ -15,18 +16,13 @@ class DrupalPasswordHashTest extends BrowserKitTestCase
             'drupal_password' => '$S$DOQoztwlGzTeaobeBZKNzlDttbZscuCkkZPv8yeoEvrn26H/GN5b',
         ]);
 
-        $this->withLegacyApiKeyScopes(['user'])->json('POST', 'v1/auth/verify', [
+        // Assert that we can log in with the Drupal-hashed password.
+        $success = app(Registrar::class)->validateCredentials($user, [
             'email' => 'dries.buytaert@example.com',
             'password' => 'secret',
         ]);
 
-        // Assert response is 200 OK and has expected data
-        $this->assertResponseStatus(200);
-        $this->seeJsonSubset([
-            'data' => [
-                'id' => $user->_id,
-            ],
-        ]);
+        $this->assertTrue($success);
 
         // Assert user has been updated in the database with a newly hashed password.
         $user = $user->fresh();
@@ -34,11 +30,12 @@ class DrupalPasswordHashTest extends BrowserKitTestCase
         $this->assertArrayHasKey('password', $user['attributes']);
 
         // Finally, let's try logging in with the newly hashed password
-        $this->withLegacyApiKeyScopes(['user'])->json('POST', 'v1/auth/verify', [
+        $success = app(Registrar::class)->validateCredentials($user, [
             'email' => 'dries.buytaert@example.com',
             'password' => 'secret',
         ]);
-        $this->assertResponseStatus(200);
+
+        $this->assertTrue($success);
     }
 
     /**
@@ -51,11 +48,9 @@ class DrupalPasswordHashTest extends BrowserKitTestCase
             'drupal_password' => '$S$DOQoztwlGzTeaobeBZKNzlDttbZscuCkkZPv8yeoEvrn26H/GN5b',
         ]);
 
-        $this->withLegacyApiKeyScopes(['admin'])->json('PUT', 'v1/users/_id/'.$user->_id, [
+        $user->update([
             'password' => 'secret',
         ]);
-
-        $this->assertResponseStatus(200);
 
         // Assert user has been updated in the database with a newly hashed password.
         $user = $user->fresh();
@@ -63,11 +58,12 @@ class DrupalPasswordHashTest extends BrowserKitTestCase
         $this->assertArrayHasKey('password', $user['attributes']);
 
         // Finally, let's try logging in with the newly hashed password
-        $this->withLegacyApiKeyScopes(['user'])->json('POST', 'v1/auth/verify', [
+        $success = app(Registrar::class)->validateCredentials($user, [
             'email' => 'acquia.consultant@example.com',
             'password' => 'secret',
         ]);
-        $this->assertResponseStatus(200);
+
+        $this->assertTrue($success);
     }
 
     /**
