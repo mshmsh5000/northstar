@@ -320,36 +320,3 @@ curl -X GET https://northstar.dosomething.org/v2/scopes
 ```
 </details>
 
-
-## Retrieve Public Key
-Retrieves the public key which can be used to verify issued JWT access tokens. This endpoint requires either the `admin` scope,
-or `role:admin` with an admin user.
-
-```
-GET /v2/key
-```
-
-<details>
-<summary><strong>Example Request</strong></summary>
-
-```sh
-curl -X GET https://northstar.dosomething.org/v2/key \
-  -H "Authorization: Bearer ${ACCESS_TOKEN}" \
-  -H "Accept: application/json"
-```
-</details>
-
-<details>
-<summary><strong>Example Response</strong></summary>
-
-```js
-// 200 OK
-
-{
-  "algorithm": "RS256",
-  "issuer": "http://northstar.dosomething.org",
-  "public_key": "-----BEGIN PUBLIC KEY-----\n...\n-----END PUBLIC KEY-----\n"
-}
-```
-</details>
-
