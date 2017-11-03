@@ -1,7 +1,7 @@
 # Northstar [![wercker status](https://app.wercker.com/status/109bce734be9a06703562876265f5bd9/s/dev "wercker status")](https://app.wercker.com/project/byKey/109bce734be9a06703562876265f5bd9) [![StyleCI](https://styleci.io/repos/26884886/shield?style=flat-rounded)](https://styleci.io/repos/26884886)
 
 This is __Northstar__, the DoSomething.org user & identity service. It's our single "source of truth" for member information.
-Northstar is built using [Laravel 5.3](https://laravel.com/docs/5.3) and [MongoDB](https://www.mongodb.com).
+Northstar is built using [Laravel 5.4](https://laravel.com/docs/5.4) and [MongoDB](https://www.mongodb.com).
 
 ### Getting Started
 
@@ -29,13 +29,13 @@ You can seed the database with test data:
 
 You may run unit tests locally using PHPUnit:
 
-    $ vendor/bin/phpunit
+    $ phpunit
     
-We follow [Laravel's code style](http://laravel.com/docs/5.3/contributions#coding-style) and automatically
+We follow [Laravel's code style](http://laravel.com/docs/5.4/contributions#coding-style) and automatically
 lint all pull requests with [StyleCI](https://styleci.io/repos/26884886). Be sure to configure
 [EditorConfig](http://editorconfig.org) to ensure you have proper indentation settings.
 
-Consider [writing a test case](http://laravel.com/docs/5.3/testing) when adding or changing a feature.
+Consider [writing a test case](http://laravel.com/docs/5.4/testing) when adding or changing a feature.
 Most steps you would take when manually testing your code can be automated, which makes it easier for
 yourself & others to review your code and ensures we don't accidentally break something later on!
 
