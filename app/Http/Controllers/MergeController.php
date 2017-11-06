@@ -55,7 +55,10 @@ class MergeController extends Controller
 
         // Are there fields we can't automatically merge? Throw an error.
         if (count(array_intersect_key($target->toArray(), array_flip($duplicateFieldNames)))) {
-            $errors = array_fill_keys($duplicateFieldNames, 'Cannot merge into non-null field on target.');
+            $errors = collect($duplicateFieldNames)->map(function ($fieldName) {
+                return 'Cannot merge "'.$fieldName.'" into non-null field on target.';
+            });
+
             throw new NorthstarValidationException($errors, ['target' => $target, 'duplicate' => $duplicate]);
         }
 
