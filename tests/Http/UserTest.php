@@ -169,6 +169,38 @@ class UserTest extends BrowserKitTestCase
         $this->assertNotEquals('Hamilton', $user->last_name);
     }
 
+    /** @test */
+    public function testUnsetFieldWithEmptyString()
+    {
+        $user = factory(User::class)->create();
+        $staff = factory(User::class, 'staff')->create();
+
+        $this->asUser($staff, ['user', 'role:staff'])->json('PUT', 'v1/users/id/'.$user->id, [
+            'mobile' => '',
+        ]);
+
+        $this->assertResponseStatus(200);
+
+        // The user field should have been removed.
+        $this->assertNull($user->fresh()->mobile);
+    }
+
+    /** @test */
+    public function testUnsetFieldWithNull()
+    {
+        $user = factory(User::class)->create();
+        $staff = factory(User::class, 'staff')->create();
+
+        $this->asUser($staff, ['user', 'role:staff'])->json('PUT', 'v1/users/id/'.$user->id, [
+            'mobile' => null,
+        ]);
+
+        $this->assertResponseStatus(200);
+
+        // The user field should have been removed.
+        $this->assertNull($user->fresh()->mobile);
+    }
+
     /**
      * Test that a staffer cannot change a user's role.
      * GET /users/:term/:id
