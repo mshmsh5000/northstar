@@ -145,6 +145,20 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
     protected $hidden = ['drupal_password', 'password'];
 
     /**
+     * The attributes that should be mutated to dates.
+     *
+     * @var array
+     */
+    protected $dates = [
+        'birthdate',
+        'last_accessed_at',
+        'last_authenticated_at',
+        'last_messaged_at',
+        self::UPDATED_AT,
+        self::CREATED_AT,
+    ];
+
+    /**
      * The attributes that should be casted to native types.
      *
      * @var array
@@ -153,9 +167,6 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
         'cgg_id' => 'integer',
         'birthdate' => 'date',
         'sms_paused' => 'boolean',
-        'last_accessed_at' => 'datetime',
-        'last_authenticated_at' => 'datetime',
-        'last_messaged_at' => 'datetime',
     ];
 
     /**
