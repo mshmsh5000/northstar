@@ -26,8 +26,11 @@ class AppServiceProvider extends ServiceProvider
         if (! $this->app->runningInConsole()) {
             User::created(function (User $user) {
                 // Send payload to Blink for Customer.io profile.
+
+                $blinkPayload = $user->toBlinkPayload();
+                info('blink: user.create', $blinkPayload);
                 if (config('features.blink')) {
-                    app(Blink::class)->userCreate($user->toBlinkPayload());
+                    gateway('blink')->userCreate($blinkPayload);
                 }
 
                 // Send metrics to StatHat.
@@ -47,8 +50,10 @@ class AppServiceProvider extends ServiceProvider
         if (! $this->app->runningInConsole()) {
             User::updated(function (User $user) {
                 // Send payload to Blink for Customer.io profile.
+                $blinkPayload = $user->toBlinkPayload();
+                info('blink: user.update', $blinkPayload);
                 if (config('features.blink') && config('features.blink-updates')) {
-                    app(Blink::class)->userCreate($user->toBlinkPayload());
+                    gateway('blink')->userCreate($blinkPayload);
                 }
             });
         }
