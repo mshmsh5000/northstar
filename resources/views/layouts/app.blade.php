@@ -36,6 +36,7 @@
     @include('layouts.variables')
     {{ scriptify(auth()->user() ? auth()->user()->id : null, 'NORTHSTAR_ID') }}
     {{ scriptify(get_client_environment_vars(), 'ENV') }}
+    {{ scriptify($errors->messages(), 'ERRORS') }}
     <script src="{{ elixir('app.js', 'dist') }}"></script>
     @include('layouts.google_analytics')
 </body>
