@@ -53,11 +53,11 @@ return [
             'username' => env('DB_USERNAME', ''),
             'password' => env('DB_PASSWORD', ''),
             'database' => env('DB_NAME', 'userapi'),
-            'options'  => [
+            'options'  => array_filter([
                 'replicaSet' => env('DB_REPL_SET_NAME'),
                 'database' => env('DB_AUTH_NAME', 'userapi'),
                 'ssl' => env('DB_SSL'),
-            ],
+            ]),
         ],
 
     ],
