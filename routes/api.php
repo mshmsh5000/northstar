@@ -14,7 +14,8 @@ $router->group(['prefix' => 'v2', 'as' => 'v2.'], function () {
     // Authentication
     $this->post('auth/token', 'OAuthController@createToken');
     $this->delete('auth/token', 'OAuthController@invalidateToken');
-    $this->get('auth/info', 'OAuthController@info');
+    $this->get('auth/info', 'OAuthController@info'); // Deprecated.
+    $this->get('userinfo', 'UserInfoController@show');
 
     // Users
     // ...

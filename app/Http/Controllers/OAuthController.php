@@ -65,6 +65,7 @@ class OAuthController extends Controller
     /**
      * Show the user info for the authorized user.
      *
+     * @deprecated
      * @return \Illuminate\Http\Response
      */
     public function info()
