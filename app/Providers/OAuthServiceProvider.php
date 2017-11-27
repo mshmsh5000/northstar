@@ -27,6 +27,7 @@ use Northstar\Auth\Repositories\ClientRepository;
 use Northstar\Auth\Repositories\RefreshTokenRepository;
 use Northstar\Auth\Repositories\ScopeRepository;
 use Northstar\Auth\Repositories\UserRepository;
+use Northstar\Auth\Responses\BearerTokenResponse;
 
 class OAuthServiceProvider extends ServiceProvider
 {
@@ -76,7 +77,8 @@ class OAuthServiceProvider extends ServiceProvider
                 app(AccessTokenRepositoryInterface::class),
                 app(ScopeRepositoryInterface::class),
                 $this->makeCryptKey('private.key'),
-                config('app.key')
+                config('app.key'),
+                app(BearerTokenResponse::class)
             );
 
             // Define which OAuth grants we'll accept.
