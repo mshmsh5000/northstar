@@ -41,6 +41,9 @@ use Northstar\Auth\Role;
  * @property string $country
  * @property string $language
  *
+ * Source for the address fields (e.g. 'sms')
+ * @property string $addr_source
+ *
  * We also collect a bunch of fields from Niche.com users:
  * @property string $race
  * @property string $religion
@@ -94,7 +97,7 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
 
         // Address:
         'addr_street1', 'addr_street2', 'addr_city', 'addr_state', 'addr_zip',
-        'country', 'language',
+        'country', 'language', 'addr_source',
 
         // External profiles:
         'mobilecommons_id', 'mobilecommons_status', 'facebook_id', 'slack_id',
